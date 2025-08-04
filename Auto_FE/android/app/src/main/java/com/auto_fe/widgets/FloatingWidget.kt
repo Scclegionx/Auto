@@ -13,7 +13,8 @@ import android.widget.PopupWindow
 import android.widget.Toast
 import com.auto_fe.R
 import com.auto_fe.audio.AudioRecorder
-import com.auto_fe.accessibility.SmsHelper
+import com.auto_fe.core.AutomationCommand
+import com.auto_fe.core.Constants
 
 class FloatingWidget(private val context: Context) {
     private lateinit var windowManager: WindowManager
@@ -21,7 +22,7 @@ class FloatingWidget(private val context: Context) {
     private lateinit var widgetIcon: ImageView
     private lateinit var popupWindow: PopupWindow
     private lateinit var audioRecorder: AudioRecorder
-    private lateinit var smsHelper: SmsHelper
+    private lateinit var automationCommand: AutomationCommand
     
     private var initialX = 0
     private var initialY = 0
@@ -30,7 +31,7 @@ class FloatingWidget(private val context: Context) {
     
     init {
         audioRecorder = AudioRecorder(context)
-        smsHelper = SmsHelper(context)
+        automationCommand = AutomationCommand(context)
         setupFloatingWidget()
         setupPopupMenu()
     }
@@ -168,12 +169,12 @@ class FloatingWidget(private val context: Context) {
     
     private fun testSendMessage() {
         // Test với dữ liệu fix cứng
-        val command = "send-mes"
-        val entities = "{ \"ent\": \"mom\" }"
-        val values = "{ \"val\": \"con sắp về\" }"
+        val command = Constants.COMMAND_SEND_MESSAGE
+        val entities = Constants.TestData.TEST_ENTITIES
+        val values = Constants.TestData.TEST_VALUES
         
-        Toast.makeText(context, "Bắt đầu test gửi tin nhắn...", Toast.LENGTH_SHORT).show()
-        smsHelper.sendMessage(command, entities, values)
+        Toast.makeText(context, Constants.ToastMessages.STARTING_MESSAGE_TEST, Toast.LENGTH_SHORT).show()
+        automationCommand.executeCommand(command, entities, values)
     }
     
     fun destroy() {

@@ -17,6 +17,16 @@
         android:layout_marginBottom="4dp" />
 
     <Button
+        android:id="@+id/testMessageButton"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:text="📱 Test gửi tin nhắn"
+        android:textSize="12sp"
+        android:background="@drawable/menu_button_background"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="4dp" />
+
+    <Button
         android:id="@+id/settingsButton"
         android:layout_width="120dp"
         android:layout_height="40dp"

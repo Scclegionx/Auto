@@ -13,6 +13,7 @@ import android.widget.PopupWindow
 import android.widget.Toast
 import com.auto_fe.R
 import com.auto_fe.audio.AudioRecorder
+import com.auto_fe.accessibility.SmsHelper
 
 class FloatingWidget(private val context: Context) {
     private lateinit var windowManager: WindowManager
@@ -20,6 +21,7 @@ class FloatingWidget(private val context: Context) {
     private lateinit var widgetIcon: ImageView
     private lateinit var popupWindow: PopupWindow
     private lateinit var audioRecorder: AudioRecorder
+    private lateinit var smsHelper: SmsHelper
     
     private var initialX = 0
     private var initialY = 0
@@ -28,6 +30,7 @@ class FloatingWidget(private val context: Context) {
     
     init {
         audioRecorder = AudioRecorder(context)
+        smsHelper = SmsHelper(context)
         setupFloatingWidget()
         setupPopupMenu()
     }
@@ -122,11 +125,17 @@ class FloatingWidget(private val context: Context) {
     
     private fun setupPopupButtons(popupView: View) {
         val recordButton = popupView.findViewById<View>(R.id.recordButton)
+        val testMessageButton = popupView.findViewById<View>(R.id.testMessageButton)
         val settingsButton = popupView.findViewById<View>(R.id.settingsButton)
         val closeButton = popupView.findViewById<View>(R.id.closeButton)
         
         recordButton.setOnClickListener {
             toggleRecording()
+            popupWindow.dismiss()
+        }
+        
+        testMessageButton.setOnClickListener {
+            testSendMessage()
             popupWindow.dismiss()
         }
         
@@ -155,6 +164,16 @@ class FloatingWidget(private val context: Context) {
             audioRecorder.startRecording()
             Toast.makeText(context, "Bắt đầu ghi âm", Toast.LENGTH_SHORT).show()
         }
+    }
+    
+    private fun testSendMessage() {
+        // Test với dữ liệu fix cứng
+        val command = "send-mes"
+        val entities = "{ \"ent\": \"mom\" }"
+        val values = "{ \"val\": \"con sắp về\" }"
+        
+        Toast.makeText(context, "Bắt đầu test gửi tin nhắn...", Toast.LENGTH_SHORT).show()
+        smsHelper.sendMessage(command, entities, values)
     }
     
     fun destroy() {

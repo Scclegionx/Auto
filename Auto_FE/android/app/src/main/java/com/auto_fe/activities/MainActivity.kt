@@ -33,7 +33,7 @@ class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: android.os.Bundle?) {
     super.onCreate(savedInstanceState)
     
-    // Kiểm tra và yêu cầu quyền ghi âm và notification
+    // Kiểm tra và yêu cầu quyền ghi âm, notification và contacts
     val permissions = mutableListOf<String>()
     
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -43,6 +43,10 @@ class MainActivity : ReactActivity() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && 
         ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
       permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+    }
+    
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+      permissions.add(Manifest.permission.READ_CONTACTS)
     }
     
     if (permissions.isNotEmpty()) {

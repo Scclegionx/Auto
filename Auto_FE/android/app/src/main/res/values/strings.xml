@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Auto_FE</string>
+    <string name="accessibility_service_description">Auto accessibility service for automation tasks like sending messages</string>
 </resources>

@@ -1,0 +1,3062 @@
+[
+  {
+    "input": "nhắc tôi lúc 5 giờ chiều",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "5 giờ chiều", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "làm ơn nhắc tôi vào lúc 5 giờ chiều nhé",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "5 giờ chiều", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "đặt báo thức cho tôi vào 17 giờ",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "17 giờ", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "cháu ơi, tí nhớ nhắc bà lúc 5h chiều đấy",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "5h chiều", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "tôi muốn đặt chuông báo vào 6 giờ sáng",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "6 giờ sáng", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "đặt nhắc nhở tôi dậy lúc 7 giờ kém 10",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "7 giờ kém 10", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "bật báo thức vào 21:00",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "21:00", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "đặt chuông báo lúc 7h30 sáng",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "7h30 sáng", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "thiết lập báo thức vào buổi sáng mai lúc 6 giờ",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "buổi sáng mai lúc 6 giờ", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "cài đặt báo thức vào 8h15 tối nay",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "8h15 tối nay", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "cho tôi một báo thức lúc 6 giờ 45 phút sáng",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "6 giờ 45 phút sáng", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "làm ơn đánh thức tôi vào 5h30 sáng mai",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "5h30 sáng mai", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "nhắc tôi thức dậy lúc 4 giờ sáng",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "4 giờ sáng", "label": "TIME_EXPRESSION"}]
+  },    
+  {
+    "input": "tôi cần một báo thức vào 10h đêm",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "10h đêm", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "xin vui lòng đặt báo thức lúc 12 giờ trưa",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "12 giờ trưa", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "hẹn giờ báo thức 9h45 sáng",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "9h45 sáng", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "tôi muốn được đánh thức vào 3 giờ chiều",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "3 giờ chiều", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "đặt chuông báo lúc 2h30 chiều mai",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "2h30 chiều mai", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "cài báo thức 5 giờ 15 phút chiều",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "5 giờ 15 phút chiều", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "đặt giờ báo lúc 22:45",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "22:45", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "cháu ơi, đặt chuông báo cho bà lúc 6 giờ rưỡi sáng nhé",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "6 giờ rưỡi sáng", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "báo thức tôi lúc 18:30 nhé",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "18:30", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "cài đặt báo thức cho tôi lúc 5 giờ 30 phút chiều",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "5 giờ 30 phút chiều", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "tạo báo thức vào lúc 7 giờ kém 15",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "7 giờ kém 15", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "đặt báo thức cho tôi lúc nửa đêm",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "nửa đêm", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "thức tôi dậy lúc 4h30 sáng",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "4h30 sáng", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "đánh thức tôi vào 8 giờ sáng",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "8 giờ sáng", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "đặt giờ báo thức lúc 11 giờ đêm",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "11 giờ đêm", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "đặt chuông báo cho tôi lúc 3h15 chiều",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "3h15 chiều", "label": "TIME_EXPRESSION"}]
+  },
+  {
+    "input": "cài chuông báo thức lúc 20:15",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [{"text": "20:15", "label": "TIME_EXPRESSION"}]
+  },
+  
+  {
+    "input": "alo cho bố",
+    "command": "call",
+    "entities": [{"text": "bố", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "gọi điện cho bố giúp tôi",
+    "command": "call",
+    "entities": [{"text": "bố", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "làm ơn liên lạc với bố tôi",
+    "command": "call",
+    "entities": [{"text": "bố tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "nối máy cho bố tôi nghe với",
+    "command": "call",
+    "entities": [{"text": "bố tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "gọi cho cháu Lan nhà tôi",
+    "command": "call",
+    "entities": [{"text": "cháu Lan nhà tôi", "label": "CONTACT_PERSON"}],
+    "values": []
+  },
+  {
+    "input": "tôi muốn gọi video cho con gái",
+    "command": "call",
+    "entities": [{"text": "con gái", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "video", "label": "CALL_TYPE"}]
+  },
+  {
+    "input": "liên hệ với ông hàng xóm",
+    "command": "call",
+    "entities": [{"text": "ông hàng xóm", "label": "CONTACT_PERSON"}],
+    "values": []
+  },
+  {
+    "input": "gọi điện cho vợ tôi",
+    "command": "call",
+    "entities": [{"text": "vợ tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },  
+  {
+    "input": "liên lạc với bà ngoại",
+    "command": "call",
+    "entities": [{"text": "bà ngoại", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "giúp tôi gọi cho anh trai",
+    "command": "call",
+    "entities": [{"text": "anh trai", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "bấm số gọi cho cô giáo Hương",
+    "command": "call",
+    "entities": [{"text": "cô giáo Hương", "label": "CONTACT_PERSON"}],
+    "values": []
+  },
+  {
+    "input": "gọi video cho chị gái tôi",
+    "command": "call",
+    "entities": [{"text": "chị gái tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "video", "label": "CALL_TYPE"}]
+  },
+  {
+    "input": "gọi điện facetime cho anh Tuấn",
+    "command": "call",
+    "entities": [{"text": "anh Tuấn", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "facetime", "label": "CALL_TYPE"}]
+  },
+  {
+    "input": "tôi muốn gọi điện cho bạn Minh",
+    "command": "call",
+    "entities": [{"text": "bạn Minh", "label": "CONTACT_PERSON"}],
+    "values": []
+  },
+  {
+    "input": "bắt máy gọi cho ông bà",
+    "command": "call",
+    "entities": [{"text": "ông bà", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "thực hiện cuộc gọi đến bà xã tôi",
+    "command": "call",
+    "entities": [{"text": "bà xã tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "kết nối cuộc gọi với em trai",
+    "command": "call",
+    "entities": [{"text": "em trai", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "gọi cho người yêu tôi",
+    "command": "call",
+    "entities": [{"text": "người yêu tôi", "label": "CONTACT_PERSON"}],
+    "values": []
+  },
+  {
+    "input": "hãy liên lạc với chú Hai giúp tôi",
+    "command": "call",
+    "entities": [{"text": "chú Hai", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "gọi điện thoại cho dì Năm",
+    "command": "call",
+    "entities": [{"text": "dì Năm", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "gọi video call cho bạn thân của tôi",
+    "command": "call",
+    "entities": [{"text": "bạn thân của tôi", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "video call", "label": "CALL_TYPE"}]
+  },
+  {
+    "input": "giúp tôi gọi bác sĩ Hùng",
+    "command": "call",
+    "entities": [{"text": "bác sĩ Hùng", "label": "CONTACT_PERSON"}],
+    "values": []
+  },
+  {
+    "input": "tôi cần gọi cho nhà hàng xóm",
+    "command": "call",
+    "entities": [{"text": "nhà hàng xóm", "label": "CONTACT_PERSON"}],
+    "values": []
+  },
+  {
+    "input": "gọi cho chị họ tôi",
+    "command": "call",
+    "entities": [{"text": "chị họ tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "nối máy đến số của cháu Hoa",
+    "command": "call",
+    "entities": [{"text": "cháu Hoa", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "gọi điện thoại tới bác Tám",
+    "command": "call",
+    "entities": [{"text": "bác Tám", "label": "CONTACT_PERSON"}],
+    "values": []
+  },  
+  {
+    "input": "tôi muốn gọi zoom cho con trai",
+    "command": "call",
+    "entities": [{"text": "con trai", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "zoom", "label": "CALL_TYPE"}]
+  },
+  {
+    "input": "kết nối với cậu Sáu qua điện thoại",
+    "command": "call",
+    "entities": [{"text": "cậu Sáu", "label": "FAMILY_RELATIONSHIP"}],
+    "values": []
+  },
+  {
+    "input": "gọi cho giáo viên của con tôi",
+    "command": "call",
+    "entities": [{"text": "giáo viên của con tôi", "label": "CONTACT_PERSON"}],
+    "values": []
+  },
+  {
+    "input": "tôi cần gọi cho bạn cùng lớp",
+    "command": "call",
+    "entities": [{"text": "bạn cùng lớp", "label": "CONTACT_PERSON"}],
+    "values": []
+  },
+
+  {
+    "input": "gửi tin nhắn cho mẹ: yêu mẹ nhiều",
+    "command": "send-mess",
+    "entities": [{"text": "mẹ", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "yêu mẹ nhiều", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn tin giúp tôi tới mẹ nói rằng yêu mẹ nhiều",
+    "command": "send-mess",
+    "entities": [{"text": "mẹ", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "yêu mẹ nhiều", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi lời nhắn đến mẹ tôi: con yêu mẹ nhiều lắm",
+    "command": "send-mess",
+    "entities": [{"text": "mẹ tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "con yêu mẹ nhiều lắm", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn cho con trai tôi: bố nhớ con",
+    "command": "send-mess",
+    "entities": [{"text": "con trai tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "bố nhớ con", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi tin nhắn cho Lan hỏi thăm sức khỏe",
+    "command": "send-mess",
+    "entities": [{"text": "Lan", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "hỏi thăm sức khỏe", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "soạn tin nhắn cho anh Hai nội dung là 'hẹn gặp'",
+    "command": "send-mess",
+    "entities": [{"text": "anh Hai", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "hẹn gặp", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn cho bác Ba rằng tôi về rồi",
+    "command": "send-mess",
+    "entities": [{"text": "bác Ba", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "tôi về rồi", "label": "MESSAGE_CONTENT"}]
+  },
+
+  {
+    "input": "gửi tin nhắn cho anh trai: mai về sớm nhé",
+    "command": "send-mess",
+    "entities": [{"text": "anh trai", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "mai về sớm nhé", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn cho bà nội rằng cháu nhớ bà",
+    "command": "send-mess",
+    "entities": [{"text": "bà nội", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "cháu nhớ bà", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi SMS cho vợ tôi: em đừng quên mua rau nhé",
+    "command": "send-mess",
+    "entities": [{"text": "vợ tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "em đừng quên mua rau nhé", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi tin nhắn tới Huyền: hẹn gặp lúc 3h chiều",
+    "command": "send-mess",
+    "entities": [{"text": "Huyền", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "hẹn gặp lúc 3h chiều", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "soạn tin nhắn gửi cho cô giáo chủ nhiệm: con xin nghỉ học ngày mai",
+    "command": "send-mess",
+    "entities": [{"text": "cô giáo chủ nhiệm", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "con xin nghỉ học ngày mai", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "viết tin nhắn cho chị gái: chị mua giúp em ít đồ ăn",
+    "command": "send-mess",
+    "entities": [{"text": "chị gái", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "chị mua giúp em ít đồ ăn", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn tin cho dì Tư: cháu sẽ ghé thăm dì vào cuối tuần",
+    "command": "send-mess",
+    "entities": [{"text": "dì Tư", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "cháu sẽ ghé thăm dì vào cuối tuần", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi tin nhắn cho bạn Phương: hôm nay mình nghỉ học",
+    "command": "send-mess",
+    "entities": [{"text": "bạn Phương", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "hôm nay mình nghỉ học", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn cho anh rể: em sẽ đến sớm hơn dự định",
+    "command": "send-mess",
+    "entities": [{"text": "anh rể", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "em sẽ đến sớm hơn dự định", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "soạn tin cho bạn thân: tớ nhớ cậu quá",
+    "command": "send-mess",
+    "entities": [{"text": "bạn thân", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "tớ nhớ cậu quá", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi tin cho bác hàng xóm: cảm ơn bác đã giúp đỡ",
+    "command": "send-mess",
+    "entities": [{"text": "bác hàng xóm", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "cảm ơn bác đã giúp đỡ", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn với chồng tôi: anh nhớ đón con",
+    "command": "send-mess",
+    "entities": [{"text": "chồng tôi", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "anh nhớ đón con", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi lời nhắn cho bà ngoại: cháu sẽ về thăm bà",
+    "command": "send-mess",
+    "entities": [{"text": "bà ngoại", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "cháu sẽ về thăm bà", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn tin với người yêu: em yêu anh",
+    "command": "send-mess",
+    "entities": [{"text": "người yêu", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "em yêu anh", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "soạn tin nhắn gửi anh Tuấn: hôm nay anh về muộn nhé",
+    "command": "send-mess",
+    "entities": [{"text": "anh Tuấn", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "hôm nay anh về muộn nhé", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi tin nhắn cho ông nội: ông khỏe không ạ?",
+    "command": "send-mess",
+    "entities": [{"text": "ông nội", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "ông khỏe không ạ?", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn tin cho em trai: đợi anh ở cổng trường",
+    "command": "send-mess",
+    "entities": [{"text": "em trai", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "đợi anh ở cổng trường", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi lời nhắn tới cô chủ nhà: tháng sau con sẽ chuyển nhà",
+    "command": "send-mess",
+    "entities": [{"text": "cô chủ nhà", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "tháng sau con sẽ chuyển nhà", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "soạn tin gửi cho chú Bảy: mừng chú sinh nhật vui vẻ",
+    "command": "send-mess",
+    "entities": [{"text": "chú Bảy", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "mừng chú sinh nhật vui vẻ", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn cho bác sĩ Hoa: con sẽ hoãn lịch khám",
+    "command": "send-mess",
+    "entities": [{"text": "bác sĩ Hoa", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "con sẽ hoãn lịch khám", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "gửi tin tới thầy giáo: em xin lỗi đã đến muộn",
+    "command": "send-mess",
+    "entities": [{"text": "thầy giáo", "label": "CONTACT_PERSON"}],
+    "values": [{"text": "em xin lỗi đã đến muộn", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắn tin với dượng Tám: con sẽ đến sớm",
+    "command": "send-mess",
+    "entities": [{"text": "dượng Tám", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "con sẽ đến sớm", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "soạn tin nhắn gửi đến bà xã: anh nhớ em quá",
+    "command": "send-mess",
+    "entities": [{"text": "bà xã", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "anh nhớ em quá", "label": "MESSAGE_CONTENT"}]
+  },
+  {
+    "input": "nhắc tôi đi họp lúc 9 giờ sáng mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "đi họp", "label": "REMINDER_CONTENT"},
+      {"text": "9 giờ sáng mai", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở gọi điện cho mẹ vào ngày mai",
+    "command": "set-reminder",
+    "entities": [{"text": "mẹ", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [
+      {"text": "gọi điện cho", "label": "REMINDER_CONTENT"},
+      {"text": "ngày mai", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "ghi nhớ mua sữa khi đi chợ vào chiều nay",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "mua sữa khi đi chợ", "label": "REMINDER_CONTENT"},
+      {"text": "chiều nay", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "nhắc tôi đưa con đi học lúc 7 giờ sáng hàng ngày",
+    "command": "set-reminder",
+    "entities": [{"text": "con", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [
+      {"text": "đưa đi học", "label": "REMINDER_CONTENT"},
+      {"text": "7 giờ sáng", "label": "TIME_EXPRESSION"},
+      {"text": "hàng ngày", "label": "FREQUENCY"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở trả tiền điện vào ngày 15 hàng tháng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "trả tiền điện", "label": "REMINDER_CONTENT"},
+      {"text": "ngày 15", "label": "DATE_EXPRESSION"},
+      {"text": "hàng tháng", "label": "FREQUENCY"}
+    ]
+  },
+  {
+    "input": "nhắc tôi đi khám răng vào thứ Năm tuần này",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "đi khám răng", "label": "REMINDER_CONTENT"},
+      {"text": "thứ Năm tuần này", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở rửa xe vào sáng Chủ Nhật",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "rửa xe", "label": "REMINDER_CONTENT"},
+      {"text": "sáng Chủ Nhật", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "ghi nhớ mua quà sinh nhật cho cháu vào thứ Hai",
+    "command": "set-reminder",
+    "entities": [{"text": "cháu", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [
+      {"text": "mua quà sinh nhật cho", "label": "REMINDER_CONTENT"},
+      {"text": "thứ Hai", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "nhắc tôi chuẩn bị bài thuyết trình vào 7 giờ tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "chuẩn bị bài thuyết trình", "label": "REMINDER_CONTENT"},
+      {"text": "7 giờ tối", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở đổ rác vào 8 giờ tối mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "đổ rác", "label": "REMINDER_CONTENT"},
+      {"text": "8 giờ tối", "label": "TIME_EXPRESSION"},
+      {"text": "mỗi ngày", "label": "FREQUENCY"}
+    ]
+  },
+  {
+    "input": "tạo lời nhắc gọi điện cho bố vào cuối tuần",
+    "command": "set-reminder",
+    "entities": [{"text": "bố", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [
+      {"text": "gọi điện cho", "label": "REMINDER_CONTENT"},
+      {"text": "cuối tuần", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "nhắc tôi nộp báo cáo vào ngày 20 tháng này",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "nộp báo cáo", "label": "REMINDER_CONTENT"},
+      {"text": "ngày 20 tháng này", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở đi chợ vào sáng mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "đi chợ", "label": "REMINDER_CONTENT"},
+      {"text": "sáng mai", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "ghi nhớ giúp tôi đến lịch hẹn bác sĩ vào 2h chiều ngày mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "đến lịch hẹn bác sĩ", "label": "REMINDER_CONTENT"},
+      {"text": "2h chiều ngày mai", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "nhắc tôi gửi email cho sếp vào 10h sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "gửi email cho sếp", "label": "REMINDER_CONTENT"},
+      {"text": "10h sáng", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở tưới cây lúc 6 giờ chiều mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "tưới cây", "label": "REMINDER_CONTENT"},
+      {"text": "6 giờ chiều", "label": "TIME_EXPRESSION"},
+      {"text": "mỗi ngày", "label": "FREQUENCY"}
+    ]
+  },
+  {
+    "input": "ghi nhớ đón con từ trường lúc 4h30 chiều hàng ngày",
+    "command": "set-reminder",
+    "entities": [{"text": "con", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [
+      {"text": "đón từ trường", "label": "REMINDER_CONTENT"},
+      {"text": "4h30 chiều", "label": "TIME_EXPRESSION"},
+      {"text": "hàng ngày", "label": "FREQUENCY"}
+    ]
+  },
+  {
+    "input": "nhắc tôi giặt đồ vào sáng thứ Bảy",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "giặt đồ", "label": "REMINDER_CONTENT"},
+      {"text": "sáng thứ Bảy", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở họp gia đình vào 6 giờ tối Chủ Nhật",
+    "command": "set-reminder",
+    "entities": [{"text": "gia đình", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [
+      {"text": "họp", "label": "REMINDER_CONTENT"},
+      {"text": "6 giờ tối Chủ Nhật", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "ghi nhớ đi làm tóc vào chiều thứ Sáu",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "đi làm tóc", "label": "REMINDER_CONTENT"},
+      {"text": "chiều thứ Sáu", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "nhắc tôi nghe nhạc thư giãn vào 9 giờ tối mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "nghe nhạc thư giãn", "label": "REMINDER_CONTENT"},
+      {"text": "9 giờ tối", "label": "TIME_EXPRESSION"},
+      {"text": "mỗi ngày", "label": "FREQUENCY"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở đi siêu thị vào thứ Tư tuần này",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "đi siêu thị", "label": "REMINDER_CONTENT"},
+      {"text": "thứ Tư tuần này", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "ghi nhớ mua thuốc vào ngày mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "mua thuốc", "label": "REMINDER_CONTENT"},
+      {"text": "ngày mai", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "nhắc tôi uống thuốc lúc 8 giờ tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "uống thuốc", "label": "REMINDER_CONTENT"},
+      {"text": "8 giờ tối", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở uống thuốc huyết áp vào 8h sáng mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "uống thuốc huyết áp", "label": "REMINDER_CONTENT"},
+      {"text": "8h sáng mai", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "ghi nhớ lịch khám bệnh ngày 20 tháng 8",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "lịch khám bệnh", "label": "REMINDER_CONTENT"},
+      {"text": "ngày 20 tháng 8", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "tôi cần đặt nhắc nhở đi thăm con gái vào Chủ Nhật tuần sau",
+    "command": "set-reminder",
+    "entities": [{"text": "con gái", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [
+      {"text": "đi thăm", "label": "REMINDER_CONTENT"},
+      {"text": "Chủ Nhật tuần sau", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "đặt nhắc nhở tưới cây lúc 9 giờ sáng mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "tưới cây", "label": "REMINDER_CONTENT"},
+      {"text": "9 giờ sáng", "label": "TIME_EXPRESSION"},
+      {"text": "mỗi ngày", "label": "FREQUENCY"}
+    ]
+  },
+  {
+    "input": "hãy nhắc tôi mua đồ ăn tối lúc 5 giờ chiều",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {"text": "mua đồ ăn tối", "label": "REMINDER_CONTENT"},
+      {"text": "5 giờ chiều", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "ghi chú cuộc họp gia đình vào thứ Bảy",
+    "command": "set-reminder",
+    "entities": [{"text": "gia đình", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [
+      {"text": "cuộc họp", "label": "REMINDER_CONTENT"},
+      {"text": "thứ Bảy", "label": "DATE_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "hôm nay thời tiết thế nào?",
+    "command": "check-weather",
+    "entities": [{"text": "hôm nay", "label": "DATE_EXPRESSION"}],
+    "values": []
+  },
+  
+  {
+    "input": "mai trời có mưa không?",
+    "command": "check-weather",
+    "entities": [{"text": "mai", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "mưa", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "thời tiết ở Hà Nội hôm nay ra sao?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "Hà Nội", "label": "LOCATION"},
+      {"text": "hôm nay", "label": "DATE_EXPRESSION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "cuối tuần này Sài Gòn có nắng không?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "Sài Gòn", "label": "LOCATION"},
+      {"text": "cuối tuần này", "label": "DATE_EXPRESSION"}
+    ],
+    "values": [{"text": "nắng", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "dự báo thời tiết cho ngày mai ở Đà Nẵng",
+    "command": "check-weather",
+    "entities": [
+      {"text": "ngày mai", "label": "DATE_EXPRESSION"},
+      {"text": "Đà Nẵng", "label": "LOCATION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "nhiệt độ bây giờ là bao nhiêu?",
+    "command": "check-weather",
+    "entities": [{"text": "bây giờ", "label": "TIME_EXPRESSION"}],
+    "values": []
+  },
+  {
+    "input": "mấy giờ thì trời tạnh mưa?",
+    "command": "check-weather",
+    "entities": [],
+    "values": [{"text": "tạnh mưa", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "thời tiết ngày mai thế nào?",
+    "command": "check-weather",
+    "entities": [{"text": "ngày mai", "label": "DATE_EXPRESSION"}],
+    "values": []
+  },
+  {
+    "input": "cuối tuần này thời tiết có đẹp không?",
+    "command": "check-weather",
+    "entities": [{"text": "cuối tuần này", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "đẹp", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "ở Đà Lạt hiện giờ có lạnh không?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "Đà Lạt", "label": "LOCATION"},
+      {"text": "hiện giờ", "label": "TIME_EXPRESSION"}
+    ],
+    "values": [{"text": "lạnh", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "dự báo thời tiết tuần tới ở Huế thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "tuần tới", "label": "DATE_EXPRESSION"},
+      {"text": "Huế", "label": "LOCATION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "hôm nay ở Nha Trang có mưa không?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "hôm nay", "label": "DATE_EXPRESSION"},
+      {"text": "Nha Trang", "label": "LOCATION"}
+    ],
+    "values": [{"text": "mưa", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "trời Hải Phòng hôm nay thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "Hải Phòng", "label": "LOCATION"},
+      {"text": "hôm nay", "label": "DATE_EXPRESSION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "thời tiết Cần Thơ ngày mai ra sao?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "Cần Thơ", "label": "LOCATION"},
+      {"text": "ngày mai", "label": "DATE_EXPRESSION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "ngày mai có mưa to không?",
+    "command": "check-weather",
+    "entities": [{"text": "ngày mai", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "mưa to", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "nhiệt độ ở Hà Nội hôm nay là bao nhiêu?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "Hà Nội", "label": "LOCATION"},
+      {"text": "hôm nay", "label": "DATE_EXPRESSION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "dự báo thời tiết ngày kia ở TP.HCM",
+    "command": "check-weather",
+    "entities": [
+      {"text": "ngày kia", "label": "DATE_EXPRESSION"},
+      {"text": "TP.HCM", "label": "LOCATION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "thời tiết chiều nay có mát không?",
+    "command": "check-weather",
+    "entities": [{"text": "chiều nay", "label": "TIME_EXPRESSION"}],
+    "values": [{"text": "mát", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "tối nay có mưa ở Vũng Tàu không?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "tối nay", "label": "TIME_EXPRESSION"},
+      {"text": "Vũng Tàu", "label": "LOCATION"}
+    ],
+    "values": [{"text": "mưa", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "dự báo thời tiết Hạ Long tuần tới thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "Hạ Long", "label": "LOCATION"},
+      {"text": "tuần tới", "label": "DATE_EXPRESSION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "kiểm tra thời tiết ở Vinh hôm nay",
+    "command": "check-weather",
+    "entities": [
+      {"text": "Vinh", "label": "LOCATION"},
+      {"text": "hôm nay", "label": "DATE_EXPRESSION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "trời có nắng vào cuối tuần không?",
+    "command": "check-weather",
+    "entities": [{"text": "cuối tuần", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "nắng", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "thời tiết Quy Nhơn thế nào?",
+    "command": "check-weather",
+    "entities": [{"text": "Quy Nhơn", "label": "LOCATION"}],
+    "values": []
+  },
+  {
+    "input": "mai trời có đẹp không?",
+    "command": "check-weather",
+    "entities": [{"text": "mai", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "đẹp", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "Đà Nẵng hôm nay có nóng không?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "Đà Nẵng", "label": "LOCATION"},
+      {"text": "hôm nay", "label": "DATE_EXPRESSION"}
+    ],
+    "values": [{"text": "nóng", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "kiểm tra nhiệt độ hiện tại ở Pleiku",
+    "command": "check-weather",
+    "entities": [
+      {"text": "hiện tại", "label": "TIME_EXPRESSION"},
+      {"text": "Pleiku", "label": "LOCATION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "trời có lạnh vào ngày mai không?",
+    "command": "check-weather",
+    "entities": [{"text": "ngày mai", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "lạnh", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "thời tiết tuần sau ở Buôn Ma Thuột thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {"text": "tuần sau", "label": "DATE_EXPRESSION"},
+      {"text": "Buôn Ma Thuột", "label": "LOCATION"}
+    ],
+    "values": []
+  },
+  {
+    "input": "dự báo mưa bão ở miền Trung tháng này",
+    "command": "check-weather",
+    "entities": [
+      {"text": "miền Trung", "label": "LOCATION"},
+      {"text": "tháng này", "label": "DATE_EXPRESSION"}
+    ],
+    "values": [{"text": "mưa bão", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "có bão ở biển Đông không?",
+    "command": "check-weather",
+    "entities": [{"text": "biển Đông", "label": "LOCATION"}],
+    "values": [{"text": "bão", "label": "WEATHER_CONDITION"}]
+  },
+  {
+    "input": "phát bài hát Thuyền Hoa của Quang Lê",
+    "command": "play-media",
+    "entities": [{"text": "Quang Lê", "label": "ARTIST_NAME"}],
+    "values": [{"text": "bài hát Thuyền Hoa", "label": "MEDIA_CONTENT"}]
+  },  
+  {
+    "input": "bật nhạc không lời để thư giãn",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "nhạc không lời", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "mở bản tin thời sự VTV1",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "bản tin thời sự VTV1", "label": "MEDIA_CONTENT"}]
+  },
+  {
+    "input": "phát nhạc của Đan Trường",
+    "command": "play-media",
+    "entities": [{"text": "Đan Trường", "label": "ARTIST_NAME"}],
+    "values": [{"text": "nhạc", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "tôi muốn xem phim hài",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "phim hài", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "phát kênh VTV3 cho tôi",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "kênh VTV3", "label": "MEDIA_CONTENT"}]
+  },
+  {
+    "input": "bật bài Hương Tràm hát",
+    "command": "play-media",
+    "entities": [{"text": "Hương Tràm", "label": "ARTIST_NAME"}],
+    "values": [{"text": "bài", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "mở nhạc sôi động để tập thể dục",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "nhạc sôi động", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "chơi bài hát mới nhất của Mỹ Tâm",
+    "command": "play-media",
+    "entities": [{"text": "Mỹ Tâm", "label": "ARTIST_NAME"}],
+    "values": [{"text": "bài hát mới nhất", "label": "MEDIA_CONTENT"}]
+  },
+  {
+    "input": "phát radio VOV giao thông",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "radio VOV giao thông", "label": "MEDIA_CONTENT"}]
+  },
+  {
+    "input": "bật video hướng dẫn nấu ăn",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "video hướng dẫn nấu ăn", "label": "MEDIA_TYPE"}]
+  },  
+  {
+    "input": "mở phim tài liệu về động vật",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "phim tài liệu về động vật", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "phát nhạc thiền để ngủ ngon",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "nhạc thiền", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "bật DVD karaoke",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "DVD karaoke", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "mở bài Đường Xa Ướt Mưa",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "bài Đường Xa Ướt Mưa", "label": "MEDIA_CONTENT"}]
+  },
+  {
+    "input": "phát podcast về sức khỏe",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "podcast về sức khỏe", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "bật nhạc của Chế Linh",
+    "command": "play-media",
+    "entities": [{"text": "Chế Linh", "label": "ARTIST_NAME"}],
+    "values": [{"text": "nhạc", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "mở chương trình Táo Quân",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "chương trình Táo Quân", "label": "MEDIA_CONTENT"}]
+  },
+  {
+    "input": "phát playlist nhạc vàng",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "playlist nhạc vàng", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "bật nhạc cải lương của Thanh Tuấn",
+    "command": "play-media",
+    "entities": [{"text": "Thanh Tuấn", "label": "ARTIST_NAME"}],
+    "values": [{"text": "nhạc cải lương", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "mở kênh truyền hình thiếu nhi",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "kênh truyền hình thiếu nhi", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "phát video clip Chạy Ngay Đi",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "video clip Chạy Ngay Đi", "label": "MEDIA_CONTENT"}]
+  },
+  {
+    "input": "bật nhạc vui vẻ buổi sáng",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "nhạc vui vẻ buổi sáng", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "mở nhạc bolero cho tôi nghe",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "nhạc bolero", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "bật đài VOV1 giúp tôi",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "đài VOV1", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "tìm bài hát Tiến Quân Ca",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "bài hát Tiến Quân Ca", "label": "MEDIA_CONTENT"}]
+  },
+  {
+    "input": "tôi muốn nghe bài Trống Cơm",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "bài Trống Cơm", "label": "MEDIA_CONTENT"}]
+  },
+  {
+    "input": "mở nhạc Trịnh Công Sơn",
+    "command": "play-media",
+    "entities": [{"text": "Trịnh Công Sơn", "label": "ARTIST_NAME"}],
+    "values": [{"text": "nhạc", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "bật video ca nhạc cải lương",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "video ca nhạc cải lương", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "chiếu phim tài liệu lịch sử",
+    "command": "play-media",
+    "entities": [],
+    "values": [{"text": "phim tài liệu lịch sử", "label": "MEDIA_TYPE"}]
+  },
+  {
+    "input": "đọc tin tức hôm nay",
+    "command": "read-news",
+    "entities": [{"text": "hôm nay", "label": "DATE_EXPRESSION"}],
+    "values": []
+  },
+  {
+    "input": "có tin gì mới không?",
+    "command": "read-news",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "đọc tin thời sự mới nhất",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "tin thời sự", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "tin tức về dịch Covid thế nào rồi?",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "dịch Covid", "label": "TOPIC_NEWS"}]
+  },
+  {
+    "input": "tin nóng hôm nay là gì?",
+    "command": "read-news",
+    "entities": [{"text": "hôm nay", "label": "DATE_EXPRESSION"}],
+    "values": []
+  },
+  {
+    "input": "tôi muốn nghe tin tức về giáo dục",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "giáo dục", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "đọc báo buổi sáng cho tôi",
+    "command": "read-news",
+    "entities": [{"text": "buổi sáng", "label": "TIME_EXPRESSION"}],
+    "values": []
+  },
+  {
+    "input": "đọc tin tức thể thao mới nhất",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "tin tức thể thao", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "cập nhật tin kinh tế ngày hôm nay",
+    "command": "read-news",
+    "entities": [{"text": "ngày hôm nay", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "tin kinh tế", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "đọc báo Thanh Niên điện tử",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "báo Thanh Niên điện tử", "label": "NEWS_SOURCE"}]
+  },
+  {
+    "input": "tin thời sự VTV hôm nay",
+    "command": "read-news",
+    "entities": [{"text": "hôm nay", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "tin thời sự VTV", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "đọc tin về thị trường chứng khoán",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "thị trường chứng khoán", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "có tin tức gì về giáo dục không?",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "giáo dục", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "cập nhật tin thế giới mới nhất",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "tin thế giới", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "đọc tin văn hóa giải trí",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "tin văn hóa giải trí", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "đọc báo VnExpress hôm nay",
+    "command": "read-news",
+    "entities": [{"text": "hôm nay", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "báo VnExpress", "label": "NEWS_SOURCE"}]
+  },
+  {
+    "input": "tin tức bóng đá Việt Nam",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "bóng đá Việt Nam", "label": "TOPIC_NEWS"}]
+  },
+  {
+    "input": "đọc tin công nghệ mới nhất",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "tin công nghệ", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "cập nhật tin y tế sức khỏe",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "tin y tế sức khỏe", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "đọc tin bão lũ miền Trung",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "bão lũ miền Trung", "label": "TOPIC_NEWS"}]
+  },  
+  {
+    "input": "tin tức thị trường bất động sản",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "thị trường bất động sản", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "đọc tin về xổ số hôm nay",
+    "command": "read-news",
+    "entities": [{"text": "hôm nay", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "xổ số", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "tin tức thể thao SEA Games",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "thể thao SEA Games", "label": "TOPIC_NEWS"}]
+  },
+  {
+    "input": "đọc tin chính trị trong nước",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "tin chính trị trong nước", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "thông tin về kỳ thi tốt nghiệp THPT",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "kỳ thi tốt nghiệp THPT", "label": "TOPIC_NEWS"}]
+  },
+  {
+    "input": "đọc báo Tuổi Trẻ sáng nay",
+    "command": "read-news",
+    "entities": [{"text": "sáng nay", "label": "TIME_EXPRESSION"}],
+    "values": [{"text": "báo Tuổi Trẻ", "label": "NEWS_SOURCE"}]
+  },
+  {
+    "input": "tin tức về đại dịch COVID-19",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "đại dịch COVID-19", "label": "TOPIC_NEWS"}]
+  },
+  {
+    "input": "đọc tin về chương trình khuyến mãi",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "chương trình khuyến mãi", "label": "TOPIC_NEWS"}]
+  },
+  {
+    "input": "cập nhật tin tức pháp luật",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "tin tức pháp luật", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "đọc tin đời sống xã hội",
+    "command": "read-news",
+    "entities": [],
+    "values": [{"text": "tin đời sống xã hội", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "tin hot trên mạng xã hội hôm nay",
+    "command": "read-news",
+    "entities": [{"text": "hôm nay", "label": "DATE_EXPRESSION"}],
+    "values": [{"text": "tin hot trên mạng xã hội", "label": "NEWS_CATEGORY"}]
+  },
+  {
+    "input": "tìm thông tin về cây cảnh",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "cây cảnh", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "Wikipedia nói gì về Hồ Chí Minh?",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "Hồ Chí Minh", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "hướng dẫn tôi cách trồng rau muống",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "cách trồng rau muống", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm giúp tôi công thức nấu canh chua",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "công thức nấu canh chua", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tra cứu về lịch sử Việt Nam",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "lịch sử Việt Nam", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "thông tin về lợi ích của trà xanh",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "lợi ích của trà xanh", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm kiếm thông tin về đau lưng",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "đau lưng", "label": "SEARCH_QUERY"}]
+  }, 
+  {
+    "input": "làm thế nào để giảm cân hiệu quả?",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "giảm cân hiệu quả", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm hiểu về bệnh tiểu đường",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "bệnh tiểu đường", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "công thức nấu canh chua cá lóc",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "công thức nấu canh chua cá lóc", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "cách làm bánh xèo miền Trung",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "cách làm bánh xèo miền Trung", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm kiếm thông tin về vua Lý Thái Tổ",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "vua Lý Thái Tổ", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm hiểu về lịch sử chùa Một Cột",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "lịch sử chùa Một Cột", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "cách chăm sóc cây cảnh trong nhà",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "cách chăm sóc cây cảnh trong nhà", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm kiếm thông tin về kỹ thuật trồng rau sạch",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "kỹ thuật trồng rau sạch", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "các bài thuốc dân gian chữa ho",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "các bài thuốc dân gian chữa ho", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm hiểu về cách điều trị mất ngủ",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "cách điều trị mất ngủ", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm thông tin về đền Hùng Phú Thọ",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "đền Hùng Phú Thọ", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "cách làm món gà kho gừng",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "cách làm món gà kho gừng", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm kiếm về cách phòng bệnh cao huyết áp",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "cách phòng bệnh cao huyết áp", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "phương pháp dạy trẻ học chữ",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "phương pháp dạy trẻ học chữ", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm hiểu về văn hóa người Thái ở Việt Nam",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "văn hóa người Thái ở Việt Nam", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "cách làm thịt kho tàu ngon",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "cách làm thịt kho tàu ngon", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm kiếm kiến thức về chăm sóc người già",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "kiến thức về chăm sóc người già", "label": "SEARCH_QUERY"}]
+  },  
+  {
+    "input": "tìm hiểu về lễ hội chùa Hương",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "lễ hội chùa Hương", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "các bài tập thể dục cho người lớn tuổi",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "các bài tập thể dục cho người lớn tuổi", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm kiếm về cách làm vườn rau trên sân thượng",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "cách làm vườn rau trên sân thượng", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm hiểu về bệnh Alzheimer",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "bệnh Alzheimer", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "phương pháp giảm đau khớp tại nhà",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "phương pháp giảm đau khớp tại nhà", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "tìm kiếm địa điểm du lịch nổi tiếng ở Việt Nam",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "địa điểm du lịch nổi tiếng ở Việt Nam", "label": "SEARCH_QUERY"}]
+  },  
+  {
+    "input": "tra cứu thông tin về thuốc hạ sốt",
+    "command": "find-information",
+    "entities": [],
+    "values": [{"text": "thuốc hạ sốt", "label": "SEARCH_QUERY"}]
+  },
+  {
+    "input": "kiểm tra mạch của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "mạch", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "đo nhiệt độ cơ thể tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "nhiệt độ cơ thể", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "kiểm tra chỉ số đường huyết",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "chỉ số đường huyết", "label": "HEALTH_METRIC"}]
+  },  
+  {
+    "input": "theo dõi huyết áp của tôi buổi sáng",
+    "command": "check-health-status",
+    "entities": [{"text": "buổi sáng", "label": "TIME_EXPRESSION"}],
+    "values": [{"text": "huyết áp", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "tôi có bị sốt không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "sốt", "label": "SYMPTOM"}]
+  },
+  {
+    "input": "đo chỉ số BMI của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "chỉ số BMI", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "kiểm tra sức khỏe tổng quát của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi có dấu hiệu cao huyết áp không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "cao huyết áp", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "đo nhịp thở của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "nhịp thở", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "kiểm tra mức độ oxy trong máu",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "mức độ oxy trong máu", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "tôi có triệu chứng thiếu máu không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "thiếu máu", "label": "SYMPTOM"}]
+  },
+  {
+    "input": "đo thị lực của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "thị lực", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "kiểm tra lượng cholesterol của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "lượng cholesterol", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "tôi cần biết tình trạng tim mạch",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "tình trạng tim mạch", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "đo lượng đường trong máu giúp tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "lượng đường trong máu", "label": "HEALTH_METRIC"}]
+  },  
+  {
+    "input": "kiểm tra triệu chứng viêm họng",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "viêm họng", "label": "SYMPTOM"}]
+  },
+  {
+    "input": "tôi có dấu hiệu bệnh gút không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "bệnh gút", "label": "SYMPTOM"}]
+  },
+  {
+    "input": "đo thân nhiệt của tôi lúc này",
+    "command": "check-health-status",
+    "entities": [{"text": "lúc này", "label": "TIME_EXPRESSION"}],
+    "values": [{"text": "thân nhiệt", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "kiểm tra dấu hiệu mất nước",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "mất nước", "label": "SYMPTOM"}]
+  },
+  {
+    "input": "tôi có dấu hiệu thiếu vitamin không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "thiếu vitamin", "label": "SYMPTOM"}]
+  },
+  {
+    "input": "đo huyết áp của tôi mỗi sáng",
+    "command": "check-health-status",
+    "entities": [{"text": "mỗi sáng", "label": "TIME_EXPRESSION"}],
+    "values": [{"text": "huyết áp", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "kiểm tra sức khỏe tim mạch",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "sức khỏe tim mạch", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "có dấu hiệu bất thường về huyết áp không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "bất thường về huyết áp", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "kiểm tra tình trạng hô hấp của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "tình trạng hô hấp", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "kiểm tra huyết áp giúp tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "huyết áp", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "tôi có khỏe không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "đo nhịp tim của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "nhịp tim", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "tôi thấy chóng mặt, có sao không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [{"text": "chóng mặt", "label": "SYMPTOM"}]
+  },
+  {
+    "input": "kiểm tra đường huyết của tôi bây giờ",
+    "command": "check-health-status",
+    "entities": [{"text": "bây giờ", "label": "TIME_EXPRESSION"}],
+    "values": [{"text": "đường huyết", "label": "HEALTH_METRIC"}]
+  },
+  {
+    "input": "tôi có cần uống thuốc không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi bị đau đầu từ sáng tới giờ",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "đau đầu", "label": "SYMPTOM"},
+      {"text": "từ sáng tới giờ", "label": "DURATION"}
+    ]
+  },
+  {
+    "input": "tôi cảm thấy chóng mặt và buồn nôn",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "chóng mặt", "label": "SYMPTOM"},
+      {"text": "buồn nôn", "label": "SYMPTOM"}
+    ]
+  },
+  {
+    "input": "mắt tôi bị mờ hai ngày nay",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "mắt bị mờ", "label": "SYMPTOM"},
+      {"text": "hai ngày nay", "label": "DURATION"}
+    ]
+  },
+  {
+    "input": "tôi thấy khó thở khi đi cầu thang",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "khó thở", "label": "SYMPTOM"},
+      {"text": "khi đi cầu thang", "label": "TRIGGER"}
+    ]
+  },  
+  {
+    "input": "tôi bị đau họng và sổ mũi từ hôm qua",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "đau họng", "label": "SYMPTOM"},
+      {"text": "sổ mũi", "label": "SYMPTOM"},
+      {"text": "từ hôm qua", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "tôi cảm thấy rất yếu và không có sức",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "yếu", "label": "SYMPTOM"},
+      {"text": "không có sức", "label": "SYMPTOM"}
+    ]
+  },
+  {
+    "input": "tôi bị đau dạ dày sau khi ăn",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "đau dạ dày", "label": "SYMPTOM"},
+      {"text": "sau khi ăn", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "đầu gối tôi sưng và đau mỗi khi đi bộ",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "đầu gối sưng và đau", "label": "SYMPTOM"},
+      {"text": "mỗi khi đi bộ", "label": "TRIGGER"}
+    ]
+  },    
+  {
+    "input": "tôi bị sốt nhẹ và ớn lạnh từ tối qua",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "sốt nhẹ", "label": "SYMPTOM"},
+      {"text": "ớn lạnh", "label": "SYMPTOM"},
+      {"text": "từ tối qua", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "tai tôi bị ù suốt tuần qua",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "tai bị ù", "label": "SYMPTOM"},
+      {"text": "suốt tuần qua", "label": "DURATION"}
+    ]
+  },    
+  {
+    "input": "tôi bị tiêu chảy từ sáng nay",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "tiêu chảy", "label": "SYMPTOM"},
+      {"text": "từ sáng nay", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "da tôi bị ngứa và nổi mẩn đỏ",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "da bị ngứa", "label": "SYMPTOM"},
+      {"text": "nổi mẩn đỏ", "label": "SYMPTOM"}
+    ]
+  },  
+  {
+    "input": "tôi bị đau lưng khi ngồi lâu",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "đau lưng", "label": "SYMPTOM"},
+      {"text": "khi ngồi lâu", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi khó ngủ mấy đêm nay",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "khó ngủ", "label": "SYMPTOM"},
+      {"text": "mấy đêm nay", "label": "DURATION"}
+    ]
+  },
+  {
+    "input": "tôi thấy chóng mặt khi đứng dậy nhanh",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "chóng mặt", "label": "SYMPTOM"},
+      {"text": "khi đứng dậy nhanh", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "mắt tôi bị khô và cay từ khi dùng máy tính nhiều",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "mắt bị khô và cay", "label": "SYMPTOM"},
+      {"text": "từ khi dùng máy tính nhiều", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi bị đau răng suốt đêm qua",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "đau răng", "label": "SYMPTOM"},
+      {"text": "suốt đêm qua", "label": "DURATION"}
+    ]
+  },
+  {
+    "input": "tôi thấy tay chân tê buốt",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [{"text": "tay chân tê buốt", "label": "SYMPTOM"}]
+  },
+  {
+    "input": "tôi bị ho và đau ngực khi hít sâu",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "ho", "label": "SYMPTOM"},
+      {"text": "đau ngực", "label": "SYMPTOM"},
+      {"text": "khi hít sâu", "label": "TRIGGER"}
+    ]
+  },  
+  {
+    "input": "tôi cảm thấy mệt mỏi và không có năng lượng",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "mệt mỏi", "label": "SYMPTOM"},
+      {"text": "không có năng lượng", "label": "SYMPTOM"}
+    ]
+  },
+  {
+    "input": "tôi bị nhức đầu và khó tập trung",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "nhức đầu", "label": "SYMPTOM"},
+      {"text": "khó tập trung", "label": "SYMPTOM"}
+    ]
+  },  
+  {
+    "input": "bụng tôi đau quặn từng cơn sau bữa ăn",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "bụng đau quặn từng cơn", "label": "SYMPTOM"},
+      {"text": "sau bữa ăn", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi bị hoa mắt chóng mặt khi thay đổi tư thế",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "hoa mắt chóng mặt", "label": "SYMPTOM"},
+      {"text": "khi thay đổi tư thế", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi thấy khớp tay sưng đỏ mấy ngày nay",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "khớp tay sưng đỏ", "label": "SYMPTOM"},
+      {"text": "mấy ngày nay", "label": "DURATION"}
+    ]
+  },
+  {
+    "input": "tôi bị đau đầu quá, chắc là bị sốt",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "đau đầu", "label": "SYMPTOM"},
+      {"text": "sốt", "label": "SYMPTOM"}
+    ]
+  },
+  {
+    "input": "mấy ngày nay tôi ho nhiều quá",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "mấy ngày nay", "label": "DURATION"},
+      {"text": "ho", "label": "SYMPTOM"}
+    ]
+  },
+  {
+    "input": "chân tôi bị sưng từ hôm qua",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "chân bị sưng", "label": "SYMPTOM"},
+      {"text": "từ hôm qua", "label": "TIME_EXPRESSION"}
+    ]
+  },
+  {
+    "input": "tôi đau bụng từ sáng đến giờ",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "đau bụng", "label": "SYMPTOM"},
+      {"text": "từ sáng đến giờ", "label": "DURATION"}
+    ]
+  },
+  {
+    "input": "tôi thấy mệt mỏi trong người",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [{"text": "mệt mỏi", "label": "SYMPTOM"}]
+  },
+  {
+    "input": "lưng tôi bị nhức mấy hôm nay",
+    "command": "report-symptom",
+    "entities": [],
+    "values": [
+      {"text": "lưng nhức", "label": "SYMPTOM"},
+      {"text": "mấy hôm nay", "label": "DURATION"}
+    ]
+  },
+  {
+    "input": "hôm nay bạn thế nào?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "kể cho tôi về bản thân bạn",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "cảm ơn bạn rất nhiều",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn có thể làm được những gì?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "thật vui được nói chuyện với bạn",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi có một câu hỏi",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn sống ở đâu?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tạm biệt bạn nhé",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "hôm nay là thứ mấy?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "nói chuyện với tôi đi",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn đang làm gì vậy?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "xin chào, có ai ở đó không?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi tên là Minh",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn có thông minh không?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi muốn trò chuyện",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn nghĩ gì về điều đó?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "cho tôi biết thêm về bạn",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi không hiểu",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn có thể giúp tôi không?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },  
+  {
+    "input": "làm thế nào để tôi sử dụng bạn?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi đang tìm hiểu về bạn",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "chào buổi sáng",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },  
+  {
+    "input": "chúc bạn ngày tốt lành",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn có vui không?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "chào AI",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn khỏe không?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "hôm nay là ngày mấy nhỉ?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bây giờ là mấy giờ?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn tên gì?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "chuyện gì vậy?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cảm thấy bất an",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "bất an", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi đang rất lo lắng",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "lo lắng", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi thấy chán nản quá",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "chán nản", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi cần ai đó lắng nghe",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "lắng nghe", "label": "ACTION_VERB"}]
+  },
+  {
+    "input": "tôi không biết phải làm gì bây giờ",
+    "command": "request-comfort",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi sợ phải ở một mình",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "sợ", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi cảm thấy tuyệt vọng",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "tuyệt vọng", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi nhớ con cái quá",
+    "command": "request-comfort",
+    "entities": [{"text": "con cái", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "nhớ", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi thấy bị bỏ rơi",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "bị bỏ rơi", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi không có ai để trò chuyện",
+    "command": "request-comfort",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "giúp tôi bớt lo âu",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [
+      {"text": "lo âu", "label": "EMOTION"},
+      {"text": "bớt", "label": "ACTION_VERB"}
+    ]
+  },
+  {
+    "input": "tôi cảm thấy rất cô đơn",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "cô đơn", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi không biết nói chuyện với ai",
+    "command": "request-comfort",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cảm thấy bị hiểu lầm",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "bị hiểu lầm", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi đang rất buồn",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "buồn", "label": "EMOTION"}]
+  },    
+  {
+    "input": "tôi nhớ người thân đã mất",
+    "command": "request-comfort",
+    "entities": [{"text": "người thân", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "nhớ", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi cảm thấy thất bại",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "thất bại", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi không có động lực sống",
+    "command": "request-comfort",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi thấy mình vô dụng",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "vô dụng", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi sợ tương lai",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "sợ", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi đang rất tức giận",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "tức giận", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi cảm thấy bị phản bội",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "bị phản bội", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi không còn niềm vui",
+    "command": "request-comfort",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi không muốn gặp ai cả",
+    "command": "request-comfort",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi thấy buồn",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "buồn", "label": "EMOTION"}]
+  },
+  {
+    "input": "an ủi tôi đi",
+    "command": "request-comfort",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cảm thấy cô đơn quá",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "cô đơn", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi nhớ con cháu quá",
+    "command": "request-comfort",
+    "entities": [{"text": "con cháu", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "nhớ", "label": "EMOTION"}]
+  },
+  {
+    "input": "đầu óc tôi rối quá, giúp tôi giải tỏa",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [
+      {"text": "đầu óc rối", "label": "EMOTION"},
+      {"text": "giải tỏa", "label": "ACTION_VERB"}
+    ]
+  },
+  {
+    "input": "tôi đang buồn rầu quá",
+    "command": "request-comfort",
+    "entities": [],
+    "values": [{"text": "buồn rầu", "label": "EMOTION"}]
+  },
+  {
+    "input": "con đau đầu với chuyện này quá, bố ạ",
+    "command": "express-emotion",
+    "entities": [{"text": "bố", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "đau đầu với chuyện này", "label": "EXPRESSION"}]
+  },
+  {
+    "input": "tôi cảm thấy kiệt sức",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "kiệt sức", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi đuối sức quá rồi",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "đuối sức", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi không còn sức lực",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "không còn sức lực", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi thấy mệt mỏi cả ngày",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [
+      {"text": "mệt mỏi", "label": "FATIGUE_EXPRESSION"},
+      {"text": "cả ngày", "label": "DURATION"}
+    ]
+  },
+  {
+    "input": "tôi không muốn làm gì cả, chỉ muốn nghỉ ngơi",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "không muốn làm gì cả", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi cảm thấy kiệt quệ sau khi làm việc",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [
+      {"text": "kiệt quệ", "label": "FATIGUE_EXPRESSION"},
+      {"text": "sau khi làm việc", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi mệt nhoài rồi",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "mệt nhoài", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi thấy rã rời toàn thân",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "rã rời toàn thân", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi không có năng lượng để làm việc",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "không có năng lượng", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi cảm thấy uể oải cả người",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "uể oải cả người", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi chỉ muốn nằm nghỉ, không làm gì cả",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "chỉ muốn nằm nghỉ", "label": "FATIGUE_EXPRESSION"}]
+  },    
+  {
+    "input": "tôi mệt lử cả người rồi",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "mệt lử cả người", "label": "FATIGUE_EXPRESSION"}]
+  },    
+  {
+    "input": "tôi không còn sức để đi tiếp",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "không còn sức để đi tiếp", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi kiệt sức sau một ngày dài",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [
+      {"text": "kiệt sức", "label": "FATIGUE_EXPRESSION"},
+      {"text": "sau một ngày dài", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi thấy người mình bải hoải",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "người bải hoải", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi mệt đến không còn sức đâu",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "mệt đến không còn sức", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi kiệt quệ về thể xác lẫn tinh thần",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "kiệt quệ về thể xác lẫn tinh thần", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi thấy cạn kiệt năng lượng",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "cạn kiệt năng lượng", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi mệt mỏi đến mức không thể tập trung",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "mệt mỏi đến mức không thể tập trung", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi thấy đuối sức sau khi đi bộ",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [
+      {"text": "đuối sức", "label": "FATIGUE_EXPRESSION"},
+      {"text": "sau khi đi bộ", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi không có sức để nói chuyện",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "không có sức để nói chuyện", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi mệt đừ người rồi",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "mệt đừ người", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi cảm thấy đuối sức vì thời tiết nóng",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [
+      {"text": "đuối sức", "label": "FATIGUE_EXPRESSION"},
+      {"text": "vì thời tiết nóng", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi mệt mỏi sau một đêm không ngủ",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [
+      {"text": "mệt mỏi", "label": "FATIGUE_EXPRESSION"},
+      {"text": "sau một đêm không ngủ", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi thấy người nhũn ra vì mệt",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "người nhũn ra vì mệt", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi kiệt sức vì công việc",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [
+      {"text": "kiệt sức", "label": "FATIGUE_EXPRESSION"},
+      {"text": "vì công việc", "label": "TRIGGER"}
+    ]
+  },
+  {
+    "input": "tôi không còn sức để đứng dậy",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "không còn sức để đứng dậy", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi mệt nhoài cả người",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "mệt nhoài cả người", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi thấy mệt lả sau khi nấu ăn",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [
+      {"text": "mệt lả", "label": "FATIGUE_EXPRESSION"},
+      {"text": "sau khi nấu ăn", "label": "TRIGGER"}
+    ]
+  },    
+  {
+    "input": "tôi không còn chút sức lực nào",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "không còn chút sức lực nào", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "tôi mệt quá rồi",
+    "command": "express-fatigue",
+    "entities": [],
+    "values": [{"text": "mệt quá", "label": "FATIGUE_EXPRESSION"}]
+  },
+  {
+    "input": "chán quá, không biết làm gì bây giờ",
+    "command": "express-emotion",
+    "entities": [],
+    "values": [{"text": "chán quá", "label": "EMOTION"}]
+  },  
+  {
+    "input": "tôi thật vui khi con cháu về thăm",
+    "command": "express-emotion",
+    "entities": [{"text": "con cháu", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "vui", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi thấy khó chịu trong người",
+    "command": "express-emotion",
+    "entities": [],
+    "values": [{"text": "khó chịu", "label": "EMOTION"}]
+  },
+  {
+    "input": "tôi đang rất hạnh phúc",
+    "command": "express-emotion",
+    "entities": [],
+    "values": [{"text": "hạnh phúc", "label": "EMOTION"}]
+  },
+
+  {
+    "input": "kể cho tôi một câu chuyện cười",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "câu chuyện cười", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tôi muốn nghe một truyện ngắn",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "truyện ngắn", "label": "ENTERTAINMENT_TYPE"}]
+  },  
+  {
+    "input": "có trò chơi gì vui để giải trí không?",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "trò chơi", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "đọc cho tôi nghe một bài thơ hay",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "bài thơ hay", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tôi muốn chơi đố vui",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "đố vui", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "kể cho tôi nghe một giai thoại lịch sử",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "giai thoại lịch sử", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tôi cần giải trí một chút",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "có câu đố nào thú vị không?",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "câu đố", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "kể tôi nghe một chuyện ngụ ngôn",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "chuyện ngụ ngôn", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tôi muốn nghe chuyện cổ tích",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "chuyện cổ tích", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "có câu chuyện vui nào để kể không?",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "câu chuyện vui", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tôi muốn biết về tin tức giải trí",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "tin tức giải trí", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "đố vui có thưởng nào?",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "đố vui có thưởng", "label": "ENTERTAINMENT_TYPE"}]
+  },    
+  {
+    "input": "kể cho tôi nghe một mẩu chuyện hài",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "mẩu chuyện hài", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tôi muốn nghe chuyện ma",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "chuyện ma", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "đọc cho tôi một trích đoạn văn học hay",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "trích đoạn văn học hay", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "có trò chơi trí óc nào không?",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "trò chơi trí óc", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "kể tôi nghe về một nhân vật lịch sử",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "nhân vật lịch sử", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tôi muốn nghe một giai điệu dân ca",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "giai điệu dân ca", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "có câu đố nào khó không?",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "câu đố khó", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "kể tôi nghe một câu chuyện tình yêu",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "câu chuyện tình yêu", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tôi muốn nghe chuyện trinh thám",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "chuyện trinh thám", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "có trò giải trí nào cho người già không?",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "trò giải trí cho người già", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "kể tôi nghe về một địa danh nổi tiếng",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "địa danh nổi tiếng", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "hôm nay có gì vui không?",
+    "command": "request-entertainment",
+    "entities": [{"text": "hôm nay", "label": "DATE_EXPRESSION"}],
+    "values": []
+  },
+  {
+    "input": "kể tôi nghe một câu chuyện",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "câu chuyện", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "có trò gì hay để giải trí không?",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi muốn nghe chuyện cười",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "chuyện cười", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "có thể đọc cho tôi một bài thơ không?",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "bài thơ", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tìm một trò chơi trí tuệ",
+    "command": "request-entertainment",
+    "entities": [],
+    "values": [{"text": "trò chơi trí tuệ", "label": "ENTERTAINMENT_TYPE"}]
+  },
+  {
+    "input": "tôi muốn nhờ bạn một việc",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi có việc cần nhờ",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },    
+  {
+    "input": "bạn có thể giúp tôi được không?",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "xin vui lòng hỗ trợ tôi",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cần được giúp đỡ gấp",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "giúp tôi được không?",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cần hỗ trợ khẩn cấp",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "làm ơn giúp đỡ tôi",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },    
+  {
+    "input": "tôi đang gặp khó khăn",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn có thể hỗ trợ tôi không?",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cần trợ giúp",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi không biết phải làm sao",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },  
+  {
+    "input": "tôi gặp rắc rối, cần giúp đỡ",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "làm ơn hỗ trợ tôi với",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi đang cần trợ giúp gấp",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },  
+  {
+    "input": "giúp tôi giải quyết vấn đề này",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi đang bối rối, cần giúp đỡ",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "xin vui lòng giúp tôi",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cần sự hỗ trợ của bạn",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },  
+  {
+    "input": "có ai giúp tôi được không?",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },  
+  {
+    "input": "tôi đang cần được giúp đỡ",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },  
+  {
+    "input": "làm ơn hỗ trợ tôi một chút",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi gặp khó khăn, cần trợ giúp",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "giúp tôi nhé, tôi không biết phải làm gì",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cần người hỗ trợ",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "bạn có thể giúp đỡ tôi không?",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cần giúp đỡ",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi cần sự hỗ trợ",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "làm ơn giúp tôi với",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "tôi có một vấn đề",
+    "command": "general-request",
+    "entities": [],
+    "values": []
+  },
+  {
+    "input": "làm sao để sử dụng điện thoại này?",
+    "command": "request-instruction",
+    "entities": [],
+    "values": [{"text": "sử dụng điện thoại", "label": "INSTRUCTION_TOPIC"}]
+  },
+  {
+    "input": "dạy tôi cách dùng Facebook",
+    "command": "request-instruction",
+    "entities": [],
+    "values": [{"text": "cách dùng Facebook", "label": "INSTRUCTION_TOPIC"}]
+  },
+  {
+    "input": "hướng dẫn tôi gọi video call cho con cháu",
+    "command": "request-instruction",
+    "entities": [{"text": "con cháu", "label": "FAMILY_RELATIONSHIP"}],
+    "values": [{"text": "gọi video call", "label": "INSTRUCTION_TOPIC"}]
+  },
+  {
+    "input": "làm thế nào để chụp ảnh?",
+    "command": "request-instruction",
+    "entities": [],
+    "values": [{"text": "chụp ảnh", "label": "INSTRUCTION_TOPIC"}]
+  },
+  {
+    "input": "chỉ tôi cách bật/tắt Wi-Fi",
+    "command": "request-instruction",
+    "entities": [],
+    "values": [{"text": "bật/tắt Wi-Fi", "label": "INSTRUCTION_TOPIC"}]
+  },
+  {
+    "input": "hướng dẫn tôi cách thêm số điện thoại vào danh bạ",
+    "command": "request-instruction",
+    "entities": [],
+    "values": [{"text": "thêm số điện thoại vào danh bạ", "label": "INSTRUCTION_TOPIC"}]
+  },
+  {
+    "input": "làm sao để tôi đọc sách trên máy này?",
+    "command": "request-instruction",
+    "entities": [],
+    "values": [{"text": "đọc sách trên máy này", "label": "INSTRUCTION_TOPIC"}]
+  }
+] 

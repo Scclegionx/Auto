@@ -34,35 +34,17 @@
             color: white;
             padding: 40px 32px;
             text-align: center;
-            position: relative;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23334155" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
         }
 
         .header h1 {
             font-size: 2.5em;
             font-weight: 700;
             margin-bottom: 8px;
-            letter-spacing: -0.025em;
         }
 
         .header p {
             font-size: 1.1em;
             opacity: 0.8;
-            font-weight: 400;
         }
 
         .main-content {
@@ -82,11 +64,6 @@
             color: #64748b;
         }
 
-        .status-left {
-            display: flex;
-            align-items: center;
-        }
-
         .status-indicator {
             width: 8px;
             height: 8px;
@@ -96,12 +73,10 @@
 
         .status-online {
             background: #10b981;
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
         }
 
         .status-offline {
             background: #ef4444;
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
         }
 
         .input-section {
@@ -117,7 +92,6 @@
             margin-bottom: 8px;
             font-weight: 600;
             color: #334155;
-            font-size: 14px;
         }
 
         textarea {
@@ -130,18 +104,12 @@
             font-family: inherit;
             resize: vertical;
             transition: border-color 0.2s ease;
-            background: #ffffff;
-            color: #1e293b;
         }
 
         textarea:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        textarea::placeholder {
-            color: #94a3b8;
         }
 
         .button-group {
@@ -158,24 +126,12 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
             min-height: 44px;
-            font-family: inherit;
         }
 
         .btn-primary {
             background: #3b82f6;
             color: white;
-            border: 2px solid #3b82f6;
-        }
-
-        .btn-primary:active {
-            background: #2563eb;
-            border-color: #2563eb;
-            transform: translateY(1px);
         }
 
         .btn-secondary {
@@ -184,21 +140,9 @@
             border: 2px solid #e2e8f0;
         }
 
-        .btn-secondary:active {
-            background: #f8fafc;
-            transform: translateY(1px);
-        }
-
         .btn-danger {
             background: #ef4444;
             color: white;
-            border: 2px solid #ef4444;
-        }
-
-        .btn-danger:active {
-            background: #dc2626;
-            border-color: #dc2626;
-            transform: translateY(1px);
         }
 
         .results-section {
@@ -213,7 +157,7 @@
             border: 1px solid #e2e8f0;
             border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         }
 
         .result-card h3 {
@@ -221,9 +165,6 @@
             margin-bottom: 20px;
             font-size: 1.1em;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .result-item {
@@ -234,24 +175,18 @@
             border: 1px solid #f1f5f9;
         }
 
-        .result-item:last-child {
-            margin-bottom: 0;
-        }
-
         .result-label {
             font-weight: 600;
             color: #475569;
             margin-bottom: 6px;
             font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
         .result-value {
             color: #1e293b;
             font-size: 1em;
             font-weight: 500;
-            word-break: break-word;
         }
 
         .confidence-bar {
@@ -267,7 +202,6 @@
             height: 100%;
             background: #10b981;
             transition: width 0.3s ease;
-            border-radius: 3px;
         }
 
         .entities-list {
@@ -283,10 +217,6 @@
             border-radius: 8px;
             margin-bottom: 8px;
             border: 1px solid #e2e8f0;
-        }
-
-        .entity-item:last-child {
-            margin-bottom: 0;
         }
 
         .entity-text {
@@ -319,7 +249,6 @@
             white-space: pre-wrap;
             max-height: 400px;
             overflow-y: auto;
-            border: 1px solid #1e293b;
         }
 
         .loading {
@@ -346,39 +275,16 @@
             100% { transform: rotate(360deg); }
         }
 
-        .loading p {
-            color: #64748b;
-            font-size: 14px;
-        }
-
         .no-data-message {
             color: #64748b;
             text-align: center;
             font-style: italic;
             padding: 20px;
-            font-size: 14px;
         }
 
-        /* Mobile responsiveness */
         @media (max-width: 768px) {
             body {
                 padding: 16px;
-            }
-            
-            .container {
-                border-radius: 16px;
-            }
-            
-            .header {
-                padding: 32px 24px;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .main-content {
-                padding: 24px;
             }
             
             .results-section {
@@ -389,65 +295,25 @@
             .button-group {
                 flex-direction: column;
             }
-            
-            .btn {
-                justify-content: center;
-            }
-
-            .status-bar {
-                flex-direction: column;
-                gap: 8px;
-                text-align: center;
-            }
-        }
-
-        /* Focus styles for accessibility */
-        .btn:focus-visible {
-            outline: 2px solid #3b82f6;
-            outline-offset: 2px;
-        }
-
-        /* Dark scrollbar for JSON display */
-        .json-display::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        .json-display::-webkit-scrollbar-track {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-
-        .json-display::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 4px;
-        }
-
-        .json-display::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-content">
-                <h1>🚀 PhoBERT SAM</h1>
-                <p>Vietnam NLP System - Intent Recognition, Entity Extraction, Command Processing</p>
-            </div>
+            <h1>PhoBERT SAM</h1>
+            <p>Vietnam NLP System - Intent Recognition, Entity Extraction, Command Processing</p>
         </div>
 
         <div class="main-content">
-            <!-- Status Bar -->
             <div class="status-bar">
-                <div class="status-left">
+                <div>
                     <span class="status-indicator" id="statusIndicator"></span>
                     <span id="statusText">Checking server status...</span>
                 </div>
                 <div id="serverMode">Mode: Unknown</div>
             </div>
 
-            <!-- Input Section -->
             <div class="input-section">
                 <div class="input-group">
                     <label for="textInput">Nhập câu tiếng Việt:</label>
@@ -455,36 +321,21 @@
                 </div>
 
                 <div class="button-group">
-                    <button class="btn btn-primary" onclick="predict()">
-                        <span>🎯</span>
-                        Predict
-                    </button>
-                    <button class="btn btn-secondary" onclick="analyze()">
-                        <span>🔍</span>
-                        Analyze
-                    </button>
-                    <button class="btn btn-secondary" onclick="loadSample()">
-                        <span>📝</span>
-                        Load Sample
-                    </button>
-                    <button class="btn btn-danger" onclick="clearInput()">
-                        <span>🗑️</span>
-                        Clear
-                    </button>
+                    <button class="btn btn-primary" onclick="predict()">Predict</button>
+                    <button class="btn btn-secondary" onclick="analyze()">Analyze</button>
+                    <button class="btn btn-secondary" onclick="loadSample()">Load Sample</button>
+                    <button class="btn btn-danger" onclick="clearInput()">Clear</button>
                 </div>
             </div>
 
-            <!-- Loading -->
             <div class="loading" id="loading">
                 <div class="spinner"></div>
                 <p>Đang xử lý...</p>
             </div>
 
-            <!-- Results Section -->
             <div class="results-section" id="resultsSection" style="display: none;">
-                <!-- Intent Recognition -->
                 <div class="result-card">
-                    <h3>🎯 Intent Recognition</h3>
+                    <h3>Intent Recognition</h3>
                     <div class="result-item">
                         <div class="result-label">Detected Intent</div>
                         <div class="result-value" id="intentValue">-</div>
@@ -498,9 +349,8 @@
                     </div>
                 </div>
 
-                <!-- Command Processing -->
                 <div class="result-card">
-                    <h3>⚙️ Command Processing</h3>
+                    <h3>Command Processing</h3>
                     <div class="result-item">
                         <div class="result-label">Executable Command</div>
                         <div class="result-value" id="commandValue">-</div>
@@ -514,17 +364,15 @@
                     </div>
                 </div>
 
-                <!-- Entity Extraction -->
                 <div class="result-card">
-                    <h3>🏷️ Entity Extraction</h3>
+                    <h3>Entity Extraction</h3>
                     <div id="entitiesContainer">
                         <div class="no-data-message">No entities found</div>
                     </div>
                 </div>
 
-                <!-- JSON Response -->
                 <div class="result-card json-section">
-                    <h3>📄 Raw JSON Response</h3>
+                    <h3>Raw JSON Response</h3>
                     <div class="json-display" id="jsonDisplay">No data</div>
                 </div>
             </div>
@@ -535,7 +383,6 @@
         const API_BASE_URL = 'http://localhost:5000';
         let serverStatus = false;
 
-        // Check server status on load
         window.onload = function() {
             checkServerStatus();
         };
@@ -627,35 +474,26 @@
         }
 
         function displayResults(data) {
-            // Intent
             document.getElementById('intentValue').textContent = data.intent || 'Unknown';
             const intentConf = data.confidence?.intent || 0;
             document.getElementById('intentConfidence').textContent = intentConf.toFixed(3);
             document.getElementById('intentConfidenceBar').style.width = `${intentConf * 100}%`;
 
-            // Command
             document.getElementById('commandValue').textContent = data.command || 'Unknown';
             const commandConf = data.confidence?.command || 0;
             document.getElementById('commandConfidence').textContent = commandConf.toFixed(3);
             document.getElementById('commandConfidenceBar').style.width = `${commandConf * 100}%`;
 
-            // Entities
             displayEntities(data.entities || []);
-
-            // JSON
             document.getElementById('jsonDisplay').textContent = JSON.stringify(data, null, 2);
-
-            // Show results
             document.getElementById('resultsSection').style.display = 'grid';
         }
 
         function displayAnalysis(data) {
-            // Clear previous results
             document.getElementById('intentValue').textContent = 'N/A';
             document.getElementById('commandValue').textContent = 'N/A';
             document.getElementById('entitiesContainer').innerHTML = '<div class="no-data-message">Analysis mode - no entities</div>';
 
-            // Show analysis info
             const analysisText = `Text Analysis:
 Text: ${data.text}
 Length: ${data.text_length} characters
@@ -665,8 +503,6 @@ Tokens: ${data.token_count} tokens
 Tokens: ${data.tokens?.join(', ') || 'N/A'}`;
 
             document.getElementById('jsonDisplay').textContent = analysisText;
-
-            // Show results
             document.getElementById('resultsSection').style.display = 'grid';
         }
 
@@ -717,7 +553,6 @@ Tokens: ${data.tokens?.join(', ') || 'N/A'}`;
             document.getElementById('loading').style.display = show ? 'block' : 'none';
         }
 
-        // Auto-refresh server status every 30 seconds
         setInterval(checkServerStatus, 30000);
     </script>
 </body>

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhoBERT_SAM - Vietnamese NLP System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #1e293b;
+            color: white;
+            padding: 40px 32px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23334155" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .main-content {
+            padding: 32px;
+        }
+
+        .status-bar {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-online {
+            background: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        .status-offline {
+            background: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        }
+
+        .input-section {
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border: 2px solid #3b82f6;
+        }
+
+        .btn-primary:active {
+            background: #2563eb;
+            border-color: #2563eb;
+            transform: translateY(1px);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:active {
+            background: #f8fafc;
+            transform: translateY(1px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            border: 2px solid #ef4444;
+        }
+
+        .btn-danger:active {
+            background: #dc2626;
+            border-color: #dc2626;
+            transform: translateY(1px);
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .result-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .result-card h3 {
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-item {
+            margin-bottom: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 6px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-value {
+            color: #1e293b;
+            font-size: 1em;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: #10b981;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .entities-list {
+            list-style: none;
+        }
+
+        .entity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #ffffff;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .entity-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .entity-text {
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .entity-label {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .json-section {
+            grid-column: 1 / -1;
+        }
+
+        .json-display {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #1e293b;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .spinner {
+            border: 3px solid #f1f5f9;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .no-data-message {
+            color: #64748b;
+            text-align: center;
+            font-style: italic;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+            
+            .container {
+                border-radius: 16px;
+            }
+            
+            .header {
+                padding: 32px 24px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 24px;
+            }
+            
+            .results-section {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+
+            .status-bar {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .btn:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* Dark scrollbar for JSON display */
+        .json-display::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .json-display::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+
+        .json-display::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+
+        .json-display::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🚀 PhoBERT SAM</h1>
+                <p>Vietnam NLP System - Intent Recognition, Entity Extraction, Command Processing</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-left">
+                    <span class="status-indicator" id="statusIndicator"></span>
+                    <span id="statusText">Checking server status...</span>
+                </div>
+                <div id="serverMode">Mode: Unknown</div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="textInput">Nhập câu tiếng Việt:</label>
+                    <textarea id="textInput" placeholder="Ví dụ: gửi tin nhắn cho mẹ: yêu mẹ nhiều"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="predict()">
+                        <span>🎯</span>
+                        Predict
+                    </button>
+                    <button class="btn btn-secondary" onclick="analyze()">
+                        <span>🔍</span>
+                        Analyze
+                    </button>
+                    <button class="btn btn-secondary" onclick="loadSample()">
+                        <span>📝</span>
+                        Load Sample
+                    </button>
+                    <button class="btn btn-danger" onclick="clearInput()">
+                        <span>🗑️</span>
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Đang xử lý...</p>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <!-- Intent Recognition -->
+                <div class="result-card">
+                    <h3>🎯 Intent Recognition</h3>
+                    <div class="result-item">
+                        <div class="result-label">Detected Intent</div>
+                        <div class="result-value" id="intentValue">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Confidence</div>
+                        <div class="result-value" id="intentConfidence">-</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="intentConfidenceBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Command Processing -->
+                <div class="result-card">
+                    <h3>⚙️ Command Processing</h3>
+                    <div class="result-item">
+                        <div class="result-label">Executable Command</div>
+                        <div class="result-value" id="commandValue">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Confidence</div>
+                        <div class="result-value" id="commandConfidence">-</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="commandConfidenceBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entity Extraction -->
+                <div class="result-card">
+                    <h3>🏷️ Entity Extraction</h3>
+                    <div id="entitiesContainer">
+                        <div class="no-data-message">No entities found</div>
+                    </div>
+                </div>
+
+                <!-- JSON Response -->
+                <div class="result-card json-section">
+                    <h3>📄 Raw JSON Response</h3>
+                    <div class="json-display" id="jsonDisplay">No data</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        let serverStatus = false;
+
+        // Check server status on load
+        window.onload = function() {
+            checkServerStatus();
+        };
+
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    serverStatus = true;
+                    updateStatus(true, `Server running - Mode: ${data.mode}`);
+                    document.getElementById('serverMode').textContent = `Mode: ${data.mode}`;
+                } else {
+                    updateStatus(false, 'Server error');
+                }
+            } catch (error) {
+                updateStatus(false, 'Server not running');
+            }
+        }
+
+        function updateStatus(online, message) {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            indicator.className = `status-indicator ${online ? 'status-online' : 'status-offline'}`;
+            statusText.textContent = message;
+        }
+
+        async function predict() {
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) {
+                alert('Vui lòng nhập text!');
+                return;
+            }
+
+            showLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/predict`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayResults(data);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                alert(`Connection error: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function analyze() {
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) {
+                alert('Vui lòng nhập text!');
+                return;
+            }
+
+            showLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayAnalysis(data);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                alert(`Connection error: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayResults(data) {
+            // Intent
+            document.getElementById('intentValue').textContent = data.intent || 'Unknown';
+            const intentConf = data.confidence?.intent || 0;
+            document.getElementById('intentConfidence').textContent = intentConf.toFixed(3);
+            document.getElementById('intentConfidenceBar').style.width = `${intentConf * 100}%`;
+
+            // Command
+            document.getElementById('commandValue').textContent = data.command || 'Unknown';
+            const commandConf = data.confidence?.command || 0;
+            document.getElementById('commandConfidence').textContent = commandConf.toFixed(3);
+            document.getElementById('commandConfidenceBar').style.width = `${commandConf * 100}%`;
+
+            // Entities
+            displayEntities(data.entities || []);
+
+            // JSON
+            document.getElementById('jsonDisplay').textContent = JSON.stringify(data, null, 2);
+
+            // Show results
+            document.getElementById('resultsSection').style.display = 'grid';
+        }
+
+        function displayAnalysis(data) {
+            // Clear previous results
+            document.getElementById('intentValue').textContent = 'N/A';
+            document.getElementById('commandValue').textContent = 'N/A';
+            document.getElementById('entitiesContainer').innerHTML = '<div class="no-data-message">Analysis mode - no entities</div>';
+
+            // Show analysis info
+            const analysisText = `Text Analysis:
+Text: ${data.text}
+Length: ${data.text_length} characters
+Words: ${data.word_count} words
+Tokens: ${data.token_count} tokens
+
+Tokens: ${data.tokens?.join(', ') || 'N/A'}`;
+
+            document.getElementById('jsonDisplay').textContent = analysisText;
+
+            // Show results
+            document.getElementById('resultsSection').style.display = 'grid';
+        }
+
+        function displayEntities(entities) {
+            const container = document.getElementById('entitiesContainer');
+            
+            if (entities.length === 0) {
+                container.innerHTML = '<div class="no-data-message">No entities found</div>';
+                return;
+            }
+
+            const entitiesList = document.createElement('ul');
+            entitiesList.className = 'entities-list';
+
+            entities.forEach(entity => {
+                const li = document.createElement('li');
+                li.className = 'entity-item';
+                li.innerHTML = `
+                    <span class="entity-text">${entity.text}</span>
+                    <span class="entity-label">${entity.label}</span>
+                `;
+                entitiesList.appendChild(li);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(entitiesList);
+        }
+
+        function loadSample() {
+            const samples = [
+                "gửi tin nhắn cho mẹ: yêu mẹ nhiều",
+                "đặt báo thức lúc 5 giờ chiều",
+                "phát nhạc của Sơn Tùng",
+                "hôm nay thời tiết Hà Nội thế nào?",
+                "tôi bị đau đầu và mệt mỏi"
+            ];
+            
+            const randomSample = samples[Math.floor(Math.random() * samples.length)];
+            document.getElementById('textInput').value = randomSample;
+        }
+
+        function clearInput() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('resultsSection').style.display = 'none';
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        // Auto-refresh server status every 30 seconds
+        setInterval(checkServerStatus, 30000);
+    </script>
+</body>
+</html>

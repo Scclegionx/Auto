@@ -37,12 +37,51 @@ class EntityConfig:
     
     def __post_init__(self):
         if self.entity_labels is None:
-            # IOB2 format cho entity extraction
+            # IOB2 format cho entity extraction - Cập nhật đầy đủ theo dataset
             self.entity_labels = [
                 "O",  # Outside
-                "B-RECEIVER", "I-RECEIVER",  # Người nhận
-                "B-TIME", "I-TIME",  # Thời gian
-                "B-MESSAGE", "I-MESSAGE"  # Nội dung tin nhắn
+                # Người nhận (FAMILY_RELATIONSHIP, CONTACT_PERSON)
+                "B-RECEIVER", "I-RECEIVER",
+                # Thời gian (TIME_EXPRESSION, DATE_EXPRESSION)
+                "B-TIME", "I-TIME",
+                # Nội dung tin nhắn (MESSAGE_CONTENT, REMINDER_CONTENT)
+                "B-MESSAGE", "I-MESSAGE",
+                # Địa điểm (LOCATION)
+                "B-LOCATION", "I-LOCATION",
+                # Nghệ sĩ (ARTIST_NAME)
+                "B-ARTIST", "I-ARTIST",
+                # Thời tiết (WEATHER_CONDITION)
+                "B-WEATHER", "I-WEATHER",
+                # Sức khỏe (HEALTH_METRIC, SYMPTOM)
+                "B-HEALTH", "I-HEALTH",
+                # Media (MEDIA_CONTENT, MEDIA_TYPE)
+                "B-MEDIA", "I-MEDIA",
+                # Tin tức (NEWS_CATEGORY, NEWS_SOURCE)
+                "B-NEWS", "I-NEWS",
+                # Tìm kiếm (SEARCH_QUERY)
+                "B-QUERY", "I-QUERY",
+                # Cảm xúc (EMOTION)
+                "B-EMOTION", "I-EMOTION",
+                # Giải trí (ENTERTAINMENT_TYPE)
+                "B-ENTERTAINMENT", "I-ENTERTAINMENT",
+                # Loại gọi (CALL_TYPE)
+                "B-CALL_TYPE", "I-CALL_TYPE",
+                # Tần suất (FREQUENCY)
+                "B-FREQUENCY", "I-FREQUENCY",
+                # Thời lượng (DURATION)
+                "B-DURATION", "I-DURATION",
+                # Hành động (ACTION_VERB)
+                "B-ACTION", "I-ACTION",
+                # Biểu đạt (EXPRESSION)
+                "B-EXPRESSION", "I-EXPRESSION",
+                # Mệt mỏi (FATIGUE_EXPRESSION)
+                "B-FATIGUE", "I-FATIGUE",
+                # Hướng dẫn (INSTRUCTION_TOPIC)
+                "B-INSTRUCTION", "I-INSTRUCTION",
+                # Chủ đề (TOPIC_NEWS)
+                "B-TOPIC", "I-TOPIC",
+                # Kích hoạt (TRIGGER)
+                "B-TRIGGER", "I-TRIGGER"
             ]
     
     @property

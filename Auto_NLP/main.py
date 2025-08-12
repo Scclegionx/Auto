@@ -38,20 +38,20 @@ def train_models():
     # Chuẩn bị dữ liệu cho Intent Recognition
     print("Chuẩn bị dữ liệu cho Intent Recognition...")
     intent_data = data_processor.prepare_intent_data(dataset)
-    train_intent, val_intent = data_processor.split_dataset(intent_data)
-    print(f"Intent data - Train: {len(train_intent)}, Val: {len(val_intent)}")
+    train_intent, val_intent, test_intent = data_processor.split_dataset(intent_data)
+    print(f"Intent data - Train: {len(train_intent)}, Val: {len(val_intent)}, Test: {len(test_intent)}")
     
     # Chuẩn bị dữ liệu cho Entity Extraction
     print("Chuẩn bị dữ liệu cho Entity Extraction...")
     entity_data = data_processor.prepare_entity_data(dataset)
-    train_entity, val_entity = data_processor.split_dataset(entity_data)
-    print(f"Entity data - Train: {len(train_entity)}, Val: {len(val_entity)}")
+    train_entity, val_entity, test_entity = data_processor.split_dataset(entity_data)
+    print(f"Entity data - Train: {len(train_entity)}, Val: {len(val_entity)}, Test: {len(test_entity)}")
     
     # Chuẩn bị dữ liệu cho Command Processing
     print("Chuẩn bị dữ liệu cho Command Processing...")
     command_data = data_processor.prepare_command_data(dataset)
-    train_command, val_command = data_processor.split_dataset(command_data)
-    print(f"Command data - Train: {len(train_command)}, Val: {len(val_command)}")
+    train_command, val_command, test_command = data_processor.split_dataset(command_data)
+    print(f"Command data - Train: {len(train_command)}, Val: {len(val_command)}, Test: {len(test_command)}")
     
     # Huấn luyện Intent Recognition Model
     print("\n=== HUẤN LUYỆN INTENT RECOGNITION MODEL ===")

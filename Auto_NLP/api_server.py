@@ -23,7 +23,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('official_api.log'),
+        logging.FileHandler('official_api.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

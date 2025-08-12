@@ -37,43 +37,28 @@ class DataProcessor:
     def _init_value_mappings(self):
         """Initialize mappings for value labels to standard IOB2 tags"""
         self.value_mapping = {
-            # Thời gian
             "TIME_EXPRESSION": "TIME",
             "DATE_EXPRESSION": "TIME",
-            # Nội dung
             "MESSAGE_CONTENT": "MESSAGE",
             "REMINDER_CONTENT": "MESSAGE",
-            # Thời tiết
             "WEATHER_CONDITION": "WEATHER",
-            # Sức khỏe
             "HEALTH_METRIC": "HEALTH",
             "SYMPTOM": "HEALTH",
-            # Media
             "MEDIA_CONTENT": "MEDIA",
             "MEDIA_TYPE": "MEDIA_TYPE",
-            # Tin tức
             "NEWS_CATEGORY": "NEWS",
             "NEWS_SOURCE": "NEWS",
             "TOPIC_NEWS": "TOPIC",
-            # Tìm kiếm
             "SEARCH_QUERY": "QUERY",
-            # Cảm xúc
             "EMOTION": "EMOTION",
-            # Giải trí
             "ENTERTAINMENT_TYPE": "ENTERTAINMENT",
-            # Gọi điện
             "CALL_TYPE": "CALL_TYPE",
-            # Tần suất và thời lượng
             "FREQUENCY": "FREQUENCY",
             "DURATION": "DURATION",
-            # Hành động
             "ACTION_VERB": "ACTION",
-            # Biểu đạt
             "EXPRESSION": "EXPRESSION",
             "FATIGUE_EXPRESSION": "FATIGUE",
-            # Hướng dẫn
             "INSTRUCTION_TOPIC": "INSTRUCTION",
-            # Kích hoạt
             "TRIGGER": "TRIGGER",
             # Add any additional value mappings here
         }

@@ -7,10 +7,10 @@ class ModelConfig:
     """Cấu hình cho mô hình PhoBERT"""
     model_name: str = "vinai/phobert-base"
     max_length: int = 128
-    batch_size: int = 16
+    batch_size: int = 8  # Giảm batch size cho CPU
     learning_rate: float = 2e-5
-    num_epochs: int = 10
-    warmup_steps: int = 100
+    num_epochs: int = 5  # Giảm epochs để test nhanh
+    warmup_steps: int = 50
     weight_decay: float = 0.01
     dropout: float = 0.1
     
@@ -128,7 +128,7 @@ class TrainingConfig:
     data_dir: str = "./data"
     log_dir: str = "./logs"
     seed: int = 42
-    device: str = "cuda" if os.path.exists("/dev/cuda") else "cpu"
+    device: str = "cpu"  # Sử dụng CPU thay vì cuda
     save_steps: int = 500
     eval_steps: int = 500
     logging_steps: int = 100

@@ -22,6 +22,7 @@ public class Notifications extends BaseEntity{
     private LocalDateTime reminderTime; // Dạng chuỗi, ví dụ: "2023-10-01T10:00:00"
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private ENotificationStatus status= ENotificationStatus.PENDING; // Trạng thái thông báo, mặc định là PENDING
 
     @Column(name = "retry_count", nullable = false)

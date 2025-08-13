@@ -77,6 +77,8 @@ public class SchedulerReminder {
             
             int processedCount = 0;
             int errorCount = 0;
+            int skippedCount = 0;
+            int totalScheduled = 0;
             
             for (MedicationReminder reminder : activeReminders) {
                 try {
@@ -98,7 +100,8 @@ public class SchedulerReminder {
                     }
                     
                     System.out.println("Processing reminder: " + reminder.getName() + " (ID: " + reminder.getId() + ")");
-                    scheduleReminderForWeek(reminder, today, endOfWeek);
+                    int scheduled = scheduleReminderForWeek(reminder, today, endOfWeek);
+                    totalScheduled += scheduled;
                     processedCount++;
                     
                 } catch (Exception e) {
@@ -111,6 +114,7 @@ public class SchedulerReminder {
             System.out.println("Total reminders: " + activeReminders.size());
             System.out.println("Successfully processed: " + processedCount);
             System.out.println("Errors/Skipped: " + errorCount);
+            System.out.println("Total new notifications scheduled: " + totalScheduled);
             
             System.out.println("=== Finished scheduling weekly reminders ===");
             
@@ -120,7 +124,7 @@ public class SchedulerReminder {
         }
     }
 
-    private void scheduleReminderForWeek(MedicationReminder reminder, LocalDate startDate, LocalDate endDate) {
+    private int scheduleReminderForWeek(MedicationReminder reminder, LocalDate startDate, LocalDate endDate) {
         try {
             String reminderTimeStr = reminder.getReminderTime(); // "HH:mm"
             LocalTime reminderTime = LocalTime.parse(reminderTimeStr);
@@ -131,6 +135,7 @@ public class SchedulerReminder {
             System.out.println("  - Days pattern: " + daysOfWeek);
             
             int scheduledCount = 0;
+            int skippedCount = 0;
             
             for (LocalDate currentDate = startDate; currentDate.isBefore(endDate); currentDate = currentDate.plusDays(1)) {
                 boolean shouldSchedule = shouldScheduleForDate(reminder, currentDate);
@@ -143,19 +148,28 @@ public class SchedulerReminder {
                     
                     // Chỉ lên lịch cho tương lai
                     if (scheduledDateTime.isAfter(LocalDateTime.now())) {
-                        createNotificationAndScheduleJob(reminder, scheduledDateTime);
-                        scheduledCount++;
+                        boolean created = createNotificationAndScheduleJob(reminder, scheduledDateTime);
+                        if (created) {
+                            scheduledCount++;
+                        } else {
+                            skippedCount++;
+                        }
                     } else {
                         System.out.println("      -> Skipped (past time): " + scheduledDateTime);
+                        skippedCount++;
                     }
                 }
             }
             
-            System.out.println("  - Total scheduled: " + scheduledCount + " notifications");
+            System.out.println("  - New notifications scheduled: " + scheduledCount);
+            System.out.println("  - Skipped (already exists): " + skippedCount);
+            
+            return scheduledCount;
             
         } catch (Exception e) {
             System.err.println("Error scheduling reminder for ID: " + reminder.getId() + " - " + e.getMessage());
             e.printStackTrace();
+            return 0;
         }
     }
 
@@ -173,9 +187,18 @@ public class SchedulerReminder {
         return daysOfWeek.charAt(index) == '1';
     }
 
-    private void createNotificationAndScheduleJob(MedicationReminder reminder, LocalDateTime scheduledDateTime) {
+    private boolean createNotificationAndScheduleJob(MedicationReminder reminder, LocalDateTime scheduledDateTime) {
         try {
-            System.out.println("      -> Creating notification for: " + scheduledDateTime);
+            System.out.println("      -> Checking notification for: " + scheduledDateTime);
+            
+            // Kiểm tra xem notification đã tồn tại chưa
+            boolean exists = notificationService.existsByMedicationReminderAndTime(reminder.getId(), scheduledDateTime);
+            if (exists) {
+                System.out.println("      -> Notification already exists, skipping...");
+                return false; // Không tạo mới
+            }
+            
+            System.out.println("      -> Creating new notification for: " + scheduledDateTime);
             
             // Tạo notification record trong database
             Notifications notification = new Notifications();
@@ -192,6 +215,13 @@ public class SchedulerReminder {
             // Tạo Quartz job
             String jobId = "reminder-" + reminder.getId() + "-" + scheduledDateTime.toString().replace(":", "-");
             
+            // Kiểm tra xem job đã tồn tại chưa
+            JobKey jobKey = new JobKey(jobId);
+            if (scheduler.checkExists(jobKey)) {
+                System.out.println("      -> Job already exists, skipping job creation...");
+                return true; // Notification đã tạo nhưng job đã có
+            }
+            
             JobDetail jobDetail = JobBuilder.newJob(MedicationReminderJob.class)
                     .withIdentity(jobId)
                     .usingJobData("notificationLogId", savedNotification.getId())
@@ -207,9 +237,12 @@ public class SchedulerReminder {
             System.out.println("      -> Quartz job scheduled: " + jobId);
             System.out.println("      -> Job will execute at: " + scheduledDateTime);
             
+            return true; // Thành công tạo mới
+            
         } catch (Exception e) {
             System.err.println("ERROR creating notification and job: " + e.getMessage());
             e.printStackTrace();
+            return false; // Lỗi
         }
     }
 

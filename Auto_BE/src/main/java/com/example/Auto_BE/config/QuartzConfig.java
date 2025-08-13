@@ -23,7 +23,7 @@ public class QuartzConfig {
     public Scheduler scheduler(SchedulerFactoryBean schedulerFactoryBean) throws SchedulerException {
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         if (!scheduler.isStarted()) {
-            //scheduler.start();
+            scheduler.start();
             System.out.println("Quartz Scheduler started successfully!");
         }
         return scheduler;

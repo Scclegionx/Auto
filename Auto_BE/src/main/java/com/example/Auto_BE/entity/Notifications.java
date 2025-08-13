@@ -35,7 +35,7 @@ public class Notifications extends BaseEntity{
     @JoinColumn(name = "medication_reminder_id", nullable = false)
     private MedicationReminder medicationReminder; // Nhắc nhở thuốc liên quan đến thông báo này
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // Người dùng sở hữu thông báo này
 

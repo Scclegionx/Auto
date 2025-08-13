@@ -1,7 +1,7 @@
 package com.example.Auto_BE.controller;
 
 import com.example.Auto_BE.dto.BaseResponse;
-import com.example.Auto_BE.utils.SchedulerReminder;
+import com.example.Auto_BE.service.SchedulerReminder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

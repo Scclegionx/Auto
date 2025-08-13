@@ -1,16 +1,15 @@
-package com.example.Auto_BE.utils;
+package com.example.Auto_BE.service;
 
 import com.example.Auto_BE.entity.MedicationReminder;
 import com.example.Auto_BE.entity.Notifications;
 import com.example.Auto_BE.entity.enums.ENotificationStatus;
-import com.example.Auto_BE.service.MedicationReminderJob;
-import com.example.Auto_BE.service.NotificationService;
 import com.example.Auto_BE.repository.MedicationReminderRepository;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,7 +18,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
-@Component
+@Service
 public class SchedulerReminder {
 
     @Autowired

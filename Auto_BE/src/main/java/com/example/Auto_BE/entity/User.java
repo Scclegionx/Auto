@@ -27,13 +27,14 @@ public class User extends BaseEntity{
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "full_name", nullable = false)
+    @Column(name = "full_name")
     private String fullName;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth; // Dạng chuỗi, ví dụ: "1990-01-01"
 
     @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
     private EGender gender;
 
     @Column(name = "phone_number")
@@ -43,6 +44,7 @@ public class User extends BaseEntity{
     private String address;
 
     @Column(name = "blood_type")
+    @Enumerated(EnumType.STRING)
     private EBloodType bloodType;
 
     @Column(name = "height")
@@ -58,20 +60,20 @@ public class User extends BaseEntity{
     private Boolean isActive = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<DeviceToken> deviceTokens;
+    private List<DeviceToken> deviceTokens;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<EmergencyContact> emergencyContacts;
+    private List<EmergencyContact> emergencyContacts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Verification> verifications;
+    private List<Verification> verifications;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MedicationReminder> medicationReminders;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Prescriptions>  prescriptions;
+    private List<Prescriptions>  prescriptions;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Notifications> notifications;
+    private List<Notifications> notifications;
 }

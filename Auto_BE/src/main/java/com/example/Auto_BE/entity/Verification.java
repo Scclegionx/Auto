@@ -23,7 +23,7 @@ public class Verification extends BaseEntity{
     @Column(name = "expired_at", nullable = false)
     private LocalDateTime expiredAt; // Thời gian hết hạn của mã xác thực, tính bằng mili giây từ epoch (Unix timestamp)
 
-    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // Người dùng liên kết với mã xác thực
 }

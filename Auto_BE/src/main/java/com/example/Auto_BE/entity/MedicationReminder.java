@@ -25,16 +25,14 @@ public class MedicationReminder extends BaseEntity {
     private String description; // Mô tả chi tiết về nhắc nhở thuốc
 
     @Column(name = "type", nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
     private ETypeMedication type;
 
     @Column(name = "reminder_time", nullable = false)
     private String reminderTime; // Thời gian nhắc nhở, định dạng "HH:mm"
 
-    @Column(name = "frequency", nullable = false)
-    private String frequency; // Tần suất nhắc nhở, ví dụ: "Hàng ngày", "Hàng tuần", "Hàng tháng"
-
-    @Column(name = "days_of_week")
-    private String daysOfWeek; // Mã tuần, ví dụ '0111110' cho nhắc từ thứ 2 đến thứ 6 (0 = không, 1 = có)
+    @Column(name = "days_of_week", nullable = false)
+    private String daysOfWeek; // Mã tuần, ví dụ '1111111' cho hàng ngày, '0111110' cho T2-T6 (0 = không, 1 = có)
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true; // Trạng thái hoạt động của nhắc nhở thuốc

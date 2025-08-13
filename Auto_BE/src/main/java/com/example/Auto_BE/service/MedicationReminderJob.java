@@ -29,13 +29,15 @@ public class MedicationReminderJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        System.out.println("[Job] Bắt đầu execute job");
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         Long notificationLogId = dataMap.getLong("notificationLogId");
-
+        System.out.println("[Job] notificationLogId = " + notificationLogId);
         // Lấy thông tin notification_log từ DB
         Notifications log = notificationService.findById(notificationLogId);
+        System.out.println("[Job] log từ DB = " + log);
         if (log == null || !log.getStatus().equals(ENotificationStatus.PENDING)) {
-            // Nếu không tồn tại hoặc đã không còn pending (taken/missed), hủy job
+            System.out.println("[Job] Log null hoặc không ở trạng thái PENDING → hủy job");
             try {
                 scheduler.deleteJob(context.getJobDetail().getKey());
             } catch (SchedulerException e) {
@@ -46,16 +48,21 @@ public class MedicationReminderJob implements Job {
         List<String> deviceTokenStrings = log.getUser().getDeviceTokens().stream()
                 .map(DeviceToken::getFcmToken) // giả sử mỗi DeviceToken có phương thức getToken()
                 .toList();
+        System.out.println("[Job] Device tokens = " + deviceTokenStrings);
         boolean sent = false;
         try {
+            System.out.println("[Job] Bắt đầu gửi FCM tới " + deviceTokenStrings.size() + " thiết bị...");
             // Gửi notification tới nhiều thiết bị
             BatchResponse response = fcmService.sendNotification(
                     deviceTokenStrings,
                     "Đến giờ uống thuốc",
                     "Bạn có thuốc cần uống lúc " + log.getReminderTime()
             );
+            System.out.println("[Job] FCM gửi thành công: " + response.getSuccessCount() +
+                    ", thất bại: " + response.getFailureCount());
             sent = response.getSuccessCount() > 0;
         } catch (FirebaseMessagingException e) {
+            System.out.println("[Job] Lỗi khi gửi FCM:");
             e.printStackTrace();
         }
         if (sent) {
@@ -63,9 +70,11 @@ public class MedicationReminderJob implements Job {
             log.setRetryCount(log.getRetryCount() + 1);
             log.setLastSentTime(LocalDateTime.now());
             notificationService.save(log);
+            System.out.println("[Job] Cập nhật retry_count = " + log.getRetryCount());
 
             if (log.getRetryCount() < 3) {
                 // Nếu retry_count < 3, lên lịch lại Job nhắc lại sau 5 phút
+                System.out.println("[Job] Lên lịch retry sau 5 phút...");
                 try {
                     scheduleRetryJob(notificationLogId, Duration.ofMinutes(5));
                 } catch (SchedulerException e) {
@@ -75,6 +84,7 @@ public class MedicationReminderJob implements Job {
                 // Nếu đã nhắc 3 lần mà user chưa xác nhận, đánh dấu missed
                 log.setStatus(ENotificationStatus.MISSED);
                 notificationService.save(log);
+                System.out.println("[Job] Đánh dấu MISSED và hủy job");
                 // Hủy job hiện tại
                 try {
                     scheduler.deleteJob(context.getJobDetail().getKey());

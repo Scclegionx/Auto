@@ -1,320 +1,376 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+#!/usr/bin/env python3
+"""
+API Server cho PhoBERT_SAM
+Xử lý Intent Recognition và Entity Extraction
+"""
+
 import torch
-import json
-import logging
+import torch.nn as nn
+from transformers import AutoTokenizer, AutoModel
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Dict, Optional
+import uvicorn
+import re
 from datetime import datetime
-import os
-import traceback
+import json
+from config import model_config
 
-# Import các modules của hệ thống
-try:
-    from inference import PhoBERTSAMInference
-    from data import DataProcessor
-    from models import create_model
-    import config
-    MODELS_AVAILABLE = True
-except ImportError as e:
-    print(f"Warning: Some modules not available: {e}")
-    MODELS_AVAILABLE = False
+# Pydantic models
+class IntentRequest(BaseModel):
+    text: str
+    confidence_threshold: Optional[float] = 0.3
 
-# Cấu hình logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('official_api.log', encoding='utf-8'),
-        logging.StreamHandler()
-    ]
-)
+class IntentResponse(BaseModel):
+    input_text: str
+    intent: str
+    confidence: float
+    command: str
+    entities: Dict[str, str]
+    value: str
+    processing_time: float
+    timestamp: str
 
-app = Flask(__name__)
-CORS(app)
+class SimpleIntentModel(nn.Module):
+    """Model đơn giản cho Intent Recognition"""
+    
+    def __init__(self, model_name, num_intents):
+        super().__init__()
+        self.phobert = AutoModel.from_pretrained(model_name)
+        self.dropout = nn.Dropout(0.1)
+        self.classifier = nn.Linear(self.phobert.config.hidden_size, num_intents)
+    
+    def forward(self, input_ids, attention_mask):
+        outputs = self.phobert(input_ids=input_ids, attention_mask=attention_mask)
+        pooled_output = outputs.pooler_output
+        pooled_output = self.dropout(pooled_output)
+        logits = self.classifier(pooled_output)
+        return logits
 
-# Global variables
-inference_engine = None
-data_processor = None
-models_loaded = False
-
-def load_models():
-    global inference_engine, data_processor, models_loaded
+class PhoBERTAPI:
+    """API class cho PhoBERT_SAM"""
     
-    if not MODELS_AVAILABLE:
-        logging.warning("Models not available - using mock mode")
-        return False
-    
-    try:
-        model_paths = [
-            './models/best_unified_model.pth',
-            './models/best_intent_model.pth',
-            './models/best_entity_model.pth',
-            './models/best_command_model.pth'
-        ]
+    def __init__(self):
+        self.model = None
+        self.tokenizer = None
+        self.id_to_intent = None
+        self.intent_to_command = None
+        self.device = torch.device("cpu")
         
-        models_exist = any(os.path.exists(path) for path in model_paths)
-        
-        if not models_exist:
-            logging.warning("No trained models found - using mock mode")
-            return False
-        
-        # Khởi tạo inference engine
-        inference_engine = PhoBERTSAMInference()
-        data_processor = DataProcessor()
-        
-        models_loaded = True
-        logging.info("✅ Models loaded successfully")
-        return True
-        
-    except Exception as e:
-        logging.error(f"❌ Error loading models: {e}")
-        logging.warning("Falling back to mock mode")
-        return False
-
-def mock_predict(text):
-    """Mock prediction khi models chưa sẵn sàng"""
-    # Phân tích đơn giản dựa trên keywords
-    text_lower = text.lower()
-    
-    # Intent detection
-    intent_keywords = {
-        'send-mess': ['gửi', 'tin nhắn', 'nhắn tin', 'sms'],
-        'set-alarm': ['đặt', 'báo thức', 'alarm', 'thức dậy'],
-        'call': ['gọi', 'điện', 'phone', 'liên lạc'],
-        'check-weather': ['thời tiết', 'weather', 'mưa', 'nắng'],
-        'play-media': ['phát', 'nhạc', 'video', 'play', 'music'],
-        'check-health-status': ['sức khỏe', 'health', 'bệnh', 'đau'],
-        'read-news': ['tin tức', 'news', 'đọc', 'báo'],
-        'set-reminder': ['nhắc nhở', 'reminder', 'nhớ', 'lịch']
-    }
-    
-    detected_intent = 'general-conversation'  # default
-    for intent, keywords in intent_keywords.items():
-        if any(keyword in text_lower for keyword in keywords):
-            detected_intent = intent
-            break
-    
-    # Command mapping
-    command_mapping = {
-        'send-mess': 'send_message',
-        'set-alarm': 'set_alarm',
-        'call': 'make_call',
-        'check-weather': 'check_weather',
-        'play-media': 'play_media',
-        'check-health-status': 'check_health',
-        'read-news': 'read_news',
-        'set-reminder': 'set_reminder',
-        'general-conversation': 'unknown'
-    }
-    
-    detected_command = command_mapping.get(detected_intent, 'unknown')
-    
-    # Entity extraction (đơn giản)
-    entities = []
-    if 'mẹ' in text or 'bố' in text or 'anh' in text or 'chị' in text:
-        entities.append({
-            "text": "mẹ" if "mẹ" in text else "bố" if "bố" in text else "anh" if "anh" in text else "chị",
-            "label": "RECEIVER"
-        })
-    
-    if any(word in text for word in ['5 giờ', '6 giờ', '7 giờ', '8 giờ', '9 giờ', '10 giờ']):
-        time_match = next(word for word in ['5 giờ', '6 giờ', '7 giờ', '8 giờ', '9 giờ', '10 giờ'] if word in text)
-        entities.append({
-            "text": time_match,
-            "label": "TIME"
-        })
-    
-    if ':' in text and len(text.split(':')) > 1:
-        message_part = text.split(':')[1].strip()
-        if message_part:
-            entities.append({
-                "text": message_part,
-                "label": "MESSAGE"
-            })
-    
-    return {
-        "input": text,
-        "intent": detected_intent,
-        "command": detected_command,
-        "entities": entities,
-        "confidence": {
-            "intent": 0.7 if detected_intent != 'general-conversation' else 0.3,
-            "command": 0.7 if detected_command != 'unknown' else 0.3
-        },
-        "timestamp": datetime.now().isoformat(),
-        "model_version": "PhoBERT_SAM_v1.0",
-        "mode": "mock"
-    }
-
-@app.route('/health', methods=['GET'])
-def health_check():
-    """Health check endpoint"""
-    return jsonify({
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "models_loaded": models_loaded,
-        "mode": "production" if models_loaded else "mock"
-    })
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    """Endpoint dự đoán chính"""
-    try:
-        data = request.get_json()
-        
-        if not data or 'text' not in data:
-            return jsonify({
-                "error": "Missing 'text' field in request body"
-            }), 400
-        
-        text = data['text']
-        
-        if not text.strip():
-            return jsonify({
-                "error": "Text cannot be empty"
-            }), 400
-        
-        # Thực hiện dự đoán
-        if models_loaded and inference_engine:
-            result = inference_engine.predict(text)
-            result['mode'] = 'production'
-        else:
-            result = mock_predict(text)
-        
-        # Thêm metadata
-        result['timestamp'] = datetime.now().isoformat()
-        result['model_version'] = 'PhoBERT_SAM_v1.0'
-        
-        logging.info(f"Prediction for: '{text}' -> Intent: {result['intent']}, Command: {result['command']}")
-        
-        return jsonify(result)
-        
-    except Exception as e:
-        logging.error(f"Error in prediction: {e}")
-        return jsonify({
-            "error": f"Prediction failed: {str(e)}",
-            "timestamp": datetime.now().isoformat()
-        }), 500
-
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    """Phân tích chi tiết text"""
-    try:
-        data = request.get_json()
-        
-        if not data or 'text' not in data:
-            return jsonify({
-                "error": "Missing 'text' field in request body"
-            }), 400
-        
-        text = data['text']
-        
-        if not text.strip():
-            return jsonify({
-                "error": "Text cannot be empty"
-            }), 400
-        
-        # Phân tích cơ bản
-        analysis = {
-            "text": text,
-            "text_length": len(text),
-            "word_count": len(text.split()),
-            "characters": len(text),
-            "timestamp": datetime.now().isoformat()
+        # Intent to Command mapping
+        self.intent_to_command = {
+            "call": "make_call",
+            "send-mess": "send_message", 
+            "set-alarm": "set_alarm",
+            "check-weather": "check_weather",
+            "play-media": "play_media",
+            "read-news": "read_news",
+            "check-health-status": "check_health",
+            "set-reminder": "set_reminder",
+            "general-conversation": "chat"
         }
         
-        # Thêm tokenization nếu có data processor
-        if data_processor:
-            try:
-                tokens = data_processor.tokenizer.tokenize(text)
-                analysis['tokens'] = tokens
-                analysis['token_count'] = len(tokens)
-            except:
-                analysis['tokens'] = text.split()
-                analysis['token_count'] = len(text.split())
-        else:
-            analysis['tokens'] = text.split()
-            analysis['token_count'] = len(text.split())
+        # Entity patterns
+        self.entity_patterns = {
+            "RECEIVER": [
+                r"cho\s+(\w+)",
+                r"gọi\s+(\w+)", 
+                r"nhắn\s+(\w+)",
+                r"(\w+)\s+(?:ơi|à)",
+                r"(?:bố|mẹ|ông|bà|anh|chị|em|con|cháu)"
+            ],
+            "TIME": [
+                r"(\d{1,2}:\d{2})",
+                r"(\d{1,2})\s*giờ",
+                r"(\d{1,2})\s*phút",
+                r"(sáng|chiều|tối|đêm)",
+                r"(hôm\s+nay|ngày\s+mai|tuần\s+sau)"
+            ],
+            "MESSAGE": [
+                r"rằng\s+(.+)",
+                r"nói\s+(.+)",
+                r"nhắn\s+(.+)",
+                r"gửi\s+(.+)"
+            ],
+            "LOCATION": [
+                r"ở\s+(\w+)",
+                r"tại\s+(\w+)",
+                r"(\w+)\s+(?:thành\s+phố|tỉnh|quận|huyện)"
+            ]
+        }
+    
+    def load_model(self):
+        """Load model đã training"""
+        try:
+            print("🔄 Loading PhoBERT model...")
+            
+            # Load checkpoint
+            checkpoint = torch.load("models/best_simple_intent_model.pth", map_location='cpu')
+            
+            # Tạo model
+            self.model = SimpleIntentModel(model_config.model_name, len(checkpoint['intent_to_id']))
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            self.model.eval()
+            self.model.to(self.device)
+            
+            # Load tokenizer
+            self.tokenizer = AutoTokenizer.from_pretrained(model_config.model_name)
+            
+            # Load mappings
+            self.id_to_intent = checkpoint['id_to_intent']
+            
+            print(f"✅ Model loaded successfully!")
+            print(f"   - Validation accuracy: {checkpoint['val_acc']:.2f}%")
+            print(f"   - Number of intents: {len(checkpoint['intent_to_id'])}")
+            print(f"   - Available intents: {list(checkpoint['intent_to_id'].keys())}")
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error loading model: {e}")
+            return False
+    
+    def extract_entities(self, text: str) -> Dict[str, str]:
+        """Extract entities từ text"""
+        entities = {}
         
-        return jsonify(analysis)
+        for entity_type, patterns in self.entity_patterns.items():
+            for pattern in patterns:
+                matches = re.findall(pattern, text, re.IGNORECASE)
+                if matches:
+                    if entity_type == "MESSAGE":
+                        # Lấy toàn bộ message
+                        entities[entity_type] = matches[0].strip()
+                    else:
+                        # Lấy entity đầu tiên tìm được
+                        entities[entity_type] = matches[0].strip()
+                    break
+        
+        return entities
+    
+    def generate_value(self, intent: str, entities: Dict[str, str], original_text: str) -> str:
+        """Generate value dựa trên intent và entities"""
+        if intent == "unknown" or intent == "error":
+            return "Không thể xác định"
+        
+        # Tạo value dựa trên intent và entities
+        if intent == "call":
+            receiver = entities.get("RECEIVER", "người nhận")
+            return f"Gọi điện cho {receiver}"
+        
+        elif intent == "send-mess":
+            receiver = entities.get("RECEIVER", "người nhận")
+            message = entities.get("MESSAGE", "tin nhắn")
+            return f"Gửi tin nhắn cho {receiver}: {message}"
+        
+        elif intent == "set-alarm":
+            time_info = entities.get("TIME", "thời gian")
+            return f"Đặt báo thức lúc {time_info}"
+        
+        elif intent == "set-reminder":
+            time_info = entities.get("TIME", "thời gian")
+            return f"Đặt nhắc nhở lúc {time_info}"
+        
+        elif intent == "check-weather":
+            location = entities.get("LOCATION", "khu vực hiện tại")
+            return f"Kiểm tra thời tiết tại {location}"
+        
+        elif intent == "play-media":
+            return "Phát nhạc/phim"
+        
+        elif intent == "read-news":
+            return "Đọc tin tức"
+        
+        elif intent == "check-health-status":
+            return "Kiểm tra tình trạng sức khỏe"
+        
+        elif intent == "general-conversation":
+            return "Trò chuyện thông thường"
+        
+        else:
+            return f"Thực hiện hành động: {intent}"
+    
+    def predict_intent(self, text: str, confidence_threshold: float = 0.3) -> Dict:
+        """Predict intent và confidence"""
+        try:
+            # Tokenize
+            encoding = self.tokenizer(
+                text,
+                truncation=True,
+                padding="max_length",
+                max_length=model_config.max_length,
+                return_tensors="pt"
+            )
+            
+            # Move to device
+            input_ids = encoding["input_ids"].to(self.device)
+            attention_mask = encoding["attention_mask"].to(self.device)
+            
+            # Predict
+            with torch.no_grad():
+                logits = self.model(input_ids, attention_mask)
+                probabilities = torch.softmax(logits, dim=1)
+                predicted = torch.argmax(logits, dim=1)
+                confidence = probabilities.max().item()
+                intent = self.id_to_intent[predicted.item()]
+            
+            # Check confidence threshold
+            if confidence < confidence_threshold:
+                intent = "unknown"
+                confidence = 0.0
+            
+            return {
+                "intent": intent,
+                "confidence": confidence,
+                "probabilities": probabilities.cpu().numpy().tolist()[0]
+            }
+            
+        except Exception as e:
+            print(f"❌ Error predicting intent: {e}")
+            return {
+                "intent": "error",
+                "confidence": 0.0,
+                "probabilities": []
+            }
+    
+    def process_text(self, text: str, confidence_threshold: float = 0.3) -> IntentResponse:
+        """Xử lý text và trả về kết quả đầy đủ"""
+        start_time = datetime.now()
+        
+        # Predict intent
+        intent_result = self.predict_intent(text, confidence_threshold)
+        
+        # Extract entities
+        entities = self.extract_entities(text)
+        
+        # Get command
+        command = self.intent_to_command.get(intent_result["intent"], "unknown")
+        
+        # Generate value based on intent and entities
+        value = self.generate_value(intent_result["intent"], entities, text)
+        
+        # Calculate processing time
+        processing_time = (datetime.now() - start_time).total_seconds()
+        
+        return IntentResponse(
+            input_text=text,
+            intent=intent_result["intent"],
+            confidence=intent_result["confidence"],
+            command=command,
+            entities=entities,
+            value=value,
+            processing_time=processing_time,
+            timestamp=datetime.now().isoformat()
+        )
+
+# Initialize API
+api = PhoBERTAPI()
+
+# FastAPI app
+app = FastAPI(
+    title="PhoBERT_SAM API",
+    description="API cho Intent Recognition và Entity Extraction cho người cao tuổi",
+    version="1.0.0"
+)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Cho phép tất cả origins (có thể thay đổi thành specific domains)
+    allow_credentials=True,
+    allow_methods=["*"],  # Cho phép tất cả HTTP methods
+    allow_headers=["*"],  # Cho phép tất cả headers
+)
+
+@app.on_event("startup")
+async def startup_event():
+    """Khởi tạo model khi server start"""
+    if not api.load_model():
+        raise Exception("Không thể load model!")
+
+@app.get("/")
+async def root():
+    """Root endpoint"""
+    return {
+        "message": "PhoBERT_SAM API",
+        "version": "1.0.0",
+        "status": "running",
+        "available_intents": list(api.intent_to_command.keys()) if api.id_to_intent else []
+    }
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "model_loaded": api.model is not None,
+        "timestamp": datetime.now().isoformat()
+    }
+
+@app.post("/predict", response_model=IntentResponse)
+async def predict_intent(request: IntentRequest):
+    """Predict intent và extract entities"""
+    try:
+        if not api.model:
+            raise HTTPException(status_code=500, detail="Model chưa được load")
+        
+        result = api.process_text(request.text, request.confidence_threshold)
+        return result
         
     except Exception as e:
-        logging.error(f"Error in text analysis: {e}")
-        return jsonify({
-            "error": f"Text analysis failed: {str(e)}"
-        }), 500
+        raise HTTPException(status_code=500, detail=f"Lỗi xử lý: {str(e)}")
 
-@app.route('/info', methods=['GET'])
-def get_info():
-    """Thông tin về hệ thống"""
-    return jsonify({
-        "system": "PhoBERT_SAM - Vietnamese NLP System",
-        "version": "1.0.0",
-        "description": "Intent Recognition, Entity Extraction, Command Processing",
-        "status": "production" if models_loaded else "mock",
-        "models_loaded": models_loaded,
-        "endpoints": {
-            "health": "/health",
-            "predict": "/predict",
-            "analyze": "/analyze",
-            "info": "/info"
-        },
-        "timestamp": datetime.now().isoformat()
-    })
+@app.get("/intents")
+async def get_intents():
+    """Lấy danh sách intents có sẵn"""
+    if not api.id_to_intent:
+        raise HTTPException(status_code=500, detail="Model chưa được load")
+    
+    return {
+        "intents": list(api.id_to_intent.values()),
+        "intent_to_command": api.intent_to_command
+    }
 
-@app.route('/test', methods=['POST'])
-def test_prediction():
-    """Test endpoint với các mẫu"""
+@app.get("/entities")
+async def get_entity_patterns():
+    """Lấy patterns cho entity extraction"""
+    return {
+        "entity_patterns": api.entity_patterns
+    }
+
+@app.post("/batch_predict")
+async def batch_predict(texts: List[str], confidence_threshold: float = 0.3):
+    """Predict nhiều texts cùng lúc"""
     try:
-        data = request.get_json()
-        
-        if not data or 'texts' not in data:
-            return jsonify({
-                "error": "Missing 'texts' field in request body"
-            }), 400
-        
-        texts = data['texts']
-        
-        if not isinstance(texts, list):
-            return jsonify({
-                "error": "'texts' must be a list"
-            }), 400
+        if not api.model:
+            raise HTTPException(status_code=500, detail="Model chưa được load")
         
         results = []
         for text in texts:
-            if models_loaded and inference_engine:
-                result = inference_engine.predict(text)
-                result['mode'] = 'production'
-            else:
-                result = mock_predict(text)
-            results.append(result)
+            result = api.process_text(text, confidence_threshold)
+            results.append(result.dict())
         
-        response = {
+        return {
             "results": results,
-            "timestamp": datetime.now().isoformat(),
-            "total_texts": len(texts),
-            "mode": "production" if models_loaded else "mock"
+            "total_processed": len(texts)
         }
         
-        return jsonify(response)
-        
     except Exception as e:
-        logging.error(f"Error in test prediction: {e}")
-        return jsonify({
-            "error": f"Test prediction failed: {str(e)}"
-        }), 500
+        raise HTTPException(status_code=500, detail=f"Lỗi xử lý batch: {str(e)}")
 
-if __name__ == '__main__':
-    # Load models khi khởi động
-    load_models()
+if __name__ == "__main__":
+    print("🚀 Starting PhoBERT_SAM API Server...")
+    print("=" * 50)
+    print("📖 API Documentation: http://localhost:8000/docs")
+    print("🔍 Health Check: http://localhost:8000/health")
+    print("🎯 Predict Endpoint: POST http://localhost:8000/predict")
+    print("=" * 50)
     
-    print("🚀 Starting Official PhoBERT_SAM API Server...")
-    print("📡 Available endpoints:")
-    print("  GET  /health - Health check")
-    print("  POST /predict - Single text prediction")
-    print("  POST /analyze - Text analysis")
-    print("  POST /test - Batch test prediction")
-    print("  GET  /info - System information")
-    print(f"\n🌐 Server will start on http://localhost:5000")
-    print(f"📊 Mode: {'Production' if models_loaded else 'Mock'}")
-    
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    uvicorn.run(
+        "api_server:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        log_level="info"
+    )

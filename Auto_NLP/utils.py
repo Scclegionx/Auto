@@ -150,12 +150,13 @@ def save_model_info(model_path: str, config: Dict, metrics: Dict):
     """Lưu thông tin model"""
     import json
     import os
+    from datetime import datetime
     
     info = {
         'model_path': model_path,
         'config': config,
         'metrics': metrics,
-        'timestamp': str(torch.datetime.now())
+        'timestamp': str(datetime.now())
     }
     
     info_path = model_path.replace('.pth', '_info.json')

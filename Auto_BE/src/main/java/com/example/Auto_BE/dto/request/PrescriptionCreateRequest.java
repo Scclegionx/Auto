@@ -17,8 +17,6 @@ public class PrescriptionCreateRequest {
     @NotBlank
     private String imageUrl;
 
-    // Cho phép rỗng (đơn không có nhắc nhở)
-    // Thêm @Valid để validate từng phần tử trong list
     @Valid
     private List<MedicationReminderCreateRequest> medicationReminders;
 }

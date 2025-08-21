@@ -11,7 +11,7 @@ spring:
   quartz:
     job-store-type: jdbc
     jdbc:
-      initialize-schema: always
+      initialize-schema: embedded
     properties:
       org:
         quartz:

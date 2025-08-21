@@ -9,6 +9,7 @@ public class SuccessMessage {
     public static final String PASSWORD_RESET = "Password reset successfully";
     public static final String PRESCRIPTION_CREATED="Prescription created successfully";
     public static final String TOKEN_REGISTERED = "Device token registered successfully";
+    public static final String PROFILE_FETCHED = "Profile fetched successfully";
     public static final String EMAIL_SENT = "Email sent successfully";
     public static final String PROFILE_UPDATED = "Profile updated successfully";
     public static final String LOGOUT_SUCCESS = "Logout successful";

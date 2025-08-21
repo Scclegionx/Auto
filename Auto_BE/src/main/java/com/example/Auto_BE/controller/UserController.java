@@ -1,15 +1,32 @@
 package com.example.Auto_BE.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.Auto_BE.dto.BaseResponse;
+import com.example.Auto_BE.dto.request.UpdateProfileRequest;
+import com.example.Auto_BE.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    @GetMapping
-    public String getUsers() {
-        // This is a placeholder method. You can implement your logic to fetch users here.
-        return "List of users";
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<BaseResponse<?>> getUserProfile(Authentication authentication) {
+        BaseResponse<?> response = userService.getUserProfile(authentication);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<BaseResponse<?>> updateUserProfile(@RequestBody @Valid UpdateProfileRequest updateProfileRequest,
+                                                             Authentication authentication) {
+        BaseResponse<?> response = userService.updateUserProfile(updateProfileRequest, authentication);
+        return ResponseEntity.ok(response);
     }
 }

@@ -32,50 +32,31 @@ public class CronMedicationReminderJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         Long medicationReminderId = context.getJobDetail().getJobDataMap().getLong("medicationReminderId");
-        
-        System.out.println("=== Cron Job Executing ===");
-        System.out.println("Time: " + LocalDateTime.now());
-        System.out.println("MedicationReminderId: " + medicationReminderId);
-
         try {
-            // 1. Load medication reminder với eager loading user và deviceTokens
             MedicationReminder reminder = medicationReminderRepository.findByIdWithUserAndDeviceTokens(medicationReminderId)
                     .orElse(null);
 
             if (reminder == null) {
-                System.err.println("Medication reminder not found: " + medicationReminderId);
                 return;
             }
 
             if (!reminder.getIsActive()) {
-                System.out.println("Medication reminder is inactive, skipping: " + medicationReminderId);
                 return;
             }
 
-            System.out.println("Processing reminder: " + reminder.getName());
-
-            // 2. Tạo notification log để tracking
             Notifications notificationLog = createNotificationLog(reminder);
             
-            // 3. Lấy FCM tokens của user
+            // Lấy FCM tokens của user
             List<String> deviceTokens = reminder.getUser().getDeviceTokens()
                     .stream()
                     .map(DeviceToken::getFcmToken)
                     .toList();
 
             if (deviceTokens.isEmpty()) {
-                System.out.println("No device tokens found for user: " + reminder.getUser().getEmail());
-                // Không có device token thì vẫn tạo notification với status PENDING
-                // Vì đây là trạng thái uống thuốc, không phải trạng thái gửi FCM
                 notificationService.save(notificationLog);
-                // Vẫn lên lịch kiểm tra sau 15 phút
                 scheduleMissedCheckJob(notificationLog.getId());
                 return;
             }
-
-            System.out.println("Sending FCM to " + deviceTokens.size() + " devices");
-
-            // 4. Gửi FCM notification (không ảnh hưởng đến trạng thái uống thuốc)
             boolean sent = sendFcmNotification(reminder, deviceTokens, notificationLog);
 
             if (sent) {
@@ -83,17 +64,11 @@ public class CronMedicationReminderJob implements Job {
             } else {
                 System.err.println("Failed to send FCM for reminder: " + reminder.getName());
             }
-            
-            // 5. Luôn lên lịch job kiểm tra sau 15 phút (bất kể FCM có gửi thành công hay không)
-            // Vì trạng thái uống thuốc không phụ thuộc vào việc gửi FCM thành công
             scheduleMissedCheckJob(notificationLog.getId());
 
         } catch (Exception e) {
-            System.err.println("Error in CronMedicationReminderJob: " + e.getMessage());
             e.printStackTrace();
         }
-
-        System.out.println("=== Cron Job Finished ===");
     }
 
     private Notifications createNotificationLog(MedicationReminder reminder) {
@@ -117,24 +92,13 @@ public class CronMedicationReminderJob implements Job {
             BatchResponse response = fcmService.sendNotification(deviceTokens, title, body);
             
             boolean success = response.getSuccessCount() > 0;
-            
-            // Chỉ cập nhật thời gian gửi FCM, không thay đổi status uống thuốc
-            // Status của notification là trạng thái uống thuốc, không phải trạng thái gửi FCM
             log.setLastSentTime(LocalDateTime.now());
             notificationService.save(log);
-            
-            System.out.println("FCM Result - Success: " + response.getSuccessCount() + 
-                             ", Failed: " + response.getFailureCount());
-            
             return success;
             
         } catch (FirebaseMessagingException e) {
-            System.err.println("FCM Error: " + e.getMessage());
-            
-            // Cập nhật thời gian gửi FCM (thất bại), nhưng không thay đổi status uống thuốc
             log.setLastSentTime(LocalDateTime.now());
             notificationService.save(log);
-            
             return false;
         }
     }
@@ -158,12 +122,7 @@ public class CronMedicationReminderJob implements Job {
                     .build();
 
             scheduler.scheduleJob(jobDetail, trigger);
-            
-            System.out.println("Scheduled missed check job for notification: " + notificationId + 
-                             " to check medication taking status at " + LocalDateTime.now().plusMinutes(15));
-            
         } catch (SchedulerException e) {
-            System.err.println("Error scheduling missed check job: " + e.getMessage());
             e.printStackTrace();
         }
     }

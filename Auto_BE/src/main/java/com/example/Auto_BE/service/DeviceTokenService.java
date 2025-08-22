@@ -26,7 +26,6 @@ public class DeviceTokenService {
         this.userRepository = userRepository;
     }
 
-    // Phương thức để đăng ký token thiết bị
     public BaseResponse<DeviceTokenResponse> registerDeviceToken(DeviceTokenRequest deviceTokenRequest, Authentication authentication) {
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
@@ -34,12 +33,11 @@ public class DeviceTokenService {
 //        if (deviceTokenRepository.existsByUserIdAndToken(user.getId(), deviceTokenRequest.getToken())) {
 //            throw new BaseException.BadRequestException("Token thiết bị đã được đăng ký trước đó");
 //        }
-        // Tạo mới token thiết bị
+
         DeviceToken deviceToken = DeviceTokenMapper.toEntity(deviceTokenRequest, user);
         deviceTokenRepository.save(deviceToken);
-        // Chuyển đổi sang response
+
         DeviceTokenResponse deviceTokenResponse = DeviceTokenMapper.toResponse(deviceToken);
-        // Trả về phản hồi thành công
 
         return BaseResponse.<DeviceTokenResponse>builder()
                 .status(SUCCESS)

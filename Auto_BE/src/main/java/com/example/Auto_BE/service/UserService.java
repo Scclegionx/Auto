@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-import static com.example.Auto_BE.constants.ErrorMessages.USER_NOT_FOUND;
+import static com.example.Auto_BE.constants.ErrorMessages.*;
 import static com.example.Auto_BE.constants.SuccessMessage.*;
 
 @Service
@@ -90,34 +90,30 @@ public class UserService {
 
     public BaseResponse<String> changePassword(ChangePasswordRequest changePasswordRequest, Authentication authentication) {
         try {
-            // Get current user
             User user = userRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
 
-            // Verify current password
             if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
-                throw new BaseException.BadRequestException("Current password is incorrect");
+                throw new BaseException.BadRequestException(CURR_PASSWORD_INCORRECT);
             }
 
-            // Check if new password is different from current password
             if (passwordEncoder.matches(changePasswordRequest.getNewPassword(), user.getPassword())) {
-                throw new BaseException.BadRequestException("New password must be different from current password");
+                throw new BaseException.BadRequestException(PASSWORD_ERROR);
             }
 
-            // Update password
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
 
             return BaseResponse.<String>builder()
                     .status(SUCCESS)
-                    .message("Password changed successfully")
-                    .data("Password has been updated")
+                    .message(PASSWORD_UPDATED)
+                    .data(null)
                     .build();
 
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new BaseException.BadRequestException("Failed to change password: " + e.getMessage());
+            throw new BaseException.BadRequestException(e.getMessage());
         }
     }
 

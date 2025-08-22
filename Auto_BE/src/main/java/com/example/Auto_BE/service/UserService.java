@@ -1,6 +1,7 @@
 package com.example.Auto_BE.service;
 
 import com.example.Auto_BE.dto.BaseResponse;
+import com.example.Auto_BE.dto.request.ChangePasswordRequest;
 import com.example.Auto_BE.dto.request.UpdateProfileRequest;
 import com.example.Auto_BE.dto.response.ProfileResponse;
 import com.example.Auto_BE.entity.User;
@@ -10,6 +11,7 @@ import com.example.Auto_BE.mapper.UserMapper;
 import com.example.Auto_BE.repository.UserRepository;
 import com.google.firebase.remoteconfig.internal.TemplateResponse;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,9 +22,11 @@ import static com.example.Auto_BE.constants.SuccessMessage.*;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public BaseResponse<?> getUserProfile(Authentication authentication) {
@@ -81,6 +85,39 @@ public class UserService {
 
         }catch (Exception e) {
             throw new BaseException.BadRequestException(e.getMessage());
+        }
+    }
+
+    public BaseResponse<String> changePassword(ChangePasswordRequest changePasswordRequest, Authentication authentication) {
+        try {
+            // Get current user
+            User user = userRepository.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
+
+            // Verify current password
+            if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
+                throw new BaseException.BadRequestException("Current password is incorrect");
+            }
+
+            // Check if new password is different from current password
+            if (passwordEncoder.matches(changePasswordRequest.getNewPassword(), user.getPassword())) {
+                throw new BaseException.BadRequestException("New password must be different from current password");
+            }
+
+            // Update password
+            user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+            userRepository.save(user);
+
+            return BaseResponse.<String>builder()
+                    .status(SUCCESS)
+                    .message("Password changed successfully")
+                    .data("Password has been updated")
+                    .build();
+
+        } catch (BaseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BaseException.BadRequestException("Failed to change password: " + e.getMessage());
         }
     }
 

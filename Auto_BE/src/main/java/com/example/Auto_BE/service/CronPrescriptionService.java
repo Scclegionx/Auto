@@ -19,9 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.Auto_BE.constants.ErrorMessages.USER_NOT_FOUND;
-import static com.example.Auto_BE.constants.SuccessMessage.PRESCRIPTION_CREATED;
-import static com.example.Auto_BE.constants.SuccessMessage.SUCCESS;
+import static com.example.Auto_BE.constants.ErrorMessages.*;
+import static com.example.Auto_BE.constants.SuccessMessage.*;
 
 @Service
 public class CronPrescriptionService {
@@ -64,30 +63,19 @@ public class CronPrescriptionService {
 
         Prescriptions savedPrescription = prescriptionRepository.save(prescription);
 
-        // 6. ===== TẠO CRON JOBS THAY VÌ INDIVIDUAL JOBS =====
+        // Tạo cron jobs cho medication reminders
         if (savedPrescription.getMedicationReminders() != null && 
             !savedPrescription.getMedicationReminders().isEmpty()) {
-            
-            System.out.println("=== Creating cron schedules for new prescription ===");
-            System.out.println("Prescription ID: " + savedPrescription.getId());
-            System.out.println("Number of medication reminders: " + savedPrescription.getMedicationReminders().size());
-            
+
             for (MedicationReminder reminder : savedPrescription.getMedicationReminders()) {
                 try {
-                    System.out.println("Creating cron schedule for: " + reminder.getName() + " (ID: " + reminder.getId() + ")");
                     cronSchedulerService.scheduleWithCron(reminder.getId());
-                    System.out.println("Successfully created cron schedule for reminder ID: " + reminder.getId());
                 } catch (Exception e) {
-                    System.err.println("ERROR creating cron schedule for reminder ID " + reminder.getId() + ": " + e.getMessage());
                     e.printStackTrace();
                 }
             }
-            System.out.println("=== Finished creating cron schedules ===");
-        } else {
-            System.out.println("No medication reminders to schedule for prescription ID: " + savedPrescription.getId());
         }
 
-        // 7. Build response
         List<MedicationReminderResponse> medicationReminderResponses = 
                 (savedPrescription.getMedicationReminders() == null) ? List.of() :
                 savedPrescription.getMedicationReminders().stream()
@@ -113,38 +101,33 @@ public class CronPrescriptionService {
 
         // 2. Find existing prescription
         Prescriptions existingPrescription = prescriptionRepository.findById(prescriptionId)
-                .orElseThrow(() -> new BaseException.EntityNotFoundException("Prescription not found"));
+                .orElseThrow(() -> new BaseException.EntityNotFoundException(PRESCRIPTION_NOT_FOUND));
 
-        // 3. Check ownership
         if (!existingPrescription.getUser().getId().equals(user.getId())) {
-            throw new BaseException.BadRequestException("You don't have permission to update this prescription");
+            throw new BaseException.BadRequestException(PERMISSION_ERROR);
         }
 
-//        // 4. Validate new data
+//        // Validate new data
 //        validateMedicationReminders(prescriptionUpdateRequest.getMedicationReminders());
 
-        System.out.println("=== Updating prescription ===");
-        System.out.println("Prescription ID: " + prescriptionId);
-
-        // 5. ===== HỦY TẤT CẢ CRON JOBS CŨ =====
+        // huy tất cả cron jobs cũ
         List<MedicationReminder> oldReminders = existingPrescription.getMedicationReminders();
         if (oldReminders != null && !oldReminders.isEmpty()) {
-            System.out.println("Cancelling cron schedules for " + oldReminders.size() + " old reminders");
             for (MedicationReminder oldReminder : oldReminders) {
                 try {
                     cronSchedulerService.cancelCronSchedule(oldReminder.getId());
                 } catch (Exception e) {
-                    System.err.println("Error cancelling cron schedule for reminder ID " + oldReminder.getId() + ": " + e.getMessage());
+                    System.err.println(e.getMessage());
                 }
             }
         }
 
-        // 6. Update prescription entity
+        //cập nhật thông tin prescription
         existingPrescription.setName(prescriptionUpdateRequest.getName());
         existingPrescription.setDescription(prescriptionUpdateRequest.getDescription());
         existingPrescription.setImageUrl(prescriptionUpdateRequest.getImageUrl());
 
-        // 7. ===== TẠO MEDICATION REMINDERS MỚI =====
+        // tao mới medication reminders nếu có
         if (prescriptionUpdateRequest.getMedicationReminders() != null && 
             !prescriptionUpdateRequest.getMedicationReminders().isEmpty()) {
             
@@ -168,27 +151,21 @@ public class CronPrescriptionService {
             existingPrescription.setMedicationReminders(null);
         }
 
-        // 8. Save updated prescription
         Prescriptions updatedPrescription = prescriptionRepository.save(existingPrescription);
 
-        // 9. ===== TẠO CRON JOBS MỚI =====
+        // tạo cron jobs mới cho medication reminders
         if (updatedPrescription.getMedicationReminders() != null && 
             !updatedPrescription.getMedicationReminders().isEmpty()) {
-            
-            System.out.println("Creating cron schedules for new reminders");
+
             for (MedicationReminder newReminder : updatedPrescription.getMedicationReminders()) {
                 try {
                     cronSchedulerService.scheduleWithCron(newReminder.getId());
-                    System.out.println("Created cron schedule for new reminder ID: " + newReminder.getId());
                 } catch (Exception e) {
-                    System.err.println("Error creating cron schedule for new reminder ID " + newReminder.getId() + ": " + e.getMessage());
+                    System.err.println(e.getMessage());
                 }
             }
         }
 
-        System.out.println("=== Finished updating prescription ===");
-
-        // 10. Build response
         List<MedicationReminderResponse> medicationReminderResponses = 
                 (updatedPrescription.getMedicationReminders() == null) ? List.of() :
                 updatedPrescription.getMedicationReminders().stream()
@@ -199,26 +176,22 @@ public class CronPrescriptionService {
         
         return BaseResponse.<PrescriptionResponse>builder()
                 .status(SUCCESS)
-                .message("Prescription updated successfully")
+                .message(PRESCRIPTION_UPDATED)
                 .data(response)
                 .build();
     }
 
     public BaseResponse<PrescriptionResponse> getById(Long prescriptionId, Authentication authentication) {
-        // 1. Validate user
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
 
-        // 2. Find prescription
         Prescriptions prescription = prescriptionRepository.findById(prescriptionId)
-                .orElseThrow(() -> new BaseException.EntityNotFoundException("Prescription not found"));
+                .orElseThrow(() -> new BaseException.EntityNotFoundException(PRESCRIPTION_NOT_FOUND));
 
-        // 3. Check ownership
         if (!prescription.getUser().getId().equals(user.getId())) {
-            throw new BaseException.BadRequestException("You don't have permission to view this prescription");
+            throw new BaseException.BadRequestException(PERMISSION_ERROR);
         }
 
-        // 4. Build response
         List<MedicationReminderResponse> medicationReminderResponses = 
                 (prescription.getMedicationReminders() == null) ? List.of() :
                 prescription.getMedicationReminders().stream()
@@ -229,20 +202,17 @@ public class CronPrescriptionService {
         
         return BaseResponse.<PrescriptionResponse>builder()
                 .status(SUCCESS)
-                .message("Prescription retrieved successfully")
+                .message(PRESCRIPTION_FETCHED)
                 .data(response)
                 .build();
     }
 
     public BaseResponse<List<PrescriptionResponse>> getAllByUser(Authentication authentication) {
-        // 1. Validate user
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
 
-        // 2. Find all prescriptions for user
         List<Prescriptions> prescriptions = prescriptionRepository.findByUserIdAndIsActiveTrue(user.getId());
 
-        // 3. Build response
         List<PrescriptionResponse> prescriptionResponses = prescriptions.stream()
                 .map(prescription -> {
                     List<MedicationReminderResponse> medicationReminderResponses = 
@@ -257,45 +227,40 @@ public class CronPrescriptionService {
 
         return BaseResponse.<List<PrescriptionResponse>>builder()
                 .status(SUCCESS)
-                .message("Prescriptions retrieved successfully")
+                .message(PRESCRIPTION_FETCHED)
                 .data(prescriptionResponses)
                 .build();
     }
 
     @Transactional
     public BaseResponse<String> delete(Long prescriptionId, Authentication authentication) {
-        // 1. Validate user
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
 
-        // 2. Find prescription
         Prescriptions prescription = prescriptionRepository.findById(prescriptionId)
-                .orElseThrow(() -> new BaseException.EntityNotFoundException("Prescription not found"));
+                .orElseThrow(() -> new BaseException.EntityNotFoundException(PRESCRIPTION_NOT_FOUND));
 
-        // 3. Check ownership
         if (!prescription.getUser().getId().equals(user.getId())) {
-            throw new BaseException.BadRequestException("You don't have permission to delete this prescription");
+            throw new BaseException.BadRequestException(PERMISSION_ERROR);
         }
 
-        // 4. ===== HỦY TẤT CẢ CRON JOBS =====
+        // hủy tất cả cron jobs liên quan đến medication reminders
         if (prescription.getMedicationReminders() != null && !prescription.getMedicationReminders().isEmpty()) {
-            System.out.println("Cancelling cron schedules for deleted prescription");
             for (MedicationReminder reminder : prescription.getMedicationReminders()) {
                 try {
                     cronSchedulerService.cancelCronSchedule(reminder.getId());
                 } catch (Exception e) {
-                    System.err.println("Error cancelling cron schedule: " + e.getMessage());
+                    System.err.println(e.getMessage());
                 }
             }
         }
 
-        // 5. Delete prescription (cascade will delete medication reminders)
         prescriptionRepository.delete(prescription);
 
         return BaseResponse.<String>builder()
                 .status(SUCCESS)
-                .message("Prescription deleted successfully")
-                .data("Prescription ID: " + prescriptionId)
+                .message(PRESCRIPTION_DELETED)
+                .data(null)
                 .build();
     }
 

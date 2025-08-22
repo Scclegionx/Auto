@@ -19,12 +19,5 @@ public interface NotificationRepository extends JpaRepository<Notifications, Lon
 
     // Kiểm tra xem có thông báo nào với trạng thái PENDING không
     boolean existsByStatus(ENotificationStatus status);
-    
-    // Kiểm tra notification đã tồn tại cho medication reminder và thời gian cụ thể
-    @Query("SELECT COUNT(n) > 0 FROM Notifications n WHERE n.medicationReminder.id = :reminderId AND n.reminderTime = :reminderTime AND n.status IN ('PENDING', 'SENT')")
-    boolean existsByMedicationReminderAndTime(@Param("reminderId") Long reminderId, @Param("reminderTime") LocalDateTime reminderTime);
-    
-    // Lấy notification đã tồn tại
-    @Query("SELECT n FROM Notifications n WHERE n.medicationReminder.id = :reminderId AND n.reminderTime = :reminderTime AND n.status IN ('PENDING', 'SENT')")
-    Optional<Notifications> findByMedicationReminderAndTime(@Param("reminderId") Long reminderId, @Param("reminderTime") LocalDateTime reminderTime);
+
 }

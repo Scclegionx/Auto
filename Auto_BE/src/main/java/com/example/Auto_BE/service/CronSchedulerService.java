@@ -1,6 +1,7 @@
 package com.example.Auto_BE.service;
 
 import com.example.Auto_BE.entity.MedicationReminder;
+import com.example.Auto_BE.exception.BaseException;
 import com.example.Auto_BE.repository.MedicationReminderRepository;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
+
+import static com.example.Auto_BE.constants.ErrorMessages.DAY_ERROR;
+import static com.example.Auto_BE.constants.ErrorMessages.MEDICATION_NOT_FOUND;
 
 @Service
 public class CronSchedulerService {
@@ -26,12 +30,11 @@ public class CronSchedulerService {
     public void scheduleWithCron(Long medicationReminderId) {
         try {
             MedicationReminder reminder = medicationReminderRepository.findById(medicationReminderId)
-                    .orElseThrow(() -> new RuntimeException("Medication reminder not found"));
+                    .orElseThrow(() -> new BaseException.BadRequestException(MEDICATION_NOT_FOUND));
 
             // Validate dữ liệu
             if (reminder.getReminderTime() == null || reminder.getReminderTime().trim().isEmpty() ||
                 reminder.getDaysOfWeek() == null || reminder.getDaysOfWeek().trim().isEmpty()) {
-                System.err.println("Invalid reminder data for ID: " + medicationReminderId);
                 return;
             }
 
@@ -40,10 +43,6 @@ public class CronSchedulerService {
             
             // Tạo cron expression từ daysOfWeek và reminderTime
             String cronExpression = buildCronExpression(reminder.getDaysOfWeek(), reminderTime);
-            
-            System.out.println("=== Creating cron job for reminder ===");
-            System.out.println("Reminder: " + reminder.getName() + " (ID: " + reminder.getId() + ")");
-            System.out.println("Cron Expression: " + cronExpression);
 
             // Tạo JobDetail
             String jobId = "cronReminder-" + reminder.getId();
@@ -62,15 +61,11 @@ public class CronSchedulerService {
             // Schedule job
             if (scheduler.checkExists(jobDetail.getKey())) {
                 scheduler.deleteJob(jobDetail.getKey());
-                System.out.println("Deleted existing job: " + jobId);
             }
 
             scheduler.scheduleJob(jobDetail, trigger);
-            System.out.println("Successfully scheduled cron job: " + jobId);
-            System.out.println("=== Finished creating cron job ===");
-
         } catch (Exception e) {
-            System.err.println("ERROR in scheduleWithCron: " + e.getMessage());
+            System.err.println(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -101,7 +96,7 @@ public class CronSchedulerService {
      */
     private String convertDaysOfWeekToCron(String daysOfWeek) {
         if (daysOfWeek.length() != 7) {
-            throw new IllegalArgumentException("daysOfWeek must be 7 characters");
+            throw new IllegalArgumentException(DAY_ERROR);
         }
 
         String[] cronDays = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
@@ -122,13 +117,10 @@ public class CronSchedulerService {
         if (daysList.isEmpty()) {
             throw new IllegalArgumentException("At least one day must be selected");
         }
-        
-        // Chỉ có 1 trường hợp đặc biệt: tất cả 7 ngày
+
         if (daysList.equals("MON,TUE,WED,THU,FRI,SAT,SUN")) {
             return "*";
         }
-        
-        // Tất cả trường hợp khác đều dùng cách liệt kê
         return daysList;
     }
 
@@ -142,64 +134,11 @@ public class CronSchedulerService {
             
             if (scheduler.checkExists(jobKey)) {
                 scheduler.deleteJob(jobKey);
-                System.out.println("Cancelled cron job: " + jobId);
-            } else {
-                System.out.println("Cron job not found: " + jobId);
             }
         } catch (SchedulerException e) {
-            System.err.println("Error cancelling cron job: " + e.getMessage());
+            System.err.println( e.getMessage());
             e.printStackTrace();
         }
     }
 
-    /**
-     * Tạo lịch cho tất cả medication reminders đang active
-     */
-    public void scheduleAllActiveReminders() {
-        try {
-            var activeReminders = medicationReminderRepository.findByIsActiveTrue();
-            System.out.println("Scheduling cron jobs for " + activeReminders.size() + " active reminders");
-            
-            for (var reminder : activeReminders) {
-                scheduleWithCron(reminder.getId());
-            }
-            
-            System.out.println("Finished scheduling all active reminders");
-        } catch (Exception e) {
-            System.err.println("Error scheduling all reminders: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Debug: Liệt kê tất cả cron jobs
-     */
-    public void listAllCronJobs() {
-        try {
-            var jobKeys = scheduler.getJobKeys(GroupMatcher.jobGroupEquals("CRON_REMINDERS"));
-            System.out.println("=== All Cron Jobs ===");
-            
-            for (JobKey jobKey : jobKeys) {
-                var jobDetail = scheduler.getJobDetail(jobKey);
-                var triggers = scheduler.getTriggersOfJob(jobKey);
-                
-                System.out.println("Job: " + jobKey.getName());
-                System.out.println("  MedicationReminderId: " + 
-                    jobDetail.getJobDataMap().getLong("medicationReminderId"));
-                
-                for (Trigger trigger : triggers) {
-                    if (trigger instanceof CronTrigger) {
-                        CronTrigger cronTrigger = (CronTrigger) trigger;
-                        System.out.println("  Cron: " + cronTrigger.getCronExpression());
-                        System.out.println("  Next Fire: " + trigger.getNextFireTime());
-                    }
-                }
-                System.out.println();
-            }
-            
-        } catch (SchedulerException e) {
-            System.err.println("Error listing cron jobs: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 }

@@ -12,7 +12,6 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
-    // Hàm gửi email tái sử dụng được
     public void sendEmail(String to, String subject, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

@@ -74,98 +74,98 @@ public class CronPrescriptionController {
 
     // ===== DEBUGGING ENDPOINTS =====
 
-    @PostMapping("/schedule-all")
-    public ResponseEntity<BaseResponse<String>> scheduleAllActiveReminders() {
-        try {
-            cronSchedulerService.scheduleAllActiveReminders();
-            
-            BaseResponse<String> response = BaseResponse.<String>builder()
-                    .status(SUCCESS)
-                    .message("Scheduled all active reminders successfully")
-                    .data("Check logs for details")
-                    .build();
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            BaseResponse<String> response = BaseResponse.<String>builder()
-                    .status("ERROR")
-                    .message("Error scheduling reminders: " + e.getMessage())
-                    .data(null)
-                    .build();
-            
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    @PostMapping("/schedule/{medicationReminderId}")
-    public ResponseEntity<BaseResponse<String>> scheduleSpecificReminder(
-            @PathVariable Long medicationReminderId) {
-        try {
-            cronSchedulerService.scheduleWithCron(medicationReminderId);
-            
-            BaseResponse<String> response = BaseResponse.<String>builder()
-                    .status(SUCCESS)
-                    .message("Scheduled reminder successfully")
-                    .data("Medication Reminder ID: " + medicationReminderId)
-                    .build();
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            BaseResponse<String> response = BaseResponse.<String>builder()
-                    .status("ERROR")
-                    .message("Error scheduling reminder: " + e.getMessage())
-                    .data(null)
-                    .build();
-            
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    @DeleteMapping("/schedule/{medicationReminderId}")
-    public ResponseEntity<BaseResponse<String>> cancelSpecificReminder(
-            @PathVariable Long medicationReminderId) {
-        try {
-            cronSchedulerService.cancelCronSchedule(medicationReminderId);
-            
-            BaseResponse<String> response = BaseResponse.<String>builder()
-                    .status(SUCCESS)
-                    .message("Cancelled reminder schedule successfully")
-                    .data("Medication Reminder ID: " + medicationReminderId)
-                    .build();
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            BaseResponse<String> response = BaseResponse.<String>builder()
-                    .status("ERROR")
-                    .message("Error cancelling reminder: " + e.getMessage())
-                    .data(null)
-                    .build();
-            
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    @GetMapping("/cron-jobs")
-    public ResponseEntity<BaseResponse<String>> listAllCronJobs() {
-        try {
-            cronSchedulerService.listAllCronJobs();
-            
-            BaseResponse<String> response = BaseResponse.<String>builder()
-                    .status(SUCCESS)
-                    .message("Listed all cron jobs")
-                    .data("Check console logs for details")
-                    .build();
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            BaseResponse<String> response = BaseResponse.<String>builder()
-                    .status("ERROR")
-                    .message("Error listing cron jobs: " + e.getMessage())
-                    .data(null)
-                    .build();
-            
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
+//    @PostMapping("/schedule-all")
+//    public ResponseEntity<BaseResponse<String>> scheduleAllActiveReminders() {
+//        try {
+//            cronSchedulerService.scheduleAllActiveReminders();
+//
+//            BaseResponse<String> response = BaseResponse.<String>builder()
+//                    .status(SUCCESS)
+//                    .message("Scheduled all active reminders successfully")
+//                    .data("Check logs for details")
+//                    .build();
+//
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            BaseResponse<String> response = BaseResponse.<String>builder()
+//                    .status("ERROR")
+//                    .message("Error scheduling reminders: " + e.getMessage())
+//                    .data(null)
+//                    .build();
+//
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//    }
+//
+//    @PostMapping("/schedule/{medicationReminderId}")
+//    public ResponseEntity<BaseResponse<String>> scheduleSpecificReminder(
+//            @PathVariable Long medicationReminderId) {
+//        try {
+//            cronSchedulerService.scheduleWithCron(medicationReminderId);
+//
+//            BaseResponse<String> response = BaseResponse.<String>builder()
+//                    .status(SUCCESS)
+//                    .message("Scheduled reminder successfully")
+//                    .data("Medication Reminder ID: " + medicationReminderId)
+//                    .build();
+//
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            BaseResponse<String> response = BaseResponse.<String>builder()
+//                    .status("ERROR")
+//                    .message("Error scheduling reminder: " + e.getMessage())
+//                    .data(null)
+//                    .build();
+//
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//    }
+//
+//    @DeleteMapping("/schedule/{medicationReminderId}")
+//    public ResponseEntity<BaseResponse<String>> cancelSpecificReminder(
+//            @PathVariable Long medicationReminderId) {
+//        try {
+//            cronSchedulerService.cancelCronSchedule(medicationReminderId);
+//
+//            BaseResponse<String> response = BaseResponse.<String>builder()
+//                    .status(SUCCESS)
+//                    .message("Cancelled reminder schedule successfully")
+//                    .data("Medication Reminder ID: " + medicationReminderId)
+//                    .build();
+//
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            BaseResponse<String> response = BaseResponse.<String>builder()
+//                    .status("ERROR")
+//                    .message("Error cancelling reminder: " + e.getMessage())
+//                    .data(null)
+//                    .build();
+//
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//    }
+//
+//    @GetMapping("/cron-jobs")
+//    public ResponseEntity<BaseResponse<String>> listAllCronJobs() {
+//        try {
+//            cronSchedulerService.listAllCronJobs();
+//
+//            BaseResponse<String> response = BaseResponse.<String>builder()
+//                    .status(SUCCESS)
+//                    .message("Listed all cron jobs")
+//                    .data("Check console logs for details")
+//                    .build();
+//
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            BaseResponse<String> response = BaseResponse.<String>builder()
+//                    .status("ERROR")
+//                    .message("Error listing cron jobs: " + e.getMessage())
+//                    .data(null)
+//                    .build();
+//
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//    }
 
 }

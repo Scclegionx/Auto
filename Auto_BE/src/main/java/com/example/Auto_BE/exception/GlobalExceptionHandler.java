@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
             HttpMessageNotReadableException.class,
             DataIntegrityViolationException.class})
     public ResponseEntity<BaseResponse<Object>> handleValidationExceptions(Exception ex) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, INVALID_INPUT);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, INVALID_INPUT + " - " + ex.getMessage());
     }
 
 

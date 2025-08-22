@@ -1,5 +1,8 @@
 package com.example.Auto_BE.entity.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum EBloodType {
     A_POSITIVE("A+"),
     A_NEGATIVE("A-"),
@@ -16,7 +19,4 @@ public enum EBloodType {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 }

@@ -1,6 +1,7 @@
 package com.example.Auto_BE.controller;
 
 import com.example.Auto_BE.dto.BaseResponse;
+import com.example.Auto_BE.dto.request.ChangePasswordRequest;
 import com.example.Auto_BE.dto.request.UpdateProfileRequest;
 import com.example.Auto_BE.service.UserService;
 import jakarta.validation.Valid;
@@ -27,6 +28,13 @@ public class UserController {
     public ResponseEntity<BaseResponse<?>> updateUserProfile(@RequestBody @Valid UpdateProfileRequest updateProfileRequest,
                                                              Authentication authentication) {
         BaseResponse<?> response = userService.updateUserProfile(updateProfileRequest, authentication);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<BaseResponse<String>> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest,
+                                                              Authentication authentication) {
+        BaseResponse<String> response = userService.changePassword(changePasswordRequest, authentication);
         return ResponseEntity.ok(response);
     }
 }

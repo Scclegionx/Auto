@@ -1,0 +1,143 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Flask-related
+instance/
+*.db
+*.sqlite3
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# VS Code settings
+.vscode/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# IDEs
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# ===== PHOBERT_SAM SPECIFIC =====
+
+# Trained models (large files)
+models/*.pth
+models/*.pt
+models/*.bin
+models/*.safetensors
+models/best_*.pth
+models/checkpoint_*.pth
+models/*_model.pth
+
+# Dataset files (large JSON files)
+*_dataset*.json
+*_augmented*.json
+elderly_augmented*.json
+nlp_command_dataset.json
+elderly_command_dataset_reduced.json
+
+# Augmented datasets
+*_augmented*.json
+*_augmented_*.json
+elderly_augmented*.json
+
+# Training logs and outputs
+logs/
+*.log
+training_logs/
+wandb/
+runs/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Cache directories
+.cache/
+cache/
+transformers_cache/
+torch_cache/
+
+# Large data files
+*.csv
+*.tsv
+*.xlsx
+*.xls
+
+# Model checkpoints
+checkpoints/
+checkpoint/
+*.ckpt
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Jupyter notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Backup files
+*.bak
+*.backup
+*_backup.*
+
+# Large binary files
+*.bin
+*.dat
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Exclude specific large files (already covered above)
+# elderly_augmented.json
+# nlp_command_dataset.json
+# elderly_command_dataset_reduced.json

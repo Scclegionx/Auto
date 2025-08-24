@@ -1,13 +1,30 @@
 
+# ========================================
+# LARGE MODEL FILES (>100MB)
+# ========================================
+
+# All model files in models directory
 models/*.pth
 models/*.pt
 models/*.bin
 models/*.safetensors
+models/*.h5
+models/*.hdf5
+models/*.onnx
+models/*.pb
+models/*.ckpt
+models/*.weights
+
+# Specific model patterns
 models/best_*.pth
 models/checkpoint_*.pth
 models/model_*.pth
 models/large_*.pth
 models/phobert_*.pth
+models/epoch_*.pth
+models/*_epoch_*.pth
+models/*_best.pth
+models/*_checkpoint.pth
 
 # Model directories
 models/phobert_large_intent_model/
@@ -15,6 +32,29 @@ models/phobert_base_intent_model/
 models/trained_models/
 models/checkpoints/
 models/saved_models/
+models/checkpoints/
+models/weights/
+models/backup/
+
+# ========================================
+# LARGE FILES (>100MB) - GENERAL RULE
+# ========================================
+
+# Ignore all files larger than 100MB (GitHub limit)
+# This is a safety net for any large files that might be missed
+*.pth
+*.pt
+*.bin
+*.safetensors
+*.h5
+*.hdf5
+*.onnx
+*.pb
+*.ckpt
+*.weights
+*.model
+*.tflite
+*.lite
 
 # ========================================
 # CACHE & TEMPORARY FILES

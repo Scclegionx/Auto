@@ -48,6 +48,7 @@ MANIFEST
 torch_cache/
 transformers_cache/
 huggingface_cache/
+model_cache/
 
 # Jupyter Notebook
 .ipynb_checkpoints

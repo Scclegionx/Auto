@@ -95,11 +95,20 @@ class UnifiedDataset(Dataset):
         }
 
 class Trainer:
-    """Trainer cho các mô hình PhoBERT với tính năng nâng cao"""
+    """Trainer cho các mô hình PhoBERT với tính năng nâng cao và GPU support"""
     
     def __init__(self, model_type: str = "unified"):
+        # Auto-detect device
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f"🖥️ Trainer using device: {self.device}")
+        
+        if self.device.type == "cuda":
+            print(f"🎮 GPU: {torch.cuda.get_device_name()}")
+            print(f"💾 GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+            
+            # Enable cuDNN benchmark
+            torch.backends.cudnn.benchmark = True
         self.model_type = model_type
-        self.device = torch.device(training_config.device)
         self.model = create_model(model_type).to(self.device)
         self.data_processor = DataProcessor()
         

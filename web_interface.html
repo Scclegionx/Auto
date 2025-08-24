@@ -467,14 +467,13 @@
             clearMessages();
 
             try {
-                const response = await fetch(`${API_BASE_URL}/predict`, {
+                const response = await fetch(`${API_BASE_URL}/predict-with-reasoning`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        text: inputText,
-                        confidence_threshold: confidenceThreshold
+                        text: inputText
                     })
                 });
 
@@ -514,13 +513,13 @@
             // Update values
             document.getElementById('command-value').textContent = result.command || 'unknown';
             document.getElementById('value-display').textContent = result.value || 'Không có giá trị';
-            document.getElementById('processing-time').textContent = `${result.processing_time.toFixed(3)}s`;
+            document.getElementById('processing-time').textContent = `${(result.processing_time || 0).toFixed(3)}s`;
 
             // Update entities
             const entities = result.entities || {};
             if (Object.keys(entities).length > 0) {
                 const entitiesText = Object.entries(entities)
-                    .map(([key, value]) => `${key}: ${value}`)
+                    .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
                     .join(', ');
                 document.getElementById('entities-value').textContent = entitiesText;
             } else {

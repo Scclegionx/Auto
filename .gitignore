@@ -1,143 +1,201 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
 
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-*.egg
-*.egg-info/
-dist/
-build/
-.eggs/
-
-# Flask-related
-instance/
-*.db
-*.sqlite3
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# VS Code settings
-.vscode/
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# IDEs
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# Logs
-*.log
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# ===== PHOBERT_SAM SPECIFIC =====
-
-# Trained models (large files)
 models/*.pth
 models/*.pt
 models/*.bin
 models/*.safetensors
 models/best_*.pth
 models/checkpoint_*.pth
-models/*_model.pth
+models/model_*.pth
+models/large_*.pth
+models/phobert_*.pth
 
-# Dataset files (large JSON files)
-*_dataset*.json
-*_augmented*.json
-elderly_augmented*.json
-nlp_command_dataset.json
-elderly_command_dataset_reduced.json
+# Model directories
+models/phobert_large_intent_model/
+models/phobert_base_intent_model/
+models/trained_models/
+models/checkpoints/
+models/saved_models/
 
-# Augmented datasets
-*_augmented*.json
-*_augmented_*.json
-elderly_augmented*.json
+# ========================================
+# CACHE & TEMPORARY FILES
+# ========================================
 
-# Training logs and outputs
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyTorch cache
+.cache/
+torch_cache/
+transformers_cache/
+huggingface_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# ========================================
+# LOGS & DEBUG FILES
+# ========================================
+
+# Log files
 logs/
 *.log
-training_logs/
-wandb/
-runs/
+*.log.*
+training_*.log
+debug_*.log
+error_*.log
 
-# Temporary files
-*.tmp
-*.temp
+# Debug files
+debug_*.py
+test_*.py
+temp_*.py
+*_debug.py
+
+# ========================================
+# DATASET CACHE (Tạm thời)
+# ========================================
+
+# Dataset cache (tạm thời)
+dataset_cache/
+data_cache/
+*.cache
+
+# ========================================
+# ENVIRONMENT & CONFIG
+# ========================================
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
 
-# Cache directories
-.cache/
-cache/
-transformers_cache/
-torch_cache/
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Large data files
-*.csv
-*.tsv
-*.xlsx
-*.xls
+# ========================================
+# TEST & TEMPORARY FILES
+# ========================================
 
-# Model checkpoints
-checkpoints/
-checkpoint/
-*.ckpt
+# Test files (tạm thời)
+test_*.py
+debug_*.py
+temp_*.py
+*_test.py
+*_debug.py
 
-# Environment files
-.env
-.env.local
-.env.production
+# Temporary files
+tmp/
+temp/
+.tmp/
+*.tmp
+*.temp
 
-# Jupyter notebooks
-*.ipynb
-.ipynb_checkpoints/
+# ========================================
+# SPECIFIC PROJECT FILES
+# ========================================
 
-# Backup files
-*.bak
-*.backup
-*_backup.*
+# Knowledge base files (có thể được tạo tự động)
+knowledge_base.json
+semantic_patterns.json
+context_rules.json
+intent_fallback.json
 
-# Large binary files
-*.bin
-*.dat
-*.h5
-*.hdf5
-*.pkl
-*.pickle
+# Vector store files
+vector_store/
+faiss_index/
+embeddings_cache/
 
-# Exclude specific large files (already covered above)
-# elderly_augmented.json
-# nlp_command_dataset.json
-# elderly_command_dataset_reduced.json
+# ========================================
+# KEEP THESE FILES (IMPORTANT)
+# ========================================
+
+# Keep these important files
+!models/intent_model.py
+!models/entity_model.py
+!models/command_model.py
+!models/unified_model.py
+!models/__init__.py
+
+# Keep config files
+!config.py
+!requirements.txt
+!README.md
+!TRAINING_GUIDE.md
+
+# Keep core source files
+!api_server.py
+!reasoning_engine.py
+!main.py
+!utils.py
+!data_augmentation.py
+
+# Keep training utilities
+!training/trainer.py
+!training/__init__.py
+!data/data_processor.py
+!data/__init__.py
+
+# Keep dataset files (quan trọng)
+!datasets/
+!*.json
+!*.csv
+!*.txt
+!elderly_command_dataset_reduced.json
+!nlp_command_dataset.json
+
+# Keep web interface
+!web_interface.html
+
+# ========================================
+# GIT SPECIFIC
+# ========================================
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# ========================================
+# DOCUMENTATION
+# ========================================
+
+# Documentation (keep)
+!*.md
+!docs/
+!LICENSE
+!CHANGELOG.md
+

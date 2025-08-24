@@ -3,7 +3,7 @@ import re
 import random
 from typing import List, Dict, Tuple, Optional
 from transformers import AutoTokenizer
-from config import model_config, intent_config, entity_config, command_config
+from config import model_config, intent_config, entity_config, value_config, command_config
 
 class DataProcessor:
     """Xử lý dữ liệu cho Intent Recognition, Entity Extraction và Command Processing"""
@@ -14,20 +14,96 @@ class DataProcessor:
         self.intent_id2label = {idx: label for label, idx in self.intent_label2id.items()}
         self.entity_label2id = {label: idx for idx, label in enumerate(entity_config.entity_labels)}
         self.entity_id2label = {idx: label for label, idx in self.entity_label2id.items()}
+        self.value_label2id = {label: idx for idx, label in enumerate(value_config.value_labels)}
+        self.value_id2label = {idx: label for label, idx in self.value_label2id.items()}
         self.command_label2id = {label: idx for idx, label in enumerate(command_config.command_labels)}
         self.command_id2label = {idx: label for label, idx in self.command_label2id.items()}
         
-        # Data augmentation patterns
+        # Data augmentation patterns - Cập nhật theo dataset thực tế
         self.augmentation_patterns = {
             "call": [
-                "gọi", "điện thoại", "alo", "kết nối", "liên lạc"
+                "gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số"
+            ],
+            "make-call": [
+                "gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số"
             ],
             "set-alarm": [
-                "đặt báo thức", "nhắc nhở", "hẹn giờ", "đánh thức", "chuông báo"
+                "đặt báo thức", "nhắc nhở", "hẹn giờ", "đánh thức", "chuông báo", "ghi nhớ"
             ],
             "send-mess": [
-                "gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo"
+                "gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo", "soạn tin"
+            ],
+            "send-message": [
+                "gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo", "soạn tin"
+            ],
+            "set-reminder": [
+                "đặt nhắc nhở", "ghi nhớ", "lời nhắc", "nhắc tôi", "tạo lời nhắc"
+            ],
+            "check-weather": [
+                "thời tiết", "nhiệt độ", "mưa", "nắng", "dự báo thời tiết"
+            ],
+            "play-media": [
+                "phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc"
+            ],
+            "play-content": [
+                "phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc"
+            ],
+            "play-audio": [
+                "phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc"
+            ],
+            "read-news": [
+                "đọc tin tức", "tin tức", "báo", "thời sự", "cập nhật tin"
+            ],
+            "read-content": [
+                "đọc tin tức", "tin tức", "báo", "thời sự", "cập nhật tin"
+            ],
+            "check-health-status": [
+                "kiểm tra sức khỏe", "đo", "theo dõi", "chỉ số", "tình trạng"
+            ],
+            "general-conversation": [
+                "xin chào", "tạm biệt", "cảm ơn", "trò chuyện", "nói chuyện"
+            ],
+            "open-app": [
+                "mở ứng dụng", "khởi động", "chạy", "vào", "mở"
+            ],
+            "search-content": [
+                "tìm kiếm", "tìm", "kiếm", "tra cứu", "tìm hiểu"
+            ],
+            "make-video-call": [
+                "gọi video", "video call", "facetime", "gọi hình ảnh"
             ]
+        }
+        
+        # Intent mapping - Cập nhật theo dataset thực tế
+        self.intent_to_command_mapping = {
+            "adjust-settings": "adjust_settings",
+            "app-tutorial": "app_tutorial",
+            "browse-social-media": "browse_social_media",
+            "call": "call",
+            "check-device-status": "check_device_status",
+            "check-health-status": "check_health_status",
+            "check-messages": "check_messages",
+            "check-weather": "check_weather",
+            "control-device": "control_device",
+            "general-conversation": "general_conversation",
+            "make-call": "make_call",
+            "make-video-call": "make_video_call",
+            "navigation-help": "navigation_help",
+            "open-app": "open_app",
+            "open-app-action": "open_app_action",
+            "play-audio": "play_audio",
+            "play-content": "play_content",
+            "play-media": "play_media",
+            "provide-instructions": "provide_instructions",
+            "read-content": "read_content",
+            "read-news": "read_news",
+            "search-content": "search_content",
+            "search-internet": "search_internet",
+            "send-message": "send_message",
+            "send-mess": "send_mess",
+            "set-alarm": "set_alarm",
+            "set-reminder": "set_reminder",
+            "view-content": "view_content"
         }
     
     def load_dataset(self, file_path: str) -> List[Dict]:
@@ -36,22 +112,18 @@ class DataProcessor:
             return json.load(f)
     
     def augment_intent_data(self, dataset: List[Dict], augmentation_factor: float = 0.3) -> List[Dict]:
-        """Tăng cường dữ liệu cho intent recognition"""
         augmented_data = []
         
         for item in dataset:
             intent = item.get("command", "")
             text = item.get("input", "")
-            
-            # Thêm dữ liệu gốc
+
             augmented_data.append(item)
-            
-            # Tạo dữ liệu augmented
+
             if intent in self.augmentation_patterns and random.random() < augmentation_factor:
                 patterns = self.augmentation_patterns[intent]
                 
                 for pattern in patterns:
-                    # Thay thế từ khóa chính
                     augmented_text = self._replace_keywords(text, intent, pattern)
                     if augmented_text != text:
                         augmented_item = item.copy()
@@ -61,8 +133,6 @@ class DataProcessor:
         return augmented_data
     
     def _replace_keywords(self, text: str, intent: str, new_pattern: str) -> str:
-        """Thay thế từ khóa trong text"""
-        # Mapping từ intent sang từ khóa gốc
         intent_keywords = {
             "call": ["gọi", "điện thoại", "alo"],
             "set-alarm": ["đặt báo thức", "nhắc nhở", "hẹn giờ"],
@@ -73,24 +143,32 @@ class DataProcessor:
             keywords = intent_keywords[intent]
             for keyword in keywords:
                 if keyword in text.lower():
-                    # Thay thế từ khóa với pattern mới
                     text = re.sub(rf'\b{re.escape(keyword)}\b', new_pattern, text, flags=re.IGNORECASE)
                     break
         
         return text
     
     def calculate_intent_confidence(self, text: str, intent: str) -> float:
-        """Tính confidence score cho intent dựa trên từ khóa và context"""
         confidence = 0.5  # Base confidence
-        
-        # Tăng confidence dựa trên từ khóa chính
+
         intent_keywords = {
-            "call": ["gọi", "điện thoại", "alo", "kết nối"],
-            "set-alarm": ["đặt báo thức", "nhắc nhở", "hẹn giờ", "đánh thức"],
-            "send-mess": ["gửi tin nhắn", "nhắn tin", "text", "sms"],
-            "check-weather": ["thời tiết", "nhiệt độ", "mưa", "nắng"],
-            "play-media": ["phát nhạc", "bật nhạc", "nghe nhạc", "video"],
-            "read-news": ["đọc tin tức", "tin tức", "báo", "thời sự"]
+            "call": ["gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số"],
+            "make-call": ["gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số"],
+            "set-alarm": ["đặt báo thức", "nhắc nhở", "hẹn giờ", "đánh thức", "chuông báo", "ghi nhớ"],
+            "send-mess": ["gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo", "soạn tin"],
+            "send-message": ["gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo", "soạn tin"],
+            "set-reminder": ["đặt nhắc nhở", "ghi nhớ", "lời nhắc", "nhắc tôi", "tạo lời nhắc"],
+            "check-weather": ["thời tiết", "nhiệt độ", "mưa", "nắng", "dự báo thời tiết"],
+            "play-media": ["phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc"],
+            "play-content": ["phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc"],
+            "play-audio": ["phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc"],
+            "read-news": ["đọc tin tức", "tin tức", "báo", "thời sự", "cập nhật tin"],
+            "read-content": ["đọc tin tức", "tin tức", "báo", "thời sự", "cập nhật tin"],
+            "check-health-status": ["kiểm tra sức khỏe", "đo", "theo dõi", "chỉ số", "tình trạng"],
+            "general-conversation": ["xin chào", "tạm biệt", "cảm ơn", "trò chuyện", "nói chuyện"],
+            "open-app": ["mở ứng dụng", "khởi động", "chạy", "vào", "mở"],
+            "search-content": ["tìm kiếm", "tìm", "kiếm", "tra cứu", "tìm hiểu"],
+            "make-video-call": ["gọi video", "video call", "facetime", "gọi hình ảnh"]
         }
         
         if intent in intent_keywords:
@@ -101,16 +179,26 @@ class DataProcessor:
                 if keyword in text_lower:
                     confidence += 0.2
                     break
-            
-            # Tăng confidence nếu có nhiều từ khóa
+
             keyword_count = sum(1 for keyword in keywords if keyword in text_lower)
             confidence += min(keyword_count * 0.1, 0.3)
-        
-        # Giảm confidence nếu có từ khóa mâu thuẫn
+
         conflicting_keywords = {
-            "call": ["nhắn tin", "gửi tin nhắn"],
-            "send-mess": ["gọi", "điện thoại"],
-            "set-alarm": ["gửi tin nhắn", "gọi"]
+            "call": ["nhắn tin", "gửi tin nhắn", "soạn tin"],
+            "make-call": ["nhắn tin", "gửi tin nhắn", "soạn tin"],
+            "send-mess": ["gọi", "điện thoại", "alo"],
+            "send-message": ["gọi", "điện thoại", "alo"],
+            "set-alarm": ["gửi tin nhắn", "gọi", "nhắn tin"],
+            "set-reminder": ["gọi", "nhắn tin", "phát nhạc"],
+            "check-weather": ["gọi", "nhắn tin", "phát nhạc"],
+            "play-media": ["gọi", "nhắn tin", "kiểm tra"],
+            "play-content": ["gọi", "nhắn tin", "kiểm tra"],
+            "play-audio": ["gọi", "nhắn tin", "kiểm tra"],
+            "read-news": ["gọi", "nhắn tin", "phát nhạc"],
+            "read-content": ["gọi", "nhắn tin", "phát nhạc"],
+            "check-health-status": ["gọi", "nhắn tin", "phát nhạc"],
+            "general-conversation": ["gọi", "nhắn tin", "phát nhạc", "kiểm tra"],
+            "make-video-call": ["nhắn tin", "gửi tin nhắn", "soạn tin"]
         }
         
         if intent in conflicting_keywords:
@@ -133,10 +221,8 @@ class DataProcessor:
             intent = item.get("command", "")
             
             if intent in self.intent_label2id:
-                # Tính confidence score
                 confidence = self.calculate_intent_confidence(text, intent)
-                
-                # Tokenize
+
                 encoding = self.tokenizer(
                     text,
                     truncation=True,
@@ -165,17 +251,14 @@ class DataProcessor:
             "warnings": [],
             "suggestions": []
         }
-        
-        # Kiểm tra confidence threshold
+
         if confidence < intent_config.confidence_threshold:
             validation_result["is_valid"] = False
             validation_result["warnings"].append(f"Confidence quá thấp: {confidence:.3f}")
             validation_result["suggestions"].append("Cần xác nhận lại từ người dùng")
-        
-        # Kiểm tra mâu thuẫn từ khóa
+
         text_lower = original_text.lower()
-        
-        # Ví dụ: nếu predict "call" nhưng có từ "nhắn tin"
+
         if predicted_intent == "call" and any(word in text_lower for word in ["nhắn tin", "gửi tin nhắn"]):
             validation_result["confidence_adjusted"] *= 0.7
             validation_result["warnings"].append("Có từ khóa mâu thuẫn với intent")
@@ -188,7 +271,6 @@ class DataProcessor:
         return validation_result
     
     def map_intent_to_command(self, intent: str) -> str:
-        """Map intent sang command tương ứng"""
         intent_to_command = {
             "call": "make_call",
             "check-health-status": "check_health_status",
@@ -226,122 +308,8 @@ class DataProcessor:
         """Trích xuất label từ list dict values"""
         return [value.get("label", "") for value in values if isinstance(value, dict)]
     
-    def align_labels(self, text: str, entities: List[Dict], values: List[Dict]) -> List[str]:
-        """
-        Chuyển đổi entities và values thành nhãn IOB2 cho từng token
-        Sử dụng cấu trúc List Dict với text và label
-        """
-        # Tokenize text
-        tokens = self.tokenizer.tokenize(text)
-        labels = ["O"] * len(tokens)
-        
-        # Tạo mapping từ text gốc sang tokens
-        text_lower = text.lower()
-        
-        # Xử lý entities (RECEIVER)
-        for entity in entities:
-            if isinstance(entity, dict):
-                entity_text = entity.get("text", "")
-                entity_label = entity.get("label", "")
-            else:
-                entity_text = str(entity)
-                entity_label = "FAMILY_RELATIONSHIP"  # Default label
-            
-            entity_lower = entity_text.lower()
-            start_pos = text_lower.find(entity_lower)
-            if start_pos != -1:
-                # Tìm tokens tương ứng với entity
-                entity_tokens = self.tokenizer.tokenize(entity_text)
-                if len(entity_tokens) > 0:
-                    # Tìm vị trí bắt đầu của entity trong tokens
-                    for i in range(len(tokens) - len(entity_tokens) + 1):
-                        if tokens[i:i+len(entity_tokens)] == entity_tokens:
-                            # Map entity label to IOB2 format
-                            if entity_label in ["FAMILY_RELATIONSHIP", "CONTACT_PERSON"]:
-                                labels[i] = "B-RECEIVER"
-                                for j in range(i+1, i+len(entity_tokens)):
-                                    if j < len(labels):
-                                        labels[j] = "I-RECEIVER"
-                            break
-        
-        # Xử lý values
-        for value in values:
-            if isinstance(value, dict):
-                value_text = value.get("text", "")
-                value_label = value.get("label", "")
-            else:
-                value_text = str(value)
-                value_label = "MESSAGE_CONTENT"  # Default label
-            
-            value_lower = value_text.lower()
-            start_pos = text_lower.find(value_lower)
-            if start_pos != -1:
-                # Phân loại value type dựa trên label
-                if value_label in ["TIME_EXPRESSION", "DATE_EXPRESSION"]:
-                    label_prefix = "TIME"
-                elif value_label in ["MESSAGE_CONTENT", "REMINDER_CONTENT"]:
-                    label_prefix = "MESSAGE"
-                else:
-                    label_prefix = "MESSAGE"  # Default
-                
-                value_tokens = self.tokenizer.tokenize(value_text)
-                if len(value_tokens) > 0:
-                    # Tìm vị trí bắt đầu của value trong tokens
-                    for i in range(len(tokens) - len(value_tokens) + 1):
-                        if tokens[i:i+len(value_tokens)] == value_tokens:
-                            labels[i] = f"B-{label_prefix}"
-                            for j in range(i+1, i+len(value_tokens)):
-                                if j < len(labels):
-                                    labels[j] = f"I-{label_prefix}"
-                            break
-        
-        return labels
-    
-    def _is_time_value(self, value: str) -> bool:
-        """Kiểm tra xem value có phải là thời gian không"""
-        time_patterns = [
-            r'\d+[h:]\d*',  # 10h, 6h30
-            r'\d+\s+giờ\s+(sáng|chiều|tối)',  # 5 giờ chiều
-            r'\d+\s+giờ\s+kém\s+\d+',  # 8 giờ kém 15
-        ]
-        
-        for pattern in time_patterns:
-            if re.search(pattern, value.lower()):
-                return True
-        return False
-    
-    def prepare_intent_data(self, dataset: List[Dict]) -> List[Dict]:
-        """Chuẩn bị dữ liệu cho Intent Recognition"""
-        processed_data = []
-        
-        for item in dataset:
-            text = item["input"]
-            intent = item["command"]
-            
-            # Encode text
-            encoding = self.tokenizer(
-                text,
-                truncation=True,
-                padding="max_length",
-                max_length=model_config.max_length,
-                return_tensors="pt"
-            )
-            
-            # Encode intent
-            intent_id = self.intent_label2id[intent]
-            
-            processed_data.append({
-                "input_ids": encoding["input_ids"].squeeze(),
-                "attention_mask": encoding["attention_mask"].squeeze(),
-                "intent_id": intent_id,
-                "text": text,
-                "intent": intent
-            })
-        
-        return processed_data
-    
     def prepare_entity_data(self, dataset: List[Dict]) -> List[Dict]:
-        """Chuẩn bị dữ liệu cho Entity Extraction"""
+        """Chuẩn bị dữ liệu cho Entity Extraction - Cập nhật cho dataset mới"""
         processed_data = []
         
         for item in dataset:
@@ -384,8 +352,121 @@ class DataProcessor:
         
         return processed_data
     
+    def prepare_value_data(self, dataset: List[Dict]) -> List[Dict]:
+        """Chuẩn bị dữ liệu cho Value Extraction - Mới thêm"""
+        processed_data = []
+        
+        for item in dataset:
+            text = item["input"]
+            values = item.get("values", [])
+            
+            # Tạo labels cho từng token
+            value_labels = self.align_value_labels(text, values)
+            
+            # Encode text
+            encoding = self.tokenizer(
+                text,
+                truncation=True,
+                padding="max_length",
+                max_length=model_config.max_length,
+                return_tensors="pt"
+            )
+            
+            # Encode value labels
+            label_ids = []
+            for label in value_labels:
+                if label in self.value_label2id:
+                    label_ids.append(self.value_label2id[label])
+                else:
+                    label_ids.append(self.value_label2id.get("O", 0))
+            
+            # Pad labels
+            while len(label_ids) < model_config.max_length:
+                label_ids.append(self.value_label2id.get("O", 0))
+            
+            processed_data.append({
+                "input_ids": encoding["input_ids"].squeeze(),
+                "attention_mask": encoding["attention_mask"].squeeze(),
+                "value_labels": label_ids,
+                "text": text,
+                "values": values
+            })
+        
+        return processed_data
+    
+    def align_labels(self, text: str, entities: List[Dict], values: List[Dict]) -> List[str]:
+        """Align entity và value labels với tokens - Cập nhật cho dataset mới"""
+        # Tokenize text
+        tokens = self.tokenizer.tokenize(text)
+        labels = ["O"] * len(tokens)
+        
+        # Process entities
+        for entity in entities:
+            entity_text = entity.get("text", "")
+            entity_label = entity.get("label", "")
+            
+            if entity_text and entity_label:
+                # Find entity position in tokens
+                entity_tokens = self.tokenizer.tokenize(entity_text)
+                for i in range(len(tokens) - len(entity_tokens) + 1):
+                    if tokens[i:i+len(entity_tokens)] == entity_tokens:
+                        # Mark entity tokens
+                        for j in range(len(entity_tokens)):
+                            if j == 0:
+                                labels[i+j] = f"B-{entity_label}"
+                            else:
+                                labels[i+j] = f"I-{entity_label}"
+                        break
+        
+        return labels
+    
+    def align_value_labels(self, text: str, values: List[Dict]) -> List[str]:
+        tokens = self.tokenizer.tokenize(text)
+        labels = ["O"] * len(tokens)
+        
+        # Process values
+        for value in values:
+            value_text = value.get("text", "")
+            value_label = value.get("label", "")
+            
+            if value_text and value_label:
+                # Find value position in tokens
+                value_tokens = self.tokenizer.tokenize(value_text)
+                for i in range(len(tokens) - len(value_tokens) + 1):
+                    if tokens[i:i+len(value_tokens)] == value_tokens:
+                        # Mark value tokens
+                        for j in range(len(value_tokens)):
+                            if j == 0:
+                                labels[i+j] = f"B-{value_label}"
+                            else:
+                                labels[i+j] = f"I-{value_label}"
+                        break
+        
+        return labels
+    
+    def extract_entities_and_values(self, text: str, entities: List[Dict], values: List[Dict]) -> Dict:
+        extracted = {
+            "entities": {},
+            "values": {}
+        }
+        
+        # Extract entities
+        for entity in entities:
+            entity_text = entity.get("text", "")
+            entity_label = entity.get("label", "")
+            if entity_text and entity_label:
+                extracted["entities"][entity_label] = entity_text
+        
+        # Extract values
+        for value in values:
+            value_text = value.get("text", "")
+            value_label = value.get("label", "")
+            if value_text and value_label:
+                extracted["values"][value_label] = value_text
+        
+        return extracted
+    
     def prepare_command_data(self, dataset: List[Dict]) -> List[Dict]:
-        """Chuẩn bị dữ liệu cho Command Processing"""
         processed_data = []
         
         for item in dataset:
@@ -401,8 +482,7 @@ class DataProcessor:
                 max_length=model_config.max_length,
                 return_tensors="pt"
             )
-            
-            # Encode command
+
             command_id = self.command_label2id[command]
             
             processed_data.append({

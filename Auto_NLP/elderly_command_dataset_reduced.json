@@ -52,147 +52,55 @@
     "task_description": "Đặt báo thức, nhắc nhở thời gian"
   },
   {
-    "input": "tôi muốn đặt chuông báo vào 6 giờ sáng",
-    "command": "set-alarm",
+    "input": "nhắc tôi uống thuốc huyết áp lúc 8 giờ sáng",
+    "command": "set-reminder",
     "entities": [],
     "values": [
       {
-        "text": "6 giờ sáng",
+        "text": "uống thuốc huyết áp",
+        "label": "REMINDER_TYPE"
+      },
+      {
+        "text": "8 giờ sáng",
         "label": "TIME_EXPRESSION"
       }
     ],
     "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
+    "task_description": "Đặt nhắc nhở uống thuốc"
   },
   {
-    "input": "đặt nhắc nhở tôi dậy lúc 7 giờ kém 10",
-    "command": "set-alarm",
+    "input": "đặt nhắc nhở uống thuốc tiểu đường vào 11 giờ 30 trưa",
+    "command": "set-reminder",
     "entities": [],
     "values": [
       {
-        "text": "7 giờ kém 10",
+        "text": "uống thuốc tiểu đường",
+        "label": "REMINDER_TYPE"
+      },
+      {
+        "text": "11 giờ 30 trưa",
         "label": "TIME_EXPRESSION"
       }
     ],
     "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
+    "task_description": "Đặt nhắc nhở uống thuốc"
   },
   {
-    "input": "bật báo thức vào 21:00",
-    "command": "set-alarm",
+    "input": "nhắc tôi đi khám bệnh ngày mai lúc 9 giờ sáng",
+    "command": "set-reminder",
     "entities": [],
     "values": [
       {
-        "text": "21:00",
+        "text": "đi khám bệnh",
+        "label": "REMINDER_TYPE"
+      },
+      {
+        "text": "ngày mai lúc 9 giờ sáng",
         "label": "TIME_EXPRESSION"
       }
     ],
     "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
-  },
-  {
-    "input": "đặt chuông báo lúc 7h30 sáng",
-    "command": "set-alarm",
-    "entities": [],
-    "values": [
-      {
-        "text": "7h30 sáng",
-        "label": "TIME_EXPRESSION"
-      }
-    ],
-    "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
-  },
-  {
-    "input": "thiết lập báo thức vào buổi sáng mai lúc 6 giờ",
-    "command": "set-alarm",
-    "entities": [],
-    "values": [
-      {
-        "text": "buổi sáng mai lúc 6 giờ",
-        "label": "TIME_EXPRESSION"
-      }
-    ],
-    "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
-  },
-  {
-    "input": "cài đặt báo thức vào 8h15 tối nay",
-    "command": "set-alarm",
-    "entities": [],
-    "values": [
-      {
-        "text": "8h15 tối nay",
-        "label": "TIME_EXPRESSION"
-      }
-    ],
-    "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
-  },
-  {
-    "input": "cho tôi một báo thức lúc 6 giờ 45 phút sáng",
-    "command": "set-alarm",
-    "entities": [],
-    "values": [
-      {
-        "text": "6 giờ 45 phút sáng",
-        "label": "TIME_EXPRESSION"
-      }
-    ],
-    "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
-  },
-  {
-    "input": "làm ơn đánh thức tôi vào 5h30 sáng mai",
-    "command": "set-alarm",
-    "entities": [],
-    "values": [
-      {
-        "text": "5h30 sáng mai",
-        "label": "TIME_EXPRESSION"
-      }
-    ],
-    "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
-  },
-  {
-    "input": "nhắc tôi thức dậy lúc 4 giờ sáng",
-    "command": "set-alarm",
-    "entities": [],
-    "values": [
-      {
-        "text": "4 giờ sáng",
-        "label": "TIME_EXPRESSION"
-      }
-    ],
-    "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
-  },
-  {
-    "input": "tôi cần một báo thức vào 10h đêm",
-    "command": "set-alarm",
-    "entities": [],
-    "values": [
-      {
-        "text": "10h đêm",
-        "label": "TIME_EXPRESSION"
-      }
-    ],
-    "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
-  },
-  {
-    "input": "xin vui lòng đặt báo thức lúc 12 giờ trưa",
-    "command": "set-alarm",
-    "entities": [],
-    "values": [
-      {
-        "text": "12 giờ trưa",
-        "label": "TIME_EXPRESSION"
-      }
-    ],
-    "priority": "high",
-    "task_description": "Đặt báo thức, nhắc nhở thời gian"
+    "task_description": "Đặt nhắc nhở lịch hẹn"
   },
   {
     "input": "alo cho bố",
@@ -221,46 +129,7 @@
     "task_description": "Gọi điện thoại"
   },
   {
-    "input": "làm ơn liên lạc với bố tôi",
-    "command": "call",
-    "entities": [
-      {
-        "text": "bố tôi",
-        "label": "FAMILY_RELATIONSHIP"
-      }
-    ],
-    "values": [],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
-  },
-  {
-    "input": "nối máy cho bố tôi nghe với",
-    "command": "call",
-    "entities": [
-      {
-        "text": "bố tôi",
-        "label": "FAMILY_RELATIONSHIP"
-      }
-    ],
-    "values": [],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
-  },
-  {
-    "input": "gọi cho cháu Lan nhà tôi",
-    "command": "call",
-    "entities": [
-      {
-        "text": "cháu Lan nhà tôi",
-        "label": "CONTACT_PERSON"
-      }
-    ],
-    "values": [],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
-  },
-  {
-    "input": "tôi muốn gọi video cho con gái",
+    "input": "gọi video cho con gái trên Zalo",
     "command": "call",
     "entities": [
       {
@@ -272,131 +141,329 @@
       {
         "text": "video",
         "label": "CALL_TYPE"
+      },
+      {
+        "text": "Zalo",
+        "label": "APP_NAME"
       }
     ],
     "priority": "high",
-    "task_description": "Gọi điện thoại"
+    "task_description": "Gọi video qua ứng dụng"
   },
   {
-    "input": "liên hệ với ông hàng xóm",
+    "input": "mở cuộc gọi Messenger với cháu Linh",
     "command": "call",
     "entities": [
       {
-        "text": "ông hàng xóm",
-        "label": "CONTACT_PERSON"
-      }
-    ],
-    "values": [],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
-  },
-  {
-    "input": "gọi điện cho vợ tôi",
-    "command": "call",
-    "entities": [
-      {
-        "text": "vợ tôi",
-        "label": "FAMILY_RELATIONSHIP"
-      }
-    ],
-    "values": [],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
-  },
-  {
-    "input": "liên lạc với bà ngoại",
-    "command": "call",
-    "entities": [
-      {
-        "text": "bà ngoại",
-        "label": "FAMILY_RELATIONSHIP"
-      }
-    ],
-    "values": [],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
-  },
-  {
-    "input": "giúp tôi gọi cho anh trai",
-    "command": "call",
-    "entities": [
-      {
-        "text": "anh trai",
-        "label": "FAMILY_RELATIONSHIP"
-      }
-    ],
-    "values": [],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
-  },
-  {
-    "input": "bấm số gọi cho cô giáo Hương",
-    "command": "call",
-    "entities": [
-      {
-        "text": "cô giáo Hương",
-        "label": "CONTACT_PERSON"
-      }
-    ],
-    "values": [],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
-  },
-  {
-    "input": "gọi video cho chị gái tôi",
-    "command": "call",
-    "entities": [
-      {
-        "text": "chị gái tôi",
-        "label": "FAMILY_RELATIONSHIP"
-      }
-    ],
-    "values": [
-      {
-        "text": "video",
-        "label": "CALL_TYPE"
-      }
-    ],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
-  },
-  {
-    "input": "gọi điện facetime cho anh Tuấn",
-    "command": "call",
-    "entities": [
-      {
-        "text": "anh Tuấn",
+        "text": "cháu Linh",
         "label": "CONTACT_PERSON"
       }
     ],
     "values": [
       {
-        "text": "facetime",
-        "label": "CALL_TYPE"
+        "text": "Messenger",
+        "label": "APP_NAME"
       }
     ],
     "priority": "high",
-    "task_description": "Gọi điện thoại"
+    "task_description": "Gọi điện qua ứng dụng"
   },
   {
-    "input": "tôi muốn gọi điện cho bạn Minh",
-    "command": "call",
+    "input": "phát tin nhắn thoại mới của con trai",
+    "command": "play-audio",
     "entities": [
       {
-        "text": "bạn Minh",
-        "label": "CONTACT_PERSON"
+        "text": "con trai",
+        "label": "FAMILY_RELATIONSHIP"
       }
     ],
-    "values": [],
-    "priority": "high",
-    "task_description": "Gọi điện thoại"
+    "values": [
+      {
+        "text": "tin nhắn thoại",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát tin nhắn thoại"
   },
   {
-    "input": "bắt máy gọi cho ông bà",
-    "command": "call",
+    "input": "mở nhạc trên YouTube cho tôi",
+    "command": "play-audio",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "YouTube",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nhạc trên ứng dụng"
+  },
+  {
+    "input": "cho tôi nghe bản tin thời sự hôm nay",
+    "command": "play-audio",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin thời sự",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung âm thanh"
+  },
+  {
+    "input": "mở video hướng dẫn tập thể dục cho người cao tuổi",
+    "command": "view-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn tập thể dục cho người cao tuổi",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Xem nội dung video"
+  },
+  {
+    "input": "xem bản tin trên Facebook",
+    "command": "view-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Facebook",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Xem nội dung trên mạng xã hội"
+  },
+  {
+    "input": "mở ứng dụng TikTok giúp tôi",
+    "command": "open-app",
+    "entities": [],
+    "values": [
+      {
+        "text": "TikTok",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "mở Zalo lên xem tin nhắn",
+    "command": "open-app",
+    "entities": [],
+    "values": [
+      {
+        "text": "Zalo",
+        "label": "APP_NAME"
+      },
+      {
+        "text": "tin nhắn",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Mở ứng dụng và xem nội dung"
+  },
+  {
+    "input": "gửi tin nhắn cho con gái qua Zalo",
+    "command": "send-message",
     "entities": [
       {
-        "text": "ông bà",
+        "text": "con gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "Zalo",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn qua ứng dụng"
+  },
+  {
+    "input": "đọc giúp tôi tin nhắn mới nhất",
+    "command": "read-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn mới nhất",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đọc nội dung tin nhắn"
+  },
+  {
+    "input": "cách quay lại màn hình chính là gì",
+    "command": "navigation-help",
+    "entities": [],
+    "values": [
+      {
+        "text": "quay lại màn hình chính",
+        "label": "NAVIGATION_ACTION"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Hỗ trợ điều hướng"
+  },
+  {
+    "input": "tăng âm lượng lên giúp tôi",
+    "command": "adjust-settings",
+    "entities": [],
+    "values": [
+      {
+        "text": "tăng âm lượng",
+        "label": "SETTING_ACTION"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều chỉnh cài đặt"
+  },
+  {
+    "input": "phóng to chữ lên, tôi nhìn không rõ",
+    "command": "adjust-settings",
+    "entities": [],
+    "values": [
+      {
+        "text": "phóng to chữ",
+        "label": "SETTING_ACTION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Điều chỉnh cài đặt hiển thị"
+  },
+  {
+    "input": "tìm ảnh các cháu trong điện thoại",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "ảnh các cháu",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "nhắc tôi uống thuốc hàng ngày vào 7 giờ sáng, 12 giờ trưa và 7 giờ tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc hàng ngày",
+        "label": "REMINDER_TYPE"
+      },
+      {
+        "text": "7 giờ sáng, 12 giờ trưa và 7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở uống thuốc định kỳ"
+  },
+  {
+    "input": "cách dùng Zalo để nhắn tin",
+    "command": "app-tutorial",
+    "entities": [],
+    "values": [
+      {
+        "text": "Zalo",
+        "label": "APP_NAME"
+      },
+      {
+        "text": "nhắn tin",
+        "label": "FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Hướng dẫn sử dụng ứng dụng"
+  },
+  {
+    "input": "bật chế độ tiết kiệm pin",
+    "command": "adjust-settings",
+    "entities": [],
+    "values": [
+      {
+        "text": "chế độ tiết kiệm pin",
+        "label": "SETTING_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều chỉnh cài đặt điện thoại"
+  },
+  {
+    "input": "mở ảnh cháu gửi hôm qua",
+    "command": "view-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "ảnh cháu gửi hôm qua",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Xem nội dung ảnh"
+  },
+  {
+    "input": "nghe tin nhắn thoại từ con gái trên Messenger",
+    "command": "play-audio",
+    "entities": [
+      {
+        "text": "con gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "tin nhắn thoại",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Messenger",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Phát tin nhắn thoại từ ứng dụng"
+  },
+  {
+    "input": "tìm công thức nấu ăn trên Youtube",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "công thức nấu ăn",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Youtube",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung trên ứng dụng"
+  },
+  {
+    "input": "gọi điện cho con gái",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con gái",
         "label": "FAMILY_RELATIONSHIP"
       }
     ],
@@ -962,6 +1029,2355 @@
     "task_description": "Nhắc nhở uống thuốc, lịch khám"
   },
   {
+    "input": "điện thoại cho con trai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con trai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi cho vợ",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "vợ",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "liên lạc với chị Hoa",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị Hoa",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "bấm số cho bác sĩ Minh",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bác sĩ Minh",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi điện thoại cho em gái",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "em gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "tôi muốn gọi cho con dâu",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con dâu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "kết nối cuộc gọi với cửa hàng thuốc",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "cửa hàng thuốc",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi điện cho bạn Tuấn",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bạn Tuấn",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "quay số cho anh Hai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "anh Hai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi cho nhà hàng đặt bàn",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "nhà hàng",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "liên lạc khẩn cấp với bác sĩ",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bác sĩ",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi ngay cho con trai lớn",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con trai lớn",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi điện đến hiệu thuốc",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "hiệu thuốc",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "tôi muốn nói chuyện với chị Hai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị Hai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "kết nối với bệnh viện",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bệnh viện",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi cho cháu ngoại",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "cháu ngoại",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "bấm số cho tiệm tạp hóa",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "tiệm tạp hóa",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi cho chị gái tôi",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị gái tôi",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi cho thằng cu",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "thằng cu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi video cho con gái",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "con gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "gọi facetime cho cháu nội",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "cháu nội",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "bắt đầu cuộc gọi video với vợ",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "vợ",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "mở video call với con trai út",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "con trai út",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "tôi muốn gọi video cho chị Hoa",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "chị Hoa",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "kết nối video với con dâu",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "con dâu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "gọi zalo video cho cháu gái",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "cháu gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "bắt đầu cuộc gọi hình ảnh với bạn Lan",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "bạn Lan",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "video call với cháu ngoại",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "cháu ngoại",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "gọi facetime cho em gái",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "em gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "mở youtube cho tôi",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "youtube",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "mở facebook giúp tôi",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "facebook",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "vào zalo giúp tôi",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "zalo",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "chạy ứng dụng messenger",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "messenger",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "mở tiktok lên xem",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "tiktok",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "vào ứng dụng tin nhắn",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "tin nhắn",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "khởi động điện thoại",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "điện thoại",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "mở ứng dụng xem thời tiết",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "thời tiết",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "mở camera lên",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "camera",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "vào ứng dụng đọc báo",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "đọc báo",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "tìm video dạy nấu canh chua cá lóc trên youtube",
+    "command": "search-content",
+    "entities": [
+      {
+        "text": "youtube",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "dạy nấu canh chua cá lóc",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm bài hát bolero trên youtube",
+    "command": "search-content",
+    "entities": [
+      {
+        "text": "youtube",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "bài hát bolero",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "kiếm video dưỡng sinh cho người già",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video dưỡng sinh cho người già",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm bản tin thời sự hôm nay",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin thời sự hôm nay",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm hướng dẫn tập thể dục cho người cao tuổi",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "hướng dẫn tập thể dục cho người cao tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm kiếm bài thuốc dân gian chữa đau khớp",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài thuốc dân gian chữa đau khớp",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm video cải lương trên youtube",
+    "command": "search-content",
+    "entities": [
+      {
+        "text": "youtube",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "video cải lương",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm tin tức về hưu trí mới nhất",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin tức về hưu trí mới nhất",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm hướng dẫn sử dụng điện thoại cho người lớn tuổi",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "hướng dẫn sử dụng điện thoại cho người lớn tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm video ca nhạc trữ tình",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video ca nhạc trữ tình",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "phát video nhạc quê hương",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc quê hương",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở bài hát Quê Hương Tôi",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài hát Quê Hương Tôi",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát nhạc bolero hay nhất",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc bolero hay nhất",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở video hướng dẫn tập dưỡng sinh",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn tập dưỡng sinh",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát bài Còn Thương Rau Đắng Mọc Sau Hè",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài Còn Thương Rau Đắng Mọc Sau Hè",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "bật nhạc trữ tình hay nhất",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc trữ tình hay nhất",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở tin tức VTV1 hôm nay",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin tức VTV1 hôm nay",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát video bài tập cho người cao tuổi",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video bài tập cho người cao tuổi",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "bật cải lương Tô Ánh Nguyệt",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "cải lương Tô Ánh Nguyệt",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở bản tin thời sự hôm nay",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin thời sự hôm nay",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "nhắc tôi uống thuốc huyết áp lúc 8 giờ sáng hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc huyết áp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "8 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt nhắc nhở uống thuốc tiểu đường vào 9 giờ tối mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc tiểu đường",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "9 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi đo huyết áp lúc 7 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đo huyết áp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "7 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt lời nhắc đi tái khám tiểu đường vào thứ Hai tuần sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi tái khám tiểu đường",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "thứ Hai tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi uống viên canxi vào buổi trưa mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống viên canxi",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "buổi trưa",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt nhắc nhở đi khám mắt vào ngày 20 tháng này",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi khám mắt",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày 20 tháng này",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi uống thuốc đau nhức xương khớp vào buổi tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc đau nhức xương khớp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "buổi tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt nhắc nhở tập vật lý trị liệu vào 5 giờ chiều mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "tập vật lý trị liệu",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "5 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi uống thuốc bổ gan lúc 8 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc bổ gan",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "8 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt lời nhắc kiểm tra đường huyết vào buổi sáng mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "kiểm tra đường huyết",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "buổi sáng",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "tìm tin tức về chế độ bảo hiểm y tế cho người cao tuổi",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "chế độ bảo hiểm y tế cho người cao tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm kiếm thông tin về quyền lợi hưu trí mới nhất",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "quyền lợi hưu trí mới nhất",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm bài tập dưỡng sinh cho người cao tuổi trên youtube",
+    "command": "search-content",
+    "entities": [
+      {
+        "text": "youtube",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "bài tập dưỡng sinh cho người cao tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm kiếm cách chữa đau lưng cho người già",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "cách chữa đau lưng cho người già",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm video hướng dẫn sử dụng zalo cho người lớn tuổi",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "hướng dẫn sử dụng zalo cho người lớn tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm bài thuốc dân gian trị mất ngủ",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài thuốc dân gian trị mất ngủ",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm video chương trình ca nhạc dân ca",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "chương trình ca nhạc dân ca",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm kiếm món ăn tốt cho người cao tuổi",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "món ăn tốt cho người cao tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm thông tin về bệnh viện gần đây",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bệnh viện gần đây",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "tìm thông tin về cách đăng ký khám bệnh trực tuyến",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "cách đăng ký khám bệnh trực tuyến",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "xem video cải lương Tô Ánh Nguyệt",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video cải lương Tô Ánh Nguyệt",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở bản tin thời sự VTV1",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin thời sự VTV1",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát bài hát Lý Cây Bông của Phi Nhung",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài hát Lý Cây Bông của Phi Nhung",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở video hướng dẫn tập dưỡng sinh buổi sáng",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn tập dưỡng sinh buổi sáng",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát nhạc không lời thư giãn",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc không lời thư giãn",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "bật video hướng dẫn nấu cháo dinh dưỡng",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn nấu cháo dinh dưỡng",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở nhạc của Chế Linh",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc của Chế Linh",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát tin tức thời sự mới nhất",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin tức thời sự mới nhất",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "bật video về cách phòng bệnh cao huyết áp",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video về cách phòng bệnh cao huyết áp",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở radio VOV1",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "radio VOV1",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "xem lại bóng đá Việt Nam thi đấu hôm qua",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bóng đá Việt Nam thi đấu hôm qua",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở video hướng dẫn dùng ứng dụng ngân hàng",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn dùng ứng dụng ngân hàng",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "tạo lời nhắc khám định kỳ vào ngày 15 tháng sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "khám định kỳ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày 15 tháng sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi uống thuốc tim mạch vào 8 giờ sáng và 8 giờ tối hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc tim mạch",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "8 giờ sáng và 8 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt nhắc nhở đi tập vật lý trị liệu vào 3 giờ chiều thứ Hai, thứ Tư, thứ Sáu",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi tập vật lý trị liệu",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "3 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "thứ Hai, thứ Tư, thứ Sáu",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "tạo nhắc nhở gọi điện cho bác sĩ vào ngày mai lúc 9 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "gọi điện cho bác sĩ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày mai lúc 9 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "gọi điện cho chị Lan",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị Lan",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "quay số cho bác sĩ Tuấn",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bác sĩ Tuấn",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi điện thoại cho tiệm thuốc tây",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "tiệm thuốc tây",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi cho ông xã",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "ông xã",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "mở zalo và xem tin nhắn mới",
+    "command": "open-app-action",
+    "entities": [
+      {
+        "text": "zalo",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "xem tin nhắn mới",
+        "label": "ACTION"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng và thực hiện hành động"
+  },
+  {
+    "input": "vào facebook và xem thông báo",
+    "command": "open-app-action",
+    "entities": [
+      {
+        "text": "facebook",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "xem thông báo",
+        "label": "ACTION"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng và thực hiện hành động"
+  },
+  {
+    "input": "mở youtube và tìm nhạc bolero",
+    "command": "open-app-action",
+    "entities": [
+      {
+        "text": "youtube",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "tìm nhạc bolero",
+        "label": "ACTION"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng và thực hiện hành động"
+  },
+  {
+    "input": "vào tiktok và xem video mới",
+    "command": "open-app-action",
+    "entities": [
+      {
+        "text": "tiktok",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "xem video mới",
+        "label": "ACTION"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng và thực hiện hành động"
+  },
+  {
+    "input": "mở ứng dụng tin nhắn và đọc tin mới",
+    "command": "open-app-action",
+    "entities": [
+      {
+        "text": "tin nhắn",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "đọc tin mới",
+        "label": "ACTION"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng và thực hiện hành động"
+  },
+  {
+    "input": "nhắc tôi uống thuốc và đi ngủ lúc 10 giờ tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc và đi ngủ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "10 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "gửi tin nhắn cho cháu nội: ông đang ở nhà",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "cháu nội",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "ông đang ở nhà",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "đặt lời nhắc kiểm tra đường huyết vào 7 giờ sáng và 7 giờ tối hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "kiểm tra đường huyết",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "7 giờ sáng và 7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "tìm video hướng dẫn cách sử dụng máy đo đường huyết",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "hướng dẫn cách sử dụng máy đo đường huyết",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "nhắc tôi đi chợ mua thực phẩm vào sáng mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi chợ mua thực phẩm",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sáng mai",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "gọi video cho con gái lớn",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "con gái lớn",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "nhắc nhở tôi uống thuốc đau đầu khi có triệu chứng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc đau đầu",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "khi có triệu chứng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "tìm kiếm thông tin về quyền lợi bảo hiểm y tế cho người cao tuổi",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "quyền lợi bảo hiểm y tế cho người cao tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "phát nhạc ru ngủ",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc ru ngủ",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "đặt nhắc nhở đi thăm cháu vào Chủ Nhật",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "cháu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "đi thăm",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "Chủ Nhật",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắn tin cho anh rể: em cần gặp anh để bàn việc gia đình",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "anh rể",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "em cần gặp anh để bàn việc gia đình",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "tìm kiếm hướng dẫn thanh toán hóa đơn điện trực tuyến",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "hướng dẫn thanh toán hóa đơn điện trực tuyến",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "nhắc tôi lấy hẹn khám tim mạch vào tuần sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "lấy hẹn khám tim mạch",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "gửi tin nhắn cho chị dâu: chị nhớ mang thuốc cho em với",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "chị dâu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "chị nhớ mang thuốc cho em với",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "gọi khẩn cấp cho con trai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con trai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "tìm video hướng dẫn tập thái cực quyền cho người cao tuổi",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "hướng dẫn tập thái cực quyền cho người cao tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "đặt nhắc nhở dùng thuốc nhỏ mắt vào 7 giờ sáng và 7 giờ tối hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "dùng thuốc nhỏ mắt",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "7 giờ sáng và 7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "mở radio để nghe tin tức buổi sáng",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "radio tin tức buổi sáng",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "soạn tin nhắn gửi cho em gái: chị cần em đưa chị đi khám bệnh ngày mai",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "em gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "chị cần em đưa chị đi khám bệnh ngày mai",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "nhắc tôi đi chợ vào sáng thứ Bảy",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi chợ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sáng thứ Bảy",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "mở ứng dụng đo huyết áp",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "đo huyết áp",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "tìm video hướng dẫn cách đăng ký khám bệnh trực tuyến",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "hướng dẫn cách đăng ký khám bệnh trực tuyến",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "gọi video cho cháu nội",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "cháu nội",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "nhắc tôi uống thuốc viêm khớp vào buổi sáng và buổi tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc viêm khớp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "buổi sáng và buổi tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "mở youtube và tìm video hướng dẫn tập thể dục buổi sáng",
+    "command": "open-app-action",
+    "entities": [
+      {
+        "text": "youtube",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "tìm video hướng dẫn tập thể dục buổi sáng",
+        "label": "ACTION"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng và thực hiện hành động"
+  },
+  {
+    "input": "nhắn tin cho cô Năm: cô khỏe không, cháu nhớ cô lắm",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "cô Năm",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "cô khỏe không, cháu nhớ cô lắm",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "nhắc tôi lấy hẹn với bác sĩ mắt vào ngày mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "lấy hẹn với bác sĩ mắt",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày mai",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "phát nhạc thiền để thư giãn",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc thiền để thư giãn",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "gọi điện cho cửa hàng tạp hóa gần nhà",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "cửa hàng tạp hóa gần nhà",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "tìm thông tin về giá thuốc huyết áp",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "giá thuốc huyết áp",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "nhắc tôi uống thuốc tiểu đường sau bữa ăn sáng, trưa, tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc tiểu đường",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sau bữa ăn sáng, trưa, tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "soạn tin nhắn cho bác Ba: cháu sẽ đến thăm bác vào Chủ Nhật",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "bác Ba",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [
+      {
+        "text": "cháu sẽ đến thăm bác vào Chủ Nhật",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "đặt lời nhắc tập đi bộ vào 5 giờ chiều hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "tập đi bộ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "5 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "mở ứng dụng chăm sóc sức khỏe",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "chăm sóc sức khỏe",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "tìm hiểu về chế độ dinh dưỡng cho người cao tuổi",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "chế độ dinh dưỡng cho người cao tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "gọi video cho các cháu",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "các cháu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "đặt nhắc nhở đi đo mắt làm kính vào thứ Ba tuần sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi đo mắt làm kính",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "thứ Ba tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắn tin cho anh rể: chị gửi anh số điện thoại bác sĩ",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "anh rể",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "chị gửi anh số điện thoại bác sĩ",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "mở zalo để nhắn tin cho bạn",
+    "command": "open-app-action",
+    "entities": [
+      {
+        "text": "zalo",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "nhắn tin cho bạn",
+        "label": "ACTION"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng và thực hiện hành động"
+  },
+  {
+    "input": "tìm tin tức về chế độ bảo hiểm y tế mới",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "chế độ bảo hiểm y tế mới",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "đặt nhắc nhở uống thuốc giảm đau lúc 10 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc giảm đau",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "10 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "gửi tin nhắn cho cháu ngoại: bà sẽ về quê vào cuối tuần",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "cháu ngoại",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "bà sẽ về quê vào cuối tuần",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "tìm video ca nhạc của Trường Vũ",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video ca nhạc của Trường Vũ",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "đặt lời nhắc kiểm tra sức khỏe định kỳ vào ngày 10 tháng sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "kiểm tra sức khỏe định kỳ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày 10 tháng sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "gọi điện cho chị Hai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị Hai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "phát nhạc dân ca bắc bộ",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc dân ca bắc bộ",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "nhắc tôi đi ngủ lúc 10 giờ tối hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi ngủ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "10 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "gửi tin nhắn cho anh Năm: em sẽ chuyển tiền cho anh vào ngày mai",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "anh Năm",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "em sẽ chuyển tiền cho anh vào ngày mai",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "mở ứng dụng ngân hàng",
+    "command": "open-app",
+    "entities": [
+      {
+        "text": "ngân hàng",
+        "label": "APP_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Mở ứng dụng"
+  },
+  {
+    "input": "tìm thông tin về cách phòng ngừa té ngã ở người cao tuổi",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "cách phòng ngừa té ngã ở người cao tuổi",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "gọi video cho các con",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "các con",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "đặt nhắc nhở đi mua thuốc vào sáng mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi mua thuốc",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sáng mai",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "gửi tin nhắn cho cậu Sáu: cháu sẽ đưa cậu đi khám vào thứ Hai",
+    "command": "send-mess",
+    "entities": [
+      {
+        "text": "cậu Sáu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "cháu sẽ đưa cậu đi khám vào thứ Hai",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "tìm video hướng dẫn cách sử dụng ứng dụng ngân hàng trực tuyến",
+    "command": "search-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "hướng dẫn cách sử dụng ứng dụng ngân hàng trực tuyến",
+        "label": "SEARCH_QUERY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm nội dung"
+  },
+  {
+    "input": "đặt nhắc nhở tham gia sinh hoạt câu lạc bộ người cao tuổi vào thứ Tư",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "tham gia sinh hoạt câu lạc bộ người cao tuổi",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "thứ Tư",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
     "input": "hôm nay thời tiết thế nào?",
     "command": "check-weather",
     "entities": [
@@ -1219,6 +3635,97 @@
     "task_description": "Kiểm tra thời tiết"
   },
   {
+    "input": "trời Vũng Tàu cuối tuần này thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Vũng Tàu",
+        "label": "LOCATION"
+      },
+      {
+        "text": "cuối tuần này",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "nhiệt độ ở Bắc Ninh hôm nay",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Bắc Ninh",
+        "label": "LOCATION"
+      },
+      {
+        "text": "hôm nay",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "nhiệt độ",
+        "label": "WEATHER_METRIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "dự báo thời tiết Quy Nhơn 3 ngày tới",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Quy Nhơn",
+        "label": "LOCATION"
+      },
+      {
+        "text": "3 ngày tới",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "ở Phú Quốc có bão không?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Phú Quốc",
+        "label": "LOCATION"
+      }
+    ],
+    "values": [
+      {
+        "text": "bão",
+        "label": "WEATHER_CONDITION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "thời tiết Nam Định tuần sau",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Nam Định",
+        "label": "LOCATION"
+      },
+      {
+        "text": "tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
     "input": "phát bài hát Thuyền Hoa của Quang Lê",
     "command": "play-media",
     "entities": [
@@ -1434,6 +3941,70 @@
     "task_description": "Xem video, nghe nhạc"
   },
   {
+    "input": "mở video trên YouTube về cách trồng rau",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "video trên YouTube về cách trồng rau",
+        "label": "MEDIA_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "tìm nhạc bolero trên YouTube",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc bolero",
+        "label": "MEDIA_TYPE"
+      },
+      {
+        "text": "YouTube",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "mở TikTok xem các video hài hước",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "TikTok",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "video hài hước",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "phát bản nhạc cổ điển trên Spotify",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc cổ điển",
+        "label": "MEDIA_TYPE"
+      },
+      {
+        "text": "Spotify",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
     "input": "đọc tin tức hôm nay",
     "command": "read-news",
     "entities": [
@@ -1628,6 +4199,54 @@
       {
         "text": "tin văn hóa giải trí",
         "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "tin tức trong ngày trên báo Tuổi Trẻ",
+    "command": "read-news",
+    "entities": [
+      {
+        "text": "trong ngày",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "báo Tuổi Trẻ",
+        "label": "NEWS_SOURCE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "đọc tin tức về biển đảo Việt Nam",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "biển đảo Việt Nam",
+        "label": "TOPIC_NEWS"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "đọc tin thời tiết trên VnExpress",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin thời tiết",
+        "label": "NEWS_CATEGORY"
+      },
+      {
+        "text": "VnExpress",
+        "label": "NEWS_SOURCE"
       }
     ],
     "priority": "medium",
@@ -1829,6 +4448,896 @@
     "task_description": "Kiểm tra sức khỏe cơ bản"
   },
   {
+    "input": "cảnh báo khi huyết áp của tôi tăng",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "huyết áp",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "nhắc tôi đo đường huyết mỗi sáng",
+    "command": "check-health-status",
+    "entities": [
+      {
+        "text": "mỗi sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "đường huyết",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "gọi cho con trai tôi",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "con trai",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi điện thoại cho Minh",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "Minh",
+        "label": "CONTACT_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi video call cho cháu gái",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "video call",
+        "label": "CALL_TYPE"
+      },
+      {
+        "text": "cháu gái",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi Zalo cho bà xã",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "bà xã",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi Messenger cho con gái",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "Messenger",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "con gái",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi điện khẩn cấp cho bác sĩ",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "khẩn cấp",
+        "label": "PRIORITY"
+      },
+      {
+        "text": "bác sĩ",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi cho số 0912345678",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "0912345678",
+        "label": "PHONE_NUMBER"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi nhóm gia đình trên Zalo",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhóm gia đình",
+        "label": "CONTACT_GROUP"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "bắt đầu cuộc gọi video với cháu",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "cuộc gọi video",
+        "label": "CALL_TYPE"
+      },
+      {
+        "text": "cháu",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi lại cuộc gọi gần nhất",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "gọi lại",
+        "label": "CALL_ACTION"
+      },
+      {
+        "text": "cuộc gọi gần nhất",
+        "label": "CALL_REFERENCE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi cho Hằng trên WhatsApp",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "Hằng",
+        "label": "CONTACT_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "WhatsApp",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi nhóm bạn già trên Messenger",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhóm bạn già",
+        "label": "CONTACT_GROUP"
+      },
+      {
+        "text": "Messenger",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "đặt lịch hẹn gọi cho con trai lúc 8 giờ tối",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "8 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "đặt lịch hẹn",
+        "label": "CALL_ACTION"
+      },
+      {
+        "text": "con trai",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "nhắc tôi uống thuốc huyết áp",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc huyết áp",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt hẹn giờ uống thuốc tim mạch lúc 8 giờ sáng",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "8 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "uống thuốc tim mạch",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "cài đặt báo thức 6 giờ sáng mai",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "6 giờ sáng mai",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "báo thức",
+        "label": "REMINDER_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt hẹn giờ 30 phút để nấu cơm",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "30 phút",
+        "label": "DURATION"
+      }
+    ],
+    "values": [
+      {
+        "text": "nấu cơm",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "nhắc tôi đi khám bác sĩ vào thứ ba tuần sau",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "thứ ba tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "đi khám bác sĩ",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt nhắc nhở uống thuốc tiểu đường mỗi ngày lúc 7 giờ tối",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      },
+      {
+        "text": "7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "uống thuốc tiểu đường",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "nhắc tôi tập thể dục mỗi sáng",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "mỗi sáng",
+        "label": "FREQUENCY"
+      }
+    ],
+    "values": [
+      {
+        "text": "tập thể dục",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "hẹn giờ 2 tiếng để tắt bếp ga",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "2 tiếng",
+        "label": "DURATION"
+      }
+    ],
+    "values": [
+      {
+        "text": "tắt bếp ga",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt lịch tưới cây vào 5 giờ chiều",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "5 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "tưới cây",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "nhắc tôi gọi cho con gái vào 9 giờ tối",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "9 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "gọi cho con gái",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt báo thức mỗi sáng lúc 5 giờ 30",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "mỗi sáng",
+        "label": "FREQUENCY"
+      },
+      {
+        "text": "5 giờ 30",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "báo thức",
+        "label": "REMINDER_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "nhắc tôi đo huyết áp lúc 7 giờ sáng và 7 giờ tối",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "7 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "đo huyết áp",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "nhắc tôi không quên sinh nhật con trai vào ngày 15/8",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "ngày 15/8",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "sinh nhật con trai",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "nghe tin nhắn mới trên Zalo",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn mới",
+        "label": "MESSAGE_TYPE"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "đọc tin nhắn Messenger",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn",
+        "label": "MESSAGE_TYPE"
+      },
+      {
+        "text": "Messenger",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "có tin nhắn mới nào không?",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn mới",
+        "label": "MESSAGE_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "đọc tin nhắn từ con gái",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn",
+        "label": "MESSAGE_TYPE"
+      },
+      {
+        "text": "con gái",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "kiểm tra tin nhắn thoại mới",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn thoại mới",
+        "label": "MESSAGE_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "gửi tin nhắn cho Hùng",
+    "command": "send-message",
+    "entities": [
+      {
+        "text": "Hùng",
+        "label": "CONTACT_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "nhắn tin cho con trai trên Zalo",
+    "command": "send-message",
+    "entities": [],
+    "values": [
+      {
+        "text": "con trai",
+        "label": "CONTACT_RELATIONSHIP"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "gửi tin nhắn Messenger cho Lan",
+    "command": "send-message",
+    "entities": [
+      {
+        "text": "Lan",
+        "label": "CONTACT_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "Messenger",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "nhắn cho cháu gái tôi đến đón lúc 4 giờ chiều",
+    "command": "send-message",
+    "entities": [
+      {
+        "text": "4 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "cháu gái",
+        "label": "CONTACT_RELATIONSHIP"
+      },
+      {
+        "text": "đến đón",
+        "label": "MESSAGE_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "gửi tin nhắn 'đã về đến nhà' cho vợ",
+    "command": "send-message",
+    "entities": [],
+    "values": [
+      {
+        "text": "đã về đến nhà",
+        "label": "MESSAGE_CONTENT"
+      },
+      {
+        "text": "vợ",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "gửi ảnh cho con gái",
+    "command": "send-message",
+    "entities": [],
+    "values": [
+      {
+        "text": "ảnh",
+        "label": "MESSAGE_TYPE"
+      },
+      {
+        "text": "con gái",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gửi tin nhắn"
+  },
+  {
+    "input": "mở Facebook xem bài viết mới",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "Facebook",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "bài viết mới",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "xem bảng tin Facebook",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "bảng tin",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Facebook",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "kiểm tra thông báo Zalo",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "thông báo",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "mở TikTok xem video",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "TikTok",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "video",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "xem bài viết của con gái trên Facebook",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài viết",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "con gái",
+        "label": "RELATIONSHIP"
+      },
+      {
+        "text": "Facebook",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "xem video trên YouTube về cách trồng cây",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "video",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "YouTube",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "cách trồng cây",
+        "label": "TOPIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "tìm bạn bè cũ trên Facebook",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "bạn bè cũ",
+        "label": "SEARCH_TERM"
+      },
+      {
+        "text": "Facebook",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "mở Zalo Moment",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "Zalo Moment",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "tìm công thức nấu ăn trên mạng",
+    "command": "search-internet",
+    "entities": [],
+    "values": [
+      {
+        "text": "công thức nấu ăn",
+        "label": "SEARCH_TERM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm trên internet"
+  },
+  {
+    "input": "tra cứu thông tin về bệnh tiểu đường",
+    "command": "search-internet",
+    "entities": [],
+    "values": [
+      {
+        "text": "bệnh tiểu đường",
+        "label": "SEARCH_TERM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm trên internet"
+  },
+  {
+    "input": "tìm hiểu cách chăm sóc cây cảnh",
+    "command": "search-internet",
+    "entities": [],
+    "values": [
+      {
+        "text": "cách chăm sóc cây cảnh",
+        "label": "SEARCH_TERM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm trên internet"
+  },
+  {
+    "input": "hướng dẫn sử dụng thuốc huyết áp",
+    "command": "search-internet",
+    "entities": [],
+    "values": [
+      {
+        "text": "hướng dẫn sử dụng thuốc huyết áp",
+        "label": "SEARCH_TERM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Tìm kiếm trên internet"
+  },
+  {
+    "input": "tìm địa chỉ nhà thuốc gần đây",
+    "command": "search-internet",
+    "entities": [],
+    "values": [
+      {
+        "text": "địa chỉ nhà thuốc gần đây",
+        "label": "SEARCH_TERM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Tìm kiếm trên internet"
+  },
+  {
+    "input": "tra cứu giá vé xe buýt",
+    "command": "search-internet",
+    "entities": [],
+    "values": [
+      {
+        "text": "giá vé xe buýt",
+        "label": "SEARCH_TERM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Tìm kiếm trên internet"
+  },
+  {
     "input": "hôm nay bạn thế nào?",
     "command": "general-conversation",
     "entities": [],
@@ -1947,5 +5456,369 @@
     "values": [],
     "priority": "low",
     "task_description": "Trò chuyện chung"
+  },
+  {
+    "input": "bạn giúp được gì cho người cao tuổi?",
+    "command": "general-conversation",
+    "entities": [],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Trò chuyện chung"
+  },
+  {
+    "input": "hướng dẫn tôi cách dùng điện thoại",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "cách dùng điện thoại",
+        "label": "INSTRUCTION_TOPIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "làm sao để tăng cỡ chữ trên điện thoại?",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "tăng cỡ chữ trên điện thoại",
+        "label": "INSTRUCTION_TOPIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "hướng dẫn cách gửi ảnh qua Zalo",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "gửi ảnh",
+        "label": "ACTION"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "làm thế nào để đăng ký tài khoản Facebook?",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "đăng ký tài khoản",
+        "label": "ACTION"
+      },
+      {
+        "text": "Facebook",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "cách tải ứng dụng về điện thoại",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "tải ứng dụng về điện thoại",
+        "label": "INSTRUCTION_TOPIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "hướng dẫn tôi truy cập YouTube",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "truy cập",
+        "label": "ACTION"
+      },
+      {
+        "text": "YouTube",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "cách chụp ảnh màn hình điện thoại",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "chụp ảnh màn hình điện thoại",
+        "label": "INSTRUCTION_TOPIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "giúp tôi kết nối Bluetooth với loa",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "kết nối Bluetooth với loa",
+        "label": "INSTRUCTION_TOPIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "hướng dẫn cách nạp tiền điện thoại",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "nạp tiền điện thoại",
+        "label": "INSTRUCTION_TOPIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "làm sao để thay đổi hình nền điện thoại?",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "thay đổi hình nền điện thoại",
+        "label": "INSTRUCTION_TOPIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "giúp tôi tìm lại ảnh đã xóa",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "tìm lại ảnh đã xóa",
+        "label": "INSTRUCTION_TOPIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "hướng dẫn cách sử dụng trợ lý ảo",
+    "command": "provide-instructions",
+    "entities": [],
+    "values": [
+      {
+        "text": "sử dụng trợ lý ảo",
+        "label": "INSTRUCTION_TOPIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Cung cấp hướng dẫn"
+  },
+  {
+    "input": "tăng âm lượng loa",
+    "command": "control-device",
+    "entities": [],
+    "values": [
+      {
+        "text": "tăng",
+        "label": "ACTION"
+      },
+      {
+        "text": "âm lượng loa",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều khiển thiết bị"
+  },
+  {
+    "input": "giảm độ sáng màn hình",
+    "command": "control-device",
+    "entities": [],
+    "values": [
+      {
+        "text": "giảm",
+        "label": "ACTION"
+      },
+      {
+        "text": "độ sáng màn hình",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều khiển thiết bị"
+  },
+  {
+    "input": "bật chế độ tiết kiệm pin",
+    "command": "control-device",
+    "entities": [],
+    "values": [
+      {
+        "text": "bật",
+        "label": "ACTION"
+      },
+      {
+        "text": "chế độ tiết kiệm pin",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều khiển thiết bị"
+  },
+  {
+    "input": "tắt wifi",
+    "command": "control-device",
+    "entities": [],
+    "values": [
+      {
+        "text": "tắt",
+        "label": "ACTION"
+      },
+      {
+        "text": "wifi",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều khiển thiết bị"
+  },
+  {
+    "input": "bật Bluetooth",
+    "command": "control-device",
+    "entities": [],
+    "values": [
+      {
+        "text": "bật",
+        "label": "ACTION"
+      },
+      {
+        "text": "Bluetooth",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều khiển thiết bị"
+  },
+  {
+    "input": "đặt chế độ máy bay",
+    "command": "control-device",
+    "entities": [],
+    "values": [
+      {
+        "text": "đặt",
+        "label": "ACTION"
+      },
+      {
+        "text": "chế độ máy bay",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều khiển thiết bị"
+  },
+  {
+    "input": "tắt chế độ rung",
+    "command": "control-device",
+    "entities": [],
+    "values": [
+      {
+        "text": "tắt",
+        "label": "ACTION"
+      },
+      {
+        "text": "chế độ rung",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều khiển thiết bị"
+  },
+  {
+    "input": "bật đèn pin",
+    "command": "control-device",
+    "entities": [],
+    "values": [
+      {
+        "text": "bật",
+        "label": "ACTION"
+      },
+      {
+        "text": "đèn pin",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Điều khiển thiết bị"
+  },
+  {
+    "input": "kiểm tra pin còn bao nhiêu?",
+    "command": "check-device-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "pin",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tình trạng thiết bị"
+  },
+  {
+    "input": "tôi còn bao nhiêu dung lượng 4G?",
+    "command": "check-device-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "dung lượng 4G",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tình trạng thiết bị"
+  },
+  {
+    "input": "kiểm tra bộ nhớ điện thoại",
+    "command": "check-device-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "bộ nhớ",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tình trạng thiết bị"
+  },
+  {
+    "input": "điện thoại tôi có kết nối wifi không?",
+    "command": "check-device-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "kết nối wifi",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tình trạng thiết bị"
   }
 ]

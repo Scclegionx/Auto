@@ -55,7 +55,8 @@ public class CronSchedulerService {
             // Tạo CronTrigger
             CronTrigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity("cronTrigger-" + reminder.getId(), "CRON_REMINDERS")
-                    .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
+                    .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)
+                            .inTimeZone(java.util.TimeZone.getTimeZone("Asia/Ho_Chi_Minh")))
                     .build();
 
             // Schedule job

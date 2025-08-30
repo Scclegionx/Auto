@@ -5,6 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 import static com.example.Auto_BE.constants.ErrorMessages.ERROR;
 import static com.example.Auto_BE.constants.ErrorMessages.INVALID_INPUT;
+import static com.example.Auto_BE.constants.ErrorMessages.UNAUTHORIZED;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -43,6 +46,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BaseException.ConflictException.class)
     public ResponseEntity<BaseResponse<Object>> handleConflict(BaseException.ConflictException ex) {
         return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    // Handle Authentication exceptions (sai email/password)
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<BaseResponse<Object>> handleBadCredentials(BadCredentialsException ex) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, UNAUTHORIZED);
+    }
+
+    // Handle general Authentication exceptions
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<BaseResponse<Object>> handleAuthentication(AuthenticationException ex) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
 

@@ -4,6 +4,7 @@ public class ErrorMessages {
     public static final String ERROR = "error";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String UNAUTHENTICATED = "{\"status\":\"error\",\"message\":\"Unauthenticated\",\"data\":null}";
+    public static final String UNAUTHORIZED = "Unauthenticated";
     public static final String UNVERIFIED_ACCOUNT = "Unverified account ";
     public static final String EMAIL_ALREADY_EXISTS = "Email already exists";
     public static final String INVALID_INPUT = "Invalid input";

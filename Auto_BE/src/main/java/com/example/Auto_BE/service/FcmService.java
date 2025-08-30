@@ -17,8 +17,17 @@ public class FcmService {
         try {
             // Kiểm tra xem Firebase App đã được khởi tạo chưa
             if (FirebaseApp.getApps().isEmpty()) {
-                // Đọc service account key từ resources folder
-                InputStream serviceAccount = new ClassPathResource("firebase-service-account.json").getInputStream();
+                // Đọc service account key từ file path (ưu tiên Docker mount)
+                InputStream serviceAccount;
+                try {
+                    // Thử đọc từ Docker mount path trước
+                    serviceAccount = new java.io.FileInputStream("/app/firebase-service-account.json");
+                    System.out.println("Loading Firebase config from Docker mount: /app/firebase-service-account.json");
+                } catch (java.io.FileNotFoundException e) {
+                    // Fallback to resources folder
+                    serviceAccount = new ClassPathResource("firebase-service-account.json").getInputStream();
+                    System.out.println("Loading Firebase config from resources folder");
+                }
                 
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))

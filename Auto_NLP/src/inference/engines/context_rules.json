@@ -1,0 +1,68 @@
+{
+  "context_rules": {
+    "message_extraction": {
+      "rules": [
+        {
+          "condition": "contains 'là' after person",
+          "action": "extract_after_là",
+          "pattern": "là\\s+(.+?)(?:\\s+(?:nhé|nha|ạ|nhá))?(?:$|[\\.,])",
+          "confidence": 0.9
+        },
+        {
+          "condition": "contains 'rằng' after person", 
+          "action": "extract_after_rằng",
+          "pattern": "rằng\\s+(.+?)(?:\\s+(?:nhé|nha|ạ|nhá))?(?:$|[\\.,])",
+          "confidence": 0.8
+        }
+      ]
+    },
+    "person_extraction": {
+      "rules": [
+        {
+          "condition": "contains 'cho' + relation + name",
+          "action": "extract_full_name",
+          "pattern": "cho\\s+((?:ba|bố|mẹ|anh|chị|em|cô|chú|bác|ông|bà)\\s+[\\w\\s]+?)(?:\\s+(?:rằng|là|nói|nhắn|gửi|lúc|tại|ở|vào|ngày|giờ|$))",
+          "confidence": 0.9
+        },
+        {
+          "condition": "contains only relation",
+          "action": "extract_relation_only",
+          "pattern": "(ba|bố|mẹ|anh|chị|em|cô|chú|bác|ông|bà)",
+          "confidence": 0.7
+        }
+      ]
+    },
+    "location_extraction": {
+      "rules": [
+        {
+          "condition": "contains 'tại' + type + name",
+          "action": "extract_full_location",
+          "pattern": "tại\\s+((?:bệnh viện|trường|công viên|nhà|công ty|văn phòng|phòng)\\s+[\\w\\s]+?)(?:\\s+(?:lúc|giờ|vào|ngày|$))",
+          "confidence": 0.9
+        },
+        {
+          "condition": "contains only type",
+          "action": "extract_type_only",
+          "pattern": "(bệnh viện|trường|công viên|nhà|công ty|văn phòng|phòng)",
+          "confidence": 0.6
+        }
+      ]
+    },
+    "platform_detection": {
+      "rules": [
+        {
+          "condition": "no platform mentioned",
+          "action": "default_to_sms",
+          "default": "sms",
+          "confidence": 1.0
+        },
+        {
+          "condition": "platform mentioned",
+          "action": "extract_platform",
+          "pattern": "(?:qua|bằng|trên)\\s+(zalo|facebook|messenger|telegram|instagram|tiktok)",
+          "confidence": 0.9
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "intent_semantic_patterns": {
+    "send-mess": {
+      "patterns": [
+        {
+          "pattern": "nhắn tin cho {person}",
+          "entities": ["person"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "gửi tin nhắn tới {person}",
+          "entities": ["person"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "liên lạc với {person}",
+          "entities": ["person"],
+          "confidence": 0.8
+        }
+      ]
+    },
+    "call": {
+      "patterns": [
+        {
+          "pattern": "gọi điện cho {person}",
+          "entities": ["person"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "gọi cho {person}",
+          "entities": ["person"],
+          "confidence": 0.8
+        }
+      ]
+    }
+  },
+  "entity_semantic_patterns": {
+    "person": {
+      "patterns": [
+        {
+          "pattern": "{relation} {name}",
+          "confidence": 0.9,
+          "example": "ba Hùng"
+        },
+        {
+          "pattern": "{relation}",
+          "confidence": 0.7,
+          "example": "bà"
+        }
+      ]
+    },
+    "location": {
+      "patterns": [
+        {
+          "pattern": "{type} {name}",
+          "confidence": 0.9,
+          "example": "bệnh viện Mẹt"
+        },
+        {
+          "pattern": "{type}",
+          "confidence": 0.6,
+          "example": "bệnh viện"
+        }
+      ]
+    },
+    "time": {
+      "patterns": [
+        {
+          "pattern": "{period}",
+          "confidence": 0.8,
+          "example": "trưa"
+        },
+        {
+          "pattern": "{specific_time} {period}",
+          "confidence": 0.9,
+          "example": "6h chiều"
+        }
+      ]
+    }
+  }
+}

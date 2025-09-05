@@ -1,0 +1,46 @@
+{
+  "intent_patterns": {
+    "send-mess": {
+      "keywords": ["nhắn", "tin", "gửi", "gọi", "liên lạc", "thông báo"],
+      "contexts": ["cho", "tới", "đến", "với"],
+      "examples": [
+        "nhắn tin cho",
+        "gửi tin nhắn tới",
+        "gọi điện cho",
+        "liên lạc với"
+      ]
+    },
+    "call": {
+      "keywords": ["gọi", "điện", "phone", "cuộc gọi"],
+      "contexts": ["cho", "tới", "đến", "với"],
+      "examples": [
+        "gọi điện cho",
+        "gọi cho",
+        "phone cho"
+      ]
+    }
+  },
+  "entity_patterns": {
+    "person": {
+      "relations": ["ba", "bố", "mẹ", "anh", "chị", "em", "cô", "chú", "bác", "ông", "bà"],
+      "name_patterns": ["Hùng", "Minh", "Lan", "Nam", "Hoa", "Tuấn", "Mai", "Đức", "Thảo", "Quang"]
+    },
+    "location": {
+      "types": ["bệnh viện", "trường", "công viên", "nhà", "công ty", "văn phòng", "phòng"],
+      "name_patterns": ["Mẹt", "Thống Nhất", "Hồ Gươm", "Ba Đình", "Cầu Giấy", "Đống Đa"]
+    },
+    "time": {
+      "periods": ["sáng", "trưa", "chiều", "tối", "đêm"],
+      "specific_times": ["6h", "7h", "8h", "9h", "10h", "11h", "12h", "13h", "14h", "15h", "16h", "17h", "18h", "19h", "20h", "21h", "22h", "23h"],
+      "days": ["hôm nay", "ngày mai", "hôm qua", "tuần", "tháng"]
+    }
+  },
+  "platform_mapping": {
+    "zalo": ["zalo", "zaloo"],
+    "facebook": ["facebook", "fb", "messenger"],
+    "telegram": ["telegram", "tg"],
+    "instagram": ["instagram", "ig"],
+    "tiktok": ["tiktok", "tt"],
+    "sms": ["sms", "tin nhắn", "text"]
+  }
+}

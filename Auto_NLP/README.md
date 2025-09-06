@@ -55,4 +55,5 @@ python run_api.py
 
 # Cách 2: Trực tiếp
 python src/inference/api/api_server.py
+# start src/inference/interfaces/web_interface.html (giao diện)
 ```

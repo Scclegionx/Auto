@@ -19,6 +19,9 @@ current_dir = Path(__file__).parent
 project_root = current_dir.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
+# Import NLP processor
+from ..engines.nlp_processor import NLPProcessor
+
 try:
     from src.training.configs.config import model_config
     from src.inference.engines.reasoning_engine import ReasoningEngine
@@ -99,11 +102,6 @@ class PhoBERT_SAM_API:
     """API class cho PhoBERT_SAM"""
     
     def __init__(self):
-        self.model = None
-        self.tokenizer = None
-        self.id_to_intent = None
-        self.intent_to_command = None
-        
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print(f"🖥️ Using device: {self.device}")
         
@@ -111,186 +109,17 @@ class PhoBERT_SAM_API:
             print(f"🎮 GPU: {torch.cuda.get_device_name()}")
             print(f"💾 GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
         
-        self.intent_to_command = {
-            "adjust-settings": "adjust_settings",
-            "app-tutorial": "app_tutorial", 
-            "browse-social-media": "browse_social_media",
-            "call": "call",
-            "check-device-status": "check_device_status",
-            "check-health-status": "check_health_status",
-            "check-messages": "check_messages",
-            "check-weather": "check_weather",
-            "control-device": "control_device",
-            "general-conversation": "general_conversation",
-            "help": "help",
-            "make-call": "make_call",
-            "make-video-call": "make_video_call",
-            "navigation-help": "navigation_help",
-            "open-app": "open_app",
-            "open-app-action": "open_app_action",
-            "play-audio": "play_audio",
-            "play-content": "play_content",
-            "play-media": "play_media",
-            "provide-instructions": "provide_instructions",
-            "read-content": "read_content",
-            "read-news": "read_news",
-            "search-content": "search_content",
-            "search-internet": "search_internet",
-            "send-message": "send_message",
-            "send-mess": "send_mess",
-            "set-alarm": "set_alarm",
-            "set-reminder": "set_reminder",
-            "view-content": "view_content",
-            "unknown": "unknown"
-        }
+        # Initialize NLP processor
+        self.nlp_processor = NLPProcessor(self.device)
         
-        self.entity_patterns = {
-            "RECEIVER": [
-                r"cho\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",  # "cho bà ngoại tôi ngay bây giờ"
-                r"gọi\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",  # "gọi cho bà ngoại tôi"
-                r"nhắn\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",  # "nhắn cho bà ngoại tôi"
-                r"gửi\s+(?:cho|tới|đến)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",  # "gửi cho bác Lan nhé"
-                r"(?:báo|thông báo|nói|nói với|thông tin)\s+(?:cho|tới|đến)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",  # "thông báo cho chị Hương"
-                r"(?:số|số điện thoại|liên lạc với|liên hệ với)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",  # "liên lạc với anh Tuấn"
-                r"(?:kết nối|liên lạc|liên hệ)\s+(?:với|tới|đến)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",  # "kết nối với bà"
-                r"(?:với|cùng)\s+((?:bác|chú|cô|anh|chị|em|ông|bà)\s+[\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",  # "với bác Phương"
-                r"(?:cuộc gọi|gọi điện|gọi thoại)\s+(?:cho|tới|đến)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",  # "cuộc gọi cho bà ngoại tôi"
-                r"(?:thực hiện|thực hiện một)\s+(?:cuộc gọi|gọi điện|gọi thoại)\s+(?:cho|tới|đến)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])"  # "thực hiện cuộc gọi cho bà ngoại tôi"
-            ],
-            
-            "PLATFORM": [
-                r"trên\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",  # "trên Zalo"
-                r"qua\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",
-                r"bằng\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",
-                r"(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)\s+app",
-                r"app\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",
-                r"(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",  # Trực tiếp
-                r"vào\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",  # "vào Facebook"
-                
-                r"(?:sử dụng|dùng|thông qua|qua đường|đường)\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok|tin nhắn|điện thoại)",  # "sử dụng Zalo"
-                r"(?:ứng dụng|phần mềm)\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",  # "ứng dụng Facebook"
-                r"(?:mở|vào|khởi động)\s+(?:ứng dụng|phần mềm)?\s*(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",  # "mở ứng dụng Zalo"
-                r"(?:nhắn tin|gửi tin nhắn|chat)\s+(?:qua|trên|bằng|dùng)?\s*(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",  # "nhắn tin qua Zalo"
-                r"(?:gọi|gọi điện|video call|cuộc gọi|facetime)\s+(?:qua|trên|bằng|dùng)?\s*(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",  # "gọi điện qua Zalo"
-                
-                r"(?:tìm kiếm|tìm|search|tra cứu)\s+(?:trên|qua|bằng|dùng)?\s*(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",  # "tìm kiếm trên Youtube"
-                r"(?:xem|phát|nghe|mở)\s+(?:trên|qua|bằng|dùng)?\s*(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)",  # "xem trên Youtube"
-                r"(?:vào|mở)\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok)\s+(?:để|để mà|mà)\s+(?:tìm|tìm kiếm|search|phát|nghe|xem)"  # "vào Youtube để tìm kiếm"
-            ],
-            
-            "TIME": [
-                r"(\d{1,2}:\d{2})",
-                r"(\d{1,2})\s*giờ",
-                r"(\d{1,2})\s*phút",
-                r"(sáng|chiều|tối|đêm)",
-                r"(hôm\s+nay|ngày\s+mai|tuần\s+sau)",
-                
-                r"(\d{1,2})\s*giờ\s*(\d{1,2})?\s*(?:phút)?",  # "7 giờ 30 phút", "7 giờ 30", "7 giờ"
-                r"(\d{1,2})\s*rưỡi",  # "7 rưỡi"
-                r"(\d{1,2})\s*giờ\s*rưỡi",  # "7 giờ rưỡi"
-                r"(\d{1,2})\s*giờ\s*(?:kém|thiếu)\s*(\d{1,2})",  # "7 giờ kém 15"
-                r"(\d{1,2})\s*giờ\s*(\d{1,2})\s*(?:phút)?\s*(?:sáng|trưa|chiều|tối|đêm)",  # "7 giờ 30 phút sáng"
-                r"(\d{1,2})\s*(?:giờ)?\s*(?:sáng|trưa|chiều|tối|đêm)",  # "7 giờ sáng", "7 sáng"
-                r"(?:lúc|vào\s+lúc|vào)\s+(\d{1,2})\s*(?:giờ|h|:)\s*(\d{1,2})?(?:\s*phút)?",  # "lúc 7 giờ", "vào lúc 7:30"
-                r"(?:hôm\s+nay|ngày\s+mai|ngày\s+kia|tuần\s+sau|tuần\s+tới)",  # "hôm nay", "tuần tới"
-                r"(?:thứ\s+[Hh]ai|thứ\s+[Bb]a|thứ\s+[Tt]ư|thứ\s+[Nn]ăm|thứ\s+[Ss]áu|thứ\s+[Bb]ảy|chủ\s+nhật)",  # "thứ hai", "chủ nhật"
-                r"(?:sáng|trưa|chiều|tối|đêm)\s+(?:nay|mai|kia)",  # "sáng nay", "tối mai"
-                r"(?:ngày|mùng|mồng)\s+(\d{1,2})(?:\s+tháng\s+(\d{1,2}))?(?:\s+năm\s+(\d{4}))?",  # "ngày 15", "ngày 15 tháng 8"
-                r"(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?",  # "15/8", "15/8/2023"
-                r"(?:vài|mấy|mười|hai\s+mươi|ba\s+mươi)\s+(?:giây|phút|tiếng|ngày|tuần|tháng)\s+(?:tới|sau|nữa)",  # "vài phút nữa", "mười ngày tới"
-                r"(?:một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười)\s+(?:giây|phút|tiếng|ngày|tuần|tháng)\s+(?:tới|sau|nữa)"  # "hai tiếng nữa"
-            ],
-            
-            "MESSAGE": [
-                r"nói\s+rõ\s+là\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "nói rõ là tôi muốn trò chuyện với bà"
-                r"rằng\s+là\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "rằng là chiều nay đón bà"
-                r"rằng\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "rằng chiều nay 6 giờ chiều đón bà"
-                r"nói\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "nói tôi muốn trò chuyện"
-                r"nhắn\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "nhắn tôi sẽ đến"
-                r"gửi\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "gửi tôi sẽ đến"
-                
-                r"(?:rằng|là)\s+[\"\'](.+?)[\"\']",  # Trích dẫn nội dung tin nhắn bằng dấu ngoặc kép hoặc đơn
-                r"(?:nhắn|nhắn tin|gửi|gửi tin nhắn|nhắn lại|gửi lời nhắn)\s+(?:rằng|là)?\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
-                r"(?:với\s+nội\s+dung|với\s+tin\s+nhắn|tin\s+nhắn)\s+(?:là|rằng)?\s+[\"\']?(.+?)[\"\']?(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
-                r"(?:nội\s+dung|tin\s+nhắn)\s*[\"\'](.+?)[\"\']",
-                r"(?:nhắn\s+cho\s+\w+\s+)(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # Tin nhắn sau "nhắn cho [người nhận]"
-                r"(?:gửi\s+cho\s+\w+\s+)(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])"  # Tin nhắn sau "gửi cho [người nhận]"
-            ],
-            
-            "LOCATION": [
-                r"ở\s+(\w+(?:\s+\w+)*)",
-                r"tại\s+(\w+(?:\s+\w+)*)",
-                r"(\w+(?:\s+\w+)*)\s+(?:thành\s+phố|tỉnh|quận|huyện)",
-                
-                r"(?:ở|tại|trong|ngoài|gần|xa)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "ở Hà Nội", "tại quận 1"
-                r"(?:đến|tới|về|qua|sang|đi)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "đến Sài Gòn", "về quê"
-                r"(?:thành phố|tỉnh|quận|huyện|phường|xã|làng|thôn|ấp|khu|vùng)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "thành phố Hồ Chí Minh"
-                r"(?:trong|ngoài|gần|xa)\s+(?:thành phố|tỉnh|quận|huyện|phường|xã|làng|thôn|ấp|khu|vùng)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "trong thành phố Đà Nẵng"
-                r"(?:khu\s+vực|khu\s+đô\s+thị|khu\s+dân\s+cư|làng|xóm)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "khu vực Mỹ Đình"
-                r"(?:đường|phố|ngõ|ngách|hẻm)\s+([\w\s\d\/]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "đường Lê Lợi", "ngõ 193"
-                r"(?:số\s+nhà|nhà\s+số)\s+([\w\s\d\/]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "số nhà 45", "nhà số 15"
-                r"(?:toà\s+nhà|chung\s+cư|khu\s+chung\s+cư|căn\s+hộ)\s+([\w\s\d\/]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "toà nhà CT1", "chung cư Linh Đàm"
-                r"(?:bệnh\s+viện|trường\s+học|trường|trường\s+đại\s+học|đại\s+học|trường\s+phổ\s+thông|siêu\s+thị|chợ|cửa\s+hàng|công\s+ty)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])"  # "bệnh viện Bạch Mai", "trường đại học Quốc Gia"
-            ],
-            
-            "APP": [
-                r"mở\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok|Camera|Gallery|Settings|Clock|Weather|Maps|Calculator)",
-                r"vào\s+(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok|Camera|Gallery|Settings|Clock|Weather|Maps|Calculator)",
-                r"(Facebook|Zalo|Youtube|YouTube|SMS|Messenger|Telegram|Instagram|TikTok|Camera|Gallery|Settings|Clock|Weather|Maps|Calculator)\s+app",
-                
-                r"(?:mở|khởi động|chạy|vào|sử dụng|dùng)\s+(?:ứng dụng|app|phần mềm)?\s*(Facebook|Zalo|Youtube|YouTube|TikTok|Instagram|Twitter|Messenger|Viber|Telegram|Google|Gmail|Chrome|Safari|Firefox|Opera|Maps|Bản đồ|Tin nhắn|SMS|Điện thoại|Máy tính|Calculator|Ghi âm|Ghi chú|Notes|Lịch|Calendar|Đồng hồ|Clock|Báo thức|Alarm|Thời tiết|Weather|Camera|Máy ảnh|Gallery|Bộ sưu tập|Hình ảnh|Cài đặt|Settings|Music|Nhạc|Video|Trò chơi|Game)",
-                r"(?:ứng dụng|app|phần mềm)\s+(Facebook|Zalo|Youtube|YouTube|TikTok|Instagram|Twitter|Messenger|Viber|Telegram|Google|Gmail|Chrome|Safari|Firefox|Opera|Maps|Bản đồ|Tin nhắn|SMS|Điện thoại|Máy tính|Calculator|Ghi âm|Ghi chú|Notes|Lịch|Calendar|Đồng hồ|Clock|Báo thức|Alarm|Thời tiết|Weather|Camera|Máy ảnh|Gallery|Bộ sưu tập|Hình ảnh|Cài đặt|Settings|Music|Nhạc|Video|Trò chơi|Game)",
-                r"(?:vào|truy cập|sử dụng)\s+(Facebook|Zalo|Youtube|YouTube|TikTok|Instagram|Twitter|Messenger|Viber|Telegram|Google|Gmail|Chrome|Safari|Firefox|Opera|Maps|Bản đồ|Tin nhắn|SMS|Điện thoại|Máy tính|Calculator|Ghi âm|Ghi chú|Notes|Lịch|Calendar|Đồng hồ|Clock|Báo thức|Alarm|Thời tiết|Weather|Camera|Máy ảnh|Gallery|Bộ sưu tập|Hình ảnh|Cài đặt|Settings|Music|Nhạc|Video|Trò chơi|Game)",
-                r"(?:kiểm tra|xem|theo dõi)\s+(Facebook|Zalo|Youtube|YouTube|TikTok|Instagram|Twitter|Messenger|Viber|Telegram|Google|Gmail|Chrome|Safari|Firefox|Opera|Maps|Bản đồ|Tin nhắn|SMS|Điện thoại|Máy tính|Calculator|Ghi âm|Ghi chú|Notes|Lịch|Calendar|Đồng hồ|Clock|Báo thức|Alarm|Thời tiết|Weather|Camera|Máy ảnh|Gallery|Bộ sưu tập|Hình ảnh|Cài đặt|Settings|Music|Nhạc|Video|Trò chơi|Game)",
-                r"(?:chụp ảnh|quay phim|quay video|xem ảnh|xem video)",  # Common app actions that imply app usage
-                r"(?:tính toán|tính|làm tính|tính nhẩm)",  # Calculator
-                r"(?:nghe nhạc|phát nhạc|bật nhạc)",  # Music app
-                r"(?:ghi chú|note|ghi lại|lưu ý)",  # Notes app
-                r"(?:đặt báo thức|hẹn giờ|đặt giờ)",  # Clock/Alarm app
-                r"(?:thời tiết|dự báo|nhiệt độ)",  # Weather app
-                r"(?:tìm đường|chỉ đường|định vị)"  # Maps app
-            ],
-            
-            "QUERY": [
-                r"tìm\s+(.+)",  # "tìm kiếm những thước phim hài"
-                r"tìm\s+kiếm\s+(.+)",
-                r"search\s+(.+)",
-                r"tìm\s+video\s+(.+)",
-                r"tìm\s+nhạc\s+(.+)",
-                
-                r"(?:tìm|tìm kiếm|search|tra cứu|tra|tra cứu|kiếm|tìm hiểu)\s+(?:về|thông tin về|thông tin|kiến thức về|kiến thức)?\s*(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "tìm kiếm về cách nấu phở"
-                r"(?:tìm|tìm kiếm|search|tra cứu|tra|tra cứu|kiếm|tìm hiểu)\s+(?:cho tôi|cho mình|cho tớ|cho bác|cho cô|cho chú|giúp tôi|giúp mình|giúp bác|giúp cô|giúp chú)?\s*(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "tìm cho tôi thông tin về sức khỏe"
-                r"(?:tìm|tìm kiếm|search|tra cứu|tra|tra cứu|kiếm|tìm hiểu)\s+(?:video|clip|phim|nhạc|bài hát|bài|album|ca sĩ|ca khúc|nghệ sĩ|diễn viên|tác giả)\s+(?:về|của|do|bởi)?\s*(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "tìm video về cách làm bánh", "tìm nhạc của Trịnh Công Sơn"
-                r"(?:tìm|tìm kiếm|search|tra cứu|tra|tra cứu|kiếm|tìm hiểu)\s+(?:công thức|cách|phương pháp|hướng dẫn|chỉ dẫn|bí quyết)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "tìm công thức nấu ăn", "tìm cách làm bánh"
-                r"(?:tìm|tìm kiếm|search|tra cứu|tra|tra cứu|kiếm|tìm hiểu)\s+(?:tin tức|thời sự|báo|bản tin|thông tin)\s+(?:về|liên quan đến)?\s*(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "tìm tin tức về COVID-19"
-                r"(?:tìm|tìm kiếm|search|tra cứu|tra|tra cứu|kiếm|tìm hiểu)\s+(?:bệnh|triệu chứng|thuốc|điều trị|bác sĩ|y tế|sức khỏe)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "tìm triệu chứng bệnh tiểu đường"
-                r"(?:hỏi|tra cứu|tra|hỏi về|hỏi thông tin về)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "hỏi về cách sử dụng điện thoại"
-                r"(?:tìm hiểu|nghiên cứu|học hỏi|học về)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "tìm hiểu về lịch sử Việt Nam"
-                r"(?:cách|phương pháp|làm thế nào|làm sao|làm cách nào|làm như thế nào để)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "cách nấu phở", "làm thế nào để học tiếng Anh"
-                
-                r"(?:vào|mở)\s+(?:youtube|facebook|zalo|instagram|tiktok)\s+(?:để|để mà|mà)\s+(?:tìm|tìm kiếm|search|phát|nghe|xem)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "vào youtube để tìm kiếm danh sách nhạc"
-                r"(?:tìm kiếm|tìm|search)\s+(?:trên|qua|bằng|dùng)\s+(?:youtube|facebook|zalo|instagram|tiktok)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "tìm kiếm trên youtube danh sách nhạc"
-                r"(?:danh sách|list|playlist)\s+(?:nhạc|music|video|clip|phim)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "danh sách nhạc mới nhất"
-                r"(?:nhạc|music|video|clip|phim)\s+(?:mới nhất|hot|trending|phổ biến)\s+(?:của|do|bởi)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])"  # "nhạc mới nhất của Sơn Tùng"
-            ],
-            
-            "CONTENT": [
-                r"phim\s+(.+)",  # "phim hài của Xuân Bắc"
-                r"nhạc\s+(.+)",
-                r"video\s+(.+)",
-                r"bài\s+hát\s+(.+)",
-                r"tin\s+tức\s+(.+)",
-                
-                r"(?:phim|video|clip|nhạc|bài hát|bài|album|ca khúc)\s+(?:về|của|do|bởi)?\s*(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "phim của Thành Long", "nhạc của Trịnh Công Sơn"
-                r"(?:tin tức|thời sự|báo|bản tin|thông tin)\s+(?:về|liên quan đến)?\s*(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "tin tức về COVID-19"
-                r"(?:phát|bật|mở|nghe|xem)\s+(?:phim|video|clip|nhạc|bài hát|bài|album|ca khúc)\s+(?:về|của|do|bởi)?\s*(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "bật nhạc của Sơn Tùng", "phát phim hài"
-                r"(?:đọc|đọc báo|đọc tin|đọc tin tức)\s+(?:về|liên quan đến)?\s*(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "đọc báo về thời sự"
-                r"(?:ca sĩ|nghệ sĩ|diễn viên|nhạc sĩ|tác giả|đạo diễn)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "ca sĩ Mỹ Tâm"
-                r"(?:thể loại|loại|kiểu|dạng)\s+(?:phim|video|clip|nhạc|bài hát|bài|album|ca khúc)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "thể loại nhạc trữ tình"
-                r"(?:phim|video|clip|nhạc|bài hát|bài|album|ca khúc)\s+(?:thể loại|loại|kiểu|dạng)\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",  # "phim thể loại hài"
-                r"(?:karaoke|hát karaoke)\s+(?:bài)?\s*(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])"  # "karaoke bài Đêm Lao Xao"
-            ]
-        }
+        # Legacy attributes for backward compatibility
+        self.model = None
+        self.tokenizer = None
+        self.id_to_intent = None
+        self.intent_to_command = self.nlp_processor.get_intent_to_command_mapping()
+        
+        # Legacy entity patterns đã được chuyển vào entity_extractor.py
+        # và được cải thiện trong communication_optimizer.py
         
         self.reasoning_engine = ReasoningEngine()
         print("🧠 Reasoning Engine initialized")
@@ -441,149 +270,72 @@ class PhoBERT_SAM_API:
             return True
     
     def extract_entities(self, text: str) -> Dict[str, str]:
-        """Extract entities from text with improved logic"""
-        entities = {}
-        text_lower = text.lower()
-        
-        # Priority 1: Extract RECEIVER first (most important for call/message)
-        receiver_patterns = [
-            r"cho\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",
-            r"gọi\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",
-            r"nhắn\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",
-            r"(?:cuộc gọi|gọi điện|gọi thoại)\s+(?:cho|tới|đến)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])",
-            r"(?:thực hiện|thực hiện một)\s+(?:cuộc gọi|gọi điện|gọi thoại)\s+(?:cho|tới|đến)\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá|ngay bây giờ|ngay|bây giờ))?(?:$|[\.,])"
-        ]
-        
-        for pattern in receiver_patterns:
-            match = re.search(pattern, text_lower, re.IGNORECASE)
-            if match and match.group(1):
-                receiver = match.group(1).strip()
-                relationship_terms = ["bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu", "chú", "bác", "cô", "dì", "ngoại", "nội"]
-                if any(term in receiver for term in relationship_terms):
-                    entities["RECEIVER"] = receiver
-                    break
-        
-        platform_patterns = [
-            r"bằng\s+(zalo|facebook|messenger|telegram|instagram|tiktok)",
-            r"qua\s+(zalo|facebook|messenger|telegram|instagram|tiktok)",
-            r"trên\s+(zalo|facebook|messenger|telegram|instagram|tiktok)",
-            r"(zalo|facebook|messenger|telegram|instagram|tiktok)"
-        ]
-        
-        for pattern in platform_patterns:
-            match = re.search(pattern, text_lower, re.IGNORECASE)
-            if match and match.group(1):
-                entities["PLATFORM"] = match.group(1).lower()
-                break
-        
-        if "RECEIVER" in entities:
-            receiver = entities["RECEIVER"]
-            message_patterns = [
-                rf"nói\s+rõ\s+là\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
-                rf"rằng\s+là\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
-                rf"rằng\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
-                rf"nói\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])"
-            ]
-            
-            for pattern in message_patterns:
-                match = re.search(pattern, text_lower, re.IGNORECASE)
-                if match and match.group(1):
-                    message = match.group(1).strip()
-                    message = re.sub(r'^(?:là\s+|rằng\s+)', '', message)
-                    if message and len(message) > 5 and len(message) < 200:  # Reasonable length
-                        entities["MESSAGE"] = message
-                        break
-        
-        time_patterns = [
-            r"(\d{1,2})\s*giờ\s*(\d{1,2})?\s*(?:phút)?",
-            r"(\d{1,2})\s*rưỡi",
-            r"(\d{1,2})\s*(?:giờ|h)\s*(?:sáng|trưa|chiều|tối)",
-            r"(sáng|chiều|tối|đêm)",
-            r"(hôm\s+nay|ngày\s+mai|tuần\s+sau)",
-            r"(sau\s+(?:khi\s+)?ăn|sau\s+bữa\s+(?:sáng|trưa|tối))",
-            r"(trước\s+(?:khi\s+)?ăn|trước\s+bữa\s+(?:sáng|trưa|tối))",
-            r"(hàng\s+ngày|hàng\s+tuần|hàng\s+tháng)",
-            r"(thứ\s+\d+\s+hàng\s+tuần)",
-            r"(ngày\s+\d+\s+hàng\s+tháng)",
-            r"(khi\s+cần\s+thiết|khi\s+đau|khi\s+có\s+triệu\s+chứng)",
-            r"(\d{1,2})\s*giờ\s*(?:sáng|trưa|chiều|tối)\s+và\s+(\d{1,2})\s*giờ\s*(?:sáng|trưa|chiều|tối)",
-            r"(\d{1,2})\s*lần\s+một\s+ngày:\s*(sáng|trưa|tối)(?:,\s*(sáng|trưa|tối))*(?:,\s*(sáng|trưa|tối))*"
-        ]
-        
-        for pattern in time_patterns:
-            match = re.search(pattern, text_lower, re.IGNORECASE)
-            if match:
-                if match.groups():
-                    time_value = " ".join([g for g in match.groups() if g])
-                    if time_value:
-                        entities["TIME"] = time_value
-                        break
-                else:
-                    entities["TIME"] = match.group(0)
-                    break
-        
-        location_patterns = [
-            r"ở\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
-            r"tại\s+([\w\s]+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])"
-        ]
-        
-        for pattern in location_patterns:
-            match = re.search(pattern, text_lower, re.IGNORECASE)
-            if match and match.group(1):
-                location = match.group(1).strip()
-                if location and len(location) > 2:
-                    entities["LOCATION"] = location
-                    break
-        
-        medicine_words = ["uống thuốc", "thuốc", "viên thuốc", "kháng sinh", "tiểu đường", "huyết áp", "tim", "vitamin", "sắt", "cảm", "đau đầu"]
-        reminder_words = ["nhắc", "nhắc nhở", "ghi nhớ", "reminder", "đừng quên", "nhớ", "đặt lời nhắc", "đặt nhắc nhở"]
-        
-        if any(word in text_lower for word in medicine_words) and any(word in text_lower for word in reminder_words):
-            if "INTENT" not in entities:
-                entities["INTENT"] = "set-reminder"
-                for medicine_word in medicine_words:
-                    if medicine_word in text_lower:
-                        medicine_patterns = [
-                            rf"uống\s+(\d+\s+)?(?:viên\s+)?{medicine_word}",
-                            rf"{medicine_word}\s+(?:lúc|vào|sau|trước)",
-                            rf"uống\s+{medicine_word}"
-                        ]
-                        for pattern in medicine_patterns:
-                            match = re.search(pattern, text_lower, re.IGNORECASE)
-                            if match:
-                                if match.groups():
-                                    entities["MESSAGE"] = match.group(0)
-                                else:
-                                    entities["MESSAGE"] = match.group(0)
-                                break
-                        break
-        
-        elif any(word in text_lower for word in ["nhắn tin", "gửi tin", "soạn tin", "text", "sms", "message", "gửi", "nhắn"]):
-            if "INTENT" not in entities:
-                entities["INTENT"] = "send-mess"
-        
-        elif "TIME" in entities:
-            if any(word in text_lower for word in ["báo thức", "đánh thức", "alarm", "dậy", "thức dậy"]):
-                if "INTENT" not in entities:
-                    entities["INTENT"] = "set-alarm"
-            elif any(word in text_lower for word in reminder_words):
-                if "INTENT" not in entities:
-                    entities["INTENT"] = "set-reminder"
-        
-        if "QUERY" not in entities:
-            search_words = ["tìm", "tìm kiếm", "tra cứu", "search", "google"]
-            if any(word in text_lower for word in search_words):
-                for word in search_words:
-                    if word in text_lower:
-                        start_pos = text_lower.find(word) + len(word)
-                        query = text[start_pos:].strip()
-                        if query and len(query) > 3:  # Ensure it's not too short
-                            entities["QUERY"] = query
-                            break
-        
-        return entities
+        """Extract entities using NLPProcessor"""
+        return self.nlp_processor.entity_extractor.extract_all_entities(text)
     
     def generate_value(self, intent: str, entities: Dict[str, str], original_text: str) -> str:
+        """Generate value using NLPProcessor"""
+        return self.nlp_processor.value_generator.generate_value(intent, entities, original_text)
+    
+    def predict_intent(self, text: str, confidence_threshold: float = 0.3) -> Dict:
+        """Predict intent using NLPProcessor"""
+        return self.nlp_processor.intent_predictor.predict_intent(text, confidence_threshold)
+    
+    async def process_text(self, text: str, confidence_threshold: float = 0.3) -> IntentResponse:
+        """Process text using NLPProcessor"""
+        result = self.nlp_processor.process_text(text, confidence_threshold)
+        
+        return IntentResponse(
+            input_text=result["input_text"],
+            intent=result["intent"],
+            confidence=result["confidence"],
+            command=result["command"],
+            entities=result["entities"],
+            value=result["value"],
+            processing_time=result["processing_time"],
+            timestamp=result["timestamp"]
+        )
+    
+    async def predict_with_reasoning(self, text: str) -> Dict[str, Any]:
+        """Predict with reasoning using NLPProcessor"""
+        return await self.nlp_processor.process_with_reasoning(text)
+    
+    def load_model(self) -> bool:
+        """Load model using NLPProcessor"""
+        # Try to find model file
+        model_paths = [
+            "src/models/trained/phobert_large_intent_model/model_epoch_10_best.pth",
+            "src/models/trained/phobert_large_intent_model/model_epoch_3_best.pth",
+            "src/models/trained/phobert_large_intent_model/model_epoch_1_best.pth"
+        ]
+        
+        for model_path in model_paths:
+            if os.path.exists(model_path):
+                success = self.nlp_processor.load_model(model_path)
+                if success:
+                    # Update legacy attributes
+                    self.model = self.nlp_processor.intent_predictor.model
+                    self.tokenizer = self.nlp_processor.intent_predictor.tokenizer
+                    self.id_to_intent = self.nlp_processor.intent_predictor.id_to_intent
+                    return True
+        
+        print("⚠️ No trained model found, using fallback methods")
+        return True  # Return True to allow fallback methods
+    
+    # Legacy methods for backward compatibility
+    def _extract_entities_simple(self, text: str) -> dict:
+        """Legacy method - redirect to new extractor"""
+        return self.extract_entities(text)
+    
+    def _predict_intent_simple(self, text: str) -> tuple:
+        """Legacy method - redirect to new predictor"""
+        result = self.predict_intent(text)
+        return result["intent"], result["confidence"]
+    
+    
+    
+    # Old generate_value method removed - now using NLPProcessor
+    def _old_generate_value(self, intent: str, entities: Dict[str, str], original_text: str) -> str:
         if intent == "unknown" or intent == "error":
             return "Không thể xác định"
         
@@ -975,8 +727,9 @@ class PhoBERT_SAM_API:
             
             return f"Thực hiện hành động: {intent}"
     
-    def predict_intent(self, text: str, confidence_threshold: float = 0.3) -> Dict:
-        """Predict intent và confidence với GPU support"""
+    # Old predict_intent method removed - now using NLPProcessor
+    def _old_predict_intent(self, text: str, confidence_threshold: float = 0.3) -> Dict:
+        """Old predict intent method - replaced by NLPProcessor"""
         try:
             encoding = self.tokenizer(
                 text,
@@ -1018,8 +771,9 @@ class PhoBERT_SAM_API:
                 "probabilities": []
             }
     
-    async def predict_with_reasoning(self, text: str) -> Dict[str, Any]:
-        """Predict intent với reasoning engine cho các từ ngữ không có trong dataset - Cải tiến"""
+    # Old predict_with_reasoning method removed - now using NLPProcessor
+    async def _old_predict_with_reasoning(self, text: str) -> Dict[str, Any]:
+        """Old predict with reasoning method - replaced by NLPProcessor"""
         try:
             print(f"🧠 REASONING PREDICTION: '{text}'")
             start_time = datetime.now()
@@ -1231,8 +985,9 @@ class PhoBERT_SAM_API:
                 "error": str(e)
             }
 
-    async def process_text(self, text: str, confidence_threshold: float = 0.3) -> IntentResponse:
-        """Xử lý text và trả về kết quả đầy đủ"""
+    # Old process_text method removed - now using NLPProcessor
+    async def _old_process_text(self, text: str, confidence_threshold: float = 0.3) -> IntentResponse:
+        """Old process text method - replaced by NLPProcessor"""
         start_time = datetime.now()
         
         intent_result = self.predict_intent(text, confidence_threshold)

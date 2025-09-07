@@ -46,7 +46,7 @@ class IntentDataset(torch.utils.data.Dataset):
         encoding = self.tokenizer(
             text,
             truncation=True,
-            padding='max_length',
+            padding=False,  # Không padding ở đây, để DataCollator xử lý
             max_length=self.max_length,
             return_tensors='pt'
         )
@@ -234,12 +234,22 @@ class GPUTrainer:
         """Training loop tối ưu với mixed precision và logging nâng cao"""
         self.logger.info("🚀 Starting training...")
         
+        # Tạo data collator để xử lý padding đúng cách
+        data_collator = DataCollatorWithPadding(
+            tokenizer=self.tokenizer,
+            padding=True,
+            max_length=self.config.max_length,
+            return_tensors="pt",
+            pad_to_multiple_of=8  # Padding to multiple of 8 for efficiency
+        )
+        
         train_loader = DataLoader(
             self.train_dataset,
             batch_size=self.config.batch_size,
             shuffle=True,
             num_workers=self.config.num_workers,
-            pin_memory=self.config.pin_memory
+            pin_memory=self.config.pin_memory,
+            collate_fn=data_collator
         )
         
         val_loader = DataLoader(
@@ -247,7 +257,8 @@ class GPUTrainer:
             batch_size=self.config.batch_size,
             shuffle=False,
             num_workers=self.config.num_workers,
-            pin_memory=self.config.pin_memory
+            pin_memory=self.config.pin_memory,
+            collate_fn=data_collator
         )
         
         if hasattr(self.config, 'optimizer') and self.config.optimizer == "adafactor":
@@ -463,10 +474,9 @@ def main():
     
     trainer = GPUTrainer(config, intent_config)
     
-    dataset_file = "elderly_command_dataset_expanded.json"
+    dataset_file = "src/data/raw/elderly_command_dataset_expanded.json"
     if not os.path.exists(dataset_file):
-        print(f"⚠️ Expanded dataset not found, using original dataset")
-        dataset_file = "elderly_command_dataset_reduced.json"
+        dataset_file = "src/data/raw/elderly_command_dataset_reduced.json"
     
     trainer.load_data(dataset_file)
     

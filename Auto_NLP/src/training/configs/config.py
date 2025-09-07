@@ -10,28 +10,28 @@ class ModelConfig:
         self.model_size = "large"
         
         # Tham số cơ bản
-        self.max_length = 512  # 192 (tiết kiệm) hoặc 512 (tối ưu)
-        self.batch_size = 32     # 8 (tiết kiệm) hoặc 32 (tối ưu)
-        self.num_epochs = 20     # 5 (tiết kiệm) hoặc 20 (tối ưu)
-        self.learning_rate = 3e-5  # 1e-5 (tiết kiệm) hoặc 3e-5 (tối ưu)
-        self.freeze_layers = 4  # 8 (tiết kiệm) hoặc 4 (tối ưu)
+        self.max_length = 512  
+        self.batch_size = 32     
+        self.num_epochs = 20    
+        self.learning_rate = 3e-5  
+        self.freeze_layers = 4 
         
         import torch
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.use_fp16 = True  # False (tiết kiệm) hoặc True (tối ưu)
+        self.use_fp16 = True 
         self.use_amp = True
-        self.gradient_checkpointing = True  # True (tiết kiệm) hoặc True (tối ưu) - Bật để tiết kiệm memory
+        self.gradient_checkpointing = True  
         self.use_mixed_precision = True
         
-        self.gradient_accumulation_steps = 2  # 4 (tiết kiệm) hoặc 2 (tối ưu) - Giảm để tránh memory issues
+        self.gradient_accumulation_steps = 2  
         self.weight_decay = 0.01
         self.adam_epsilon = 1e-8
         self.max_grad_norm = 1.0
-        self.warmup_steps = 1000  # 300 (tiết kiệm) hoặc 1000 (tối ưu)
+        self.warmup_steps = 1000  
         
-        self.num_workers = 8  # 4 (tiết kiệm) hoặc 8 (tối ưu)
+        self.num_workers = 8 
         self.pin_memory = True
-        self.dropout = 0.1  # 0.1 (tiết kiệm) hoặc 0.1 (tối ưu)
+        self.dropout = 0.1  
         self.optimizer = "adamw"
     
     @property
@@ -86,7 +86,7 @@ class IntentConfig:
     attention_dropout: float = 0.1
     
     use_multi_layer: bool = True
-    hidden_layer_sizes: List[int] = None  # Sẽ được set động dựa trên model size
+    hidden_layer_sizes: List[int] = None  
     
     use_crf: bool = False
     
@@ -196,16 +196,16 @@ class TrainingConfig:
     device: str = "auto"
     
     # Tham số training
-    save_steps: int = 25      # 100 (tiết kiệm) hoặc 25 (tối ưu)
-    eval_steps: int = 25      # 100 (tiết kiệm) hoặc 25 (tối ưu)
-    logging_steps: int = 5    # 20 (tiết kiệm) hoặc 5 (tối ưu)
-    early_stopping_patience: int = 10  # 15 (tiết kiệm) hoặc 10 (tối ưu)
-    save_total_limit: int = 5  # 3 (tiết kiệm) hoặc 5 (tối ưu)
+    save_steps: int = 25      
+    eval_steps: int = 25     
+    logging_steps: int = 5   
+    early_stopping_patience: int = 10  
+    save_total_limit: int = 5  
     
     use_mixed_precision: bool = True
     max_grad_norm: float = 1.0
-    save_best_only: bool = True  # False (tiết kiệm) hoặc True (tối ưu)
-    use_gradient_checkpointing: bool = False  # True (tiết kiệm) hoặc False (tối ưu)
+    save_best_only: bool = True 
+    use_gradient_checkpointing: bool = False  
     use_fp16: bool = True
     use_amp: bool = True
     max_memory_usage: str = "auto"

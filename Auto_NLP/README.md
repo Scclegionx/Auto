@@ -1,37 +1,16 @@
 ## Cài Đặt
 
-### 1. Requirements
-```bash
-pip install torch transformers numpy scikit-learn tqdm datasets
-```
+# Tạo virtual environment
+python -m venv .venv
 
-## Cấu Hình
+# Activate (Windows)
+.venv\Scripts\activate
 
-### Config Files
-- **`src/training/configs/config.py`** - Config mặc định (tiết kiệm tài nguyên)
-### Tham Số Quan Trọng
-```python
-# Trong ModelConfig
-self.num_epochs = 5              # Số epochs
-self.batch_size = 16             # Batch size
-self.learning_rate = 2e-5        # Learning rate
-self.max_length = 256            # Độ dài input
-self.dropout = 0.2               # Dropout rate
-self.freeze_layers = 6           # Layers đóng băng
-```
+# Cài đặt requirements
+pip install -r requirements.txt
 
-### Điều Chỉnh Config
-```python
-# File: src/training/configs/config.py
-# Dòng 28: Thay đổi epochs
-self.num_epochs = 10
-
-# Dòng 20: Thay đổi batch size
-self.batch_size = 32
-
-# Dòng 22: Thay đổi learning rate  
-self.learning_rate = 3e-5
-```
+# Chạy test toàn diện trước khi training
+python test_training_complete.py
 
 ## Training
 
@@ -44,8 +23,6 @@ python run_training.py
 python src/training/scripts/train_gpu.py
 ```
 
-### Config Phù Hợp
-- **GPU yếu/RAM ít**: Dùng `config.py` (mặc định)
 ## API Server
 
 ### Chạy API

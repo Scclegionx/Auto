@@ -10,26 +10,26 @@ class ModelConfig:
         self.model_size = "large"
         
         # Tham số cơ bản
-        self.max_length = 192  # 192 (tiết kiệm) hoặc 512 (tối ưu)
-        self.batch_size = 8     # 8 (tiết kiệm) hoặc 32 (tối ưu)
-        self.num_epochs = 5     # 5 (tiết kiệm) hoặc 20 (tối ưu)
-        self.learning_rate = 1e-5  # 1e-5 (tiết kiệm) hoặc 3e-5 (tối ưu)
-        self.freeze_layers = 8  # 8 (tiết kiệm) hoặc 4 (tối ưu)
+        self.max_length = 512  # 192 (tiết kiệm) hoặc 512 (tối ưu)
+        self.batch_size = 32     # 8 (tiết kiệm) hoặc 32 (tối ưu)
+        self.num_epochs = 20     # 5 (tiết kiệm) hoặc 20 (tối ưu)
+        self.learning_rate = 3e-5  # 1e-5 (tiết kiệm) hoặc 3e-5 (tối ưu)
+        self.freeze_layers = 4  # 8 (tiết kiệm) hoặc 4 (tối ưu)
         
         import torch
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.use_fp16 = False  # False (tiết kiệm) hoặc True (tối ưu)
+        self.use_fp16 = True  # False (tiết kiệm) hoặc True (tối ưu)
         self.use_amp = True
-        self.gradient_checkpointing = True  # True (tiết kiệm) hoặc False (tối ưu)
+        self.gradient_checkpointing = False  # True (tiết kiệm) hoặc False (tối ưu)
         self.use_mixed_precision = True
         
-        self.gradient_accumulation_steps = 4  # 4 (tiết kiệm) hoặc 1 (tối ưu)
+        self.gradient_accumulation_steps = 1  # 4 (tiết kiệm) hoặc 1 (tối ưu)
         self.weight_decay = 0.01
         self.adam_epsilon = 1e-8
         self.max_grad_norm = 1.0
-        self.warmup_steps = 300  # 300 (tiết kiệm) hoặc 1000 (tối ưu)
+        self.warmup_steps = 1000  # 300 (tiết kiệm) hoặc 1000 (tối ưu)
         
-        self.num_workers = 4  # 4 (tiết kiệm) hoặc 8 (tối ưu)
+        self.num_workers = 8  # 4 (tiết kiệm) hoặc 8 (tối ưu)
         self.pin_memory = True
         self.dropout = 0.1  # 0.1 (tiết kiệm) hoặc 0.1 (tối ưu)
         self.optimizer = "adamw"
@@ -75,7 +75,7 @@ class ModelConfig:
 @dataclass
 class IntentConfig:
     """Cấu hình cho Intent Recognition nâng cao"""
-    num_intents: int = 28  # Cập nhật theo dataset thực tế: 27 commands
+    num_intents: int = 28  
     intent_labels: List[str] = None
     
     confidence_threshold: float = 0.7
@@ -196,16 +196,16 @@ class TrainingConfig:
     device: str = "auto"
     
     # Tham số training
-    save_steps: int = 100      # 100 (tiết kiệm) hoặc 25 (tối ưu)
-    eval_steps: int = 100      # 100 (tiết kiệm) hoặc 25 (tối ưu)
-    logging_steps: int = 20    # 20 (tiết kiệm) hoặc 5 (tối ưu)
-    early_stopping_patience: int = 15  # 15 (tiết kiệm) hoặc 10 (tối ưu)
-    save_total_limit: int = 3  # 3 (tiết kiệm) hoặc 5 (tối ưu)
+    save_steps: int = 25      # 100 (tiết kiệm) hoặc 25 (tối ưu)
+    eval_steps: int = 25      # 100 (tiết kiệm) hoặc 25 (tối ưu)
+    logging_steps: int = 5    # 20 (tiết kiệm) hoặc 5 (tối ưu)
+    early_stopping_patience: int = 10  # 15 (tiết kiệm) hoặc 10 (tối ưu)
+    save_total_limit: int = 5  # 3 (tiết kiệm) hoặc 5 (tối ưu)
     
     use_mixed_precision: bool = True
     max_grad_norm: float = 1.0
-    save_best_only: bool = False  # False (tiết kiệm) hoặc True (tối ưu)
-    use_gradient_checkpointing: bool = True  # True (tiết kiệm) hoặc False (tối ưu)
+    save_best_only: bool = True  # False (tiết kiệm) hoặc True (tối ưu)
+    use_gradient_checkpointing: bool = False  # True (tiết kiệm) hoặc False (tối ưu)
     use_fp16: bool = True
     use_amp: bool = True
     max_memory_usage: str = "auto"

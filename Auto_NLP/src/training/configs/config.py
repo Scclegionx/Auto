@@ -20,10 +20,10 @@ class ModelConfig:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.use_fp16 = True  # False (tiết kiệm) hoặc True (tối ưu)
         self.use_amp = True
-        self.gradient_checkpointing = False  # True (tiết kiệm) hoặc False (tối ưu)
+        self.gradient_checkpointing = True  # True (tiết kiệm) hoặc True (tối ưu) - Bật để tiết kiệm memory
         self.use_mixed_precision = True
         
-        self.gradient_accumulation_steps = 1  # 4 (tiết kiệm) hoặc 1 (tối ưu)
+        self.gradient_accumulation_steps = 2  # 4 (tiết kiệm) hoặc 2 (tối ưu) - Giảm để tránh memory issues
         self.weight_decay = 0.01
         self.adam_epsilon = 1e-8
         self.max_grad_norm = 1.0

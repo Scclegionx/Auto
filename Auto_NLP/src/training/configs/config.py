@@ -3,8 +3,7 @@ from dataclasses import dataclass
 from typing import List
 
 class ModelConfig:
-    """Cấu hình Model - Thay đổi các tham số dưới đây để tối ưu"""
-    
+
     def __init__(self):
         self.model_name = "vinai/phobert-large"
         self.model_size = "large"

@@ -13,9 +13,44 @@
           "confidence": 0.9
         },
         {
+          "pattern": "nhắn tin qua {platform} tới {person}",
+          "entities": ["platform", "person"],
+          "confidence": 0.95
+        },
+        {
+          "pattern": "gửi tin qua {platform} cho {person}",
+          "entities": ["platform", "person"],
+          "confidence": 0.95
+        },
+        {
+          "pattern": "nhắn tin cho {person} rằng {message}",
+          "entities": ["person", "message"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "gửi tin nhắn cho {person} là {message}",
+          "entities": ["person", "message"],
+          "confidence": 0.9
+        },
+        {
           "pattern": "liên lạc với {person}",
           "entities": ["person"],
           "confidence": 0.8
+        },
+        {
+          "pattern": "soạn tin cho {person}",
+          "entities": ["person"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "nhắn tin cho {person} lúc {time}",
+          "entities": ["person", "time"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "gửi tin nhắn cho {person} rằng {message} lúc {time}",
+          "entities": ["person", "message", "time"],
+          "confidence": 0.95
         }
       ]
     },
@@ -28,6 +63,45 @@
         },
         {
           "pattern": "gọi cho {person}",
+          "entities": ["person"],
+          "confidence": 0.8
+        },
+        {
+          "pattern": "alo cho {person}",
+          "entities": ["person"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "gọi điện cho {person} lúc {time}",
+          "entities": ["person", "time"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "gọi ngay cho {person}",
+          "entities": ["person"],
+          "confidence": 0.95
+        },
+        {
+          "pattern": "gọi khẩn cấp cho {person}",
+          "entities": ["person"],
+          "confidence": 0.95
+        }
+      ]
+    },
+    "make-video-call": {
+      "patterns": [
+        {
+          "pattern": "gọi video cho {person}",
+          "entities": ["person"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "facetime với {person}",
+          "entities": ["person"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "video call cho {person}",
           "entities": ["person"],
           "confidence": 0.8
         }
@@ -46,6 +120,11 @@
           "pattern": "{relation}",
           "confidence": 0.7,
           "example": "bà"
+        },
+        {
+          "pattern": "{name}",
+          "confidence": 0.8,
+          "example": "Hùng"
         }
       ]
     },
@@ -74,6 +153,30 @@
           "pattern": "{specific_time} {period}",
           "confidence": 0.9,
           "example": "6h chiều"
+        },
+        {
+          "pattern": "{period} {day}",
+          "confidence": 0.85,
+          "example": "chiều nay"
+        },
+        {
+          "pattern": "{activity} {time}",
+          "confidence": 0.8,
+          "example": "sau khi ăn"
+        }
+      ]
+    },
+    "message": {
+      "patterns": [
+        {
+          "pattern": "{content}",
+          "confidence": 0.9,
+          "example": "tối con sẽ về"
+        },
+        {
+          "pattern": "{content} {time}",
+          "confidence": 0.85,
+          "example": "sẽ qua nhà bà Hà lúc tám giờ tối"
         }
       ]
     }

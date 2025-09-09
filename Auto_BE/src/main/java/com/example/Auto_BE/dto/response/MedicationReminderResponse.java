@@ -3,7 +3,11 @@ package com.example.Auto_BE.dto.response;
 import com.example.Auto_BE.entity.enums.ETypeMedication;
 import lombok.*;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MedicationReminderResponse {
     private Long id;
     private String name;

@@ -1,9 +1,6 @@
 spring:
-  application:
-    name: Auto_BE
-
   datasource:
-    url: jdbc:mysql://localhost:3306/auto_db?useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mysql:3306/auto_db?useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
@@ -11,7 +8,7 @@ spring:
   quartz:
     job-store-type: jdbc
     jdbc:
-      initialize-schema: embedded
+      initialize-schema: never
     properties:
       org:
         quartz:

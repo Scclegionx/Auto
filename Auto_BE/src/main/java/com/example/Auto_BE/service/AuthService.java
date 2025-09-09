@@ -82,8 +82,8 @@ public class AuthService {
                 applicationEventPublisher.publishEvent(new UserRegistrationEvent(this, verification));
 
                 return BaseResponse.<Void>builder()
-                        .status("success")
-                        .message("Verification email resent. Please check your inbox.")
+                        .status(SUCCESS)
+                        .message(EMAIL_RESENT)
                         .build();
             } else {
                 // Đã active thì báo lỗi
@@ -107,7 +107,7 @@ public class AuthService {
 
         applicationEventPublisher.publishEvent(new UserRegistrationEvent(this, verification));
         return BaseResponse.<Void>builder()
-                .status("success")
+                .status(SUCCESS)
                 .message(USER_REGISTERED)
                 .build();
     }

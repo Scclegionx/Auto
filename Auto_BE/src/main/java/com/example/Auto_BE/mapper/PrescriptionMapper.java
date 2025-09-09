@@ -66,8 +66,6 @@ public class PrescriptionMapper {
                 .imageUrl(p.getImageUrl())
                 .isActive(p.getIsActive())
                 .userId(p.getUser() != null ? p.getUser().getId() : null)
-                .createdAt(p.getCreatedAt())
-                .updatedAt(p.getUpdatedAt())
                 .medicationReminders(reminders)
                 .build();
     }

@@ -22,13 +22,13 @@ public class QuartzConfig {
         SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
         schedulerFactory.setJobFactory(new AutowiringSpringBeanJobFactory());
         schedulerFactory.setAutoStartup(true);
-        
+
         // Set DataSource for JDBC JobStore
         schedulerFactory.setDataSource(dataSource);
-        
+
         // Let Spring Boot handle the properties from application.yml
         schedulerFactory.setApplicationContextSchedulerContextKey("applicationContext");
-        
+
         return schedulerFactory;
     }
 

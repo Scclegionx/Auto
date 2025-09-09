@@ -24,7 +24,7 @@ public class DeviceTokenController {
 
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<DeviceTokenResponse>> registerDeviceToken(@RequestBody @Valid DeviceTokenRequest deviceTokenRequest,
-                                                                                   Authentication authentication) {
+                                                                                 Authentication authentication) {
         BaseResponse<DeviceTokenResponse> response = deviceTokenService.registerDeviceToken(deviceTokenRequest, authentication);
         return ResponseEntity.ok(response);
     }

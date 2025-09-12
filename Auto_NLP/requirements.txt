@@ -10,6 +10,10 @@ matplotlib>=3.7.0
 seaborn>=0.12.0
 wandb>=0.15.0
 tensorboard>=2.13.0
-phobert-tokenizer>=1.0.0
+# phobert-tokenizer is included in transformers
 underthesea>=6.6.0
 pyvi>=0.1.1
+fastapi>=0.100.0
+uvicorn>=0.20.0
+faiss-cpu>=1.7.0
+rapidfuzz>=3.0.0

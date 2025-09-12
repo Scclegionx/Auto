@@ -27,12 +27,40 @@ import gc
 # Import config
 from src.training.configs.config import ModelConfig, IntentConfig
 
-class IntentDataset(torch.utils.data.Dataset):
-    """Dataset cho Intent Recognition"""
+def custom_collate_fn(batch):
+    """Custom collate function để xử lý padding đúng cách"""
+    input_ids = [item['input_ids'] for item in batch]
+    attention_masks = [item['attention_mask'] for item in batch]
+    labels = [item['labels'] for item in batch]
     
-    def __init__(self, data: List[Dict], tokenizer, max_length: int = 512):
+    # Pad sequences
+    max_len = max(len(ids) for ids in input_ids)
+    
+    padded_input_ids = []
+    padded_attention_masks = []
+    
+    for ids, mask in zip(input_ids, attention_masks):
+        # Pad input_ids
+        padded_ids = ids + [0] * (max_len - len(ids))
+        padded_input_ids.append(padded_ids)
+        
+        # Pad attention_mask
+        padded_mask = mask + [0] * (max_len - len(mask))
+        padded_attention_masks.append(padded_mask)
+    
+    return {
+        'input_ids': torch.tensor(padded_input_ids),
+        'attention_mask': torch.tensor(padded_attention_masks),
+        'labels': torch.tensor(labels)
+    }
+
+class IntentDataset(torch.utils.data.Dataset):
+    """Dataset cho Intent Recognition - Đã sửa lỗi"""
+    
+    def __init__(self, data: List[Dict], tokenizer, intent_to_id: Dict[str, int], max_length: int = 512):
         self.data = data
         self.tokenizer = tokenizer
+        self.intent_to_id = intent_to_id
         self.max_length = max_length
     
     def __len__(self):
@@ -43,18 +71,22 @@ class IntentDataset(torch.utils.data.Dataset):
         text = item['input']
         intent = item['command']
         
+        # Tokenize text
         encoding = self.tokenizer(
             text,
             truncation=True,
-            padding=False,  # Không padding ở đây, để DataCollator xử lý
+            padding=False,
             max_length=self.max_length,
-            return_tensors='pt'
+            return_tensors=None  # Trả về dict thay vì tensor
         )
         
+        # Convert intent to ID
+        intent_id = self.intent_to_id.get(intent, 0)
+        
         return {
-            'input_ids': encoding['input_ids'].squeeze(0),
-            'attention_mask': encoding['attention_mask'].squeeze(0),
-            'intent': intent
+            'input_ids': encoding['input_ids'],
+            'attention_mask': encoding['attention_mask'],
+            'labels': intent_id  # Sử dụng 'labels' thay vì 'intent'
         }
 
 class OptimizedIntentModel(nn.Module):
@@ -223,8 +255,8 @@ class GPUTrainer:
                 random_state=42
             )
         
-        self.train_dataset = IntentDataset(train_data, self.tokenizer, self.config.max_length)
-        self.val_dataset = IntentDataset(val_data, self.tokenizer, self.config.max_length)
+        self.train_dataset = IntentDataset(train_data, self.tokenizer, self.intent_to_id, self.config.max_length)
+        self.val_dataset = IntentDataset(val_data, self.tokenizer, self.intent_to_id, self.config.max_length)
         
         self.logger.info(f"📊 Train: {len(train_data)}, Val: {len(val_data)}")
         
@@ -234,31 +266,23 @@ class GPUTrainer:
         """Training loop tối ưu với mixed precision và logging nâng cao"""
         self.logger.info("🚀 Starting training...")
         
-        # Tạo data collator để xử lý padding đúng cách
-        data_collator = DataCollatorWithPadding(
-            tokenizer=self.tokenizer,
-            padding=True,
-            max_length=self.config.max_length,
-            return_tensors="pt",
-            pad_to_multiple_of=8  # Padding to multiple of 8 for efficiency
-        )
-        
+        # Sử dụng custom collate function để xử lý padding đúng cách
         train_loader = DataLoader(
             self.train_dataset,
             batch_size=self.config.batch_size,
             shuffle=True,
-            num_workers=self.config.num_workers,
-            pin_memory=self.config.pin_memory,
-            collate_fn=data_collator
+            num_workers=0,  # Set to 0 to avoid multiprocessing issues
+            pin_memory=False,  # Disable pin_memory for CPU
+            collate_fn=custom_collate_fn  # Sử dụng custom collate
         )
         
         val_loader = DataLoader(
             self.val_dataset,
             batch_size=self.config.batch_size,
             shuffle=False,
-            num_workers=self.config.num_workers,
-            pin_memory=self.config.pin_memory,
-            collate_fn=data_collator
+            num_workers=0,  # Set to 0 to avoid multiprocessing issues
+            pin_memory=False,  # Disable pin_memory for CPU
+            collate_fn=custom_collate_fn  # Sử dụng custom collate
         )
         
         if hasattr(self.config, 'optimizer') and self.config.optimizer == "adafactor":
@@ -317,8 +341,7 @@ class GPUTrainer:
                 input_ids = batch['input_ids'].to(self.device)
                 attention_mask = batch['attention_mask'].to(self.device)
                 
-                intents = [self.intent_to_id[intent] for intent in batch['intent']]
-                labels = torch.tensor(intents).to(self.device)
+                labels = batch['labels'].to(self.device)
                 
                 with amp.autocast(enabled=self.config.use_fp16 and self.device.type == "cuda"):
                     logits = self.model(input_ids, attention_mask)
@@ -363,8 +386,7 @@ class GPUTrainer:
                     input_ids = batch['input_ids'].to(self.device)
                     attention_mask = batch['attention_mask'].to(self.device)
                     
-                    intents = [self.intent_to_id[intent] for intent in batch['intent']]
-                    labels = torch.tensor(intents).to(self.device)
+                    labels = batch['labels'].to(self.device)
                     
                     with amp.autocast(enabled=self.config.use_fp16 and self.device.type == "cuda"):
                         logits = self.model(input_ids, attention_mask)

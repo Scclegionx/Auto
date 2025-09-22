@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/menu_background"
+    android:padding="16dp"
+    android:minWidth="200dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Auto FE Menu"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#2E7D32"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btn_record"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="🎤 Ghi âm lệnh"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:background="@drawable/button_background"
+        android:layout_marginBottom="8dp"
+        android:elevation="2dp" />
+
+    <Button
+        android:id="@+id/btn_test_sms"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="📱 Test SMS"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:background="@drawable/button_background"
+        android:layout_marginBottom="8dp"
+        android:elevation="2dp" />
+
+    <Button
+        android:id="@+id/btn_test_nlp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="🤖 Test NLP Flow"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:background="@drawable/button_background"
+        android:layout_marginBottom="8dp"
+        android:elevation="2dp" />
+
+    <Button
+        android:id="@+id/btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="❌ Đóng"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:background="@drawable/button_background"
+        android:elevation="2dp" />
+
+</LinearLayout>

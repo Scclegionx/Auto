@@ -1,97 +1,129 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Auto FE - Ứng dụng Tự động hóa Thao tác Điện thoại
 
-# Getting Started
+## Mô tả
+Auto FE là ứng dụng Android hỗ trợ tự động hóa các thao tác trên điện thoại thông qua lệnh giọng nói. Ứng dụng sử dụng AI NLP để hiểu lệnh và thực hiện các tác vụ tự động như gửi tin nhắn, gọi điện.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Tính năng chính
+- 🎤 Ghi âm lệnh bằng giọng nói
+- 🤖 Xử lý lệnh bằng AI NLP
+- 📱 Tự động hóa SMS và cuộc gọi
+- 🪟 Cửa sổ nổi tiện lợi
+- ✅ Xác nhận lệnh trước khi thực hiện
 
-## Step 1: Start Metro
-
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
-
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+## Cấu trúc dự án
+```
+app/src/main/java/com/auto_fe/auto_fe/
+├── audio/              # Xử lý âm thanh và giọng nói
+│   ├── AudioRecorder.kt
+│   └── AudioManager.kt
+├── automation/         # Tự động hóa thao tác
+│   ├── msg/
+│   │   └── SMSAutomation.kt
+│   └── phone/
+│       └── PhoneAutomation.kt
+├── core/              # Xử lý lệnh chính
+│   └── CommandProcessor.kt
+├── service/           # Dịch vụ giao tiếp
+│   └── NLPService.kt
+├── ui/                # Giao diện người dùng
+│   └── FloatingWindow.kt
+├── utils/             # Tiện ích hỗ trợ
+│   └── PermissionManager.kt
+└── MainActivity.kt    # Activity chính
 ```
 
-## Step 2: Build and run your app
+## Yêu cầu hệ thống
+- Android 11 (API 30) trở lên
+- Quyền truy cập microphone
+- Quyền gửi SMS
+- Quyền gọi điện
+- Quyền hiển thị trên các ứng dụng khác
+- Server NLP chạy trên localhost:8000
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## Cài đặt và sử dụng
 
-### Android
+### 1. Cài đặt ứng dụng
+```bash
+# Build ứng dụng
+./gradlew assembleDebug
 
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+# Cài đặt APK
+adb install app/build/outputs/apk/debug/app-debug.apk
 ```
 
-### iOS
+### 2. Cấp quyền
+Khi chạy ứng dụng lần đầu, cần cấp các quyền sau:
+- Microphone (ghi âm)
+- SMS (gửi tin nhắn)
+- Phone (gọi điện)
+- Display over other apps (cửa sổ nổi)
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### 3. Sử dụng
+1. Mở ứng dụng
+2. Cấp quyền cần thiết
+3. Cửa sổ nổi "Auto FE" sẽ xuất hiện
+4. Nhấn vào cửa sổ nổi
+5. Chọn "Ghi âm lệnh"
+6. Nói lệnh của bạn (ví dụ: "Nhắn tin cho mẹ là con sắp về")
+7. Xác nhận lệnh
+8. Ứng dụng sẽ thực hiện lệnh tự động
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+## Cấu hình Server NLP
 
-```sh
-bundle install
+### Yêu cầu Server
+Server NLP cần chạy trên `localhost:8000` với endpoint `/infer`
+
+### Format Request
+```json
+{
+  "input": "nhắn tin cho mẹ là con sắp về"
+}
 ```
 
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
+### Format Response
+```json
+{
+  "command": "sms",
+  "ent": "{\"recipient\": \"mẹ\"}",
+  "val": "{\"message\": \"con sắp về\"}"
+}
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## API Automation
 
-```sh
-# Using npm
-npm run ios
+### SMS Automation
+- Gửi tin nhắn đến số điện thoại
+- Hỗ trợ tin nhắn dài (tự động chia nhỏ)
 
-# OR using Yarn
-yarn ios
+### Phone Automation
+- Gọi điện đến số điện thoại
+- Quay số (mở dialer)
+
+## Xử lý lỗi
+- Kiểm tra quyền ứng dụng
+- Kiểm tra kết nối mạng
+- Kiểm tra server NLP
+- Kiểm tra microphone
+
+## Phát triển
+
+### Thêm tính năng mới
+1. Tạo class automation trong package `automation`
+2. Implement interface callback
+3. Thêm logic xử lý trong `CommandProcessor`
+4. Cập nhật NLP response format
+
+### Debug
+```bash
+# Xem log
+adb logcat | grep "Auto_FE"
+
+# Kiểm tra permissions
+adb shell dumpsys package com.auto_fe.auto_fe
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## License
+MIT License
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## Đóng góp
+Mọi đóng góp đều được chào đón! Vui lòng tạo issue hoặc pull request.

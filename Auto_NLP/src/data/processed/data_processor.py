@@ -1,6 +1,5 @@
 import json
 import re
-import random
 from typing import List, Dict, Tuple, Optional
 from transformers import AutoTokenizer
 from src.training.configs.config import model_config, intent_config, entity_config, value_config, command_config
@@ -19,59 +18,6 @@ class DataProcessor:
         self.command_label2id = {label: idx for idx, label in enumerate(command_config.command_labels)}
         self.command_id2label = {idx: label for label, idx in self.command_label2id.items()}
         
-        self.augmentation_patterns = {
-            "call": [
-                "gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số"
-            ],
-            "make-call": [
-                "gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số"
-            ],
-            "set-alarm": [
-                "đặt báo thức", "nhắc nhở", "hẹn giờ", "đánh thức", "chuông báo", "ghi nhớ"
-            ],
-            "send-mess": [
-                "gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo", "soạn tin"
-            ],
-            "send-message": [
-                "gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo", "soạn tin"
-            ],
-            "set-reminder": [
-                "đặt nhắc nhở", "ghi nhớ", "lời nhắc", "nhắc tôi", "tạo lời nhắc"
-            ],
-            "check-weather": [
-                "thời tiết", "nhiệt độ", "mưa", "nắng", "dự báo thời tiết"
-            ],
-            "play-media": [
-                "phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc"
-            ],
-            "play-content": [
-                "phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc"
-            ],
-            "play-audio": [
-                "phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc"
-            ],
-            "read-news": [
-                "đọc tin tức", "tin tức", "báo", "thời sự", "cập nhật tin"
-            ],
-            "read-content": [
-                "đọc tin tức", "tin tức", "báo", "thời sự", "cập nhật tin"
-            ],
-            "check-health-status": [
-                "kiểm tra sức khỏe", "đo", "theo dõi", "chỉ số", "tình trạng"
-            ],
-            "general-conversation": [
-                "xin chào", "tạm biệt", "cảm ơn", "trò chuyện", "nói chuyện"
-            ],
-            "open-app": [
-                "mở ứng dụng", "khởi động", "chạy", "vào", "mở"
-            ],
-            "search-content": [
-                "tìm kiếm", "tìm", "kiếm", "tra cứu", "tìm hiểu"
-            ],
-            "make-video-call": [
-                "gọi video", "video call", "facetime", "gọi hình ảnh"
-            ]
-        }
         
         self.intent_to_command_mapping = {
             "adjust-settings": "adjust_settings",
@@ -109,42 +55,7 @@ class DataProcessor:
         with open(file_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     
-    def augment_intent_data(self, dataset: List[Dict], augmentation_factor: float = 0.3) -> List[Dict]:
-        augmented_data = []
-        
-        for item in dataset:
-            intent = item.get("command", "")
-            text = item.get("input", "")
-
-            augmented_data.append(item)
-
-            if intent in self.augmentation_patterns and random.random() < augmentation_factor:
-                patterns = self.augmentation_patterns[intent]
-                
-                for pattern in patterns:
-                    augmented_text = self._replace_keywords(text, intent, pattern)
-                    if augmented_text != text:
-                        augmented_item = item.copy()
-                        augmented_item["input"] = augmented_text
-                        augmented_data.append(augmented_item)
-        
-        return augmented_data
     
-    def _replace_keywords(self, text: str, intent: str, new_pattern: str) -> str:
-        intent_keywords = {
-            "call": ["gọi", "điện thoại", "alo"],
-            "set-alarm": ["đặt báo thức", "nhắc nhở", "hẹn giờ"],
-            "send-mess": ["gửi tin nhắn", "nhắn tin", "text"]
-        }
-        
-        if intent in intent_keywords:
-            keywords = intent_keywords[intent]
-            for keyword in keywords:
-                if keyword in text.lower():
-                    text = re.sub(rf'\b{re.escape(keyword)}\b', new_pattern, text, flags=re.IGNORECASE)
-                    break
-        
-        return text
     
     def calculate_intent_confidence(self, text: str, intent: str) -> float:
         confidence = 0.5  # Base confidence

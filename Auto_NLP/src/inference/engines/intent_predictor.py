@@ -87,16 +87,16 @@ class IntentPredictor:
             return self._fallback_intent_prediction(text)
     
     def _fallback_intent_prediction(self, text: str) -> Dict:
-        """Fallback intent prediction khi model không available"""
+        """Fallback intent prediction khi model không available - Cải thiện cho CALL"""
         text_lower = text.lower()
         
-        # Simple keyword-based intent detection
+        # Simple keyword-based intent detection - Cải thiện cho "nói chuyện điện thoại"
         intent_keywords = {
-            "call": ["gọi", "alo", "gọi điện", "gọi thoại"],
-            "send-mess": ["nhắn tin", "gửi tin", "soạn tin", "sms"],
-            "set-reminder": ["nhắc", "nhắc nhở", "reminder", "đừng quên"],
-            "set-alarm": ["báo thức", "đánh thức", "alarm", "dậy"],
-            "search": ["tìm", "tìm kiếm", "search", "google"],
+            "CALL": ["gọi", "alo", "gọi điện", "gọi thoại", "nói chuyện điện thoại", "nói chuyện", "trò chuyện", "liên lạc"],
+            "MESSAGE": ["nhắn tin", "gửi tin", "soạn tin", "sms", "nhắn", "gửi"],
+            "REMINDER": ["nhắc", "nhắc nhở", "reminder", "đừng quên"],
+            "ALARM": ["báo thức", "đánh thức", "alarm", "dậy"],
+            "SEARCH": ["tìm", "tìm kiếm", "search", "google"],
             "open-app": ["mở", "khởi động", "chạy"],
             "play-media": ["phát", "chơi", "nghe", "xem"]
         }

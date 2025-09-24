@@ -110,9 +110,9 @@ class IntentConfig:
             ]
         
         if self.hidden_layer_sizes is None:
-            # Sử dụng giá trị mặc định thay vì relative import
-            base_size = 768  # PhoBERT-base hidden size
-            self.hidden_layer_sizes = [base_size, base_size // 2, base_size // 4]
+            # Sử dụng giá trị mặc định cho PhoBERT-large
+            large_size = 1024  # PhoBERT-large hidden size
+            self.hidden_layer_sizes = [large_size, large_size // 2, large_size // 4]
 
 @dataclass
 class EntityConfig:

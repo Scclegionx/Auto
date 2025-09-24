@@ -18,16 +18,22 @@ class EntityExtractor:
     def _build_receiver_patterns(self) -> List[Tuple[str, str]]:
         """Xây dựng patterns cho RECEIVER extraction - Tối ưu cho người già"""
         return [
-            # Pattern 1: Gọi trực tiếp (ưu tiên cao)
+            # Pattern 1: Gọi trực tiếp (ưu tiên cao) - Cải thiện cho "Bố Dũng"
             (r"gọi\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "gọi"),
             (r"alo\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "gọi"),
             (r"gọi\s+điện\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "gọi"),
             (r"gọi\s+thoại\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "gọi"),
             
-            # Pattern 2: Nhắn tin (ưu tiên cao)
-            (r"nhắn\s+(?:tin|tin nhắn)?\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))?(?:$|[\.,])", "nhắn"),
-            (r"gửi\s+(?:tin|tin nhắn)?\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))?(?:$|[\.,])", "nhắn"),
-            (r"soạn\s+tin\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))?(?:$|[\.,])", "nhắn"),
+            # Pattern 1.1: Nói chuyện điện thoại (thêm mới cho trường hợp "Tôi muốn nói chuyện điện thoại với Bố Dũng")
+            (r"nói\s+chuyện\s+điện\s+thoại\s+(?:với|cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:vì|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "gọi"),
+            (r"nói\s+chuyện\s+(?:với|cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:vì|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "gọi"),
+            (r"trò\s+chuyện\s+(?:với|cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:vì|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "gọi"),
+            (r"liên\s+lạc\s+(?:với|cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:vì|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "gọi"),
+            
+            # Pattern 2: Nhắn tin (ưu tiên cao) - Cải thiện boundary
+            (r"nhắn\s+(?:tin|tin nhắn)?\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))?(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))?(?:$|[\.,])", "nhắn"),
+            (r"gửi\s+(?:tin|tin nhắn)?\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))?(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))?(?:$|[\.,])", "nhắn"),
+            (r"soạn\s+tin\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))?(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))?(?:$|[\.,])", "nhắn"),
             
             # Pattern 3: Với platform (cải thiện để extract chính xác)
             (r"nhắn\s+tin\s+qua\s+[\w\s]+\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))", "nhắn"),
@@ -151,13 +157,16 @@ class EntityExtractor:
         ]
     
     def extract_receiver(self, text: str) -> Optional[Dict[str, str]]:
-        """Extract RECEIVER entity với độ chính xác cao"""
+        """Extract RECEIVER entity với độ chính xác cao - Cải thiện boundary detection"""
         text_lower = text.lower()
         
         for pattern, action_type in self.receiver_patterns:
             match = re.search(pattern, text_lower, re.IGNORECASE)
             if match and match.group(1):
                 receiver = match.group(1).strip()
+                
+                # Cải thiện boundary detection
+                receiver = self._improve_receiver_boundary(receiver, text_lower)
                 
                 # Làm sạch receiver
                 receiver = self._clean_receiver(receiver)
@@ -169,6 +178,44 @@ class EntityExtractor:
                     }
         
         return None
+    
+    def _improve_receiver_boundary(self, receiver: str, full_text: str) -> str:
+        """Cải thiện boundary detection cho receiver - Tối ưu cho "Bố Dũng" """
+        words = receiver.split()
+        if not words:
+            return receiver
+            
+        # Tìm vị trí của receiver trong full text
+        receiver_start = full_text.find(receiver.lower())
+        if receiver_start == -1:
+            return receiver
+            
+        # Tìm từ đầu tiên sau receiver trong full text
+        after_receiver = full_text[receiver_start + len(receiver):].strip()
+        if not after_receiver:
+            return receiver
+            
+        # Tách từ đầu tiên sau receiver
+        first_word_after = after_receiver.split()[0] if after_receiver.split() else ""
+        
+        # Mở rộng danh sách stop words để xử lý tốt hơn
+        stop_words = ["là", "rằng", "nói", "sẽ", "đã", "có", "vì", "bị", "đau", "bụng", 
+                      "đón", "ở", "tại", "với", "và", "hoặc", "hay", "nếu", "khi", "sau", "trước",
+                      "tối", "nay", "chiều", "sáng", "trưa", "đêm", "mai", "hôm", "ngày",
+                      "nhớ", "thương", "yêu", "quý", "mến", "kính", "trọng", "quý", "mến",
+                      "điện", "thoại", "gọi", "nhắn", "tin", "nhắn", "gửi", "soạn", "viết"]
+        
+        if first_word_after.lower() in stop_words:
+            # Tìm vị trí của từ stop trong receiver
+            for i, word in enumerate(words):
+                if word.lower() in stop_words:
+                    return " ".join(words[:i])
+        
+        # Xử lý đặc biệt cho trường hợp "Bố Dũng" - giữ nguyên nếu là tên riêng
+        if len(words) == 2 and words[0].lower() in ["bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu"]:
+            return receiver
+            
+        return receiver
     
     def extract_time(self, text: str) -> Optional[str]:
         """Extract TIME entity"""
@@ -224,22 +271,41 @@ class EntityExtractor:
             return "sms"
     
     def _clean_receiver(self, receiver: str) -> str:
-        """Làm sạch receiver entity - Tối ưu cho người già"""
+        """Làm sạch receiver entity - Tối ưu cho người già và "Bố Dũng" """
+        # Danh sách từ cần loại bỏ (mở rộng)
         unwanted_words = [
             "rằng", "là", "nói", "nhắn", "gửi", "lúc", "vào", "nhé", "nha", "ạ", "nhá", 
             "ngay", "bây giờ", "qua", "messenger", "zalo", "facebook", "telegram", 
             "instagram", "tiktok", "sms", "tin", "nhắn", "gửi", "cho", "tới", "đến",
             "chiều", "sáng", "trưa", "tối", "đêm", "nay", "mai", "hôm", "ngày", "tuần", "tháng",
             "của", "ở", "tại", "với", "và", "hoặc", "hay", "nếu", "khi", "sau", "trước",
-            "điện", "khẩn cấp", "video", "con", "sẽ", "đã", "có", "vì", "bị", "đau", "bụng"
+            "điện", "khẩn cấp", "video", "con", "sẽ", "đã", "có", "vì", "bị", "đau", "bụng",
+            "sẽ", "đón", "bà", "ở", "bệnh", "viện", "tối", "nay", "chiều", "sáng", "trưa",
+            "nhớ", "thương", "yêu", "quý", "mến", "kính", "trọng", "quý", "mến"
         ]
         
         words = receiver.split()
         cleaned_words = []
         
+        # Logic cải thiện: dừng khi gặp từ chỉ thời gian hoặc động từ
+        stop_words = ["là", "rằng", "nói", "sẽ", "đã", "có", "vì", "bị", "đau", "bụng", 
+                      "đón", "ở", "tại", "với", "và", "hoặc", "hay", "nếu", "khi", "sau", "trước",
+                      "nhớ", "thương", "yêu", "quý", "mến", "kính", "trọng", "quý", "mến"]
+        
         for word in words:
-            if word.lower() not in unwanted_words:
+            word_lower = word.lower()
+            
+            # Dừng khi gặp từ chỉ thời gian hoặc động từ
+            if word_lower in stop_words:
+                break
+                
+            # Chỉ thêm từ không có trong danh sách unwanted
+            if word_lower not in unwanted_words:
                 cleaned_words.append(word)
+        
+        # Xử lý đặc biệt cho trường hợp "Bố Dũng" - giữ nguyên nếu là tên riêng
+        if len(cleaned_words) == 2 and cleaned_words[0].lower() in ["bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu"]:
+            return " ".join(cleaned_words)
         
         # Giới hạn 2-3 từ để tránh extract quá dài
         if len(cleaned_words) > 3:
@@ -278,37 +344,3 @@ class EntityExtractor:
             entities["PLATFORM"] = platform_result
         
         return entities
-
-# Test function
-def test_entity_extraction():
-    """Test các trường hợp thực tế"""
-    extractor = EntityExtractor()
-    
-    test_cases = [
-        "gọi cho bố",
-        "alo cho mẹ",
-        "nhắn tin cho bà ngoại rằng tối con sẽ về",
-        "gửi tin nhắn qua Zalo cho chị Hương",
-        "gọi video cho con gái",
-        "nhắn tin qua Messenger tới Bà Sam rằng chiều này sẽ qua nhà bà Hà ăn rằm lúc tám giờ tối",
-        "gọi ngay cho bác sĩ",
-        "nhắn tin cho cả nhà rằng tối nay ăn cơm",
-        "gọi cho bà ngoại của con",
-        "nếu bố gọi thì nhắn tin cho mẹ",
-    ]
-    
-    print("🧪 TESTING ENTITY EXTRACTION")
-    print("=" * 60)
-    
-    for i, text in enumerate(test_cases, 1):
-        print(f"\n{i}. Input: '{text}'")
-        entities = extractor.extract_all_entities(text)
-        
-        if entities:
-            for key, value in entities.items():
-                print(f"   {key}: {value}")
-        else:
-            print("   ❌ Không extract được entities")
-
-if __name__ == "__main__":
-    test_entity_extraction()

@@ -1,0 +1,166 @@
+[
+  {
+    "input": "khởi động Facebook xem bài viết mới",
+    "command": "browse-social-media"
+  },
+  {
+    "input": "kiểm tra thông báo Zalo",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "thông báo",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "mở Facebook xem bài viết mới",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "Facebook",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "bài viết mới",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "mở TikTok xem video",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "TikTok",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "video",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "tìm bạn bè cũ trên Facebook",
+    "command": "browse-social-media"
+  },
+  {
+    "input": "khởi động Zalo Moment",
+    "command": "browse-social-media"
+  },
+  {
+    "input": "xem bài viết của con gái trên Facebook",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài viết",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "con gái",
+        "label": "RELATIONSHIP"
+      },
+      {
+        "text": "Facebook",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "mở Zalo Moment",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "Zalo Moment",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "bật Facebook xem bài viết mới",
+    "command": "browse-social-media"
+  },
+  {
+    "input": "tìm bạn bè cũ trên Facebook",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "bạn bè cũ",
+        "label": "SEARCH_TERM"
+      },
+      {
+        "text": "Facebook",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "xem bảng tin Facebook",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "bảng tin",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Facebook",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  },
+  {
+    "input": "xem bảng tin Facebook",
+    "command": "browse-social-media"
+  },
+  {
+    "input": "xem video trên YouTube về cách trồng cây",
+    "command": "browse-social-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "video",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "YouTube",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "cách trồng cây",
+        "label": "TOPIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Duyệt mạng xã hội"
+  }
+]

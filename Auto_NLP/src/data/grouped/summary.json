@@ -1,0 +1,59 @@
+{
+  "total_samples": 1000,
+  "total_commands": 28,
+  "total_groups": 12,
+  "command_distribution": {
+    "send-mess": 59,
+    "make-call": 97,
+    "play-audio": 23,
+    "search-content": 75,
+    "set-reminder": 151,
+    "read-news": 39,
+    "play-content": 61,
+    "call": 24,
+    "open-app": 31,
+    "check-health-status": 42,
+    "general-conversation": 32,
+    "check-messages": 27,
+    "browse-social-media": 13,
+    "set-alarm": 27,
+    "make-video-call": 49,
+    "check-weather": 50,
+    "open-app-action": 10,
+    "send-message": 33,
+    "control-device": 14,
+    "play-media": 53,
+    "search-internet": 33,
+    "app-tutorial": 1,
+    "provide-instructions": 19,
+    "check-device-status": 21,
+    "adjust-settings": 8,
+    "navigation-help": 1,
+    "view-content": 6,
+    "read-content": 1
+  },
+  "group_distribution": {
+    "MESSAGE_COMMANDS": 92,
+    "CALL_COMMANDS": 170,
+    "MEDIA_COMMANDS": 137,
+    "SEARCH_COMMANDS": 108,
+    "REMINDER_COMMANDS": 178,
+    "CONTENT_COMMANDS": 46,
+    "APP_COMMANDS": 41,
+    "CHECK_COMMANDS": 140,
+    "CONVERSATION_COMMANDS": 32,
+    "SOCIAL_MEDIA_COMMANDS": 13,
+    "CONTROL_COMMANDS": 22,
+    "TUTORIAL_COMMANDS": 21
+  },
+  "entity_stats": {
+    "samples_with_entities": 152,
+    "total_entities": 167,
+    "entity_types": 11
+  },
+  "value_stats": {
+    "samples_with_values": 294,
+    "total_values": 407,
+    "value_types": 37
+  }
+}

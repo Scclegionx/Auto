@@ -1,0 +1,1683 @@
+[
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 9h tối lúc chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "hẹn giờ 2 tiếng để tắt bếp ga",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "2 tiếng",
+        "label": "DURATION"
+      }
+    ],
+    "values": [
+      {
+        "text": "tắt bếp ga",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 8h sáng lúc ngày mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt nhắc nhở đổ rác vào 8 giờ tối mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đổ rác",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "8 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi đo huyết áp lúc 7 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đo huyết áp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "7 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 9h tối lúc tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Nhắc nhở đi chợ sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt nhắc nhở uống thuốc giảm đau lúc 10 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc giảm đau",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "10 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt báo thức sáng mai",
+    "command": "set-alarm"
+  },
+  {
+    "input": "nhắc tôi nộp báo cáo vào ngày 20 tháng này",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "nộp báo cáo",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày 20 tháng này",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt báo thức cho đi chùa sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 8h sáng",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi chợ chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt báo thức ngày mai",
+    "command": "set-alarm"
+  },
+  {
+    "input": "ghi nhớ mua quà sinh nhật cho cháu vào thứ Hai",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "cháu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "mua quà sinh nhật cho",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "thứ Hai",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Tạo lời nhắc gọi điện cho cháu",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt chuông báo thức 7h tối",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Tạo lời nhắc đi khám răng tuần sau cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt nhắc nhở đi chợ vào sáng mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi chợ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sáng mai",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi đi họp lúc 9 giờ sáng mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi họp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "9 giờ sáng mai",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi uống viên canxi vào buổi trưa mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống viên canxi",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "buổi trưa",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 2h chiều",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở họp gia đình tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "tạo lời nhắc khám định kỳ vào ngày 15 tháng sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "khám định kỳ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày 15 tháng sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt nhắc nhở gọi điện cho cháu",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt báo thức cho 4h chiều",
+    "command": "set-alarm"
+  },
+  {
+    "input": "nhắc tôi uống thuốc hàng ngày vào 7 giờ sáng, 12 giờ trưa và 7 giờ tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc hàng ngày",
+        "label": "REMINDER_TYPE"
+      },
+      {
+        "text": "7 giờ sáng, 12 giờ trưa và 7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở uống thuốc định kỳ"
+  },
+  {
+    "input": "Tạo lời nhắc đi chợ sáng mai cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở hẹn bạn cũ tối mai lúc sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo báo thức 8h sáng",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 8h sáng",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở đi dạo công viên chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Nhắc nhở họp gia đình tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi đi khám bác sĩ vào thứ ba tuần sau",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "thứ ba tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "đi khám bác sĩ",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "nhắc tôi uống thuốc huyết áp lúc 8 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc huyết áp",
+        "label": "REMINDER_TYPE"
+      },
+      {
+        "text": "8 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở uống thuốc"
+  },
+  {
+    "input": "đặt hẹn giờ uống thuốc tim mạch lúc 8 giờ sáng",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "8 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "uống thuốc tim mạch",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt nhắc nhở tập vật lý trị liệu vào 5 giờ chiều mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "tập vật lý trị liệu",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "5 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "làm ơn nhắc tôi vào lúc 5 giờ chiều nhé",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [
+      {
+        "text": "5 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt báo thức, nhắc nhở thời gian"
+  },
+  {
+    "input": "nhắc tôi lúc 5 giờ chiều",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [
+      {
+        "text": "5 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt báo thức, nhắc nhở thời gian"
+  },
+  {
+    "input": "Đặt chuông báo thức 2h chiều",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Báo thức 9h tối",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Đặt báo thức cho gọi điện cho cháu",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 9h tối lúc ngay bây giờ",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt hẹn giờ 30 phút để nấu cơm",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "30 phút",
+        "label": "DURATION"
+      }
+    ],
+    "values": [
+      {
+        "text": "nấu cơm",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt nhắc nhở uống thuốc tiểu đường vào 9 giờ tối mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc tiểu đường",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "9 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt lời nhắc tập đi bộ vào 5 giờ chiều hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "tập đi bộ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "5 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi đi khám răng vào thứ Năm tuần này",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi khám răng",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "thứ Năm tuần này",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt nhắc nhở đi mua thuốc vào sáng mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi mua thuốc",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sáng mai",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Tạo lời nhắc đi khám răng tuần sau",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Nhắc nhở gọi điện cho cháu",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi đi khám bệnh ngày mai lúc 9 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi khám bệnh",
+        "label": "REMINDER_TYPE"
+      },
+      {
+        "text": "ngày mai lúc 9 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở lịch hẹn"
+  },
+  {
+    "input": "Đặt chuông báo thức 4h chiều",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Đặt nhắc nhở gọi điện cho con lúc 8h tối",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt nhắc nhở tham gia sinh hoạt câu lạc bộ người cao tuổi vào thứ Tư",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "tham gia sinh hoạt câu lạc bộ người cao tuổi",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "thứ Tư",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi đi chợ vào sáng thứ Bảy",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi chợ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sáng thứ Bảy",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "ghi nhớ giúp tôi đến lịch hẹn bác sĩ vào 2h chiều ngày mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đến lịch hẹn bác sĩ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "2h chiều ngày mai",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt nhắc nhở rửa xe vào sáng Chủ Nhật",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "rửa xe",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sáng Chủ Nhật",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi uống thuốc huyết áp",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc huyết áp",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "Đặt báo thức 3h chiều",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Đặt chuông tháng sau",
+    "command": "set-alarm"
+  },
+  {
+    "input": "nhắc tôi uống thuốc huyết áp lúc 8 giờ sáng hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc huyết áp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "8 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt lịch nhắc uống thuốc lúc 9h tối",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc gọi điện cho cháu",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo nhắc nhở cho họp lớp tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi chuẩn bị bài thuyết trình vào 7 giờ tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "chuẩn bị bài thuyết trình",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt nhắc nhở gọi điện cho mẹ vào ngày mai",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "mẹ",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "gọi điện cho",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày mai",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt lịch tưới cây vào 5 giờ chiều",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "5 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "tưới cây",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "Đặt báo thức cho đi dạo công viên chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc uống thuốc lúc 9h tối",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt báo thức cho uống thuốc lúc 2h chiều",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Báo thức 9h sáng",
+    "command": "set-alarm"
+  },
+  {
+    "input": "đặt nhắc nhở đi thăm cháu vào Chủ Nhật",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "cháu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "đi thăm",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "Chủ Nhật",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt lịch nhắc đi chợ sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc họp gia đình tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 2h chiều lúc 7h tối",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc uống thuốc lúc 9h tối cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi lấy hẹn với bác sĩ mắt vào ngày mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "lấy hẹn với bác sĩ mắt",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày mai",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Tạo lời nhắc hẹn bạn cũ tối mai cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi khám bệnh ngày mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở hẹn bạn cũ tối mai lúc tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "cài đặt báo thức 6 giờ sáng mai",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "6 giờ sáng mai",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "báo thức",
+        "label": "REMINDER_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "nhắc tôi đo huyết áp lúc 7 giờ sáng và 7 giờ tối",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "7 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "đo huyết áp",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt lời nhắc kiểm tra sức khỏe định kỳ vào ngày 10 tháng sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "kiểm tra sức khỏe định kỳ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày 10 tháng sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi uống thuốc tim mạch vào 8 giờ sáng và 8 giờ tối hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc tim mạch",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "8 giờ sáng và 8 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Báo thức lúc 8h sáng",
+    "command": "set-alarm"
+  },
+  {
+    "input": "nhắc tôi uống thuốc đau nhức xương khớp vào buổi tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc đau nhức xương khớp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "buổi tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi khám răng tuần sau",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt lịch nhắc đi khám bệnh ngày mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt báo thức cho bây giờ",
+    "command": "set-alarm"
+  },
+  {
+    "input": "đặt lời nhắc đi tái khám tiểu đường vào thứ Hai tuần sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi tái khám tiểu đường",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "thứ Hai tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt lời nhắc kiểm tra đường huyết vào 7 giờ sáng và 7 giờ tối hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "kiểm tra đường huyết",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "7 giờ sáng và 7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt nhắc nhở dùng thuốc nhỏ mắt vào 7 giờ sáng và 7 giờ tối hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "dùng thuốc nhỏ mắt",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "7 giờ sáng và 7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt chuông báo thức 7h tối",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Tạo lời nhắc đi dạo công viên chiều nay cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt lịch nhắc đi khám bệnh ngày mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc uống thuốc lúc 9h tối cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt lịch nhắc họp lớp tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "tạo nhắc nhở gọi điện cho bác sĩ vào ngày mai lúc 9 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "gọi điện cho bác sĩ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày mai lúc 9 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi khám răng tuần sau",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở đi chùa sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc đi chợ chiều nay cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt báo thức cho tôi vào 17 giờ",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [
+      {
+        "text": "17 giờ",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt báo thức, nhắc nhở thời gian"
+  },
+  {
+    "input": "Đặt chuông ngày mai",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Nhắc nhở hẹn bác sĩ tuần sau",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo nhắc nhở cho hẹn bạn cũ tối mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 2h chiều lúc sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi khám răng tuần sau",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi chùa sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi uống thuốc viêm khớp vào buổi sáng và buổi tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc viêm khớp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "buổi sáng và buổi tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Nhắc nhở uống thuốc lúc 8h sáng",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc đi chợ chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc nhở tôi uống thuốc đau đầu khi có triệu chứng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc đau đầu",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "khi có triệu chứng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Tạo lời nhắc uống thuốc lúc 8h sáng",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt lịch nhắc họp gia đình tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc đi chợ sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi lấy hẹn khám tim mạch vào tuần sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "lấy hẹn khám tim mạch",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Tạo nhắc nhở cho gọi điện cho con",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi uống thuốc và đi ngủ lúc 10 giờ tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc và đi ngủ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "10 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "tạo lời nhắc gọi điện cho bố vào cuối tuần",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "bố",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "gọi điện cho",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "cuối tuần",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt lịch nhắc hẹn bạn cũ tối mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở đi dạo công viên chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi chùa sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt lịch nhắc đi chợ chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở đi chợ sáng mai lúc 8h sáng",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc gọi điện cho cháu",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở đi chợ chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt nhắc nhở đi khám mắt vào ngày 20 tháng này",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi khám mắt",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày 20 tháng này",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "đặt báo thức mỗi sáng lúc 5 giờ 30",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "mỗi sáng",
+        "label": "FREQUENCY"
+      },
+      {
+        "text": "5 giờ 30",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "báo thức",
+        "label": "REMINDER_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "Tạo lời nhắc đi khám bệnh ngày mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở đi chùa sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt chuông tháng sau",
+    "command": "set-alarm"
+  },
+  {
+    "input": "đặt nhắc nhở đi đo mắt làm kính vào thứ Ba tuần sau",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi đo mắt làm kính",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "thứ Ba tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi uống thuốc tiểu đường sau bữa ăn sáng, trưa, tối",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc tiểu đường",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sau bữa ăn sáng, trưa, tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "ghi nhớ mua sữa khi đi chợ vào chiều nay",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "mua sữa khi đi chợ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "chiều nay",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Báo thức 10h sáng",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi chợ chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc đi khám răng tuần sau",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt báo thức 8h tối",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Đặt chuông báo thức tuần sau",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Tạo lời nhắc họp gia đình tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt nhắc nhở uống thuốc tiểu đường vào 11 giờ 30 trưa",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc tiểu đường",
+        "label": "REMINDER_TYPE"
+      },
+      {
+        "text": "11 giờ 30 trưa",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở uống thuốc"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi khám bệnh ngày mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo nhắc nhở cho đi dạo công viên chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi đưa con đi học lúc 7 giờ sáng hàng ngày",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "con",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "đưa đi học",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "7 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi uống thuốc bổ gan lúc 8 giờ sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "uống thuốc bổ gan",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "8 giờ sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt lịch nhắc đi chợ sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi gọi cho con gái vào 9 giờ tối",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "9 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "gọi cho con gái",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "Nhắc nhở gọi điện cho cháu",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc uống thuốc lúc 8h sáng",
+    "command": "set-reminder"
+  },
+  {
+    "input": "cháu ơi, tí nhớ nhắc bà lúc 5h chiều đấy",
+    "command": "set-alarm",
+    "entities": [],
+    "values": [
+      {
+        "text": "5h chiều",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt báo thức, nhắc nhở thời gian"
+  },
+  {
+    "input": "Đặt nhắc nhở đi chùa sáng mai lúc chiều nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt chuông báo thức chiều nay",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Tạo báo thức 8h sáng",
+    "command": "set-alarm"
+  },
+  {
+    "input": "Đặt báo thức cho 3h chiều",
+    "command": "set-alarm"
+  },
+  {
+    "input": "nhắc tôi gửi email cho sếp vào 10h sáng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "gửi email cho sếp",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "10h sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Tạo lời nhắc họp lớp tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc gọi điện cho con",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt báo thức cho gọi điện cho con",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi tập thể dục mỗi sáng",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "mỗi sáng",
+        "label": "FREQUENCY"
+      }
+    ],
+    "values": [
+      {
+        "text": "tập thể dục",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt nhắc nhở uống thuốc tiểu đường mỗi ngày lúc 7 giờ tối",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      },
+      {
+        "text": "7 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "uống thuốc tiểu đường",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "đặt lời nhắc kiểm tra đường huyết vào buổi sáng mỗi ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "kiểm tra đường huyết",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "buổi sáng",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "mỗi ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt lịch nhắc họp gia đình tối nay",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo báo thức tối nay",
+    "command": "set-alarm"
+  },
+  {
+    "input": "nhắc tôi không quên sinh nhật con trai vào ngày 15/8",
+    "command": "set-reminder",
+    "entities": [
+      {
+        "text": "ngày 15/8",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "sinh nhật con trai",
+        "label": "REMINDER_CONTENT"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đặt nhắc nhở"
+  },
+  {
+    "input": "Đặt nhắc nhở họp lớp tối nay lúc tuần sau",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc uống thuốc lúc 2h chiều cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc uống thuốc lúc 8h sáng",
+    "command": "set-reminder"
+  },
+  {
+    "input": "nhắc tôi đi ngủ lúc 10 giờ tối hàng ngày",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi ngủ",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "10 giờ tối",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "hàng ngày",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Nhắc nhở đi khám bệnh ngày mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc họp gia đình tối nay cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở uống thuốc lúc 8h sáng",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt nhắc nhở đi tập vật lý trị liệu vào 3 giờ chiều thứ Hai, thứ Tư, thứ Sáu",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi tập vật lý trị liệu",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "3 giờ chiều",
+        "label": "TIME_EXPRESSION"
+      },
+      {
+        "text": "thứ Hai, thứ Tư, thứ Sáu",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "nhắc tôi đi chợ mua thực phẩm vào sáng mai",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "đi chợ mua thực phẩm",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "sáng mai",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  },
+  {
+    "input": "Đặt lịch nhắc đi chợ sáng mai",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Tạo lời nhắc uống thuốc lúc 2h chiều cho tôi",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở gọi điện cho con",
+    "command": "set-reminder"
+  },
+  {
+    "input": "Đặt nhắc nhở hẹn bác sĩ tuần sau",
+    "command": "set-reminder"
+  },
+  {
+    "input": "đặt nhắc nhở trả tiền điện vào ngày 15 hàng tháng",
+    "command": "set-reminder",
+    "entities": [],
+    "values": [
+      {
+        "text": "trả tiền điện",
+        "label": "REMINDER_CONTENT"
+      },
+      {
+        "text": "ngày 15",
+        "label": "DATE_EXPRESSION"
+      },
+      {
+        "text": "hàng tháng",
+        "label": "FREQUENCY"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Nhắc nhở uống thuốc, lịch khám"
+  }
+]

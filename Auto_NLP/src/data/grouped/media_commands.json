@@ -1,0 +1,1041 @@
+[
+  {
+    "input": "Bật nhạc bolero",
+    "command": "play-audio"
+  },
+  {
+    "input": "Mở video hài kịch để xem",
+    "command": "play-content"
+  },
+  {
+    "input": "cho tôi nghe bản tin thời sự hôm nay",
+    "command": "play-audio",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin thời sự",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung âm thanh"
+  },
+  {
+    "input": "Mở nhạc dân ca",
+    "command": "play-content"
+  },
+  {
+    "input": "Bật video ca nhạc cho tôi",
+    "command": "play-audio"
+  },
+  {
+    "input": "bật DVD karaoke",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "DVD karaoke",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Phát bài hát cũ ngay bây giờ",
+    "command": "play-media"
+  },
+  {
+    "input": "Chạy phim tình cảm",
+    "command": "play-media"
+  },
+  {
+    "input": "Phát phim cổ trang ngay bây giờ",
+    "command": "play-media"
+  },
+  {
+    "input": "Xem video hài kịch",
+    "command": "play-content"
+  },
+  {
+    "input": "phát nhạc thiền để ngủ ngon",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc thiền",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "phát bản nhạc cổ điển trên Spotify",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc cổ điển",
+        "label": "MEDIA_TYPE"
+      },
+      {
+        "text": "Spotify",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "phát nhạc bolero hay nhất",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc bolero hay nhất",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Bật bài hát mới cho tôi",
+    "command": "play-audio"
+  },
+  {
+    "input": "Xem nhạc dân ca",
+    "command": "play-content"
+  },
+  {
+    "input": "Mở tin tức thể thao",
+    "command": "play-audio"
+  },
+  {
+    "input": "Bật video ca nhạc",
+    "command": "play-media"
+  },
+  {
+    "input": "mở phim tài liệu về động vật",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "phim tài liệu về động vật",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Phát phim hành động ngay bây giờ",
+    "command": "play-content"
+  },
+  {
+    "input": "Phát video hướng dẫn",
+    "command": "play-media"
+  },
+  {
+    "input": "Mở video hài kịch",
+    "command": "play-content"
+  },
+  {
+    "input": "Bật nhạc vàng",
+    "command": "play-media"
+  },
+  {
+    "input": "phát bài hát Lý Cây Bông của Phi Nhung",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài hát Lý Cây Bông của Phi Nhung",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Phát video ca nhạc ngay bây giờ",
+    "command": "play-content"
+  },
+  {
+    "input": "Bật phim hài cho tôi",
+    "command": "play-content"
+  },
+  {
+    "input": "phát tin nhắn thoại mới của con trai",
+    "command": "play-audio",
+    "entities": [
+      {
+        "text": "con trai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "tin nhắn thoại",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát tin nhắn thoại"
+  },
+  {
+    "input": "Mở nhạc dân ca để xem",
+    "command": "play-media"
+  },
+  {
+    "input": "phát nhạc thiền để thư giãn",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc thiền để thư giãn",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở bản tin thời sự hôm nay",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin thời sự hôm nay",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "bật cải lương Tô Ánh Nguyệt",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "cải lương Tô Ánh Nguyệt",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Mở bài hát mới",
+    "command": "play-media"
+  },
+  {
+    "input": "Phát bài hát mới ngay bây giờ",
+    "command": "play-content"
+  },
+  {
+    "input": "mở bản tin thời sự VTV1",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin thời sự VTV1",
+        "label": "MEDIA_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "bật video về cách phòng bệnh cao huyết áp",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video về cách phòng bệnh cao huyết áp",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Phát nhạc vàng ngay bây giờ",
+    "command": "play-content"
+  },
+  {
+    "input": "Phát phim hành động",
+    "command": "play-audio"
+  },
+  {
+    "input": "Bật video hài kịch cho tôi",
+    "command": "play-content"
+  },
+  {
+    "input": "Mở phim hành động để xem",
+    "command": "play-content"
+  },
+  {
+    "input": "mở video hướng dẫn tập dưỡng sinh buổi sáng",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn tập dưỡng sinh buổi sáng",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Phát tin tức thể thao ngay bây giờ",
+    "command": "play-content"
+  },
+  {
+    "input": "mở radio VOV1",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "radio VOV1",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Mở phim hành động để xem",
+    "command": "play-content"
+  },
+  {
+    "input": "phát nhạc ru ngủ",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc ru ngủ",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát video nhạc quê hương",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc quê hương",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Xem video hướng dẫn",
+    "command": "play-media"
+  },
+  {
+    "input": "Mở video hướng dẫn",
+    "command": "play-audio"
+  },
+  {
+    "input": "Bật phim cổ trang",
+    "command": "play-content"
+  },
+  {
+    "input": "mở video hướng dẫn tập dưỡng sinh",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn tập dưỡng sinh",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Chạy video hướng dẫn",
+    "command": "play-audio"
+  },
+  {
+    "input": "Xem tin tức thời sự",
+    "command": "play-content"
+  },
+  {
+    "input": "Xem video ca nhạc",
+    "command": "play-content"
+  },
+  {
+    "input": "Phát bài hát thiếu nhi",
+    "command": "play-media"
+  },
+  {
+    "input": "Phát phim hài",
+    "command": "play-content"
+  },
+  {
+    "input": "Nghe nhạc dân ca",
+    "command": "play-audio"
+  },
+  {
+    "input": "phát video bài tập cho người cao tuổi",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video bài tập cho người cao tuổi",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở nhạc của Chế Linh",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc của Chế Linh",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Bật video ca nhạc",
+    "command": "play-content"
+  },
+  {
+    "input": "Xem tin tức thể thao",
+    "command": "play-content"
+  },
+  {
+    "input": "Chạy video hài kịch",
+    "command": "play-media"
+  },
+  {
+    "input": "Phát nhạc vàng",
+    "command": "play-media"
+  },
+  {
+    "input": "bật nhạc không lời để thư giãn",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc không lời",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Mở phim hài",
+    "command": "play-audio"
+  },
+  {
+    "input": "Bật phim hành động",
+    "command": "play-media"
+  },
+  {
+    "input": "nghe tin nhắn thoại từ con gái trên Messenger",
+    "command": "play-audio",
+    "entities": [
+      {
+        "text": "con gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "tin nhắn thoại",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Messenger",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Phát tin nhắn thoại từ ứng dụng"
+  },
+  {
+    "input": "phát nhạc của Đan Trường",
+    "command": "play-media",
+    "entities": [
+      {
+        "text": "Đan Trường",
+        "label": "ARTIST_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "nhạc",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Phát video hướng dẫn",
+    "command": "play-media"
+  },
+  {
+    "input": "bật video hướng dẫn nấu ăn",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn nấu ăn",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "mở video hướng dẫn dùng ứng dụng ngân hàng",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn dùng ứng dụng ngân hàng",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát tin tức thời sự mới nhất",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin tức thời sự mới nhất",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Chạy phim hành động",
+    "command": "play-content"
+  },
+  {
+    "input": "mở bài hát Quê Hương Tôi",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài hát Quê Hương Tôi",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Phát phim cổ trang ngay bây giờ",
+    "command": "play-content"
+  },
+  {
+    "input": "phát bài hát Thuyền Hoa của Quang Lê",
+    "command": "play-media",
+    "entities": [
+      {
+        "text": "Quang Lê",
+        "label": "ARTIST_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "bài hát Thuyền Hoa",
+        "label": "MEDIA_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Bật bài hát mới cho tôi",
+    "command": "play-audio"
+  },
+  {
+    "input": "Mở bài hát cũ",
+    "command": "play-audio"
+  },
+  {
+    "input": "Bật phim cổ trang",
+    "command": "play-content"
+  },
+  {
+    "input": "mở bài Đường Xa Ướt Mưa",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài Đường Xa Ướt Mưa",
+        "label": "MEDIA_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Mở tin tức thể thao",
+    "command": "play-media"
+  },
+  {
+    "input": "Bật tin tức thể thao cho tôi",
+    "command": "play-media"
+  },
+  {
+    "input": "Nghe tin tức thời sự",
+    "command": "play-audio"
+  },
+  {
+    "input": "Bật bài hát mới cho tôi",
+    "command": "play-media"
+  },
+  {
+    "input": "Bật nhạc vàng",
+    "command": "play-content"
+  },
+  {
+    "input": "Mở tin tức thể thao",
+    "command": "play-content"
+  },
+  {
+    "input": "phát kênh VTV3 cho tôi",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "kênh VTV3",
+        "label": "MEDIA_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "bật bài Hương Tràm hát",
+    "command": "play-media",
+    "entities": [
+      {
+        "text": "Hương Tràm",
+        "label": "ARTIST_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "bài",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Bật video hài kịch",
+    "command": "play-media"
+  },
+  {
+    "input": "Phát phim cổ trang ngay bây giờ",
+    "command": "play-media"
+  },
+  {
+    "input": "Chạy bài hát cũ",
+    "command": "play-media"
+  },
+  {
+    "input": "tôi muốn xem phim hài",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "phim hài",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "xem lại bóng đá Việt Nam thi đấu hôm qua",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bóng đá Việt Nam thi đấu hôm qua",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Xem video hướng dẫn",
+    "command": "play-media"
+  },
+  {
+    "input": "Phát nhạc bolero ngay bây giờ",
+    "command": "play-content"
+  },
+  {
+    "input": "Phát phim cổ trang ngay bây giờ",
+    "command": "play-media"
+  },
+  {
+    "input": "Bật nhạc bolero",
+    "command": "play-audio"
+  },
+  {
+    "input": "Phát nhạc trữ tình",
+    "command": "play-media"
+  },
+  {
+    "input": "bật video hướng dẫn nấu cháo dinh dưỡng",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn nấu cháo dinh dưỡng",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát bài Còn Thương Rau Đắng Mọc Sau Hè",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bài Còn Thương Rau Đắng Mọc Sau Hè",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở nhạc trên YouTube cho tôi",
+    "command": "play-audio",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "YouTube",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nhạc trên ứng dụng"
+  },
+  {
+    "input": "chơi bài hát mới nhất của Mỹ Tâm",
+    "command": "play-media",
+    "entities": [
+      {
+        "text": "Mỹ Tâm",
+        "label": "ARTIST_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "bài hát mới nhất",
+        "label": "MEDIA_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Phát bài hát thiếu nhi",
+    "command": "play-content"
+  },
+  {
+    "input": "Bật bài hát mới",
+    "command": "play-media"
+  },
+  {
+    "input": "Mở video hài kịch để xem",
+    "command": "play-content"
+  },
+  {
+    "input": "Bật nhạc vàng",
+    "command": "play-audio"
+  },
+  {
+    "input": "xem video cải lương Tô Ánh Nguyệt",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video cải lương Tô Ánh Nguyệt",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Phát phim hài",
+    "command": "play-content"
+  },
+  {
+    "input": "phát radio VOV giao thông",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "radio VOV giao thông",
+        "label": "MEDIA_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Mở tin tức thể thao để xem",
+    "command": "play-content"
+  },
+  {
+    "input": "mở tin tức VTV1 hôm nay",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin tức VTV1 hôm nay",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "phát nhạc dân ca bắc bộ",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc dân ca bắc bộ",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Chạy bài hát thiếu nhi",
+    "command": "play-media"
+  },
+  {
+    "input": "Mở tin tức thể thao",
+    "command": "play-audio"
+  },
+  {
+    "input": "mở bản tin thời sự VTV1",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin thời sự VTV1",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "mở nhạc sôi động để tập thể dục",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc sôi động",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Phát phim hài",
+    "command": "play-audio"
+  },
+  {
+    "input": "Phát video hướng dẫn",
+    "command": "play-media"
+  },
+  {
+    "input": "phát nhạc không lời thư giãn",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc không lời thư giãn",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Phát phim tình cảm",
+    "command": "play-media"
+  },
+  {
+    "input": "Mở phim cổ trang để nghe",
+    "command": "play-audio"
+  },
+  {
+    "input": "Phát video hài kịch",
+    "command": "play-media"
+  },
+  {
+    "input": "Chạy nhạc dân ca",
+    "command": "play-audio"
+  },
+  {
+    "input": "Mở video hướng dẫn để nghe",
+    "command": "play-audio"
+  },
+  {
+    "input": "Mở nhạc dân ca",
+    "command": "play-media"
+  },
+  {
+    "input": "Mở video hài kịch",
+    "command": "play-content"
+  },
+  {
+    "input": "bật nhạc trữ tình hay nhất",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc trữ tình hay nhất",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Bật bài hát cũ",
+    "command": "play-content"
+  },
+  {
+    "input": "Phát bài hát mới ngay bây giờ",
+    "command": "play-media"
+  },
+  {
+    "input": "Phát bài hát cũ",
+    "command": "play-media"
+  },
+  {
+    "input": "Mở bài hát thiếu nhi để xem",
+    "command": "play-content"
+  },
+  {
+    "input": "mở radio để nghe tin tức buổi sáng",
+    "command": "play-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "radio tin tức buổi sáng",
+        "label": "CONTENT_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Phát nội dung"
+  },
+  {
+    "input": "Bật tin tức thời sự cho tôi",
+    "command": "play-media"
+  },
+  {
+    "input": "Chạy tin tức thể thao",
+    "command": "play-content"
+  },
+  {
+    "input": "Phát nhạc dân ca ngay bây giờ",
+    "command": "play-media"
+  },
+  {
+    "input": "mở video trên YouTube về cách trồng rau",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "video trên YouTube về cách trồng rau",
+        "label": "MEDIA_CONTENT"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "Bật bài hát cũ",
+    "command": "play-content"
+  },
+  {
+    "input": "Phát phim hành động ngay bây giờ",
+    "command": "play-media"
+  },
+  {
+    "input": "mở TikTok xem các video hài hước",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "TikTok",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "video hài hước",
+        "label": "MEDIA_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  },
+  {
+    "input": "tìm nhạc bolero trên YouTube",
+    "command": "play-media",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhạc bolero",
+        "label": "MEDIA_TYPE"
+      },
+      {
+        "text": "YouTube",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Xem video, nghe nhạc"
+  }
+]

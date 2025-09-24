@@ -44,29 +44,5 @@ python simple_train.py
 
 
 
-## ⚙️ Cấu Hình Hệ Thống
 
-### Model Config (`config.py`)
-```python
-# PhoBERT-Large Configuration (Khuyến nghị)
-model_size: "large"             # "base" hoặc "large"
-max_length: 256                 # Độ dài tối đa input
-batch_size: 8                   # Batch size cho training
-learning_rate: 2e-5             # Learning rate tối ưu
-num_epochs: 15                  # Số epochs training
-device: "auto"                  # Auto-detect GPU/CPU
-use_fp16: True                  # Mixed precision cho GPU
-gradient_checkpointing: True    # Tiết kiệm memory
-```
-### Lỗi Thường Gặp
-
-#### 1. GPU Không Được Nhận Diện
-```bash
-# Kiểm tra CUDA
-python -c "import torch; print(torch.cuda.is_available())"
-
-# Cài đặt lại PyTorch với CUDA
-pip uninstall torch torchvision torchaudio -y
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-```
 

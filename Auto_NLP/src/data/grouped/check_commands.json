@@ -1,0 +1,1081 @@
+[
+  {
+    "input": "theo dõi huyết áp của tôi buổi sáng",
+    "command": "check-health-status",
+    "entities": [
+      {
+        "text": "buổi sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "huyết áp",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Kiểm tra tin nhắn",
+    "command": "check-messages"
+  },
+  {
+    "input": "Kiểm tra sức khỏe hôm nay",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Thời tiết hôm nay ra sao",
+    "command": "check-weather"
+  },
+  {
+    "input": "Xem tin nhắn",
+    "command": "check-messages"
+  },
+  {
+    "input": "dự báo thời tiết Quy Nhơn 3 ngày tới",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Quy Nhơn",
+        "label": "LOCATION"
+      },
+      {
+        "text": "3 ngày tới",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Kiểm tra huyết áp",
+    "command": "check-health-status"
+  },
+  {
+    "input": "dự báo thời tiết cho ngày mai ở Đà Nẵng",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "ngày mai",
+        "label": "DATE_EXPRESSION"
+      },
+      {
+        "text": "Đà Nẵng",
+        "label": "LOCATION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Kiểm tra kết nối mạng",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Dự báo thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "tôi có triệu chứng thiếu máu không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "thiếu máu",
+        "label": "SYMPTOM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "trời Hải Phòng hôm nay thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Hải Phòng",
+        "label": "LOCATION"
+      },
+      {
+        "text": "hôm nay",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Xem tin nhắn mới",
+    "command": "check-messages"
+  },
+  {
+    "input": "Kiểm tra tin nhắn từ bác",
+    "command": "check-messages"
+  },
+  {
+    "input": "thời tiết Cần Thơ ngày mai ra sao?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Cần Thơ",
+        "label": "LOCATION"
+      },
+      {
+        "text": "ngày mai",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "nghe tin nhắn mới trên Zalo",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn mới",
+        "label": "MESSAGE_TYPE"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "Xem thông tin thiết bị",
+    "command": "check-device-status"
+  },
+  {
+    "input": "đọc tin nhắn Messenger",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn",
+        "label": "MESSAGE_TYPE"
+      },
+      {
+        "text": "Messenger",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "Đọc tin nhắn",
+    "command": "check-messages"
+  },
+  {
+    "input": "Nhiệt độ hôm nay bao nhiêu",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra huyết áp",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Xem dung lượng bộ nhớ",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Xem tình trạng sức khỏe",
+    "command": "check-health-status"
+  },
+  {
+    "input": "đo chỉ số BMI của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "chỉ số BMI",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "tôi có bị sốt không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "sốt",
+        "label": "SYMPTOM"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Xem tình trạng sức khỏe",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Kiểm tra sức khỏe hôm nay",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Xem trạng thái thiết bị",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Dự báo thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "Dự báo thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "Thời tiết như thế nào",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "Đọc tin nhắn chưa đọc",
+    "command": "check-messages"
+  },
+  {
+    "input": "Thời tiết hôm nay ra sao",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra nhịp tim",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Xem thời tiết hôm nay",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra thiết bị",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Xem trạng thái thiết bị",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Kiểm tra sức khỏe hôm nay",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Kiểm tra nhịp tim",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Kiểm tra hộp thư",
+    "command": "check-messages"
+  },
+  {
+    "input": "đọc tin nhắn từ con gái",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn",
+        "label": "MESSAGE_TYPE"
+      },
+      {
+        "text": "con gái",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "kiểm tra mức độ oxy trong máu",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "mức độ oxy trong máu",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Dự báo thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "nhiệt độ ở Bắc Ninh hôm nay",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Bắc Ninh",
+        "label": "LOCATION"
+      },
+      {
+        "text": "hôm nay",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "nhiệt độ",
+        "label": "WEATHER_METRIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "kiểm tra sức khỏe tổng quát của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "có tin nhắn mới nào không?",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn mới",
+        "label": "MESSAGE_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "điện thoại tôi có kết nối wifi không?",
+    "command": "check-device-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "kết nối wifi",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tình trạng thiết bị"
+  },
+  {
+    "input": "thời tiết ngày mai thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "ngày mai",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Nhiệt độ hôm nay bao nhiêu",
+    "command": "check-weather"
+  },
+  {
+    "input": "Xem trạng thái thiết bị",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Kiểm tra kết nối mạng",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Kiểm tra tin nhắn từ bà ngoại",
+    "command": "check-messages"
+  },
+  {
+    "input": "Xem dự báo thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "tôi cần biết tình trạng tim mạch",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "tình trạng tim mạch",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Đọc tin nhắn chưa đọc",
+    "command": "check-messages"
+  },
+  {
+    "input": "Thời tiết hôm nay ra sao",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra sức khỏe hôm nay",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Kiểm tra pin điện thoại",
+    "command": "check-device-status"
+  },
+  {
+    "input": "kiểm tra pin còn bao nhiêu?",
+    "command": "check-device-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "pin",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tình trạng thiết bị"
+  },
+  {
+    "input": "hôm nay ở Nha Trang có mưa không?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "hôm nay",
+        "label": "DATE_EXPRESSION"
+      },
+      {
+        "text": "Nha Trang",
+        "label": "LOCATION"
+      }
+    ],
+    "values": [
+      {
+        "text": "mưa",
+        "label": "WEATHER_CONDITION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "nhắc tôi đo đường huyết mỗi sáng",
+    "command": "check-health-status",
+    "entities": [
+      {
+        "text": "mỗi sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "đường huyết",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Xem dung lượng bộ nhớ",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Kiểm tra thời tiết hôm nay",
+    "command": "check-weather"
+  },
+  {
+    "input": "Xem dự báo thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra nhịp tim",
+    "command": "check-health-status"
+  },
+  {
+    "input": "tôi có dấu hiệu cao huyết áp không?",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "cao huyết áp",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "hôm nay thời tiết thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "hôm nay",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Kiểm tra tin nhắn",
+    "command": "check-messages"
+  },
+  {
+    "input": "đo nhịp thở của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhịp thở",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Đọc tin nhắn chưa đọc",
+    "command": "check-messages"
+  },
+  {
+    "input": "Xem tình trạng sức khỏe",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Kiểm tra sức khỏe hôm nay",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Xem chỉ số sức khỏe",
+    "command": "check-health-status"
+  },
+  {
+    "input": "cuối tuần này thời tiết có đẹp không?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "cuối tuần này",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "đẹp",
+        "label": "WEATHER_CONDITION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Xem dự báo thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "mấy giờ thì trời tạnh mưa?",
+    "command": "check-weather",
+    "entities": [],
+    "values": [
+      {
+        "text": "tạnh mưa",
+        "label": "WEATHER_CONDITION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Kiểm tra thời tiết hôm nay",
+    "command": "check-weather"
+  },
+  {
+    "input": "Nhiệt độ hôm nay bao nhiêu",
+    "command": "check-weather"
+  },
+  {
+    "input": "Đọc tin nhắn chưa đọc",
+    "command": "check-messages"
+  },
+  {
+    "input": "Kiểm tra tin nhắn từ con gái",
+    "command": "check-messages"
+  },
+  {
+    "input": "Xem tin nhắn mới",
+    "command": "check-messages"
+  },
+  {
+    "input": "Kiểm tra nhịp tim",
+    "command": "check-health-status"
+  },
+  {
+    "input": "đo nhiệt độ cơ thể tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhiệt độ cơ thể",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Kiểm tra thời tiết hôm nay",
+    "command": "check-weather"
+  },
+  {
+    "input": "Nhiệt độ hôm nay bao nhiêu",
+    "command": "check-weather"
+  },
+  {
+    "input": "mai trời có mưa không?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "mai",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "mưa",
+        "label": "WEATHER_CONDITION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Kiểm tra hộp thư",
+    "command": "check-messages"
+  },
+  {
+    "input": "Kiểm tra sức khỏe hôm nay",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Xem chỉ số sức khỏe",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Kiểm tra tin nhắn",
+    "command": "check-messages"
+  },
+  {
+    "input": "tôi còn bao nhiêu dung lượng 4G?",
+    "command": "check-device-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "dung lượng 4G",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tình trạng thiết bị"
+  },
+  {
+    "input": "cảnh báo khi huyết áp của tôi tăng",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "huyết áp",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "đo lượng đường trong máu giúp tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "lượng đường trong máu",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Thời tiết hôm nay ra sao",
+    "command": "check-weather"
+  },
+  {
+    "input": "Thời tiết như thế nào",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra nhịp tim",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Đọc tin nhắn chưa đọc",
+    "command": "check-messages"
+  },
+  {
+    "input": "Xem tình trạng sức khỏe",
+    "command": "check-health-status"
+  },
+  {
+    "input": "ở Đà Lạt hiện giờ có lạnh không?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Đà Lạt",
+        "label": "LOCATION"
+      },
+      {
+        "text": "hiện giờ",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "lạnh",
+        "label": "WEATHER_CONDITION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "ngày mai có mưa to không?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "ngày mai",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "mưa to",
+        "label": "WEATHER_CONDITION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Xem tin nhắn mới nhất",
+    "command": "check-messages"
+  },
+  {
+    "input": "kiểm tra mạch của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "mạch",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "trời Vũng Tàu cuối tuần này thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Vũng Tàu",
+        "label": "LOCATION"
+      },
+      {
+        "text": "cuối tuần này",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "thời tiết ở Hà Nội hôm nay ra sao?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Hà Nội",
+        "label": "LOCATION"
+      },
+      {
+        "text": "hôm nay",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "kiểm tra lượng cholesterol của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "lượng cholesterol",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Kiểm tra thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "Đọc tin nhắn",
+    "command": "check-messages"
+  },
+  {
+    "input": "Xem tin nhắn",
+    "command": "check-messages"
+  },
+  {
+    "input": "Đọc tin nhắn chưa đọc",
+    "command": "check-messages"
+  },
+  {
+    "input": "Xem tin nhắn mới nhất",
+    "command": "check-messages"
+  },
+  {
+    "input": "dự báo thời tiết tuần tới ở Huế thế nào?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "tuần tới",
+        "label": "DATE_EXPRESSION"
+      },
+      {
+        "text": "Huế",
+        "label": "LOCATION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "kiểm tra bộ nhớ điện thoại",
+    "command": "check-device-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "bộ nhớ",
+        "label": "DEVICE_FEATURE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tình trạng thiết bị"
+  },
+  {
+    "input": "nhiệt độ bây giờ là bao nhiêu?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "bây giờ",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Kiểm tra thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra thời tiết hôm nay",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra huyết áp",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Kiểm tra huyết áp",
+    "command": "check-health-status"
+  },
+  {
+    "input": "đo thị lực của tôi",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "thị lực",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Xem báo cáo sức khỏe",
+    "command": "check-health-status"
+  },
+  {
+    "input": "kiểm tra tin nhắn thoại mới",
+    "command": "check-messages",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn thoại mới",
+        "label": "MESSAGE_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra tin nhắn"
+  },
+  {
+    "input": "Kiểm tra trạng thái thiết bị",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Kiểm tra huyết áp",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Xem trạng thái điện thoại",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Dự báo thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "Kiểm tra thời tiết hôm nay",
+    "command": "check-weather"
+  },
+  {
+    "input": "cuối tuần này Sài Gòn có nắng không?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Sài Gòn",
+        "label": "LOCATION"
+      },
+      {
+        "text": "cuối tuần này",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "nắng",
+        "label": "WEATHER_CONDITION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Kiểm tra sức khỏe",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Kiểm tra kết nối mạng",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Thời tiết hôm nay ra sao",
+    "command": "check-weather"
+  },
+  {
+    "input": "Xem chỉ số sức khỏe",
+    "command": "check-health-status"
+  },
+  {
+    "input": "Kiểm tra thiết bị",
+    "command": "check-device-status"
+  },
+  {
+    "input": "Kiểm tra trạng thái thiết bị",
+    "command": "check-device-status"
+  },
+  {
+    "input": "thời tiết Nam Định tuần sau",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Nam Định",
+        "label": "LOCATION"
+      },
+      {
+        "text": "tuần sau",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "kiểm tra chỉ số đường huyết",
+    "command": "check-health-status",
+    "entities": [],
+    "values": [
+      {
+        "text": "chỉ số đường huyết",
+        "label": "HEALTH_METRIC"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Kiểm tra sức khỏe cơ bản"
+  },
+  {
+    "input": "Xem dự báo thời tiết",
+    "command": "check-weather"
+  },
+  {
+    "input": "Xem thông tin thiết bị",
+    "command": "check-device-status"
+  },
+  {
+    "input": "ở Phú Quốc có bão không?",
+    "command": "check-weather",
+    "entities": [
+      {
+        "text": "Phú Quốc",
+        "label": "LOCATION"
+      }
+    ],
+    "values": [
+      {
+        "text": "bão",
+        "label": "WEATHER_CONDITION"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Kiểm tra thời tiết"
+  },
+  {
+    "input": "Xem thông tin thiết bị",
+    "command": "check-device-status"
+  }
+]

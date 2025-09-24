@@ -1,0 +1,402 @@
+[
+  {
+    "input": "có tin tức gì về giáo dục không?",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc tin tức thể thao mới nhất",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin tức thể thao",
+        "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "đọc báo Thanh Niên điện tử",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "báo Thanh Niên điện tử",
+        "label": "NEWS_SOURCE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "đọc tin thời sự mới nhất",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin thời sự",
+        "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "tin tức về dịch Covid thế nào rồi?",
+    "command": "read-news"
+  },
+  {
+    "input": "có tin gì mới không?",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc báo Thanh Niên điện tử",
+    "command": "read-news"
+  },
+  {
+    "input": "cập nhật tin kinh tế ngày hôm nay",
+    "command": "read-news"
+  },
+  {
+    "input": "tin thời sự VTV hôm nay",
+    "command": "read-news",
+    "entities": [
+      {
+        "text": "hôm nay",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "tin thời sự VTV",
+        "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "đọc tin thời sự mới nhất",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc báo buổi sáng cho tôi",
+    "command": "read-news"
+  },
+  {
+    "input": "tin tức trong ngày trên báo Tuổi Trẻ",
+    "command": "read-news",
+    "entities": [
+      {
+        "text": "trong ngày",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "báo Tuổi Trẻ",
+        "label": "NEWS_SOURCE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "cập nhật tin thế giới mới nhất",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin thế giới",
+        "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "đọc tin thời tiết trên VnExpress",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin thời tiết",
+        "label": "NEWS_CATEGORY"
+      },
+      {
+        "text": "VnExpress",
+        "label": "NEWS_SOURCE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "tin thời sự VTV hôm nay",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc báo Thanh Niên điện tử",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc tin tức về biển đảo Việt Nam",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "biển đảo Việt Nam",
+        "label": "TOPIC_NEWS"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "tin tức về dịch Covid thế nào rồi?",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "dịch Covid",
+        "label": "TOPIC_NEWS"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "xem bản tin trên Facebook",
+    "command": "view-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "bản tin",
+        "label": "CONTENT_TYPE"
+      },
+      {
+        "text": "Facebook",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Xem nội dung trên mạng xã hội"
+  },
+  {
+    "input": "tin tức trong ngày trên báo Tuổi Trẻ",
+    "command": "read-news"
+  },
+  {
+    "input": "mở ảnh cháu gửi hôm qua",
+    "command": "view-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "ảnh cháu gửi hôm qua",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Xem nội dung ảnh"
+  },
+  {
+    "input": "tin tức trong ngày trên báo Tuổi Trẻ",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc giúp tôi tin nhắn mới nhất",
+    "command": "read-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin nhắn mới nhất",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Đọc nội dung tin nhắn"
+  },
+  {
+    "input": "tôi muốn nghe tin tức về giáo dục",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "giáo dục",
+        "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "đọc tin tức hôm nay",
+    "command": "read-news"
+  },
+  {
+    "input": "có tin tức gì về giáo dục không?",
+    "command": "read-news"
+  },
+  {
+    "input": "có tin tức gì về giáo dục không?",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc tin tức thể thao mới nhất",
+    "command": "read-news"
+  },
+  {
+    "input": "khởi động ảnh cháu gửi hôm qua",
+    "command": "view-content"
+  },
+  {
+    "input": "có tin tức gì về giáo dục không?",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "giáo dục",
+        "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "mở video hướng dẫn tập thể dục cho người cao tuổi",
+    "command": "view-content",
+    "entities": [],
+    "values": [
+      {
+        "text": "video hướng dẫn tập thể dục cho người cao tuổi",
+        "label": "CONTENT_TYPE"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Xem nội dung video"
+  },
+  {
+    "input": "khởi động video hướng dẫn tập thể dục cho người cao tuổi",
+    "command": "view-content"
+  },
+  {
+    "input": "tin nóng hôm nay là gì?",
+    "command": "read-news",
+    "entities": [
+      {
+        "text": "hôm nay",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "tin tức trong ngày trên báo Tuổi Trẻ",
+    "command": "read-news"
+  },
+  {
+    "input": "cập nhật tin thế giới mới nhất",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc tin về thị trường chứng khoán",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "thị trường chứng khoán",
+        "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "cập nhật tin kinh tế ngày hôm nay",
+    "command": "read-news"
+  },
+  {
+    "input": "cập nhật tin kinh tế ngày hôm nay",
+    "command": "read-news"
+  },
+  {
+    "input": "cập nhật tin kinh tế ngày hôm nay",
+    "command": "read-news",
+    "entities": [
+      {
+        "text": "ngày hôm nay",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "tin kinh tế",
+        "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "chạy ảnh cháu gửi hôm qua",
+    "command": "view-content"
+  },
+  {
+    "input": "đọc tin văn hóa giải trí",
+    "command": "read-news",
+    "entities": [],
+    "values": [
+      {
+        "text": "tin văn hóa giải trí",
+        "label": "NEWS_CATEGORY"
+      }
+    ],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "có tin gì mới không?",
+    "command": "read-news",
+    "entities": [],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "đọc tin tức thể thao mới nhất",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc tin tức hôm nay",
+    "command": "read-news",
+    "entities": [
+      {
+        "text": "hôm nay",
+        "label": "DATE_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  },
+  {
+    "input": "tin tức về dịch Covid thế nào rồi?",
+    "command": "read-news"
+  },
+  {
+    "input": "đọc báo buổi sáng cho tôi",
+    "command": "read-news",
+    "entities": [
+      {
+        "text": "buổi sáng",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [],
+    "priority": "medium",
+    "task_description": "Đọc tin tức"
+  }
+]

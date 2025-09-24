@@ -19,8 +19,14 @@ current_dir = Path(__file__).parent
 project_root = current_dir.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-# Import NLP processor
-from ..engines.nlp_processor import NLPProcessor
+# Import NLP processor with absolute import
+try:
+    from src.inference.engines.nlp_processor import NLPProcessor
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    from src.inference.engines.nlp_processor import NLPProcessor
 
 try:
     from src.training.configs.config import model_config

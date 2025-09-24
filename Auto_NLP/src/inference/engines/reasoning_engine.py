@@ -124,7 +124,7 @@ class FuzzyMatcher:
 class VectorStore:
     """Vector store sử dụng FAISS cho tìm kiếm semantic"""
     
-    def __init__(self, vector_dim: int = 768):
+    def __init__(self, vector_dim: int = 1024):
         self.vector_dim = vector_dim
         self.index = faiss.IndexFlatIP(vector_dim)  # Inner product để cosine similarity
         self.text_mapping = []  # Lưu text tương ứng với các vector
@@ -171,11 +171,16 @@ class ConversationContext:
             "timestamp": time.time()
         })
         
-        if system_response.get("intent") and system_response.get("confidence", 0) > 0.5:
-            self.current_intent = system_response["intent"]
-        
-        if system_response.get("entities"):
-            self.current_entities.update(system_response["entities"])
+        # Sửa lỗi: system_response có thể là string hoặc dict
+        if isinstance(system_response, dict):
+            if system_response.get("intent") and system_response.get("confidence", 0) > 0.5:
+                self.current_intent = system_response["intent"]
+            
+            if system_response.get("entities"):
+                self.current_entities.update(system_response["entities"])
+        else:
+            # Nếu system_response là string, log warning
+            logger.warning(f"system_response is not a dict: {type(system_response)} - {system_response}")
     
     def get_last_n_turns(self, n: int = 3) -> List[Dict[str, Any]]:
         """Lấy n lượt đối thoại gần nhất"""
@@ -726,7 +731,7 @@ class ReasoningEngine:
         # Nếu model không có, trả về embedding giả
         if self.model is None or self.tokenizer is None:
             logger.warning("Model not available, using fallback embedding")
-            return np.zeros(768)  # Fallback embedding
+            return np.zeros(1024)  # Fallback embedding for PhoBERT-large
             
         cached_embedding = self.cache.get_embedding(text)
         if cached_embedding is not None and self.config.get("enable_cache", True):

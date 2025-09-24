@@ -1,0 +1,85 @@
+{
+  "merge_info": {
+    "timestamp": "20250922_120430",
+    "total_samples": 1000,
+    "total_groups": 12,
+    "group_files": {
+      "app_commands": 41,
+      "call_commands": 170,
+      "check_commands": 140,
+      "content_commands": 46,
+      "control_commands": 22,
+      "conversation_commands": 32,
+      "media_commands": 137,
+      "message_commands": 92,
+      "reminder_commands": 178,
+      "search_commands": 108,
+      "social_media_commands": 13,
+      "tutorial_commands": 21
+    }
+  },
+  "command_distribution": {
+    "play-content": 61,
+    "send-message": 33,
+    "check-messages": 27,
+    "make-call": 97,
+    "control-device": 14,
+    "search-internet": 33,
+    "browse-social-media": 13,
+    "search-content": 75,
+    "make-video-call": 49,
+    "read-news": 39,
+    "provide-instructions": 19,
+    "check-device-status": 21,
+    "general-conversation": 32,
+    "check-health-status": 42,
+    "set-alarm": 27,
+    "check-weather": 50,
+    "play-media": 53,
+    "set-reminder": 151,
+    "open-app": 31,
+    "send-mess": 59,
+    "play-audio": 23,
+    "view-content": 6,
+    "call": 24,
+    "open-app-action": 10,
+    "navigation-help": 1,
+    "adjust-settings": 8,
+    "read-content": 1,
+    "app-tutorial": 1
+  },
+  "entity_stats": {
+    "samples_with_entities": 152,
+    "total_entities": 167,
+    "entity_types": 11,
+    "top_entities": {
+      "FAMILY_RELATIONSHIP": 56,
+      "APP_NAME": 24,
+      "DATE_EXPRESSION": 23,
+      "CONTACT_PERSON": 22,
+      "TIME_EXPRESSION": 15,
+      "LOCATION": 13,
+      "CONTACT_NAME": 4,
+      "ARTIST_NAME": 4,
+      "FREQUENCY": 3,
+      "DURATION": 2
+    }
+  },
+  "value_stats": {
+    "samples_with_values": 294,
+    "total_values": 407,
+    "value_types": 37,
+    "top_values": {
+      "REMINDER_CONTENT": 58,
+      "TIME_EXPRESSION": 39,
+      "SEARCH_QUERY": 31,
+      "MESSAGE_CONTENT": 27,
+      "CONTENT_NAME": 26,
+      "PLATFORM": 23,
+      "ACTION": 18,
+      "CONTENT_TYPE": 18,
+      "DATE_EXPRESSION": 16,
+      "HEALTH_METRIC": 14
+    }
+  }
+}

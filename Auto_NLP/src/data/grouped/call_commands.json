@@ -1,0 +1,1264 @@
+[
+  {
+    "input": "gọi điện cho con gái",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi điện thoại cho anh rể",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi điện cho cửa hàng tạp hóa gần nhà",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "cửa hàng tạp hóa gần nhà",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Thực hiện cuộc gọi cho dì",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi chị dâu ngay bây giờ",
+    "command": "make-call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến cháu trai",
+    "command": "make-call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến cháu nội",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi điện thoại cho anh rể",
+    "command": "call"
+  },
+  {
+    "input": "gọi điện cho chị Hai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị Hai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi điện thoại cho cháu trai",
+    "command": "make-call"
+  },
+  {
+    "input": "Liên lạc với bà nội qua điện thoại",
+    "command": "call"
+  },
+  {
+    "input": "bấm số cho tiệm tạp hóa",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "tiệm tạp hóa",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "bắt đầu cuộc gọi video với vợ",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "vợ",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "gọi nhóm bạn già trên Messenger",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhóm bạn già",
+        "label": "CONTACT_GROUP"
+      },
+      {
+        "text": "Messenger",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Thực hiện cuộc gọi video cho mợ",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi điện thoại cho con gái",
+    "command": "call"
+  },
+  {
+    "input": "quay số cho bác sĩ Tuấn",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bác sĩ Tuấn",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi con trai khẩn cấp",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi cháu gái ngay bây giờ",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi video cho các con",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "các con",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "Gọi điện cho cháu ngoại",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi điện cho em rể",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi video cho các cháu",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "các cháu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "gọi lại cuộc gọi gần nhất",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "gọi lại",
+        "label": "CALL_ACTION"
+      },
+      {
+        "text": "cuộc gọi gần nhất",
+        "label": "CALL_REFERENCE"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Liên lạc với cháu gái qua điện thoại",
+    "command": "make-call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi video đến em gái",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi cho con gái lúc 10h sáng",
+    "command": "call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi cho mẹ",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi nhóm gia đình trên Zalo",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "nhóm gia đình",
+        "label": "CONTACT_GROUP"
+      },
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến bà ngoại",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi video ông nội khẩn cấp",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi cho con gái",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi anh Nam ngay bây giờ",
+    "command": "call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến bác",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi video cho chị Hương lúc 4h chiều",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi em rể ngay bây giờ",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi video cho cháu nội",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "cháu nội",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "Gọi cho bà ngoại lúc tối nay",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi cho Hằng trên WhatsApp",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "Hằng",
+        "label": "CONTACT_NAME"
+      }
+    ],
+    "values": [
+      {
+        "text": "WhatsApp",
+        "label": "PLATFORM"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Gọi video cô khẩn cấp",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi điện cho cháu ngoại",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi cho số 0912345678",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "0912345678",
+        "label": "PHONE_NUMBER"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi điện thoại cho Minh",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "Minh",
+        "label": "CONTACT_NAME"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Liên lạc với cháu ngoại qua điện thoại",
+    "command": "call"
+  },
+  {
+    "input": "gọi video cho con gái",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "con gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến em gái",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi cho em rể lúc chiều nay",
+    "command": "call"
+  },
+  {
+    "input": "bắt đầu cuộc gọi video với cháu",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "cuộc gọi video",
+        "label": "CALL_TYPE"
+      },
+      {
+        "text": "cháu",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Gọi cho mẹ lúc ngay bây giờ",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi khẩn cấp cho con trai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con trai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi FaceTime với con trai",
+    "command": "make-video-call"
+  },
+  {
+    "input": "gọi video call cho cháu gái",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "video call",
+        "label": "CALL_TYPE"
+      },
+      {
+        "text": "cháu gái",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "mở video call với con trai út",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "con trai út",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "kết nối với bệnh viện",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bệnh viện",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "liên lạc với chị Hoa",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị Hoa",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi FaceTime với dì",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi video cho em gái lúc 7h tối",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi điện cho bố",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi điện cho cháu trai",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi điện cho bạn Tuấn",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bạn Tuấn",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi video bà nội khẩn cấp",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi anh Nam khẩn cấp",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi cháu nội ngay bây giờ",
+    "command": "make-call"
+  },
+  {
+    "input": "kết nối video với con dâu",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "con dâu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "gọi cho chị gái tôi",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị gái tôi",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi video cho ông nội lúc 8h tối",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến cháu nội",
+    "command": "call"
+  },
+  {
+    "input": "Gọi video cho chị dâu lúc bây giờ",
+    "command": "make-video-call"
+  },
+  {
+    "input": "bấm số cho bác sĩ Minh",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bác sĩ Minh",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi điện đến hiệu thuốc",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "hiệu thuốc",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Thực hiện cuộc gọi video đến cháu trai",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi video con gái khẩn cấp",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi cho con gái lúc 8h tối",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi cho ông xã",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "ông xã",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Thực hiện cuộc gọi video đến dượng",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi điện cho bác",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi điện cho ông ngoại",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi FaceTime với bà ngoại",
+    "command": "make-video-call"
+  },
+  {
+    "input": "gọi Zalo cho bà xã",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "Zalo",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "bà xã",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Gọi điện thoại cho anh Nam",
+    "command": "call"
+  },
+  {
+    "input": "kết nối cuộc gọi với cửa hàng thuốc",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "cửa hàng thuốc",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "video call với cháu ngoại",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "cháu ngoại",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "liên lạc khẩn cấp với bác sĩ",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "bác sĩ",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi facetime cho em gái",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "em gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "Gọi điện cho chị Hương",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi Messenger cho con gái",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "Messenger",
+        "label": "PLATFORM"
+      },
+      {
+        "text": "con gái",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Gọi FaceTime với con gái",
+    "command": "make-video-call"
+  },
+  {
+    "input": "gọi cho thằng cu",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "thằng cu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Thực hiện cuộc gọi cho bác",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi video cho con gái",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi điện thoại cho ông ngoại",
+    "command": "call"
+  },
+  {
+    "input": "Gọi video cho chị Hương",
+    "command": "make-video-call"
+  },
+  {
+    "input": "gọi cho nhà hàng đặt bàn",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "nhà hàng",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi video bà nội ngay bây giờ",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Liên lạc với chị Hương qua điện thoại",
+    "command": "call"
+  },
+  {
+    "input": "Gọi chú ngay bây giờ",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi cho bác lúc 9h sáng",
+    "command": "make-call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến ông ngoại",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi cho anh Nam lúc 10h sáng",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi điện thoại cho cô",
+    "command": "make-call"
+  },
+  {
+    "input": "Liên lạc với dượng qua điện thoại",
+    "command": "call"
+  },
+  {
+    "input": "Gọi điện cho chị Hương",
+    "command": "call"
+  },
+  {
+    "input": "gọi video cho con gái lớn",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "con gái lớn",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "gọi điện cho bố giúp tôi",
+    "command": "call",
+    "entities": [
+      {
+        "text": "bố",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi video chị Hương ngay bây giờ",
+    "command": "make-video-call"
+  },
+  {
+    "input": "gọi ngay cho con trai lớn",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con trai lớn",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi FaceTime với mợ",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến mẹ",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi video bà nội khẩn cấp",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Liên lạc với em gái qua điện thoại",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi video cho dượng",
+    "command": "make-video-call"
+  },
+  {
+    "input": "gọi cho vợ",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "vợ",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi anh rể khẩn cấp",
+    "command": "make-call"
+  },
+  {
+    "input": "tôi muốn gọi video cho chị Hoa",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "chị Hoa",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "gọi video cho con gái trên Zalo",
+    "command": "call",
+    "entities": [
+      {
+        "text": "con gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [
+      {
+        "text": "video",
+        "label": "CALL_TYPE"
+      },
+      {
+        "text": "Zalo",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gọi video qua ứng dụng"
+  },
+  {
+    "input": "Gọi video ông ngoại khẩn cấp",
+    "command": "make-video-call"
+  },
+  {
+    "input": "gọi điện cho chị Lan",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị Lan",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Thực hiện cuộc gọi video đến cháu ngoại",
+    "command": "make-video-call"
+  },
+  {
+    "input": "alo cho bố",
+    "command": "call",
+    "entities": [
+      {
+        "text": "bố",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi FaceTime với chị Hương",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Liên lạc với anh Nam qua điện thoại",
+    "command": "call"
+  },
+  {
+    "input": "Gọi cháu gái khẩn cấp",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi mẹ khẩn cấp",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi điện thoại cho bác",
+    "command": "make-call"
+  },
+  {
+    "input": "Liên lạc với dì qua điện thoại",
+    "command": "call"
+  },
+  {
+    "input": "gọi điện khẩn cấp cho bác sĩ",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "khẩn cấp",
+        "label": "PRIORITY"
+      },
+      {
+        "text": "bác sĩ",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Gọi cho con gái lúc tháng sau",
+    "command": "call"
+  },
+  {
+    "input": "Gọi điện cho cháu gái",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi video cho anh trai lúc 8h tối",
+    "command": "make-video-call"
+  },
+  {
+    "input": "gọi cho cháu ngoại",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "cháu ngoại",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "tôi muốn gọi cho con dâu",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con dâu",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "bắt đầu cuộc gọi hình ảnh với bạn Lan",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "bạn Lan",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "điện thoại cho con trai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "con trai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến anh trai",
+    "command": "call"
+  },
+  {
+    "input": "Gọi cho bà ngoại lúc chiều nay",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi zalo video cho cháu gái",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "cháu gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "Thực hiện cuộc gọi video đến ông nội",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi điện thoại cho con gái",
+    "command": "make-call"
+  },
+  {
+    "input": "tôi muốn nói chuyện với chị Hai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "chị Hai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "gọi cho con trai tôi",
+    "command": "make-call",
+    "entities": [],
+    "values": [
+      {
+        "text": "con trai",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "Gọi FaceTime với chị Hương",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi bà ngoại khẩn cấp",
+    "command": "call"
+  },
+  {
+    "input": "gọi điện thoại cho em gái",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "em gái",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi video anh Nam khẩn cấp",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi video cô khẩn cấp",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Thực hiện cuộc gọi đến bà ngoại",
+    "command": "make-call"
+  },
+  {
+    "input": "đặt lịch hẹn gọi cho con trai lúc 8 giờ tối",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "8 giờ tối",
+        "label": "TIME_EXPRESSION"
+      }
+    ],
+    "values": [
+      {
+        "text": "đặt lịch hẹn",
+        "label": "CALL_ACTION"
+      },
+      {
+        "text": "con trai",
+        "label": "CONTACT_RELATIONSHIP"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Thực hiện cuộc gọi"
+  },
+  {
+    "input": "gọi facetime cho cháu nội",
+    "command": "make-video-call",
+    "entities": [
+      {
+        "text": "cháu nội",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi video"
+  },
+  {
+    "input": "Gọi video cho ông ngoại lúc tháng sau",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Liên lạc với dượng qua điện thoại",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi điện cho cháu trai",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi video anh Nam khẩn cấp",
+    "command": "make-video-call"
+  },
+  {
+    "input": "quay số cho anh Hai",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "anh Hai",
+        "label": "FAMILY_RELATIONSHIP"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi cho cháu ngoại lúc 8h sáng",
+    "command": "make-call"
+  },
+  {
+    "input": "gọi điện thoại cho tiệm thuốc tây",
+    "command": "make-call",
+    "entities": [
+      {
+        "text": "tiệm thuốc tây",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [],
+    "priority": "high",
+    "task_description": "Gọi điện thoại"
+  },
+  {
+    "input": "Gọi điện cho con trai",
+    "command": "make-call"
+  },
+  {
+    "input": "Liên lạc với chú qua điện thoại",
+    "command": "call"
+  },
+  {
+    "input": "mở cuộc gọi Messenger với cháu Linh",
+    "command": "call",
+    "entities": [
+      {
+        "text": "cháu Linh",
+        "label": "CONTACT_PERSON"
+      }
+    ],
+    "values": [
+      {
+        "text": "Messenger",
+        "label": "APP_NAME"
+      }
+    ],
+    "priority": "high",
+    "task_description": "Gọi điện qua ứng dụng"
+  },
+  {
+    "input": "Thực hiện cuộc gọi video đến cháu nội",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi video chị Hương ngay bây giờ",
+    "command": "make-video-call"
+  },
+  {
+    "input": "Gọi điện thoại cho cháu nội",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi mẹ ngay bây giờ",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi cô khẩn cấp",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi cho anh rể lúc 8h sáng",
+    "command": "make-call"
+  },
+  {
+    "input": "Liên lạc với anh trai qua điện thoại",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi chị dâu khẩn cấp",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi điện thoại cho anh Nam",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi cho em gái lúc chiều nay",
+    "command": "call"
+  },
+  {
+    "input": "Gọi cho cháu gái lúc tháng sau",
+    "command": "make-call"
+  },
+  {
+    "input": "Gọi cho mẹ lúc tuần sau",
+    "command": "make-call"
+  }
+]

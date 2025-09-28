@@ -96,6 +96,8 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         floatingWindow.hideFloatingWindow()
+        // Giải phóng resources để tránh memory leak
+        floatingWindow.release()
     }
 }
 

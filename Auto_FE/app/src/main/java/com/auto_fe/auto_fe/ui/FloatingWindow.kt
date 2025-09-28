@@ -213,4 +213,23 @@ class FloatingWindow(private val context: Context) {
         windowManager = null
         audioManager?.release()
     }
+    
+    /**
+     * Giải phóng tất cả resources để tránh memory leak
+     */
+    fun release() {
+        try {
+            // Cleanup CommandProcessor (bao gồm PhoneAutomation TTS)
+            commandProcessor?.release()
+            commandProcessor = null
+            
+            // Cleanup AudioManager
+            audioManager?.release()
+            audioManager = null
+            
+            Log.d("FloatingWindow", "All resources released successfully")
+        } catch (e: Exception) {
+            Log.e("FloatingWindow", "Error releasing resources: ${e.message}")
+        }
+    }
 }

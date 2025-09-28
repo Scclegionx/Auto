@@ -20,6 +20,18 @@ class CommandProcessor(private val context: Context) {
         fun onError(error: String)
     }
     
+    /**
+     * Giải phóng tất cả resources
+     */
+    fun release() {
+        try {
+            phoneAutomation.release()
+            Log.d("CommandProcessor", "Resources released successfully")
+        } catch (e: Exception) {
+            Log.e("CommandProcessor", "Error releasing resources: ${e.message}")
+        }
+    }
+    
     fun processCommand(command: String, callback: CommandProcessorCallback) {
         Log.d("CommandProcessor", "Processing command: $command")
         CoroutineScope(Dispatchers.Main).launch {
@@ -151,7 +163,8 @@ class CommandProcessor(private val context: Context) {
                     phoneAutomation.makeCall(ent, object : PhoneAutomation.PhoneCallback {
                         override fun onSuccess() {
                             Log.d("CommandProcessor", "Call initiated successfully")
-                            callback.onCommandExecuted(true, "Đã gọi điện thành công")
+                            val successMessage = "Đã gọi điện thành công"
+                            callback.onCommandExecuted(true, successMessage)
                         }
                         override fun onError(error: String) {
                             Log.e("CommandProcessor", "Call error: $error")

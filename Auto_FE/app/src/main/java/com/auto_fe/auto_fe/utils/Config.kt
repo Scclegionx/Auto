@@ -2,7 +2,7 @@ package com.auto_fe.auto_fe.utils
 
 object Config {
     // Server NLP Configuration
-    const val NLP_SERVER_URL = "http://192.168.100.91:8000/infer" 
+    const val NLP_SERVER_URL = "http://192.168.33.101:8000/infer"
     const val NLP_TIMEOUT_SECONDS = 30L
     
     // Audio Configuration

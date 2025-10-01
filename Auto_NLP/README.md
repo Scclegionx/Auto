@@ -1,99 +1,113 @@
-## Cài Đặt
+# Auto NLP - Vietnamese Intent Recognition System
 
-### 1. Tạo virtual environment
-```bash
-python -m venv .venv
-```
+## 🎯 Overview
+Hệ thống nhận diện ý định tiếng Việt sử dụng PhoBERT-Large cho ứng dụng chăm sóc người cao tuổi.
 
-### 2. Kích hoạt virtual environment
-```bash
-# Windows
-.venv\Scripts\activate
+## ✨ Features
+- **Multi-task learning**: Intent, Entity, Value, Command
+- **PhoBERT-Large**: Kiến trúc mạnh mẽ cho tiếng Việt
+- **GPU-optimized**: Tối ưu cho GPU 6GB
+- **RESTful API**: Dễ dàng tích hợp
+- **High Accuracy**: 84% accuracy, 0.8331 F1 score
 
-# Linux/Mac
-source .venv/bin/activate
-```
+## 🚀 Quick Start
 
-### 3. Cài đặt dependencies
+### 1. Installation
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Kiểm tra hệ thống (tùy chọn)
+### 2. Training
 ```bash
-# Test toàn diện
-python test_training_complete.py
-
-# Test cấu hình tối ưu
-python test_optimal_config.py
-```
-
-## Training
-
-### Chạy Training
-```bash
-# Cách 1: Script tiện ích (khuyến nghị)
 python run_training.py
-
-# Cách 2: Trực tiếp
-python src/training/scripts/train_gpu.py
 ```
 
-### Thông tin Training
-- **Model**: PhoBERT-Large (vinai/phobert-large)
-- **Dataset**: 1000 samples tiếng Việt
-- **Intents**: 28 loại intent
-- **Device**: Auto-detect (CPU/GPU)
-- **Epochs**: 20
-- **Batch Size**: 32
-- **Learning Rate**: 3e-5
-
-### Lưu ý
-- Training sẽ tự động lưu model tại `models/phobert_large_intent_model/`
-- Có thể dừng training bằng Ctrl+C
-- Model sẽ được lưu sau mỗi epoch
-
-## API Server
-
-### Chạy API
+### 3. API Server
 ```bash
-# Cách 1: Script tiện ích (khuyến nghị)
 python run_api.py
-
-# Cách 2: Trực tiếp
-python src/inference/api/api_server.py
 ```
 
-### Sử dụng API
-- **URL**: http://localhost:8000
-- **Web Interface**: Mở `src/inference/interfaces/web_interface.html` trong browser
-- **API Docs**: http://localhost:8000/docs (Swagger UI)
+## 📊 Performance
+- **Accuracy**: 84.00%
+- **F1 Score**: 0.8331
+- **Training Time**: 41.70 phút
+- **Model Size**: PhoBERT-Large
+- **Intent Classes**: 26 classes
 
-### Endpoints chính
-- `POST /predict` - Dự đoán intent từ text
-- `GET /health` - Kiểm tra trạng thái API
-- `GET /intents` - Danh sách các intent được hỗ trợ
-
-## Cấu trúc Dự án
-
+## 🏗️ Project Structure
 ```
 Auto_NLP/
-├── src/
-│   ├── data/           # Dataset và xử lý dữ liệu
-│   ├── models/         # Mô hình AI
-│   ├── training/       # Scripts training
-│   ├── inference/      # API và engines
-│   └── utils/          # Tiện ích
-├── models/             # Model đã train
-├── logs/               # Log files
-├── requirements.txt    # Dependencies
-├── run_training.py     # Script training
-└── run_api.py         # Script API
+├── src/                    # Source code
+│   ├── training/           # Training modules
+│   ├── inference/          # Inference modules
+│   ├── data/              # Data processing
+│   └── utils/             # Utilities
+├── models/                 # Trained models
+├── data/                   # Dataset files
+└── scripts/               # Management scripts
 ```
 
-## Yêu cầu Hệ thống
+## 🔧 Configuration
+- **Model**: vinai/phobert-large
+- **Max Length**: 64 tokens
+- **Batch Size**: 2
+- **Learning Rate**: 1e-5 (encoder), 3e-4 (heads)
+- **GPU Memory**: 6GB optimized
 
-- **Python**: 3.8+
-- **RAM**: Tối thiểu 8GB (khuyến nghị 16GB)
-- **Storage**: Tối thiểu 5GB cho model và cache
-- **GPU**: Tùy chọn (hỗ trợ CUDA)
+## 📋 Intent Classes (26 classes)
+1. **call** - Gọi điện
+2. **send-mess** - Gửi tin nhắn
+3. **check-weather** - Kiểm tra thời tiết
+4. **play-content** - Phát nội dung
+5. **set-reminder** - Đặt nhắc nhở
+6. **make-video-call** - Gọi video
+7. **search-content** - Tìm kiếm nội dung
+8. **check-device-status** - Kiểm tra trạng thái thiết bị
+9. **play-media** - Phát media
+... và 17 classes khác
+
+## 💻 Usage Examples
+
+### Training
+```bash
+python run_training.py
+```
+
+### API Usage
+```bash
+curl -X POST "http://localhost:8000/predict" \
+     -H "Content-Type: application/json" \
+     -d '{"text": "Gọi điện cho mẹ"}'
+```
+
+### Data Management
+```bash
+python scripts/management/organize_dataset.py
+```
+
+## 📚 Documentation
+- [SYSTEM_OVERVIEW.md](SYSTEM_OVERVIEW.md) - Chi tiết hệ thống
+- [QUICK_START.md](QUICK_START.md) - Hướng dẫn nhanh
+
+## 🔧 Requirements
+- Python 3.11+
+- PyTorch 2.0+
+- Transformers 4.30+
+- CUDA 11.8+ (optional)
+
+## 📈 Results
+Model đã được training thành công với:
+- **84% accuracy** trên validation set
+- **0.8331 F1 score** - chỉ số cân bằng tốt
+- **26 intent classes** được nhận diện chính xác
+- **Real-time inference** với API server
+
+## 🎯 Next Steps
+1. Deploy model to production
+2. Add more intent classes
+3. Improve accuracy with more data
+4. Add entity extraction
+5. Multi-language support
+
+## 📄 License
+MIT

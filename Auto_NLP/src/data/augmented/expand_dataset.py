@@ -72,19 +72,23 @@ class DatasetExpander:
         # AUGMENTATION TEMPLATES BY COMMAND TYPE
         # ========================================
         
+        # Intent mapping để tránh lặp lại
+        intent_mapping = {
+            'make-call': 'call',
+            'send-message': 'send-mess',
+            'make-video-call': 'make-video-call'
+        }
+        
+        # Function để xử lý intent mapping
+        def process_intent_mapping(intent):
+            # Kiểm tra mapping trước
+            if intent in intent_mapping:
+                return intent_mapping[intent]
+            return intent
+        
         augmentation_templates = {
             # ===== CALL COMMANDS =====
             'call': [
-                'Gọi điện cho {person}',
-                'Thực hiện cuộc gọi đến {person}',
-                'Liên lạc với {person} qua điện thoại',
-                'Gọi {person} ngay bây giờ',
-                'Thực hiện cuộc gọi cho {person}',
-                'Gọi cho {person} lúc {time}',
-                'Gọi điện thoại cho {person}',
-                'Gọi {person} khẩn cấp'
-            ],
-            'make-call': [
                 'Gọi điện cho {person}',
                 'Thực hiện cuộc gọi đến {person}',
                 'Liên lạc với {person} qua điện thoại',
@@ -106,16 +110,6 @@ class DatasetExpander:
             
             # ===== MESSAGE COMMANDS =====
             'send-mess': [
-                'Nhắn tin cho {person} rằng {message}',
-                'Gửi tin nhắn cho {person} nội dung {message}',
-                'Soạn tin nhắn gửi {person} với nội dung {message}',
-                'Viết tin nhắn cho {person} về {message}',
-                'Gửi cho {person} tin nhắn {message}',
-                'Nhắn tin cho {person} là {message}',
-                'Gửi tin nhắn cho {person} rằng {message}',
-                'Soạn tin cho {person} nội dung {message}'
-            ],
-            'send-message': [
                 'Nhắn tin cho {person} rằng {message}',
                 'Gửi tin nhắn cho {person} nội dung {message}',
                 'Soạn tin nhắn gửi {person} với nội dung {message}',
@@ -300,13 +294,30 @@ class DatasetExpander:
             'ngày mai', 'tuần sau', 'tháng sau', 'bây giờ', 'ngay bây giờ'
         ]
         
+        # Intent mapping để tránh lặp lại
+        intent_mapping = {
+            'make-call': 'call',
+            'send-message': 'send-mess',
+            'make-video-call': 'make-video-call'
+        }
+        
+        # Function để xử lý intent mapping
+        def process_intent_mapping(intent):
+            # Kiểm tra mapping trước
+            if intent in intent_mapping:
+                return intent_mapping[intent]
+            return intent
+        
         for _ in range(num_samples):
             sample = random.choice(data)
             command = sample['command']
             original_text = sample['input']
             
-            if command in augmentation_templates:
-                template = random.choice(augmentation_templates[command])
+            # Sử dụng mapping để xử lý intent
+            mapped_command = process_intent_mapping(command)
+            
+            if mapped_command in augmentation_templates:
+                template = random.choice(augmentation_templates[mapped_command])
                 
                 # Replace placeholders with random data
                 if '{person}' in template:
@@ -324,7 +335,7 @@ class DatasetExpander:
                 
                 augmented_sample = {
                     'input': template,
-                    'command': command
+                    'command': mapped_command  # Sử dụng mapped command
                 }
                 augmented.append(augmented_sample)
             else:
@@ -589,10 +600,28 @@ class DatasetExpander:
         
         commands = list(patterns.keys())
         
+        # Intent mapping để tránh lặp lại
+        intent_mapping = {
+            'make-call': 'call',
+            'send-message': 'send-mess',
+            'make-video-call': 'make-video-call'
+        }
+        
+        # Function để xử lý intent mapping
+        def process_intent_mapping(intent):
+            # Kiểm tra mapping trước
+            if intent in intent_mapping:
+                return intent_mapping[intent]
+            return intent
+        
         for _ in range(num_samples):
             command = random.choice(commands)
-            if command in patterns:
-                pattern = random.choice(patterns[command])
+            
+            # Sử dụng mapping để xử lý intent
+            mapped_command = process_intent_mapping(command)
+            
+            if mapped_command in patterns:
+                pattern = random.choice(patterns[mapped_command])
                 
                 # Replace placeholders with random data
                 if '{person}' in pattern:
@@ -610,7 +639,7 @@ class DatasetExpander:
                 
                 new_sample = {
                     'input': pattern,
-                    'command': command
+                    'command': mapped_command  # Sử dụng mapped command
                 }
                 new_samples.append(new_sample)
         

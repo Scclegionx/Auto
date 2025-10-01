@@ -134,6 +134,14 @@ class EntityExtractor:
             # Pattern 8: Tin nhắn với thời gian (thêm mới)
             r"nhắn\s+tin\s+cho\s+[\w\s]+\s+rằng\s+(.+?)\s+lúc\s+[\w\s]+",
             r"gửi\s+tin\s+cho\s+[\w\s]+\s+rằng\s+(.+?)\s+lúc\s+[\w\s]+",
+            
+            # Pattern 9: Nhắn tin cho [người] rằng [nội dung] (cải thiện)
+            r"nhắn\s+tin\s+cho\s+[\w\s]+\s+rằng\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
+            r"gửi\s+tin\s+cho\s+[\w\s]+\s+rằng\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
+            
+            # Pattern 10: Với nội dung là [nội dung] (thêm mới)
+            r"với\s+nội\s+dung\s+là\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
+            r"nội\s+dung\s+là\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
         ]
     
     def _build_platform_patterns(self) -> List[str]:
@@ -159,6 +167,24 @@ class EntityExtractor:
     def extract_receiver(self, text: str) -> Optional[Dict[str, str]]:
         """Extract RECEIVER entity với độ chính xác cao - Cải thiện boundary detection"""
         text_lower = text.lower()
+        
+        # Kiểm tra xem có phải nhắn tin với số điện thoại không
+        if any(word in text_lower for word in ["nhắn tin", "gửi tin", "soạn tin"]) and \
+           any(word in text_lower for word in ["số", "điện thoại", "qua", "gửi", "nhắn", "cho"]):
+            # Extract số điện thoại từ chữ
+            phone_number = self._extract_phone_number_from_text(text)
+            if phone_number:
+                return {
+                    "RECEIVER": phone_number,
+                    "ACTION_TYPE": "nhắn"
+                }
+        
+        # Kiểm tra xem có phải gọi điện với số điện thoại không
+        if any(word in text_lower for word in ["gọi điện", "gọi", "alo"]) and \
+           any(word in text_lower for word in ["số", "điện thoại"]):
+            # Nếu có số điện thoại nhưng không có tên người, trả về None
+            # Để tránh extract sai thông tin
+            return None
         
         for pattern, action_type in self.receiver_patterns:
             match = re.search(pattern, text_lower, re.IGNORECASE)
@@ -237,6 +263,14 @@ class EntityExtractor:
         """Extract MESSAGE entity"""
         text_lower = text.lower()
         
+        # Kiểm tra pattern "với nội dung là"
+        if "với nội dung là" in text_lower:
+            start_pos = text_lower.find("với nội dung là")
+            if start_pos != -1:
+                message = text[start_pos + len("với nội dung là"):].strip()
+                if message:
+                    return message
+        
         for pattern in self.message_patterns:
             match = re.search(pattern, text_lower, re.IGNORECASE)
             if match and match.group(1):
@@ -268,6 +302,9 @@ class EntityExtractor:
         elif any(word in text_lower for word in ["tìm", "tìm kiếm", "search", "youtube", "facebook"]):
             return "youtube" if "youtube" in text_lower else "facebook" if "facebook" in text_lower else "google"
         else:
+            # Mặc định là phone nếu có số điện thoại
+            if any(word in text_lower for word in ["số", "điện thoại"]):
+                return "phone"
             return "sms"
     
     def _clean_receiver(self, receiver: str) -> str:
@@ -323,18 +360,113 @@ class EntityExtractor:
         
         return message.strip()
     
+    def extract_phone_number(self, text: str) -> Optional[str]:
+        """Extract phone number từ text - Hỗ trợ cả số và chữ"""
+        # Pattern cho số điện thoại Việt Nam (dạng số)
+        phone_patterns = [
+            r"(\d{10,11})",  # 10-11 chữ số
+            r"(\d{3,4}\s*\d{3,4}\s*\d{3,4})",  # Có khoảng trắng
+            r"(\d{3,4}-\d{3,4}-\d{3,4})",  # Có dấu gạch ngang
+            r"(\d{3,4}\.\d{3,4}\.\d{3,4})",  # Có dấu chấm
+        ]
+        
+        for pattern in phone_patterns:
+            match = re.search(pattern, text)
+            if match:
+                phone = match.group(1)
+                # Làm sạch số điện thoại
+                phone = re.sub(r'[^\d]', '', phone)
+                if len(phone) >= 10:
+                    return phone
+        
+        # Xử lý số điện thoại bằng chữ
+        phone_text = self._extract_phone_number_from_text(text)
+        if phone_text:
+            return phone_text
+        
+        return None
+    
+    def _extract_phone_number_from_text(self, text: str) -> Optional[str]:
+        """Chuyển đổi số điện thoại từ chữ sang số"""
+        # Mapping từ chữ sang số
+        number_mapping = {
+            "không": "0", "một": "1", "hai": "2", "ba": "3", "bốn": "4",
+            "năm": "5", "sáu": "6", "bảy": "7", "tám": "8", "chín": "9"
+        }
+        
+        text_lower = text.lower()
+        
+        # Tìm pattern "số" + các từ số
+        if "số" in text_lower:
+            # Tìm vị trí của "số"
+            start_pos = text_lower.find("số")
+            if start_pos != -1:
+                # Lấy phần sau "số"
+                after_số = text_lower[start_pos + 2:].strip()
+                words = after_số.split()
+                
+                # Tìm chuỗi số điện thoại liên tiếp (10-11 từ)
+                for i in range(len(words) - 9):  # Cần ít nhất 10 từ
+                    phone_digits = []
+                    j = i
+                    
+                    # Lấy 10-11 từ liên tiếp
+                    while j < len(words) and len(phone_digits) < 11:
+                        if words[j] in number_mapping:
+                            phone_digits.append(number_mapping[words[j]])
+                            j += 1
+                        else:
+                            break
+                    
+                    # Kiểm tra có đủ 10-11 chữ số không
+                    if 10 <= len(phone_digits) <= 11:
+                        phone_number = ''.join(phone_digits)
+                        # Kiểm tra số điện thoại Việt Nam hợp lệ
+                        if phone_number.startswith(('03', '05', '07', '08', '09')):
+                            return phone_number
+        
+        # Tìm pattern 10-11 từ liên tiếp (không có "số")
+        words = text_lower.split()
+        if 10 <= len(words) <= 11:
+            phone_digits = []
+            for word in words:
+                if word in number_mapping:
+                    phone_digits.append(number_mapping[word])
+                else:
+                    # Nếu có từ không phải số, dừng lại
+                    break
+            
+            # Kiểm tra có đủ 10-11 chữ số không
+            if len(phone_digits) >= 10:
+                phone_number = ''.join(phone_digits)
+                # Kiểm tra số điện thoại Việt Nam hợp lệ
+                if phone_number.startswith(('03', '05', '07', '08', '09')):
+                    return phone_number
+        
+        return None
+    
     def extract_all_entities(self, text: str) -> Dict[str, str]:
         """Extract tất cả entities cho hệ thống gọi điện/nhắn tin"""
         entities = {}
         
+        # Extract phone number trước để kiểm tra
+        phone_result = self.extract_phone_number(text)
+        if phone_result:
+            entities["PHONE_NUMBER"] = phone_result
+        
+        # Extract receiver (chỉ khi không có số điện thoại hoặc có tên người cụ thể)
         receiver_result = self.extract_receiver(text)
         if receiver_result:
-            entities.update(receiver_result)
+            # Chỉ lấy RECEIVER, loại bỏ ACTION_TYPE
+            if "RECEIVER" in receiver_result:
+                entities["RECEIVER"] = receiver_result["RECEIVER"]
         
-        time_result = self.extract_time(text)
-        if time_result:
-            entities["TIME"] = time_result
+        # Loại bỏ TIME entity
+        # time_result = self.extract_time(text)
+        # if time_result:
+        #     entities["TIME"] = time_result
         
+        # Extract MESSAGE entity khi có
         message_result = self.extract_message(text, entities.get("RECEIVER"))
         if message_result:
             entities["MESSAGE"] = message_result

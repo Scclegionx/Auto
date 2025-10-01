@@ -1,4 +1,4 @@
-# Python cache
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -19,71 +19,49 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
-# Virtual environment
-.venv/
+# Virtual Environment
 venv/
 env/
+ENV/
 
-# IDE files
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# OS files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Log files
+# Logs
 *.log
 logs/
+training_*.log
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Cache directories
-.cache/
-torch_cache/
-transformers_cache/
-huggingface_cache/
+# Model Cache
 model_cache/
+.cache/
 
-# Large model files (ignore all model files to avoid size issues)
-*.pth
-*.pt
-*.bin
-*.safetensors
-*.h5
-*.hdf5
-*.onnx
-*.pb
-*.ckpt
-*.weights
-*.model
-*.tflite
-*.lite
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
 
-# Keep important files
-!src/
-!*.py
-!*.json
-!*.md
-!*.txt
-!*.html
-!*.yml
-!*.yaml
-!requirements.txt
-!README.md
-!LICENSE
+# Training artifacts
+models/phobert_large_intent_model/model_epoch_*.pth
+!models/phobert_large_intent_model/model_best.pth
+!models/phobert_large_intent_model/config.json
+!models/phobert_large_intent_model/*.json
+!models/phobert_large_intent_model/*.txt
+!models/phobert_large_intent_model/*.codes
+
+# Data backups
+src/data/backup/
+*.backup
+
+# Test files
+test_*.py
+*_test.py
+debug_*.py
+simple_*.py
+direct_*.py
+demo_*.py

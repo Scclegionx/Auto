@@ -72,25 +72,45 @@ class CommunicationOptimizer:
         video_call_score = sum(1 for keyword in self.video_call_keywords if keyword in text_lower)
         message_score = sum(1 for keyword in self.message_keywords if keyword in text_lower)
         
+        # Ưu tiên message nếu có từ khóa "nhắn" hoặc "gửi"
+        if "nhắn" in text_lower or "gửi" in text_lower or "tin" in text_lower:
+            message_score += 2
+        
         if video_call_score > 0:
             return "video_call"
-        elif call_score > message_score:
-            return "call"
-        elif message_score > 0:
+        elif message_score > call_score:
             return "message"
+        elif call_score > 0:
+            return "call"
         else:
             return "unknown"
     
     def _extract_optimized_entities(self, text: str, communication_type: str) -> Dict[str, str]:
         """Extract entities với tối ưu hóa"""
-        entities = self.entity_extractor.extract_all_entities(text)
-        
-        # Thêm ACTION_TYPE nếu có
-        if "ACTION_TYPE" in entities:
-            action_type = entities.pop("ACTION_TYPE")
-            entities["ACTION_TYPE"] = action_type
-        
-        return entities
+        try:
+            entities = self.entity_extractor.extract_all_entities(text)
+            
+            # Ensure entities is a dict
+            if not isinstance(entities, dict):
+                entities = {}
+            
+            # Thêm ACTION_TYPE nếu có
+            if "ACTION_TYPE" in entities:
+                action_type = entities.pop("ACTION_TYPE")
+                entities["ACTION_TYPE"] = action_type
+            
+            # Đặc biệt xử lý cho message type
+            if communication_type == "message":
+                # Extract message content nếu chưa có
+                if "MESSAGE" not in entities or not entities["MESSAGE"]:
+                    message = self._extract_message_fallback(text.lower())
+                    if message:
+                        entities["MESSAGE"] = message
+            
+            return entities
+        except Exception as e:
+            print(f"⚠️ Error in entity extraction: {e}")
+            return {}
     
     def _optimize_platform(self, entities: Dict[str, str], communication_type: str, text_lower: str) -> Dict[str, str]:
         """Tối ưu hóa platform dựa trên context"""
@@ -131,7 +151,7 @@ class CommunicationOptimizer:
         """Tối ưu hóa message extraction"""
         message = entities.get("MESSAGE", "")
         
-        if not message and "rằng" in text_lower:
+        if not message and ("rằng" in text_lower or "nhắn" in text_lower or "gửi" in text_lower):
             # Fallback extraction cho message
             message = self._extract_message_fallback(text_lower)
             if message:
@@ -161,6 +181,8 @@ class CommunicationOptimizer:
         patterns = [
             r"rằng\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
             r"là\s+(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
+            r"nhắn\s+(?:cho\s+[\w\s]+?\s+)?(?:rằng\s+)?(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
+            r"gửi\s+(?:cho\s+[\w\s]+?\s+)?(?:rằng\s+)?(.+?)(?:\s+(?:nhé|nha|ạ|nhá))?(?:$|[\.,])",
         ]
         
         for pattern in patterns:
@@ -220,7 +242,22 @@ class CommunicationOptimizer:
     
     def get_optimized_value(self, intent: str, entities: Dict[str, str], original_text: str) -> str:
         """Tạo value tối ưu hóa"""
-        return self.value_generator.generate_value(intent, entities, original_text)
+        try:
+            return self.value_generator.generate_value(intent, entities, original_text)
+        except Exception as e:
+            print(f"⚠️ Error in value generator: {e}")
+            # Fallback to simple value generation
+            if intent in ["send-mess", "send-message"]:
+                message = entities.get("MESSAGE", "")
+                if message:
+                    return message
+                else:
+                    return "Tin nhắn"
+            elif intent in ["call", "make-call"]:
+                receiver = entities.get("RECEIVER", "người nhận")
+                return f"Gọi cho {receiver}"
+            else:
+                return f"Thực hiện: {intent}"
     
     def validate_communication_entities(self, entities: Dict[str, str], communication_type: str) -> Dict[str, str]:
         """Validate entities cho giao tiếp"""

@@ -37,36 +37,37 @@ class NLPProcessor:
             except Exception as e:
                 print(f"⚠️ Reasoning engine not available: {e}")
         
-        # Intent to command mapping
+        # Intent to command mapping - Cải thiện mapping
         self.intent_to_command = {
-            "adjust-settings": "adjust_settings",
-            "app-tutorial": "app_tutorial", 
-            "browse-social-media": "browse_social_media",
-            "call": "call",
-            "check-device-status": "check_device_status",
-            "check-health-status": "check_health_status",
-            "check-messages": "check_messages",
-            "check-weather": "check_weather",
-            "control-device": "control_device",
-            "general-conversation": "general_conversation",
-            "help": "help",
-            "make-call": "make_call",
-            "make-video-call": "make_video_call",
-            "navigation-help": "navigation_help",
-            "open-app": "open_app",
-            "open-app-action": "open_app_action",
-            "play-audio": "play_audio",
-            "play-content": "play_content",
-            "play-media": "play_media",
-            "provide-instructions": "provide_instructions",
-            "read-content": "read_content",
-            "read-news": "read_news",
-            "search-content": "search_content",
-            "search-internet": "search_internet",
-            "send-message": "send_message",
-            "send-mess": "send_mess",
-            "set-alarm": "set_alarm",
-            "set-reminder": "set_reminder"
+            "adjust-settings": "Điều chỉnh cài đặt",
+            "app-tutorial": "Hướng dẫn ứng dụng", 
+            "browse-social-media": "Duyệt mạng xã hội",
+            "call": "Gọi điện",
+            "check-device-status": "Kiểm tra trạng thái thiết bị",
+            "check-health-status": "Kiểm tra sức khỏe",
+            "check-messages": "Kiểm tra tin nhắn",
+            "check-weather": "Kiểm tra thời tiết",
+            "control-device": "Điều khiển thiết bị",
+            "general-conversation": "Trò chuyện chung",
+            "help": "Trợ giúp",
+            "make-call": "Gọi điện",
+            "make-video-call": "Gọi video",
+            "navigation-help": "Hỗ trợ điều hướng",
+            "open-app": "Mở ứng dụng",
+            "open-app-action": "Mở ứng dụng",
+            "play-audio": "Phát âm thanh",
+            "play-content": "Phát nội dung",
+            "play-media": "Phát media",
+            "provide-instructions": "Cung cấp hướng dẫn",
+            "read-content": "Đọc nội dung",
+            "read-news": "Đọc tin tức",
+            "search-content": "Tìm kiếm nội dung",
+            "search-internet": "Tìm kiếm internet",
+            "send-message": "Gửi tin nhắn",
+            "send-mess": "Gửi tin nhắn",
+            "MESSAGE": "Gửi tin nhắn",  # Thêm mapping cho MESSAGE
+            "set-alarm": "Đặt báo thức",
+            "set-reminder": "Đặt nhắc nhở"
         }
     
     def load_model(self, model_path: str, tokenizer_name: str = "vinai/phobert-base") -> bool:
@@ -89,12 +90,21 @@ class NLPProcessor:
         # Step 4: Generate command
         command = self.intent_to_command.get(intent_result["intent"], "unknown")
         
-        # Step 5: Generate optimized value
-        value = self.communication_optimizer.get_optimized_value(
-            intent_result["intent"], 
-            entities, 
-            text
-        )
+        # Step 5: Generate optimized value with error handling
+        try:
+            value = self.communication_optimizer.get_optimized_value(
+                intent_result["intent"], 
+                entities, 
+                text
+            )
+        except Exception as e:
+            print(f"⚠️ Error in communication optimizer: {e}")
+            # Fallback to value generator
+            value = self.value_generator.generate_value(
+                intent_result["intent"], 
+                entities, 
+                text
+            )
         
         # Step 6: Calculate processing time
         processing_time = (datetime.now() - start_time).total_seconds()
@@ -121,16 +131,22 @@ class NLPProcessor:
                 # Fallback to simple processing
                 return self.process_text(text)
             
-            # Use reasoning engine
-            reasoning_result = await self.reasoning_engine.reasoning_predict(text)
+            # Use reasoning engine (not async)
+            reasoning_result = self.reasoning_engine.reasoning_predict(text)
+            
+            # Kiểm tra reasoning_result là dict, không phải string
+            if not isinstance(reasoning_result, dict):
+                print(f"⚠️ reasoning_result is not a dict: {type(reasoning_result)} - {reasoning_result}")
+                # Fallback to simple processing
+                return self.process_text(text)
             
             # Extract entities using our improved extractor
             entities = self.entity_extractor.extract_all_entities(text)
             
             # Generate command and value
-            command = self.intent_to_command.get(reasoning_result["intent"], "unknown")
+            command = self.intent_to_command.get(reasoning_result.get("intent", "unknown"), "unknown")
             value = self.value_generator.generate_value(
-                reasoning_result["intent"], 
+                reasoning_result.get("intent", "unknown"), 
                 entities, 
                 text
             )
@@ -139,8 +155,8 @@ class NLPProcessor:
             
             return {
                 "input_text": text,
-                "intent": reasoning_result["intent"],
-                "confidence": reasoning_result["confidence"],
+                "intent": reasoning_result.get("intent", "unknown"),
+                "confidence": reasoning_result.get("confidence", 0.0),
                 "command": command,
                 "entities": entities,
                 "value": value,
@@ -152,6 +168,8 @@ class NLPProcessor:
             
         except Exception as e:
             print(f"❌ Error in reasoning processing: {e}")
+            import traceback
+            traceback.print_exc()
             # Fallback to simple processing
             result = self.process_text(text)
             result["method"] = "reasoning_engine_fallback"

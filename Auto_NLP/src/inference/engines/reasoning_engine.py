@@ -462,7 +462,7 @@ class ReasoningEngine:
             "intent_indicators": {
                 "call": ["gọi", "điện", "phone", "call", "kết nối", "liên lạc", "cuộc gọi", "gọi thoại", "gọi điện", "thực hiện gọi", "thực hiện cuộc gọi"],
                 "set-alarm": ["báo thức", "nhắc", "hẹn", "alarm", "reminder", "giờ"],
-                "send-mess": ["nhắn", "tin", "message", "sms", "text", "gửi"],
+                "send-mess": ["nhắn", "tin", "message", "sms", "text", "gửi", "nhắn tin", "gửi tin", "soạn tin", "tin nhắn"],
                 "set-reminder": ["nhắc", "nhớ", "reminder", "ghi", "lời nhắc", "uống thuốc", "thuốc", "viên thuốc"],
                 "check-weather": ["thời tiết", "weather", "nhiệt", "mưa", "nắng"],
                 "play-media": ["nhạc", "music", "phát", "bật", "nghe", "play"],
@@ -528,7 +528,10 @@ class ReasoningEngine:
                 r"gửi.*(?:tin nhắn|tin)",
                 r"nhắn.*(?:tin|cho)",
                 r"soạn.*(?:tin nhắn|tin)",
-                r"text.*(?:cho|tới)"
+                r"text.*(?:cho|tới)",
+                r"vào\s+\w+.*nhắn.*cho",
+                r"nhắn\s+cho.*rằng",
+                r"gửi\s+cho.*rằng"
             ],
             "weather_patterns": [
                 r"thời tiết.*(?:hôm nay|mai|thế nào)",
@@ -618,7 +621,18 @@ class ReasoningEngine:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     loaded_rules = json.load(f)
                     for key, value in loaded_rules.items():
-                        default_rules[key] = value
+                        # Kiểm tra value là list dict
+                        if isinstance(value, list):
+                            # Kiểm tra từng item trong list
+                            valid_rules = []
+                            for rule in value:
+                                if isinstance(rule, dict):
+                                    valid_rules.append(rule)
+                                else:
+                                    logger.warning(f"Rule is not a dict: {type(rule)} - {rule}")
+                            default_rules[key] = valid_rules
+                        else:
+                            logger.warning(f"Context rules value is not a list: {type(value)} - {value}")
                     
                     logger.info(f"Đã load context rules từ {file_path}")
             except Exception as e:
@@ -895,6 +909,11 @@ class ReasoningEngine:
                 continue
                 
             for rule in rules:
+                # Kiểm tra rule là dict, không phải string
+                if not isinstance(rule, dict):
+                    logger.warning(f"Rule is not a dict: {type(rule)} - {rule}")
+                    continue
+                
                 if rule_category == "multi_turn_context":
                     if context_features.get("previous_intent") == rule.get("previous_intent"):
                         keywords = rule.get("keywords", [])
@@ -985,6 +1004,14 @@ class ReasoningEngine:
             if intent in intent_mapping:
                 intent = intent_mapping[intent]
             
+            # Đặc biệt xử lý cho message patterns
+            if intent == "send-mess":
+                for pattern in patterns:
+                    if re.search(pattern, text_lower):
+                        pattern_scores.append((intent, 0.8))  
+                        break
+                continue  
+            
             max_score = 0
             for pattern in patterns:
                 if self.config.get("enable_fuzzy_matching", True):
@@ -1066,6 +1093,23 @@ class ReasoningEngine:
             score = 0
             matched_indicators = []
             
+            # Đặc biệt xử lý cho send-mess intent
+            if intent == "send-mess":
+                # Tăng score cho các từ khóa nhắn tin
+                message_keywords = ["nhắn", "tin", "gửi", "soạn", "tin nhắn", "nhắn tin"]
+                for keyword in message_keywords:
+                    if keyword in text_lower:
+                        score += 0.3  # Higher score for message keywords
+                        matched_indicators.append(keyword)
+                        
+                        # Bonus score nếu từ khóa ở đầu câu
+                        if text_lower.startswith(keyword) or text_lower.find(f" {keyword}") < len(text_lower) // 3:
+                            score += 0.2
+                
+                if score > 0:
+                    keyword_scores.append((intent, min(score, 1.0)))
+                continue
+            
             if self.config.get("enable_fuzzy_matching", True):
                 fuzzy_matches = self.fuzzy_matcher.contains_fuzzy(text_lower, indicators)
                 for keyword, match_score in fuzzy_matches:
@@ -1115,8 +1159,15 @@ class ReasoningEngine:
         keyword_results = self.keyword_matching(text)
         logger.info(f"🔑 Keyword matching results: {keyword_results}")
         
-        entities = self.entity_extractor.extract_entities(text)
-        logger.info(f"👤 Extracted entities: {entities}")
+        try:
+            entities = self.entity_extractor.extract_entities(text)
+            # Ensure entities is a dict
+            if not isinstance(entities, dict):
+                entities = {}
+            logger.info(f"👤 Extracted entities: {entities}")
+        except Exception as e:
+            logger.error(f"❌ Error extracting entities: {e}")
+            entities = {}
         
         context_features = self.extract_context_features(text)
         logger.info(f"🌐 Context features: {context_features}")
@@ -1124,9 +1175,9 @@ class ReasoningEngine:
         combined_scores = defaultdict(float)
         
         # Cộng dồn scores từ các phương pháp với weights từ config
-        semantic_weight = self.config.get("semantic_weight", 0.25)  # Giảm từ 0.4 xuống 0.25
-        pattern_weight = self.config.get("pattern_weight", 0.45)    # Tăng từ 0.35 lên 0.45
-        keyword_weight = self.config.get("keyword_weight", 0.30)    # Tăng từ 0.25 lên 0.30
+        semantic_weight = self.config.get("semantic_weight", 0.15)  # Giảm semantic weight
+        pattern_weight = self.config.get("pattern_weight", 0.55)    # Tăng pattern weight
+        keyword_weight = self.config.get("keyword_weight", 0.30)    # Giữ nguyên keyword weight
         
         for intent, score in semantic_results:
             combined_scores[intent] += score * semantic_weight
@@ -1279,8 +1330,17 @@ class ReasoningEngine:
     def apply_fallback_strategy(self, text: str, validation: Dict[str, Any], 
                               semantic_results: List[Tuple[str, float]]) -> Dict[str, Any]:
         """Áp dụng fallback strategy dựa trên confidence và validation"""
-        intent = validation["intent"]
-        confidence = validation["confidence"]
+        # Kiểm tra validation là dict
+        if not isinstance(validation, dict):
+            logger.warning(f"validation is not a dict: {type(validation)} - {validation}")
+            return {
+                "intent": "unknown",
+                "confidence": 0.0,
+                "suggestions": []
+            }
+        
+        intent = validation.get("intent", "unknown")
+        confidence = validation.get("confidence", 0.0)
         
         fallback_result = {
             "intent": intent,
@@ -1357,36 +1417,54 @@ class ReasoningEngine:
         """Tạo explanation cho kết quả reasoning"""
         explanation_parts = []
         
-        explanation_parts.append(f"Intent '{intent}' được chọn với confidence {validation['confidence']:.3f}")
+        # Kiểm tra validation là dict và có key 'confidence'
+        if isinstance(validation, dict) and 'confidence' in validation:
+            confidence = validation['confidence']
+            if isinstance(confidence, (int, float)):
+                explanation_parts.append(f"Intent '{intent}' được chọn với confidence {confidence:.3f}")
+            else:
+                explanation_parts.append(f"Intent '{intent}' được chọn với confidence {confidence}")
+        else:
+            explanation_parts.append(f"Intent '{intent}' được chọn")
         
-        if entities:
+        if entities and isinstance(entities, dict):
             entity_explanations = []
             for entity_type, values in entities.items():
                 if values:
-                    entity_explanations.append(f"{entity_type}: {', '.join(values)}")
+                    # Chuyển values sang string nếu không phải list string
+                    if isinstance(values, list):
+                        values_str = [str(v) for v in values]
+                        entity_explanations.append(f"{entity_type}: {', '.join(values_str)}")
+                    else:
+                        entity_explanations.append(f"{entity_type}: {str(values)}")
             
             if entity_explanations:
                 explanation_parts.append(f"Entities: {'; '.join(entity_explanations)}")
         
-        if validation.get("warnings"):
-            explanation_parts.append(f"Cảnh báo: {', '.join(validation['warnings'])}")
+        if isinstance(validation, dict) and validation.get("warnings"):
+            warnings = validation.get("warnings", [])
+            if isinstance(warnings, list):
+                warnings_str = [str(w) for w in warnings]
+                explanation_parts.append(f"Cảnh báo: {', '.join(warnings_str)}")
         
-        context_features = validation.get("context_features", {})
-        context_explanations = []
-        if context_features.get("has_time"):
-            context_explanations.append("có thông tin thời gian")
-        if context_features.get("has_person"):
-            context_explanations.append("có thông tin người")
-        if context_features.get("has_action"):
-            context_explanations.append("có hành động cụ thể")
-        if context_features.get("has_location"):
-            context_explanations.append("có thông tin địa điểm")
-        
-        if context_explanations:
-            explanation_parts.append(f"Context: {', '.join(context_explanations)}")
+        if isinstance(validation, dict):
+            context_features = validation.get("context_features", {})
+            if isinstance(context_features, dict):
+                context_explanations = []
+                if context_features.get("has_time"):
+                    context_explanations.append("có thông tin thời gian")
+                if context_features.get("has_person"):
+                    context_explanations.append("có thông tin người")
+                if context_features.get("has_action"):
+                    context_explanations.append("có hành động cụ thể")
+                if context_features.get("has_location"):
+                    context_explanations.append("có thông tin địa điểm")
+                
+                if context_explanations:
+                    explanation_parts.append(f"Context: {', '.join(context_explanations)}")
         
         current_context = self.conversation_context.get_current_context()
-        if current_context.get("previous_intent"):
+        if isinstance(current_context, dict) and current_context.get("previous_intent"):
             explanation_parts.append(f"Previous intent: {current_context['previous_intent']}")
         
         return ". ".join(explanation_parts)

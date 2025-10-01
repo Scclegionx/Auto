@@ -48,7 +48,8 @@ Thumbs.db
 
 # Training artifacts
 models/phobert_large_intent_model/model_epoch_*.pth
-!models/phobert_large_intent_model/model_best.pth
+models/phobert_large_intent_model/model_best.pth
+models/phobert_large_intent_model/model_*.pth
 !models/phobert_large_intent_model/config.json
 !models/phobert_large_intent_model/*.json
 !models/phobert_large_intent_model/*.txt

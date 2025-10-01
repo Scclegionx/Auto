@@ -1,10 +1,13 @@
 package com.auto_fe.auto_fe.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PixelFormat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
+import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.PopupWindow
@@ -55,17 +58,84 @@ class FloatingWindow(private val context: Context) {
     private fun createFloatingButton(): LinearLayout {
         val button = Button(context)
         button.text = "Auto FE"
-        button.setBackgroundColor(0xFF4CAF50.toInt()) // Xanh nhạt như ban đầu
         button.setTextColor(0xFFFFFFFF.toInt())
-        button.setOnClickListener {
-            showCommandMenu()
-        }
+        
+        // Sử dụng drawable tròn
+        button.background = context.getDrawable(R.drawable.floating_button_background)
+        
+        // Set kích thước cố định để tạo hình tròn
+        val size = 150 // pixels
+        val layoutParams = LinearLayout.LayoutParams(size, size)
+        button.layoutParams = layoutParams
         
         val container = LinearLayout(context)
         container.addView(button)
+        
+        // Thêm touch handling trực tiếp lên button thay vì container
+        addDragFunctionalityToButton(button, container)
+        
         return container
     }
     
+    @SuppressLint("ClickableViewAccessibility")
+    private fun addDragFunctionalityToButton(button: Button, container: LinearLayout) {
+        var initialX = 0
+        var initialY = 0
+        var initialTouchX = 0f
+        var initialTouchY = 0f
+        var isDragging = false
+        
+        button.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    try {
+                        val params = container.layoutParams as WindowManager.LayoutParams
+                        initialX = params.x
+                        initialY = params.y
+                        initialTouchX = event.rawX
+                        initialTouchY = event.rawY
+                        isDragging = false
+                    } catch (e: Exception) {
+                        Log.e("FloatingWindow", "Error in touch handling: ${e.message}")
+                    }
+                    false // Allow click events
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    try {
+                        val deltaX = if (event.rawX > initialTouchX) event.rawX - initialTouchX else initialTouchX - event.rawX
+                        val deltaY = if (event.rawY > initialTouchY) event.rawY - initialTouchY else initialTouchY - event.rawY
+                        
+                        if ((deltaX > 15 || deltaY > 15) && !isDragging) {
+                            isDragging = true
+                        }
+                        
+                        if (isDragging) {
+                            val params = container.layoutParams as WindowManager.LayoutParams
+                            params.x = initialX + (event.rawX - initialTouchX).toInt()
+                            params.y = initialY + (event.rawY - initialTouchY).toInt()
+                            windowManager?.updateViewLayout(container, params)
+                            true // Consume drag events
+                        } else {
+                            false
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FloatingWindow", "Error in drag: ${e.message}")
+                        false
+                    }
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (!isDragging) {
+                        showCommandMenu()
+                        true
+                    } else {
+                        isDragging = false
+                        true
+                    }
+                }
+                else -> false
+            }
+        }
+    }
     private fun showCommandMenu() {
         if (popupWindow != null) return // Đã mở rồi thì không mở lại
         
@@ -110,6 +180,11 @@ class FloatingWindow(private val context: Context) {
         popupWindow?.isOutsideTouchable = true
         popupWindow?.isFocusable = true
         
+        // Reset popupWindow when dismissed
+        popupWindow?.setOnDismissListener {
+            popupWindow = null
+        }
+        
         // Thêm animation tùy chỉnh
         menuView.startAnimation(AnimationUtils.loadAnimation(context, com.auto_fe.auto_fe.R.anim.popup_enter))
         
@@ -117,17 +192,8 @@ class FloatingWindow(private val context: Context) {
     }
     
     private fun hideCommandMenu() {
-        popupWindow?.let { popup ->
-            // Thêm animation khi đóng
-            val menuView = popup.contentView
-            menuView?.startAnimation(AnimationUtils.loadAnimation(context, com.auto_fe.auto_fe.R.anim.popup_exit))
-            
-            // Đóng popup sau khi animation hoàn thành
-            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                popup.dismiss()
-            }, 150)
-        }
-        popupWindow = null
+        popupWindow?.dismiss()
+        // popupWindow will be set to null by OnDismissListener
     }
     
     private fun startAudioRecording() {

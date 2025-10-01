@@ -254,10 +254,8 @@ class DatasetMerger:
         # Mapping command to group
         command_groups = {
             'call': 'call_commands',
-            'make-call': 'call_commands',
             'make-video-call': 'call_commands',
             'send-mess': 'message_commands',
-            'send-message': 'message_commands',
             'play-audio': 'media_commands',
             'play-content': 'media_commands',
             'play-media': 'media_commands',

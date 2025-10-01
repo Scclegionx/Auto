@@ -1,0 +1,101 @@
+{
+  "cleanup_info": {
+    "timestamp": "2025-10-01 15:48:46",
+    "files_processed": 13
+  },
+  "command_statistics": {
+    "src\\data\\raw\\elderly_command_dataset_expanded.json": {
+      "call": 114,
+      "play-content": 57,
+      "set-reminder": 132,
+      "search-internet": 39,
+      "check-device-status": 28,
+      "open-app-action": 14,
+      "check-messages": 26,
+      "search-content": 74,
+      "read-news": 36,
+      "check-weather": 54,
+      "make-video-call": 51,
+      "send-mess": 104,
+      "general-conversation": 27,
+      "control-device": 19,
+      "play-media": 51,
+      "navigation-help": 2,
+      "check-health-status": 50,
+      "set-alarm": 23,
+      "browse-social-media": 14,
+      "play-audio": 26,
+      "provide-instructions": 21,
+      "open-app": 26,
+      "read-content": 2,
+      "view-content": 4,
+      "adjust-settings": 5,
+      "app-tutorial": 1
+    },
+    "src\\data\\grouped\\call_commands.json": {
+      "call": 121,
+      "make-video-call": 49
+    },
+    "src\\data\\grouped\\message_commands.json": {
+      "send-mess": 92
+    },
+    "src\\data\\grouped\\media_commands.json": {
+      "play-audio": 23,
+      "play-content": 61,
+      "play-media": 53
+    },
+    "src\\data\\grouped\\search_commands.json": {
+      "search-content": 75,
+      "search-internet": 33
+    },
+    "src\\data\\grouped\\reminder_commands.json": {
+      "set-reminder": 151,
+      "set-alarm": 27
+    },
+    "src\\data\\grouped\\check_commands.json": {
+      "check-health-status": 42,
+      "check-messages": 27,
+      "check-weather": 50,
+      "check-device-status": 21
+    },
+    "src\\data\\grouped\\content_commands.json": {
+      "read-news": 39,
+      "view-content": 6,
+      "read-content": 1
+    },
+    "src\\data\\grouped\\app_commands.json": {
+      "open-app": 31,
+      "open-app-action": 10
+    },
+    "src\\data\\grouped\\control_commands.json": {
+      "control-device": 14,
+      "adjust-settings": 8
+    },
+    "src\\data\\grouped\\tutorial_commands.json": {
+      "app-tutorial": 1,
+      "provide-instructions": 19,
+      "navigation-help": 1
+    },
+    "src\\data\\grouped\\social_media_commands.json": {
+      "browse-social-media": 13
+    },
+    "src\\data\\grouped\\conversation_commands.json": {
+      "general-conversation": 32
+    }
+  },
+  "files_status": {
+    "src\\data\\raw\\elderly_command_dataset_expanded.json": "processed",
+    "src\\data\\grouped\\call_commands.json": "processed",
+    "src\\data\\grouped\\message_commands.json": "processed",
+    "src\\data\\grouped\\media_commands.json": "processed",
+    "src\\data\\grouped\\search_commands.json": "processed",
+    "src\\data\\grouped\\reminder_commands.json": "processed",
+    "src\\data\\grouped\\check_commands.json": "processed",
+    "src\\data\\grouped\\content_commands.json": "processed",
+    "src\\data\\grouped\\app_commands.json": "processed",
+    "src\\data\\grouped\\control_commands.json": "processed",
+    "src\\data\\grouped\\tutorial_commands.json": "processed",
+    "src\\data\\grouped\\social_media_commands.json": "processed",
+    "src\\data\\grouped\\conversation_commands.json": "processed"
+  }
+}

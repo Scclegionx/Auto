@@ -350,7 +350,7 @@ class PhoBERT_SAM_API:
         if intent == "unknown" or intent == "error":
             return "Không thể xác định"
         
-        if intent in ["call", "make-call", "make-video-call"]:
+        if intent in ["call", "call", "make-video-call"]:
             receiver = entities.get("RECEIVER", "")
             if not receiver:
                 potential_receivers = re.findall(r"(?:gọi|gọi cho|gọi điện cho|nhắn tin cho|gửi cho)\s+(\w+(?:\s+\w+){0,2})", original_text, re.IGNORECASE)
@@ -364,7 +364,7 @@ class PhoBERT_SAM_API:
             else:
                 return f"Gọi điện cho {receiver}"
         
-        elif intent in ["send-mess", "send-message"]:
+        elif intent in ["send-mess", "send-mess"]:
             message = entities.get("MESSAGE", "")
             receiver = entities.get("RECEIVER", "")
             

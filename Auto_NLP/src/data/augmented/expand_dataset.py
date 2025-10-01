@@ -74,8 +74,6 @@ class DatasetExpander:
         
         # Intent mapping để tránh lặp lại
         intent_mapping = {
-            'make-call': 'call',
-            'send-message': 'send-mess',
             'make-video-call': 'make-video-call'
         }
         
@@ -296,8 +294,6 @@ class DatasetExpander:
         
         # Intent mapping để tránh lặp lại
         intent_mapping = {
-            'make-call': 'call',
-            'send-message': 'send-mess',
             'make-video-call': 'make-video-call'
         }
         
@@ -384,14 +380,6 @@ class DatasetExpander:
                 'Gọi điện thoại cho {person}',
                 'Gọi {person} khẩn cấp'
             ],
-            'make-call': [
-                'Gọi điện cho {person}',
-                'Thực hiện cuộc gọi đến {person}',
-                'Liên lạc với {person} qua điện thoại',
-                'Gọi {person} ngay bây giờ',
-                'Gọi cho {person} lúc {time}',
-                'Gọi điện thoại cho {person}',
-                'Gọi {person} khẩn cấp'
             ],
             'make-video-call': [
                 'Gọi video cho {person}',
@@ -413,15 +401,6 @@ class DatasetExpander:
                 'Gửi tin nhắn cho {person} rằng {message}',
                 'Soạn tin cho {person} nội dung {message}'
             ],
-            'send-message': [
-                'Nhắn tin cho {person} rằng {message}',
-                'Gửi tin nhắn cho {person} nội dung {message}',
-                'Soạn tin nhắn gửi {person} với nội dung {message}',
-                'Viết tin nhắn cho {person} về {message}',
-                'Gửi cho {person} tin nhắn {message}',
-                'Nhắn tin cho {person} là {message}',
-                'Gửi tin nhắn cho {person} rằng {message}',
-                'Soạn tin cho {person} nội dung {message}'
             ],
             
             # ===== SEARCH PATTERNS =====
@@ -602,8 +581,6 @@ class DatasetExpander:
         
         # Intent mapping để tránh lặp lại
         intent_mapping = {
-            'make-call': 'call',
-            'send-message': 'send-mess',
             'make-video-call': 'make-video-call'
         }
         

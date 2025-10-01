@@ -23,7 +23,7 @@
   },
   {
     "input": "gửi tin nhắn 'đã về đến nhà' cho vợ",
-    "command": "send-message",
+    "command": "send-mess",
     "entities": [],
     "values": [
       {
@@ -48,7 +48,7 @@
   },
   {
     "input": "Viết tin nhắn cho chị dâu về chiều nay có hẹn bạn",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "gửi tin nhắn tới Huyền: hẹn gặp lúc 3h chiều",
@@ -70,11 +70,11 @@
   },
   {
     "input": "Viết tin nhắn cho mợ về chiều này đón bà tại công viên Thống nhất lúc 16h chiều",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "gửi tin nhắn cho con gái qua Zalo",
-    "command": "send-message",
+    "command": "send-mess",
     "entities": [
       {
         "text": "con gái",
@@ -92,7 +92,7 @@
   },
   {
     "input": "gửi tin nhắn Messenger cho Lan",
-    "command": "send-message",
+    "command": "send-mess",
     "entities": [
       {
         "text": "Lan",
@@ -114,7 +114,7 @@
   },
   {
     "input": "gửi ảnh cho con gái",
-    "command": "send-message",
+    "command": "send-mess",
     "entities": [],
     "values": [
       {
@@ -149,7 +149,7 @@
   },
   {
     "input": "Gửi cho chị dâu tin nhắn chiều này đón bà tại công viên Thống nhất lúc 16h chiều",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "nhắn tin cho dì Tư: cháu sẽ ghé thăm dì vào cuối tuần",
@@ -285,11 +285,11 @@
   },
   {
     "input": "Soạn tin cho dượng nội dung tối nay ăn cơm ở nhà",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "nhắn cho cháu gái tôi đến đón lúc 4 giờ chiều",
-    "command": "send-message",
+    "command": "send-mess",
     "entities": [
       {
         "text": "4 giờ chiều",
@@ -315,11 +315,11 @@
   },
   {
     "input": "Soạn tin cho ông ngoại nội dung nhớ uống thuốc đúng giờ",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Nhắn tin cho em rể là chiều nay có hẹn bạn",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Gửi tin nhắn cho bố nội dung sáng mai đi chợ",
@@ -327,11 +327,11 @@
   },
   {
     "input": "Nhắn tin cho con gái rằng tối nay xem phim cùng nhau",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Nhắn tin cho cháu Vương rằng đã nhận được tin nhắn",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "nhắn tin cho anh rể: em cần gặp anh để bàn việc gia đình",
@@ -387,11 +387,11 @@
   },
   {
     "input": "Soạn tin cho chị Hương nội dung chiều này đón bà tại công viên Thống nhất lúc 16h chiều",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Gửi tin nhắn cho anh Nam nội dung sáng mai đi chùa",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Gửi cho dì tin nhắn tối nay về muộn",
@@ -451,7 +451,7 @@
   },
   {
     "input": "Gửi tin nhắn cho bà ngoại nội dung sáng mai đi chợ",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Soạn tin cho con trai nội dung chiều nay có hẹn bạn",
@@ -597,7 +597,7 @@
   },
   {
     "input": "Gửi cho anh rể tin nhắn đã nhận được tin nhắn",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Nhắn tin cho con gái là sáng mai đi chùa",
@@ -623,7 +623,7 @@
   },
   {
     "input": "Soạn tin nhắn gửi dượng với nội dung sáng mai đi khám bệnh",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Gửi tin nhắn cho cháu trai rằng đã nhận được tin nhắn",
@@ -631,11 +631,11 @@
   },
   {
     "input": "Nhắn tin cho chị Hương là có việc gấp cần liên lạc",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Gửi cho dượng tin nhắn chiều nay đi dạo công viên",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Gửi cho anh Nam tin nhắn chiều nay đi dạo công viên",
@@ -643,23 +643,23 @@
   },
   {
     "input": "Nhắn tin cho cháu ngoại là sáng mai đi chùa",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Soạn tin cho dì nội dung chiều nay đi dạo công viên",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Viết tin nhắn cho em dâu về sáng mai có hẹn bác sĩ",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Viết tin nhắn cho ông ngoại về chiều nay đi dạo công viên",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Gửi tin nhắn cho dượng nội dung có việc gấp cần liên lạc",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "nhắn cho con trai tôi: bố nhớ con",
@@ -681,7 +681,7 @@
   },
   {
     "input": "gửi tin nhắn cho Hùng",
-    "command": "send-message",
+    "command": "send-mess",
     "entities": [
       {
         "text": "Hùng",
@@ -694,7 +694,7 @@
   },
   {
     "input": "Nhắn tin cho anh trai rằng sáng mai đi chợ",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Nhắn tin cho dì rằng sáng mai đi chùa",
@@ -746,7 +746,7 @@
   },
   {
     "input": "Viết tin nhắn cho ông nội về chiều này đón bà tại công viên Thống nhất lúc 16h chiều",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Gửi tin nhắn cho bác nội dung sáng mai đi chợ",
@@ -762,11 +762,11 @@
   },
   {
     "input": "Gửi cho chị dâu tin nhắn tối nay sẽ về sớm",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "nhắn tin cho con trai trên Zalo",
-    "command": "send-message",
+    "command": "send-mess",
     "entities": [],
     "values": [
       {
@@ -801,14 +801,14 @@
   },
   {
     "input": "Gửi tin nhắn cho bà ngoại rằng chiều này đón bà tại công viên Thống nhất lúc 16h chiều",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Gửi tin nhắn cho anh rể rằng sáng mai đi chùa",
-    "command": "send-message"
+    "command": "send-mess"
   },
   {
     "input": "Viết tin nhắn cho con gái về chiều nay đi dạo công viên",
-    "command": "send-message"
+    "command": "send-mess"
   }
 ]

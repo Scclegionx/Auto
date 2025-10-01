@@ -109,9 +109,10 @@ class IntentPredictor:
         # Use intent mapping from trained model if available
         if self.id_to_intent:
             # Enhanced keyword-based intent detection using trained model intents
+            # Chuẩn hóa: chỉ sử dụng call và send-mess làm labels chính
             intent_keywords = {
-                "call": ["gọi", "alo", "gọi điện", "gọi thoại", "nói chuyện điện thoại", "nói chuyện", "trò chuyện", "liên lạc", "gọi cho", "gọi tới"],
-                "send-mess": ["nhắn tin", "gửi tin", "soạn tin", "sms", "nhắn", "gửi", "nhắn cho", "gửi cho", "tin nhắn"],
+                "call": ["gọi", "alo", "gọi điện", "gọi thoại", "nói chuyện điện thoại", "nói chuyện", "trò chuyện", "liên lạc", "gọi cho", "gọi tới", "call", "thực hiện cuộc gọi"],
+                "send-mess": ["nhắn tin", "gửi tin", "soạn tin", "sms", "nhắn", "gửi", "nhắn cho", "gửi cho", "tin nhắn", "send-mess", "gửi tin nhắn"],
                 "set-reminder": ["nhắc", "nhắc nhở", "reminder", "đừng quên", "nhớ", "uống thuốc"],
                 "set-alarm": ["báo thức", "đánh thức", "alarm", "dậy", "đặt báo thức"],
                 "search": ["tìm", "tìm kiếm", "search", "google", "tra cứu"],
@@ -134,9 +135,10 @@ class IntentPredictor:
                         }
         
         # Fallback to basic keywords if no trained model intents
+        # Chuẩn hóa: chỉ sử dụng call và send-mess làm labels chính
         intent_keywords = {
-            "call": ["gọi", "alo", "gọi điện", "nói chuyện điện thoại"],
-            "send-mess": ["nhắn tin", "gửi tin", "sms"],
+            "call": ["gọi", "alo", "gọi điện", "nói chuyện điện thoại", "call", "thực hiện cuộc gọi"],
+            "send-mess": ["nhắn tin", "gửi tin", "sms", "send-mess", "gửi tin nhắn"],
             "set-reminder": ["nhắc", "nhắc nhở", "uống thuốc"],
             "set-alarm": ["báo thức", "đánh thức", "dậy"],
             "search": ["tìm", "tìm kiếm", "google"],

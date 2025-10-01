@@ -247,13 +247,13 @@ class CommunicationOptimizer:
         except Exception as e:
             print(f"⚠️ Error in value generator: {e}")
             # Fallback to simple value generation
-            if intent in ["send-mess", "send-message"]:
+            if intent in ["send-mess", "send-mess"]:
                 message = entities.get("MESSAGE", "")
                 if message:
                     return message
                 else:
                     return "Tin nhắn"
-            elif intent in ["call", "make-call"]:
+            elif intent in ["call", "call"]:
                 receiver = entities.get("RECEIVER", "người nhận")
                 return f"Gọi cho {receiver}"
             else:

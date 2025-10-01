@@ -11,10 +11,8 @@ class DatasetOrganizer:
         # Command groups mapping
         self.command_groups = {
             'call': 'CALL_COMMANDS',
-            'make-call': 'CALL_COMMANDS', 
             'make-video-call': 'CALL_COMMANDS',
             'send-mess': 'MESSAGE_COMMANDS',
-            'send-message': 'MESSAGE_COMMANDS',
             'play-audio': 'MEDIA_COMMANDS',
             'play-content': 'MEDIA_COMMANDS',
             'play-media': 'MEDIA_COMMANDS',

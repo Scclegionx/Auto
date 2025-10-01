@@ -1,0 +1,24 @@
+{
+  "complete_cleanup_info": {
+    "timestamp": "2025-10-01 15:58:58",
+    "status": "completed"
+  },
+  "normalization_summary": {
+    "total_commands": 26,
+    "removed_commands": [
+      "make-call",
+      "send-message"
+    ],
+    "normalized_commands": [
+      "call",
+      "send-mess"
+    ],
+    "kept_commands": [
+      "make-video-call"
+    ]
+  },
+  "files_processed": [
+    "organization_summary.json",
+    "expand_dataset.py"
+  ]
+}

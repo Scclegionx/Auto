@@ -37,7 +37,7 @@ class NLPProcessor:
             except Exception as e:
                 print(f"⚠️ Reasoning engine not available: {e}")
         
-        # Intent to command mapping - Cải thiện mapping
+        # Intent to command mapping - Chuẩn hóa để tránh trùng lặp
         self.intent_to_command = {
             "adjust-settings": "Điều chỉnh cài đặt",
             "app-tutorial": "Hướng dẫn ứng dụng", 
@@ -50,7 +50,6 @@ class NLPProcessor:
             "control-device": "Điều khiển thiết bị",
             "general-conversation": "Trò chuyện chung",
             "help": "Trợ giúp",
-            "make-call": "Gọi điện",
             "make-video-call": "Gọi video",
             "navigation-help": "Hỗ trợ điều hướng",
             "open-app": "Mở ứng dụng",
@@ -63,11 +62,16 @@ class NLPProcessor:
             "read-news": "Đọc tin tức",
             "search-content": "Tìm kiếm nội dung",
             "search-internet": "Tìm kiếm internet",
-            "send-message": "Gửi tin nhắn",
             "send-mess": "Gửi tin nhắn",
-            "MESSAGE": "Gửi tin nhắn",  # Thêm mapping cho MESSAGE
             "set-alarm": "Đặt báo thức",
-            "set-reminder": "Đặt nhắc nhở"
+            "set-reminder": "Đặt nhắc nhở",
+            "view-content": "Xem nội dung"
+        }
+        
+        # Command normalization - Gộp các commands trùng lặp
+        self.command_normalization = {
+            "call": "call",
+            "send-mess": "send-mess"
         }
     
     def load_model(self, model_path: str, tokenizer_name: str = "vinai/phobert-base") -> bool:
@@ -87,8 +91,11 @@ class NLPProcessor:
         # Step 3: Use optimized entities
         entities = communication_result["entities"]
         
-        # Step 4: Generate command
-        command = self.intent_to_command.get(intent_result["intent"], "unknown")
+        # Step 4: Generate command with normalization
+        intent = intent_result["intent"]
+        # Normalize intent if it's in the normalization mapping
+        normalized_intent = self.command_normalization.get(intent, intent)
+        command = self.intent_to_command.get(normalized_intent, "unknown")
         
         # Step 5: Generate optimized value with error handling
         try:
@@ -143,8 +150,10 @@ class NLPProcessor:
             # Extract entities using our improved extractor
             entities = self.entity_extractor.extract_all_entities(text)
             
-            # Generate command and value
-            command = self.intent_to_command.get(reasoning_result.get("intent", "unknown"), "unknown")
+            # Generate command and value with normalization
+            intent = reasoning_result.get("intent", "unknown")
+            normalized_intent = self.command_normalization.get(intent, intent)
+            command = self.intent_to_command.get(normalized_intent, "unknown")
             value = self.value_generator.generate_value(
                 reasoning_result.get("intent", "unknown"), 
                 entities, 

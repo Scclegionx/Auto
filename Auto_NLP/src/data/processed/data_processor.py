@@ -46,7 +46,7 @@ class DataProcessor:
 
         intent_keywords = {
             "call": ["gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số"],
-            "make-call": ["gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số"],
+            "call": ["gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số"],
             "set-alarm": ["đặt báo thức", "nhắc nhở", "hẹn giờ", "đánh thức", "chuông báo", "ghi nhớ"],
             "send-mess": ["gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo", "soạn tin"],
             "set-reminder": ["đặt nhắc nhở", "ghi nhớ", "lời nhắc", "nhắc tôi", "tạo lời nhắc"],
@@ -74,7 +74,7 @@ class DataProcessor:
 
         conflicting_keywords = {
             "call": ["nhắn tin", "gửi tin nhắn", "soạn tin"],
-            "make-call": ["nhắn tin", "gửi tin nhắn", "soạn tin"],
+            "call": ["nhắn tin", "gửi tin nhắn", "soạn tin"],
             "send-mess": ["gọi", "điện thoại", "alo"],
             "set-alarm": ["gửi tin nhắn", "gọi", "nhắn tin"],
             "set-reminder": ["gọi", "nhắn tin", "phát nhạc"],

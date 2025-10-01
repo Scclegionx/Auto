@@ -16,10 +16,10 @@ class ValueGenerator:
         """Xây dựng templates cho các intent"""
         return {
             "call": "Gọi cho {receiver}",
-            "make-call": "Gọi cho {receiver}",
+            "call": "Gọi cho {receiver}",
             "make-video-call": "Gọi video cho {receiver}",
             "send-mess": "Nhắn tin cho {receiver}: {message}",
-            "send-message": "Nhắn tin cho {receiver}: {message}",
+            "send-mess": "Nhắn tin cho {receiver}: {message}",
             "set-reminder": "Nhắc nhở: {message} lúc {time}",
             "set-alarm": "Báo thức lúc {time}",
             "search": "Tìm kiếm: {query}",
@@ -50,7 +50,7 @@ class ValueGenerator:
         platform = entities.get("PLATFORM", "")
         
         # Generate value based on intent
-        if intent in ["call", "make-call", "make-video-call"]:
+        if intent in ["call", "call", "make-video-call"]:
             # Ưu tiên trả về số điện thoại nếu có
             phone_number = entities.get("PHONE_NUMBER", "")
             if phone_number:
@@ -65,7 +65,7 @@ class ValueGenerator:
             # Trả về receiver thay vì câu lệnh mô tả
             return receiver
         
-        elif intent in ["send-mess", "send-message", "MESSAGE"]:
+        elif intent in ["send-mess", "send-mess", "MESSAGE"]:
             # For message intents, extract the full message content
             if message:
                 # Chuyển đổi số điện thoại từ chữ sang số trong message
@@ -197,11 +197,11 @@ class ValueGenerator:
                 validated[key] = value.strip()
         
         # Intent-specific validation
-        if intent in ["call", "make-call", "make-video-call", "send-mess", "send-message"]:
+        if intent in ["call", "call", "make-video-call", "send-mess", "send-mess"]:
             if "RECEIVER" not in validated:
                 validated["RECEIVER"] = "người nhận"
         
-        if intent in ["send-mess", "send-message"]:
+        if intent in ["send-mess", "send-mess"]:
             if "PLATFORM" not in validated:
                 validated["PLATFORM"] = "sms"
         

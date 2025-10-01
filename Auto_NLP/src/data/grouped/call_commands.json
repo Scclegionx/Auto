@@ -1,7 +1,7 @@
 [
   {
     "input": "gọi điện cho con gái",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "con gái",
@@ -14,11 +14,11 @@
   },
   {
     "input": "Gọi điện thoại cho anh rể",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi điện cho cửa hàng tạp hóa gần nhà",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "cửa hàng tạp hóa gần nhà",
@@ -31,19 +31,19 @@
   },
   {
     "input": "Thực hiện cuộc gọi cho dì",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi chị dâu ngay bây giờ",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Thực hiện cuộc gọi đến cháu trai",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Thực hiện cuộc gọi đến cháu nội",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi điện thoại cho anh rể",
@@ -51,7 +51,7 @@
   },
   {
     "input": "gọi điện cho chị Hai",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "chị Hai",
@@ -64,7 +64,7 @@
   },
   {
     "input": "Gọi điện thoại cho cháu trai",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Liên lạc với bà nội qua điện thoại",
@@ -72,7 +72,7 @@
   },
   {
     "input": "bấm số cho tiệm tạp hóa",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "tiệm tạp hóa",
@@ -98,7 +98,7 @@
   },
   {
     "input": "gọi nhóm bạn già trên Messenger",
-    "command": "make-call",
+    "command": "call",
     "entities": [],
     "values": [
       {
@@ -123,7 +123,7 @@
   },
   {
     "input": "quay số cho bác sĩ Tuấn",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "bác sĩ Tuấn",
@@ -136,11 +136,11 @@
   },
   {
     "input": "Gọi con trai khẩn cấp",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi cháu gái ngay bây giờ",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi video cho các con",
@@ -157,11 +157,11 @@
   },
   {
     "input": "Gọi điện cho cháu ngoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi điện cho em rể",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi video cho các cháu",
@@ -178,7 +178,7 @@
   },
   {
     "input": "gọi lại cuộc gọi gần nhất",
-    "command": "make-call",
+    "command": "call",
     "entities": [],
     "values": [
       {
@@ -195,7 +195,7 @@
   },
   {
     "input": "Liên lạc với cháu gái qua điện thoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Thực hiện cuộc gọi video đến em gái",
@@ -207,11 +207,11 @@
   },
   {
     "input": "Thực hiện cuộc gọi cho mẹ",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi nhóm gia đình trên Zalo",
-    "command": "make-call",
+    "command": "call",
     "entities": [],
     "values": [
       {
@@ -228,7 +228,7 @@
   },
   {
     "input": "Thực hiện cuộc gọi đến bà ngoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi video ông nội khẩn cấp",
@@ -236,7 +236,7 @@
   },
   {
     "input": "Thực hiện cuộc gọi cho con gái",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi anh Nam ngay bây giờ",
@@ -244,7 +244,7 @@
   },
   {
     "input": "Thực hiện cuộc gọi đến bác",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi video cho chị Hương lúc 4h chiều",
@@ -252,7 +252,7 @@
   },
   {
     "input": "Gọi em rể ngay bây giờ",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi video cho cháu nội",
@@ -269,11 +269,11 @@
   },
   {
     "input": "Gọi cho bà ngoại lúc tối nay",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi cho Hằng trên WhatsApp",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "Hằng",
@@ -295,11 +295,11 @@
   },
   {
     "input": "Gọi điện cho cháu ngoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi cho số 0912345678",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "0912345678",
@@ -312,7 +312,7 @@
   },
   {
     "input": "gọi điện thoại cho Minh",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "Minh",
@@ -342,7 +342,7 @@
   },
   {
     "input": "Thực hiện cuộc gọi đến em gái",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi cho em rể lúc chiều nay",
@@ -350,7 +350,7 @@
   },
   {
     "input": "bắt đầu cuộc gọi video với cháu",
-    "command": "make-call",
+    "command": "call",
     "entities": [],
     "values": [
       {
@@ -367,11 +367,11 @@
   },
   {
     "input": "Gọi cho mẹ lúc ngay bây giờ",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi khẩn cấp cho con trai",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "con trai",
@@ -388,7 +388,7 @@
   },
   {
     "input": "gọi video call cho cháu gái",
-    "command": "make-call",
+    "command": "call",
     "entities": [],
     "values": [
       {
@@ -418,7 +418,7 @@
   },
   {
     "input": "kết nối với bệnh viện",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "bệnh viện",
@@ -431,7 +431,7 @@
   },
   {
     "input": "liên lạc với chị Hoa",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "chị Hoa",
@@ -452,15 +452,15 @@
   },
   {
     "input": "Gọi điện cho bố",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi điện cho cháu trai",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi điện cho bạn Tuấn",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "bạn Tuấn",
@@ -477,11 +477,11 @@
   },
   {
     "input": "Gọi anh Nam khẩn cấp",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi cháu nội ngay bây giờ",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "kết nối video với con dâu",
@@ -498,7 +498,7 @@
   },
   {
     "input": "gọi cho chị gái tôi",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "chị gái tôi",
@@ -523,7 +523,7 @@
   },
   {
     "input": "bấm số cho bác sĩ Minh",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "bác sĩ Minh",
@@ -536,7 +536,7 @@
   },
   {
     "input": "gọi điện đến hiệu thuốc",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "hiệu thuốc",
@@ -557,11 +557,11 @@
   },
   {
     "input": "Gọi cho con gái lúc 8h tối",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi cho ông xã",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "ông xã",
@@ -578,11 +578,11 @@
   },
   {
     "input": "Gọi điện cho bác",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi điện cho ông ngoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi FaceTime với bà ngoại",
@@ -590,7 +590,7 @@
   },
   {
     "input": "gọi Zalo cho bà xã",
-    "command": "make-call",
+    "command": "call",
     "entities": [],
     "values": [
       {
@@ -611,7 +611,7 @@
   },
   {
     "input": "kết nối cuộc gọi với cửa hàng thuốc",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "cửa hàng thuốc",
@@ -637,7 +637,7 @@
   },
   {
     "input": "liên lạc khẩn cấp với bác sĩ",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "bác sĩ",
@@ -663,11 +663,11 @@
   },
   {
     "input": "Gọi điện cho chị Hương",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi Messenger cho con gái",
-    "command": "make-call",
+    "command": "call",
     "entities": [],
     "values": [
       {
@@ -688,7 +688,7 @@
   },
   {
     "input": "gọi cho thằng cu",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "thằng cu",
@@ -701,7 +701,7 @@
   },
   {
     "input": "Thực hiện cuộc gọi cho bác",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi video cho con gái",
@@ -717,7 +717,7 @@
   },
   {
     "input": "gọi cho nhà hàng đặt bàn",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "nhà hàng",
@@ -738,23 +738,23 @@
   },
   {
     "input": "Gọi chú ngay bây giờ",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi cho bác lúc 9h sáng",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Thực hiện cuộc gọi đến ông ngoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi cho anh Nam lúc 10h sáng",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi điện thoại cho cô",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Liên lạc với dượng qua điện thoại",
@@ -796,7 +796,7 @@
   },
   {
     "input": "gọi ngay cho con trai lớn",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "con trai lớn",
@@ -813,7 +813,7 @@
   },
   {
     "input": "Thực hiện cuộc gọi đến mẹ",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi video bà nội khẩn cấp",
@@ -821,7 +821,7 @@
   },
   {
     "input": "Liên lạc với em gái qua điện thoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi video cho dượng",
@@ -829,7 +829,7 @@
   },
   {
     "input": "gọi cho vợ",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "vợ",
@@ -842,7 +842,7 @@
   },
   {
     "input": "Gọi anh rể khẩn cấp",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "tôi muốn gọi video cho chị Hoa",
@@ -885,7 +885,7 @@
   },
   {
     "input": "gọi điện cho chị Lan",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "chị Lan",
@@ -923,15 +923,15 @@
   },
   {
     "input": "Gọi cháu gái khẩn cấp",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi mẹ khẩn cấp",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi điện thoại cho bác",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Liên lạc với dì qua điện thoại",
@@ -939,7 +939,7 @@
   },
   {
     "input": "gọi điện khẩn cấp cho bác sĩ",
-    "command": "make-call",
+    "command": "call",
     "entities": [],
     "values": [
       {
@@ -960,7 +960,7 @@
   },
   {
     "input": "Gọi điện cho cháu gái",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi video cho anh trai lúc 8h tối",
@@ -968,7 +968,7 @@
   },
   {
     "input": "gọi cho cháu ngoại",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "cháu ngoại",
@@ -981,7 +981,7 @@
   },
   {
     "input": "tôi muốn gọi cho con dâu",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "con dâu",
@@ -1007,7 +1007,7 @@
   },
   {
     "input": "điện thoại cho con trai",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "con trai",
@@ -1024,7 +1024,7 @@
   },
   {
     "input": "Gọi cho bà ngoại lúc chiều nay",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi zalo video cho cháu gái",
@@ -1045,11 +1045,11 @@
   },
   {
     "input": "Gọi điện thoại cho con gái",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "tôi muốn nói chuyện với chị Hai",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "chị Hai",
@@ -1062,7 +1062,7 @@
   },
   {
     "input": "gọi cho con trai tôi",
-    "command": "make-call",
+    "command": "call",
     "entities": [],
     "values": [
       {
@@ -1083,7 +1083,7 @@
   },
   {
     "input": "gọi điện thoại cho em gái",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "em gái",
@@ -1104,11 +1104,11 @@
   },
   {
     "input": "Thực hiện cuộc gọi đến bà ngoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "đặt lịch hẹn gọi cho con trai lúc 8 giờ tối",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "8 giờ tối",
@@ -1147,11 +1147,11 @@
   },
   {
     "input": "Liên lạc với dượng qua điện thoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi điện cho cháu trai",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi video anh Nam khẩn cấp",
@@ -1159,7 +1159,7 @@
   },
   {
     "input": "quay số cho anh Hai",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "anh Hai",
@@ -1172,11 +1172,11 @@
   },
   {
     "input": "Gọi cho cháu ngoại lúc 8h sáng",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "gọi điện thoại cho tiệm thuốc tây",
-    "command": "make-call",
+    "command": "call",
     "entities": [
       {
         "text": "tiệm thuốc tây",
@@ -1189,7 +1189,7 @@
   },
   {
     "input": "Gọi điện cho con trai",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Liên lạc với chú qua điện thoại",
@@ -1223,31 +1223,31 @@
   },
   {
     "input": "Gọi điện thoại cho cháu nội",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi mẹ ngay bây giờ",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi cô khẩn cấp",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi cho anh rể lúc 8h sáng",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Liên lạc với anh trai qua điện thoại",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi chị dâu khẩn cấp",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi điện thoại cho anh Nam",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi cho em gái lúc chiều nay",
@@ -1255,10 +1255,10 @@
   },
   {
     "input": "Gọi cho cháu gái lúc tháng sau",
-    "command": "make-call"
+    "command": "call"
   },
   {
     "input": "Gọi cho mẹ lúc tuần sau",
-    "command": "make-call"
+    "command": "call"
   }
 ]

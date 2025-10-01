@@ -32,7 +32,7 @@ try:
     from src.training.configs.config import model_config
     from src.inference.engines.reasoning_engine import ReasoningEngine
 except ImportError as e:
-    print(f"❌ Import error: {e}")
+    print(f"Import error: {e}")
     print("🔧 Trying alternative import...")
     
     # Alternative import path
@@ -109,11 +109,11 @@ class PhoBERT_SAM_API:
     
     def __init__(self):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        print(f"🖥️ Using device: {self.device}")
+        print(f"Using device: {self.device}")
         
         if self.device.type == "cuda":
-            print(f"🎮 GPU: {torch.cuda.get_device_name()}")
-            print(f"💾 GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+            print(f"GPU: {torch.cuda.get_device_name()}")
+            print(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
         
         # Initialize NLP processor
         self.nlp_processor = NLPProcessor(self.device)
@@ -128,7 +128,7 @@ class PhoBERT_SAM_API:
         # và được cải thiện trong communication_optimizer.py
         
         self.reasoning_engine = ReasoningEngine()
-        print("🧠 Reasoning Engine initialized")
+        print("Reasoning Engine initialized")
     
     def _extract_entities_simple(self, text: str) -> dict:
         """Extract entities đơn giản và hiệu quả"""
@@ -216,7 +216,7 @@ class PhoBERT_SAM_API:
                 if not os.path.exists(model_path):
                     model_path = "models/best_simple_intent_model.pth"
                     if not os.path.exists(model_path):
-                        print(f"❌ No model found, using reasoning engine only")
+                        print(f"No model found, using reasoning engine only")
                         self.model = None
                         self.tokenizer = None
                         self.id_to_intent = None
@@ -224,12 +224,12 @@ class PhoBERT_SAM_API:
             else:
                 model_path = best_model_path
             
-            print(f"📂 Loading model from: {model_path}")
+            print(f"Loading model from: {model_path}")
             
             checkpoint = torch.load(model_path, map_location=self.device)
             
             if 'intent_to_id' not in checkpoint or 'id_to_intent' not in checkpoint:
-                print("⚠️ Model không có metadata, sử dụng reasoning engine only")
+                print("Model không có metadata, sử dụng reasoning engine only")
                 self.model = None
                 self.tokenizer = None
                 self.id_to_intent = None
@@ -259,15 +259,15 @@ class PhoBERT_SAM_API:
                 'validation_accuracy': checkpoint.get('validation_accuracy', 'unknown')
             }
             
-            print(f"✅ Model loaded successfully from {model_path}")
-            print(f"🎯 Number of intents: {len(self.id_to_intent)}")
-            print(f"🔧 Model info: {model_info}")
-            print(f"📋 Available intents: {list(self.id_to_intent.values())}")
+            print(f"Model loaded successfully from {model_path}")
+            print(f"Number of intents: {len(self.id_to_intent)}")
+            print(f"Model info: {model_info}")
+            print(f"Available intents: {list(self.id_to_intent.values())}")
             
             return True
             
         except Exception as e:
-            print(f"❌ Error loading model: {e}")
+            print(f"Error loading model: {e}")
             import traceback
             traceback.print_exc()
             self.model = None
@@ -308,24 +308,29 @@ class PhoBERT_SAM_API:
     
     def load_model(self) -> bool:
         """Load model using NLPProcessor"""
-        # Try to find model file
+        # Try to find model file - Updated paths to match actual model location
         model_paths = [
-            "src/models/trained/phobert_large_intent_model/model_epoch_10_best.pth",
-            "src/models/trained/phobert_large_intent_model/model_epoch_3_best.pth",
-            "src/models/trained/phobert_large_intent_model/model_epoch_1_best.pth"
+            "models/phobert_large_intent_model/model_epoch_10_best.pth",
+            "models/phobert_large_intent_model/model_epoch_3_best.pth", 
+            "models/phobert_large_intent_model/model_epoch_1_best.pth",
+            "models/phobert_large_intent_model/model_best.pth"
         ]
         
         for model_path in model_paths:
             if os.path.exists(model_path):
+                print(f"Found model at: {model_path}")
                 success = self.nlp_processor.load_model(model_path)
                 if success:
                     # Update legacy attributes
                     self.model = self.nlp_processor.intent_predictor.model
                     self.tokenizer = self.nlp_processor.intent_predictor.tokenizer
                     self.id_to_intent = self.nlp_processor.intent_predictor.id_to_intent
+                    print(f"Successfully loaded trained model from {model_path}")
                     return True
+                else:
+                    print(f"Failed to load model from {model_path}")
         
-        print("⚠️ No trained model found, using fallback methods")
+        print("No trained model found, using fallback methods")
         return True  # Return True to allow fallback methods
     
     # Legacy methods for backward compatibility
@@ -770,7 +775,7 @@ class PhoBERT_SAM_API:
             }
             
         except Exception as e:
-            print(f"❌ Error predicting intent: {e}")
+            print(f"Error predicting intent: {e}")
             return {
                 "intent": "error",
                 "confidence": 0.0,
@@ -781,7 +786,7 @@ class PhoBERT_SAM_API:
     async def _old_predict_with_reasoning(self, text: str) -> Dict[str, Any]:
         """Old predict with reasoning method - replaced by NLPProcessor"""
         try:
-            print(f"🧠 REASONING PREDICTION: '{text}'")
+            print(f"REASONING PREDICTION: '{text}'")
             start_time = datetime.now()
             
             try:
@@ -793,9 +798,9 @@ class PhoBERT_SAM_API:
                     model_result = self.predict_intent(text)
                     model_confidence = model_result.get("confidence", 0.0)
                     model_intent = model_result.get("intent", "unknown")
-                    print(f"🤖 MODEL PREDICTION: {model_intent} (confidence: {model_confidence:.3f})")
+                    print(f"MODEL PREDICTION: {model_intent} (confidence: {model_confidence:.3f})")
             except Exception as e:
-                print(f"⚠️ Model prediction error: {str(e)}")
+                print(f"Model prediction error: {str(e)}")
                 model_result = {"intent": "unknown", "confidence": 0.0}
                 model_confidence = 0.0
                 model_intent = "unknown"
@@ -810,13 +815,13 @@ class PhoBERT_SAM_API:
                     reasoning_result = self.reasoning_engine.reasoning_predict(text)
                     reasoning_intent = reasoning_result.get("intent", "unknown")
                     reasoning_confidence = reasoning_result.get("confidence", 0.0)
-                    print(f"🧠 REASONING PREDICTION: {reasoning_intent} (confidence: {reasoning_confidence:.3f})")
+                    print(f"REASONING PREDICTION: {reasoning_intent} (confidence: {reasoning_confidence:.3f})")
                 except Exception as e:
-                    print(f"⚠️ Reasoning engine error: {e}")
-                    print("🔄 Using simple prediction...")
+                    print(f"Reasoning engine error: {e}")
+                    print("Using simple prediction...")
                     reasoning_intent, reasoning_confidence = self._predict_intent_simple(text)
                     reasoning_result = {"intent": reasoning_intent, "confidence": reasoning_confidence}
-                    print(f"🧠 SIMPLE PREDICTION: {reasoning_intent} (confidence: {reasoning_confidence:.3f})")
+                    print(f"SIMPLE PREDICTION: {reasoning_intent} (confidence: {reasoning_confidence:.3f})")
                 
                 call_keywords = ["cuộc gọi", "gọi thoại", "gọi điện", "thực hiện gọi", "thực hiện cuộc gọi"]
                 has_call_keyword = any(keyword in text_lower for keyword in call_keywords)
@@ -856,7 +861,7 @@ class PhoBERT_SAM_API:
                 entities = self._extract_entities_simple(text)
                 
             except Exception as e:
-                print(f"⚠️ Error extracting entities: {e}")
+                print(f"Error extracting entities: {e}")
                 entities = {}
             
             command = self.intent_to_command.get(final_intent, "unknown")
@@ -864,7 +869,7 @@ class PhoBERT_SAM_API:
             try:
                 value = self.generate_value(final_intent, entities, text)
             except Exception as e:
-                print(f"⚠️ Error generating value: {e}")
+                print(f"Error generating value: {e}")
                 value = f"Thực hiện hành động: {final_intent}"
             
             processing_time = (datetime.now() - start_time).total_seconds()
@@ -889,7 +894,7 @@ class PhoBERT_SAM_API:
             return result
                     
         except Exception as e:
-            print(f"❌ Error in reasoning prediction: {str(e)}")
+            print(f"Error in reasoning prediction: {str(e)}")
             import traceback
             return {
                 "text": text,
@@ -1093,7 +1098,7 @@ async def predict_intent(request: IntentRequest):
         }
         
     except Exception as e:
-        print(f"❌ Error in predict endpoint: {str(e)}")
+        print(f"Error in predict endpoint: {str(e)}")
         
         # Return simplified error response
         return {

@@ -4,60 +4,65 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/menu_background"
-    android:padding="16dp"
-    android:minWidth="200dp">
+    android:padding="20dp"
+    android:minWidth="220dp"
+    android:elevation="8dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Auto FE Menu"
-        android:textSize="16sp"
+        android:text="🎤 Auto FE"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#2E7D32"
         android:gravity="center"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/btn_record"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:text="🎤 Ghi âm lệnh"
         android:textColor="@android:color/white"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:background="@drawable/button_background"
-        android:layout_marginBottom="8dp"
-        android:elevation="2dp" />
+        android:layout_marginBottom="10dp"
+        android:elevation="3dp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_test_sms"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:text="📱 Test SMS"
         android:textColor="@android:color/white"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:background="@drawable/button_background"
-        android:layout_marginBottom="8dp"
-        android:elevation="2dp" />
+        android:layout_marginBottom="10dp"
+        android:elevation="3dp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_test_nlp"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:text="🤖 Test NLP Flow"
         android:textColor="@android:color/white"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:background="@drawable/button_background"
-        android:layout_marginBottom="8dp"
-        android:elevation="2dp" />
+        android:layout_marginBottom="10dp"
+        android:elevation="3dp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_close"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:text="❌ Đóng"
         android:textColor="@android:color/white"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:background="@drawable/button_background"
-        android:elevation="2dp" />
+        android:elevation="3dp"
+        android:textStyle="bold" />
 
 </LinearLayout>

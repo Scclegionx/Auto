@@ -28,7 +28,7 @@ import com.auto_fe.auto_fe.utils.PermissionManager
 class MainActivity : ComponentActivity() {
     private lateinit var permissionManager: PermissionManager
     private lateinit var floatingWindow: FloatingWindow
-    
+
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
             Toast.makeText(this, "Cần cấp quyền để sử dụng ứng dụng", Toast.LENGTH_LONG).show()
         }
     }
-    
+
     private val overlayPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -51,23 +51,23 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
+
         permissionManager = PermissionManager(this)
         floatingWindow = FloatingWindow(this)
-        
+
         setContent {
             Auto_FETheme {
                 MainScreen()
             }
         }
-        
+
         checkPermissions()
     }
-    
+
     private fun checkPermissions() {
         if (!permissionManager.checkAllPermissions()) {
             requestPermissionLauncher.launch(permissionManager.getMissingPermissions().toTypedArray())
@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
             checkOverlayPermission()
         }
     }
-    
+
     private fun checkOverlayPermission() {
         if (!permissionManager.checkOverlayPermission()) {
             val intent = Intent(
@@ -87,22 +87,24 @@ class MainActivity : ComponentActivity() {
             startFloatingWindow()
         }
     }
-    
+
     private fun startFloatingWindow() {
         floatingWindow.showFloatingWindow()
         Toast.makeText(this, "Auto FE đã sẵn sàng!", Toast.LENGTH_SHORT).show()
     }
-    
+
     override fun onDestroy() {
         super.onDestroy()
         floatingWindow.hideFloatingWindow()
+        // Giải phóng resources để tránh memory leak
+        floatingWindow.release()
     }
 }
 
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
-    
+
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
             modifier = Modifier
@@ -117,17 +119,17 @@ fun MainScreen() {
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Text(
                 text = "Ứng dụng tự động hóa thao tác điện thoại",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            
+
             Spacer(modifier = Modifier.height(32.dp))
-            
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,14 +144,14 @@ fun MainScreen() {
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
-                    
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    
+
                     Text(
                         text = "1. Cấp quyền cần thiết cho ứng dụng\n" +
-                              "2. Cửa sổ nổi sẽ xuất hiện\n" +
-                              "3. Nhấn vào cửa sổ nổi để mở menu\n" +
-                              "4. Chọn 'Ghi âm lệnh' để bắt đầu",
+                                "2. Cửa sổ nổi sẽ xuất hiện\n" +
+                                "3. Nhấn vào cửa sổ nổi để mở menu\n" +
+                                "4. Chọn 'Ghi âm lệnh' để bắt đầu",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

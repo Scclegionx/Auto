@@ -23,20 +23,20 @@ class FloatingWindow(private val context: Context) {
     private var popupWindow: PopupWindow? = null
     private var audioManager: AudioManager? = null
     private var commandProcessor: CommandProcessor? = null
-    
+
     init {
         audioManager = AudioManager(context)
         commandProcessor = CommandProcessor(context)
     }
-    
+
     fun showFloatingWindow() {
         if (floatingView != null) return
-        
+
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        
+
         // Tạo button nhỏ thay vì menu
         floatingView = createFloatingButton()
-        
+
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -44,14 +44,14 @@ class FloatingWindow(private val context: Context) {
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT
         )
-        
+
         params.gravity = Gravity.TOP or Gravity.START
         params.x = 0
         params.y = 100
-        
+
         windowManager?.addView(floatingView, params)
     }
-    
+
     private fun createFloatingButton(): LinearLayout {
         val button = Button(context)
         button.text = "Auto FE"
@@ -60,42 +60,42 @@ class FloatingWindow(private val context: Context) {
         button.setOnClickListener {
             showCommandMenu()
         }
-        
+
         val container = LinearLayout(context)
         container.addView(button)
         return container
     }
-    
+
     private fun showCommandMenu() {
         if (popupWindow != null) return // Đã mở rồi thì không mở lại
-        
+
         val inflater = LayoutInflater.from(context)
         val menuView = inflater.inflate(R.layout.floating_menu, null)
-        
+
         val recordButton = menuView.findViewById<Button>(R.id.btn_record)
         val testSmsButton = menuView.findViewById<Button>(R.id.btn_test_sms)
         val testNlpButton = menuView.findViewById<Button>(R.id.btn_test_nlp)
         val closeButton = menuView.findViewById<Button>(R.id.btn_close)
-        
+
         recordButton.setOnClickListener {
             hideCommandMenu()
             startAudioRecording()
         }
-        
+
         testSmsButton.setOnClickListener {
             hideCommandMenu()
             testSMSFunction()
         }
-        
+
         testNlpButton.setOnClickListener {
             hideCommandMenu()
             testNLPFlow()
         }
-        
+
         closeButton.setOnClickListener {
             hideCommandMenu()
         }
-        
+
         // Tạo popup window với animation
         popupWindow = PopupWindow(
             menuView,
@@ -103,25 +103,25 @@ class FloatingWindow(private val context: Context) {
             WindowManager.LayoutParams.WRAP_CONTENT,
             true
         )
-        
+
         // Thiết lập animation (bỏ qua style mặc định)
-        
+
         // Tự động đóng khi click outside
         popupWindow?.isOutsideTouchable = true
         popupWindow?.isFocusable = true
-        
+
         // Thêm animation tùy chỉnh
         menuView.startAnimation(AnimationUtils.loadAnimation(context, com.auto_fe.auto_fe.R.anim.popup_enter))
-        
+
         popupWindow?.showAsDropDown(floatingView)
     }
-    
+
     private fun hideCommandMenu() {
         popupWindow?.let { popup ->
             // Thêm animation khi đóng
             val menuView = popup.contentView
             menuView?.startAnimation(AnimationUtils.loadAnimation(context, com.auto_fe.auto_fe.R.anim.popup_exit))
-            
+
             // Đóng popup sau khi animation hoàn thành
             android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                 popup.dismiss()
@@ -129,7 +129,7 @@ class FloatingWindow(private val context: Context) {
         }
         popupWindow = null
     }
-    
+
     private fun startAudioRecording() {
         audioManager?.startVoiceInteraction(object : AudioManager.AudioManagerCallback {
             override fun onSpeechResult(spokenText: String) {
@@ -160,7 +160,7 @@ class FloatingWindow(private val context: Context) {
             }
         })
     }
-    
+
     private fun testSMSFunction() {
         Log.d("FloatingWindow", "Starting SMS test...")
         val smsAutomation = SMSAutomation(context)
@@ -175,7 +175,7 @@ class FloatingWindow(private val context: Context) {
             }
         })
     }
-    
+
     private fun testNLPFlow() {
         Log.d("FloatingWindow", "Starting NLP flow test...")
         val testCommand = "nhắn tin cho mom là con sắp về"
@@ -192,7 +192,7 @@ class FloatingWindow(private val context: Context) {
             }
         })
     }
-    
+
     private fun showTestResult(message: String) {
         try {
             val builder = AlertDialog.Builder(context)
@@ -204,7 +204,7 @@ class FloatingWindow(private val context: Context) {
             Log.e("FloatingWindow", "Error showing dialog: ${e.message}")
         }
     }
-    
+
     fun hideFloatingWindow() {
         floatingView?.let { view ->
             windowManager?.removeView(view)
@@ -212,5 +212,24 @@ class FloatingWindow(private val context: Context) {
         floatingView = null
         windowManager = null
         audioManager?.release()
+    }
+
+    /**
+     * Giải phóng tất cả resources để tránh memory leak
+     */
+    fun release() {
+        try {
+            // Cleanup CommandProcessor (bao gồm PhoneAutomation TTS)
+            commandProcessor?.release()
+            commandProcessor = null
+
+            // Cleanup AudioManager
+            audioManager?.release()
+            audioManager = null
+
+            Log.d("FloatingWindow", "All resources released successfully")
+        } catch (e: Exception) {
+            Log.e("FloatingWindow", "Error releasing resources: ${e.message}")
+        }
     }
 }

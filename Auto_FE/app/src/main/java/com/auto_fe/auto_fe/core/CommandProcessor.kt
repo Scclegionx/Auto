@@ -38,11 +38,11 @@ class CommandProcessor(private val context: Context) {
             nlpService.sendCommandToServer(command, object : NLPService.NLPServiceCallback {
                 override fun onSuccess(response: NLPService.NLPResponse) {
                     Log.d("CommandProcessor", "NLP Response: ${response.rawJson}")
-                    // Xử lý dạng 2 (đang test)
-                    processCommandFormat2(response.rawJson, callback)
-
-                    // Xử lý dạng 1 (comment lại để test dạng 2 trước)
-                    // processCommandFormat1(response.rawJson, callback)
+                    // Xử lý dạng 1 (JSON với entities)
+                    processCommandFormat1(response.rawJson, callback)
+                    
+                    // Xử lý dạng 2 (comment lại để dùng dạng 1)
+                    // processCommandFormat2(response.rawJson, callback)
                 }
 
                 override fun onError(error: String) {
@@ -56,13 +56,21 @@ class CommandProcessor(private val context: Context) {
     /**
      * Xử lý dạng 1: JSON với entities
      * {
-     *   "command": "send-mess",
-     *   "entities": {
-     *     "RECEIVER": "mẹ",
-     *     "MESSAGE": "trời sắp mưa"
-     *   },
-     *   "value": "trời sắp mưa"
-     * }
+            "text": "Nhắn tin cho cháu Dương là chiều nay 3h qua nhà bà ăn cơm",
+            "intent": "send-mess",
+            "confidence": 1.0,
+            "command": "Gửi tin nhắn",
+            "entities": {
+                "RECEIVER": "cháu dương",
+                "MESSAGE": "chiều nay 3h qua nhà bà ăn cơm",
+                "PLATFORM": "sms"
+            },
+            "value": "chiều nay 3h qua nhà bà ăn cơm",
+            "method": "reasoning_engine",
+            "processing_time": 0.301513,
+            "timestamp": "2025-10-05T11:07:19.436163",
+            "reasoning_details": {}
+        }
      */
     private fun processCommandFormat1(jsonResponse: String, callback: CommandProcessorCallback) {
         try {
@@ -79,13 +87,18 @@ class CommandProcessor(private val context: Context) {
             val receiver = entities.optString("RECEIVER", "")
 
             when (command) {
-                "send-mess" -> {
-                    smsAutomation.sendSMS(receiver, value, object : SMSAutomation.SMSCallback {
+                "Gửi tin nhắn" -> {
+                    smsAutomation.sendSMSWithSmartHandling(receiver, value, object : SMSAutomation.SMSConversationCallback {
                         override fun onSuccess() {
                             callback.onCommandExecuted(true, "Đã gửi tin nhắn thành công")
                         }
                         override fun onError(error: String) {
-                            callback.onError("Lỗi gửi tin nhắn: $error")
+                            callback.onError(error)
+                        }
+                        override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
+                            val contactList = similarContacts.joinToString(" và ")
+                            val message = "Không tìm thấy danh bạ $originalName nhưng tìm được ${similarContacts.size} danh bạ có tên gần giống là $contactList. Liệu bạn có nhầm lẫn tên người gửi không? Nếu nhầm lẫn bạn hãy nói lại tên"
+                            callback.onError(message)
                         }
                     })
                 }
@@ -146,15 +159,21 @@ class CommandProcessor(private val context: Context) {
 
             when (command) {
                 "send-mess" -> {
-                    Log.d("CommandProcessor", "Executing SMS command")
-                    smsAutomation.sendSMS(ent, value, object : SMSAutomation.SMSCallback {
+                    Log.d("CommandProcessor", "Executing SMS command with smart handling")
+                    smsAutomation.sendSMSWithSmartHandling(ent, value, object : SMSAutomation.SMSConversationCallback {
                         override fun onSuccess() {
                             Log.d("CommandProcessor", "SMS sent successfully")
                             callback.onCommandExecuted(true, "Đã gửi tin nhắn thành công")
                         }
                         override fun onError(error: String) {
                             Log.e("CommandProcessor", "SMS error: $error")
-                            callback.onError("Lỗi gửi tin nhắn: $error")
+                            callback.onError(error)
+                        }
+                        override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
+                            Log.d("CommandProcessor", "Need confirmation for similar contacts: $similarContacts")
+                            val contactList = similarContacts.joinToString(" và ")
+                            val message = "Không tìm thấy danh bạ $originalName nhưng tìm được ${similarContacts.size} danh bạ có tên gần giống là $contactList. Liệu bạn có nhầm lẫn tên người gửi không? Nếu nhầm lẫn bạn hãy nói lại tên"
+                            callback.onError(message)
                         }
                     })
                 }

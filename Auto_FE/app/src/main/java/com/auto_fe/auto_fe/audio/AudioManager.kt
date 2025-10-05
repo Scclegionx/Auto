@@ -10,9 +10,22 @@ import android.os.Bundle
 import android.util.Log
 import java.util.*
 
-class AudioManager(private val context: Context) {
+class VoiceManager private constructor(private val context: Context) {
     private var speechRecognizer: SpeechRecognizer? = null
     private var audioRecorder: AudioRecorder? = null
+    private var isBusy = false
+    private var pendingCallback: AudioManagerCallback? = null
+    
+    companion object {
+        @Volatile
+        private var INSTANCE: VoiceManager? = null
+        
+        fun getInstance(context: Context): VoiceManager {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: VoiceManager(context.applicationContext).also { INSTANCE = it }
+            }
+        }
+    }
     
     interface AudioManagerCallback {
         fun onSpeechResult(spokenText: String)
@@ -25,8 +38,30 @@ class AudioManager(private val context: Context) {
     }
     
     fun startVoiceInteraction(callback: AudioManagerCallback) {
+        if (isBusy) {
+            Log.d("AudioManager", "AudioManager is busy, queuing request")
+            pendingCallback = callback
+            return
+        }
+        
+        isBusy = true
         // Bước 1: Nói câu hỏi
         audioRecorder?.speak("Bạn cần tôi trợ giúp bạn điều gì?")
+        
+        // Bước 2: Bắt đầu nhận diện giọng nói
+        startSpeechRecognition(callback)
+    }
+    
+    fun startVoiceInteractionWithMessage(message: String, callback: AudioManagerCallback) {
+        if (isBusy) {
+            Log.d("AudioManager", "AudioManager is busy, queuing request")
+            pendingCallback = callback
+            return
+        }
+        
+        isBusy = true
+        // Bước 1: Nói thông báo tùy chỉnh
+        audioRecorder?.speak(message)
         
         // Bước 2: Bắt đầu nhận diện giọng nói
         startSpeechRecognition(callback)
@@ -60,6 +95,7 @@ class AudioManager(private val context: Context) {
                     else -> "Lỗi không xác định"
                 }
                 callback.onError(errorMessage)
+                releaseBusyState()
             }
             
             override fun onResults(results: Bundle?) {
@@ -70,6 +106,7 @@ class AudioManager(private val context: Context) {
                 } else {
                     callback.onError("Không nhận diện được giọng nói")
                 }
+                releaseBusyState()
             }
             
             override fun onPartialResults(partialResults: Bundle?) {}
@@ -137,10 +174,31 @@ class AudioManager(private val context: Context) {
         speechRecognizer?.startListening(intent)
     }
     
+    fun speak(text: String) {
+        audioRecorder?.speak(text)
+    }
+    
+    private fun releaseBusyState() {
+        isBusy = false
+        Log.d("AudioManager", "Released busy state")
+        
+        // Process pending request if any
+        pendingCallback?.let { callback ->
+            Log.d("AudioManager", "Processing pending request")
+            pendingCallback = null
+            // Retry the last request
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                startVoiceInteraction(callback)
+            }, 1000) // Wait 1 second before retry
+        }
+    }
+    
     fun release() {
         speechRecognizer?.destroy()
         speechRecognizer = null
         audioRecorder?.release()
         audioRecorder = null
+        isBusy = false
+        pendingCallback = null
     }
 }

@@ -24,6 +24,12 @@ import androidx.core.content.ContextCompat
 import com.auto_fe.auto_fe.ui.FloatingWindow
 import com.auto_fe.auto_fe.ui.theme.Auto_FETheme
 import com.auto_fe.auto_fe.utils.PermissionManager
+import com.auto_fe.auto_fe.automation.msg.WAAutomation
+import com.auto_fe.auto_fe.automation.alarm.AlarmAutomation
+import com.auto_fe.auto_fe.automation.calendar.CalendarAutomation
+import com.auto_fe.auto_fe.automation.third_apps.YouTubeAutomation
+import com.auto_fe.auto_fe.automation.third_apps.ChromeAutomation
+import android.util.Log
 
 class MainActivity : ComponentActivity() {
     private lateinit var permissionManager: PermissionManager
@@ -156,6 +162,178 @@ fun MainScreen() {
                     )
                 }
             }
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            // Button test WhatsApp
+            Button(
+                onClick = {
+                    testWhatsAppFunction(context)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text("Test WhatsApp")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Button test Alarm
+            Button(
+                onClick = {
+                    testAlarmFunction(context)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text("Test Alarm")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Button test Calendar
+            Button(
+                onClick = {
+                    testCalendarFunction(context)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text("Test Calendar")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Button test YouTube
+            Button(
+                onClick = {
+                    testYouTubeFunction(context)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text("Test YouTube")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Button test Chrome
+            Button(
+                onClick = {
+                    testChromeFunction(context)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text("Test Chrome")
+            }
         }
     }
+}
+
+private fun testWhatsAppFunction(context: android.content.Context) {
+    Log.d("MainActivity", "Starting WhatsApp test...")
+    
+    // Test trực tiếp với WAAutomation
+    val waAutomation = WAAutomation(context)
+    waAutomation.sendWA("mẹ", "con sắp về", object : WAAutomation.WACallback {
+        override fun onSuccess() {
+            Log.d("MainActivity", "WhatsApp test successful!")
+            android.widget.Toast.makeText(context, "Test WhatsApp thành công!", android.widget.Toast.LENGTH_LONG).show()
+        }
+        override fun onError(error: String) {
+            Log.e("MainActivity", "WhatsApp test error: $error")
+            android.widget.Toast.makeText(context, "Test WhatsApp lỗi: $error", android.widget.Toast.LENGTH_LONG).show()
+        }
+    })
+}
+
+private fun testAlarmFunction(context: android.content.Context) {
+    Log.d("MainActivity", "Starting Alarm test...")
+
+    // Test trực tiếp với AlarmAutomation
+    val alarmAutomation = AlarmAutomation(context)
+    
+    // Tạo báo thức mặc định (9h sáng thứ 2 hàng tuần)
+    alarmAutomation.createDefaultAlarm(object : AlarmAutomation.AlarmCallback {
+        override fun onSuccess() {
+            Log.d("MainActivity", "Alarm test successful!")
+            android.widget.Toast.makeText(context, "Đã tạo báo thức thành công!", android.widget.Toast.LENGTH_LONG).show()
+        }
+        override fun onError(error: String) {
+            Log.e("MainActivity", "Alarm test error: $error")
+            android.widget.Toast.makeText(context, "Test Alarm lỗi: $error", android.widget.Toast.LENGTH_LONG).show()
+        }
+    })
+}
+
+private fun testCalendarFunction(context: android.content.Context) {
+    Log.d("MainActivity", "Starting Calendar test...")
+
+    // Kiểm tra quyền calendar
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR) 
+        != PackageManager.PERMISSION_GRANTED) {
+        
+        Log.d("MainActivity", "Calendar permission not granted")
+        android.widget.Toast.makeText(context, "Cần quyền truy cập lịch để tạo sự kiện", android.widget.Toast.LENGTH_LONG).show()
+        return
+    }
+
+    // Test trực tiếp với CalendarAutomation
+    val calendarAutomation = CalendarAutomation(context)
+    
+    // Tạo sự kiện mặc định (Họp thứ 4 tới lúc 10h sáng)
+    calendarAutomation.createDefaultEvent(object : CalendarAutomation.CalendarCallback {
+        override fun onSuccess() {
+            Log.d("MainActivity", "Calendar test successful!")
+            android.widget.Toast.makeText(context, "Đã tạo sự kiện thành công!", android.widget.Toast.LENGTH_LONG).show()
+        }
+        override fun onError(error: String) {
+            Log.e("MainActivity", "Calendar test error: $error")
+            android.widget.Toast.makeText(context, "Test Calendar lỗi: $error", android.widget.Toast.LENGTH_LONG).show()
+        }
+    })
+}
+
+private fun testYouTubeFunction(context: android.content.Context) {
+    Log.d("MainActivity", "Starting YouTube test...")
+
+    // Test trực tiếp với YouTubeAutomation
+    val youtubeAutomation = YouTubeAutomation(context)
+    
+    // Tìm kiếm mặc định: "nhạc sơn tùng MTP"
+    youtubeAutomation.searchDefault(object : YouTubeAutomation.YouTubeCallback {
+        override fun onSuccess() {
+            Log.d("MainActivity", "YouTube test successful!")
+            android.widget.Toast.makeText(context, "Đã mở YouTube tìm kiếm!", android.widget.Toast.LENGTH_LONG).show()
+        }
+        override fun onError(error: String) {
+            Log.e("MainActivity", "YouTube test error: $error")
+            android.widget.Toast.makeText(context, "Test YouTube lỗi: $error", android.widget.Toast.LENGTH_LONG).show()
+        }
+    })
+}
+
+private fun testChromeFunction(context: android.content.Context) {
+    Log.d("MainActivity", "Starting Chrome test...")
+
+    // Test trực tiếp với ChromeAutomation
+    val chromeAutomation = ChromeAutomation(context)
+    
+    // Tìm kiếm mặc định: "nhạc sơn tùng MTP"
+    chromeAutomation.searchDefault(object : ChromeAutomation.ChromeCallback {
+        override fun onSuccess() {
+            Log.d("MainActivity", "Chrome test successful!")
+            android.widget.Toast.makeText(context, "Đã mở Chrome tìm kiếm!", android.widget.Toast.LENGTH_LONG).show()
+        }
+        override fun onError(error: String) {
+            Log.e("MainActivity", "Chrome test error: $error")
+            android.widget.Toast.makeText(context, "Test Chrome lỗi: $error", android.widget.Toast.LENGTH_LONG).show()
+        }
+    })
 }

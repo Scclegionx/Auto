@@ -32,6 +32,8 @@ class FloatingWindow(private val context: Context) {
     private var smsObserver: SMSObserver? = null
     private var isWaitingForUserResponse = false
     private var pendingSMSMessage = ""
+    private var pendingSMSReceiver = ""
+    private var retryCount = 0
     
     // Drag functionality
     private var initialX = 0
@@ -116,7 +118,7 @@ class FloatingWindow(private val context: Context) {
             if (isRecording) {
                 stopRecording()
             } else {
-                startDirectRecording()
+                startAudioRecording() // Sử dụng startAudioRecording thay vì startDirectRecording để có xác nhận
             }
         }
         
@@ -168,50 +170,6 @@ class FloatingWindow(private val context: Context) {
         return imageView
     }
     
-    private fun startDirectRecording() {
-        Log.d("FloatingWindow", "startDirectRecording called")
-        if (isRecording) {
-            Log.d("FloatingWindow", "Already recording, returning")
-            return
-        }
-        
-        Log.d("FloatingWindow", "Starting recording...")
-        isRecording = true
-        updateFloatingButtonIcon()
-        
-        // Bắt đầu ghi âm
-        audioManager?.startVoiceInteraction(object : VoiceManager.AudioManagerCallback {
-            override fun onSpeechResult(spokenText: String) {
-                isRecording = false
-                updateFloatingButtonIcon()
-                
-                // Xử lý lệnh
-                commandProcessor?.processCommand(spokenText, object : CommandProcessor.CommandProcessorCallback {
-                    override fun onCommandExecuted(success: Boolean, message: String) {
-                        audioManager?.speak(message)
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                    }
-                    override fun onError(error: String) {
-                        if (error.contains("danh bạ có tên gần giống")) {
-                            isWaitingForUserResponse = true
-                            pendingSMSMessage = extractMessageFromCommand(spokenText)
-                            audioManager?.speak(error)
-                        } else {
-                            audioManager?.speak(error)
-                        }
-                        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
-                    }
-                })
-            }
-            override fun onConfirmationResult(confirmed: Boolean) {}
-            override fun onError(error: String) {
-                isRecording = false
-                updateFloatingButtonIcon()
-                audioManager?.speak(error)
-                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
-            }
-        })
-    }
     
     private fun stopRecording() {
         if (!isRecording) return
@@ -261,23 +219,11 @@ class FloatingWindow(private val context: Context) {
         val menuView = inflater.inflate(R.layout.floating_menu, null)
 
         val recordButton = menuView.findViewById<Button>(R.id.btn_record)
-        val testSmsButton = menuView.findViewById<Button>(R.id.btn_test_sms)
-        val testNlpButton = menuView.findViewById<Button>(R.id.btn_test_nlp)
         val closeButton = menuView.findViewById<Button>(R.id.btn_close)
 
         recordButton.setOnClickListener {
             hideCommandMenu()
             startAudioRecording()
-        }
-
-        testSmsButton.setOnClickListener {
-            hideCommandMenu()
-            testSMSFunction()
-        }
-
-        testNlpButton.setOnClickListener {
-            hideCommandMenu()
-            testNLPFlow()
         }
 
         closeButton.setOnClickListener {
@@ -329,9 +275,9 @@ class FloatingWindow(private val context: Context) {
             handleUserResponseForSMS()
         } else {
             // Luồng bình thường - ghi âm lệnh mới
-            audioManager?.startVoiceInteraction(object : VoiceManager.AudioManagerCallback {
+            audioManager?.startVoiceInteraction(object : VoiceManager.VoiceControllerCallback {
                 override fun onSpeechResult(spokenText: String) {
-                    audioManager?.confirmCommand(spokenText, object : VoiceManager.AudioManagerCallback {
+                    audioManager?.confirmCommand(spokenText, object : VoiceManager.VoiceControllerCallback {
                         override fun onSpeechResult(spokenText: String) {}
                         override fun onConfirmationResult(confirmed: Boolean) {
                             if (confirmed) {
@@ -346,7 +292,7 @@ class FloatingWindow(private val context: Context) {
                                         if (error.contains("danh bạ có tên gần giống")) {
                                             // Lưu thông tin để xử lý hội thoại
                                             isWaitingForUserResponse = true
-                                            pendingSMSMessage = extractMessageFromCommand(spokenText)
+                                            // pendingSMSMessage đã được set trong onNeedConfirmation
                                             // Thông báo bằng giọng nói
                                             audioManager?.speak(error)
                                         } else {
@@ -354,6 +300,51 @@ class FloatingWindow(private val context: Context) {
                                             audioManager?.speak(error)
                                         }
                                         Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                                    }
+                                    override fun onNeedConfirmation(command: String, receiver: String, message: String) {
+                                        // Lưu thông tin để xử lý sau
+                                        pendingSMSReceiver = receiver
+                                        pendingSMSMessage = message
+                                        isWaitingForUserResponse = true
+                                        Log.d("FloatingWindow", "Set pendingSMSMessage to: '$message'")
+                                        
+                                        // Thực hiện gửi SMS với xử lý thông minh
+                                        smsAutomation?.sendSMSWithSmartHandling(receiver, message, object : SMSAutomation.SMSConversationCallback {
+                                            override fun onSuccess() {
+                                                audioManager?.speak("Đã gửi tin nhắn thành công")
+                                                Toast.makeText(context, "Đã gửi tin nhắn thành công", Toast.LENGTH_LONG).show()
+                                            }
+                                            override fun onError(error: String) {
+                                                // Kiểm tra xem có phải lỗi cần xác nhận danh bạ không
+                                                if (error.contains("danh bạ có tên gần giống")) {
+                                                    // Lưu thông tin để xử lý hội thoại
+                                                    isWaitingForUserResponse = true
+                                                    pendingSMSReceiver = receiver
+                                                    // pendingSMSMessage đã được set ở trên, không cần set lại
+                                                    Log.d("FloatingWindow", "onError: pendingSMSMessage is still: '$pendingSMSMessage'")
+                                                    // Thông báo bằng giọng nói
+                                                    audioManager?.speak(error)
+                                                } else {
+                                                    // Thông báo lỗi bình thường
+                                                    audioManager?.speak(error)
+                                                }
+                                                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                                            }
+                                            override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
+                                                val contactList = similarContacts.joinToString(" và ")
+                                                val errorMessage = "Không tìm thấy danh bạ $originalName nhưng tìm được ${similarContacts.size} danh bạ có tên gần giống là $contactList. Liệu bạn có nhầm lẫn tên người gửi không? Nếu nhầm lẫn bạn hãy nói lại tên"
+                                                isWaitingForUserResponse = true
+                                                pendingSMSReceiver = originalName
+                                                pendingSMSMessage = message
+                                                audioManager?.speak(errorMessage)
+                                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                                                
+                                                // Tự động bắt đầu nhận diện giọng nói sau khi TTS hoàn thành
+                                                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                                                    handleUserResponseForSMS()
+                                                }, 3000) // Đợi 3 giây để TTS hoàn thành
+                                            }
+                                        })
                                     }
                                 })
                             } else {
@@ -380,86 +371,119 @@ class FloatingWindow(private val context: Context) {
      * Xử lý phản hồi từ người dùng khi cần xác nhận danh bạ
      */
     private fun handleUserResponseForSMS() {
-        audioManager?.startVoiceInteraction(object : VoiceManager.AudioManagerCallback {
+        // Tăng retry count
+        retryCount++
+        
+        // Nếu đã retry 2 lần, hủy luồng
+        if (retryCount > 2) {
+            isWaitingForUserResponse = false
+            pendingSMSMessage = ""
+            pendingSMSReceiver = ""
+            retryCount = 0
+            audioManager?.speak("Vẫn không tìm thấy liên hệ bạn cần. Đã hủy gửi tin nhắn")
+            Toast.makeText(context, "Vẫn không tìm thấy liên hệ bạn cần. Đã hủy gửi tin nhắn", Toast.LENGTH_LONG).show()
+            return
+        }
+        
+        // Timeout sau 10 giây nếu user không nói gì
+        val timeoutHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        val timeoutRunnable = Runnable {
+            if (isWaitingForUserResponse) {
+                isWaitingForUserResponse = false
+                pendingSMSMessage = ""
+                pendingSMSReceiver = ""
+                retryCount = 0
+                // Không nói gì để tránh Speech Recognition nhận được
+                Toast.makeText(context, "Không nhận được phản hồi. Đã hủy gửi tin nhắn", Toast.LENGTH_LONG).show()
+            }
+        }
+        timeoutHandler.postDelayed(timeoutRunnable, 20000) // 10 giây timeout
+        
+        audioManager?.startVoiceInteractionSilent(object : VoiceManager.VoiceControllerCallback {
             override fun onSpeechResult(spokenText: String) {
-                // Xử lý phản hồi của người dùng
-                smsAutomation?.handleUserResponse(spokenText, pendingSMSMessage, object : SMSAutomation.SMSConversationCallback {
-                    override fun onSuccess() {
+                // Hủy timeout
+                timeoutHandler.removeCallbacks(timeoutRunnable)
+                
+                // User nói lại tên người nhận
+                val newReceiver = spokenText.trim()
+                Log.d("FloatingWindow", "User provided new receiver: $newReceiver")
+                
+                // Kiểm tra xem có phải là TTS không (chứa từ khóa hệ thống)
+                if (newReceiver.contains("không nhận được") || 
+                    newReceiver.contains("đã hủy") || 
+                    newReceiver.contains("gửi tin nhắn") ||
+                    newReceiver.contains("danh bạ") ||
+                    newReceiver.contains("nhầm lẫn")) {
+                    Log.d("FloatingWindow", "Detected TTS output, ignoring")
+                    return
+                }
+                
+                // Kiểm tra xem user có nói "không" hay từ phủ định không
+                if (newReceiver.lowercase().contains("không") || 
+                    newReceiver.lowercase().contains("không phải") ||
+                    newReceiver.lowercase().contains("sai") ||
+                    newReceiver.lowercase().contains("no") ||
+                    newReceiver.lowercase().contains("thôi") ||
+                    newReceiver.lowercase().contains("hủy")) {
+                    Log.d("FloatingWindow", "User declined, stopping SMS flow")
+                    isWaitingForUserResponse = false
+                    pendingSMSMessage = ""
+                    pendingSMSReceiver = ""
+                    retryCount = 0
+                    audioManager?.speak("Tôi không thực hiện gửi tin nhắn")
+                    Toast.makeText(context, "Tôi không thực hiện gửi tin nhắn", Toast.LENGTH_LONG).show()
+                    return
+                }
+                
+                // Thử gửi SMS với tên mới
+                Log.d("FloatingWindow", "Sending SMS with receiver: $newReceiver, message: '$pendingSMSMessage'")
+                commandProcessor?.processSMSWithNewReceiver(newReceiver, pendingSMSMessage, object : CommandProcessor.CommandProcessorCallback {
+                    override fun onCommandExecuted(success: Boolean, message: String) {
                         isWaitingForUserResponse = false
                         pendingSMSMessage = ""
-                        audioManager?.speak("Đã gửi tin nhắn thành công")
-                        Toast.makeText(context, "Đã gửi tin nhắn thành công", Toast.LENGTH_LONG).show()
+                        pendingSMSReceiver = ""
+                        retryCount = 0
+                        audioManager?.speak(message)
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                     }
                     override fun onError(error: String) {
-                        isWaitingForUserResponse = false
-                        pendingSMSMessage = ""
-                        audioManager?.speak(error)
+                        // Kiểm tra xem có phải lỗi cần xác nhận danh bạ không
+                        if (error.contains("danh bạ có tên gần giống")) {
+                            // Vẫn còn lỗi danh bạ, tiếp tục chờ user response
+                            audioManager?.speak(error)
+                            // Tự động bắt đầu nhận diện lại sau 3 giây
+                            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                                if (isWaitingForUserResponse) {
+                                    handleUserResponseForSMS()
+                                }
+                            }, 3000)
+                        } else {
+                            // Lỗi khác, reset state
+                            isWaitingForUserResponse = false
+                            pendingSMSMessage = ""
+                            pendingSMSReceiver = ""
+                            retryCount = 0
+                            audioManager?.speak(error)
+                        }
                         Toast.makeText(context, error, Toast.LENGTH_LONG).show()
                     }
-                    override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
-                        // Không cần xử lý ở đây vì đã xử lý trong luồng chính
+                    override fun onNeedConfirmation(command: String, receiver: String, message: String) {
+                        // Không cần xử lý ở đây
                     }
                 })
             }
             override fun onConfirmationResult(confirmed: Boolean) {}
             override fun onError(error: String) {
+                // Hủy timeout
+                timeoutHandler.removeCallbacks(timeoutRunnable)
                 audioManager?.speak(error)
                 Toast.makeText(context, error, Toast.LENGTH_LONG).show()
             }
         })
     }
     
-    /**
-     * Trích xuất nội dung tin nhắn từ lệnh gốc
-     */
-    private fun extractMessageFromCommand(command: String): String {
-        // Tạm thời trả về tin nhắn mặc định, có thể cải thiện sau
-        return "Tin nhắn từ Auto FE"
-    }
     
-    private fun testSMSFunction() {
-        Log.d("FloatingWindow", "Starting SMS test...")
-        val smsAutomation = SMSAutomation(context)
-        smsAutomation.sendSMS("mom", "con sắp về", object : SMSAutomation.SMSCallback {
-            override fun onSuccess() {
-                Log.d("FloatingWindow", "SMS test successful!")
-                showTestResult("Test SMS thành công!")
-            }
-            override fun onError(error: String) {
-                Log.e("FloatingWindow", "SMS test error: $error")
-                showTestResult("Test SMS lỗi: $error")
-            }
-        })
-    }
-
-    private fun testNLPFlow() {
-        Log.d("FloatingWindow", "Starting NLP flow test...")
-        val testCommand = "nhắn tin cho mom là con sắp về"
-        Log.d("FloatingWindow", "Testing command: $testCommand")
-
-        commandProcessor?.processCommand(testCommand, object : CommandProcessor.CommandProcessorCallback {
-            override fun onCommandExecuted(success: Boolean, message: String) {
-                Log.d("FloatingWindow", "NLP flow test result: $success - $message")
-                showTestResult("NLP Flow Test: $message")
-            }
-            override fun onError(error: String) {
-                Log.e("FloatingWindow", "NLP flow test error: $error")
-                showTestResult("NLP Flow Test Error: $error")
-            }
-        })
-    }
-
-    private fun showTestResult(message: String) {
-        try {
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle("Test Result")
-            builder.setMessage(message)
-            builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-            builder.show()
-        } catch (e: Exception) {
-            Log.e("FloatingWindow", "Error showing dialog: ${e.message}")
-        }
-    }
+    
 
     fun hideFloatingWindow() {
         // Dừng lắng nghe SMS

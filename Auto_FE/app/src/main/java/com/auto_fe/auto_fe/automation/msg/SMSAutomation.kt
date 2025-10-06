@@ -79,7 +79,7 @@ class SMSAutomation(private val context: Context) {
     /**
      * Tìm số điện thoại từ tên liên hệ
      */
-    private fun findPhoneNumberByName(contactName: String): String {
+    fun findPhoneNumberByName(contactName: String): String {
         Log.d("SMSAutomation", "Searching for contact: $contactName")
         
         // Kiểm tra quyền đọc danh bạ
@@ -215,33 +215,51 @@ class SMSAutomation(private val context: Context) {
      * Luồng xử lý SMS với xử lý ngoại lệ thông minh
      */
     fun sendSMSWithSmartHandling(receiver: String, message: String, callback: SMSConversationCallback) {
+        Log.d("SMSAutomation", "sendSMSWithSmartHandling called with receiver: $receiver, message: $message")
+        
         // Bước 1: Tách từ thông minh
         val searchWords = smartWordParsing(receiver)
+        Log.d("SMSAutomation", "Search words after parsing: $searchWords")
         
         if (searchWords.isEmpty()) {
+            Log.d("SMSAutomation", "No search words found")
             callback.onError("Không tìm thấy người này trong danh bạ")
             return
         }
         
         // Bước 2: Tìm kiếm fuzzy
         val similarContacts = findSimilarContacts(searchWords)
+        Log.d("SMSAutomation", "Similar contacts found: $similarContacts")
         
         when {
             similarContacts.isEmpty() -> {
+                Log.d("SMSAutomation", "No similar contacts found")
                 callback.onError("Không tìm thấy người này trong danh bạ")
             }
             
             similarContacts.size == 1 -> {
                 val contactName = similarContacts[0]
-                val phoneNumber = findExactContact(contactName)
-                if (phoneNumber.isNotEmpty()) {
-                    sendSMSDirect(phoneNumber, message, callback)
+                Log.d("SMSAutomation", "Found 1 similar contact: $contactName, original: $receiver")
+                
+                // Kiểm tra xem tên có khớp 100% không
+                if (contactName.lowercase() == receiver.lowercase()) {
+                    Log.d("SMSAutomation", "Contact name matches exactly, sending directly")
+                    // Tên khớp 100%, gửi trực tiếp
+                    val phoneNumber = findExactContact(contactName)
+                    if (phoneNumber.isNotEmpty()) {
+                        sendSMSDirect(phoneNumber, message, callback)
+                    } else {
+                        callback.onError("Không tìm thấy người này trong danh bạ")
+                    }
                 } else {
-                    callback.onError("Không tìm thấy người này trong danh bạ")
+                    Log.d("SMSAutomation", "Contact name differs, need confirmation")
+                    // Tên khác nhau, cần xác nhận
+                    callback.onNeedConfirmation(similarContacts, receiver)
                 }
             }
             
             else -> {
+                Log.d("SMSAutomation", "Found multiple similar contacts: $similarContacts")
                 callback.onNeedConfirmation(similarContacts, receiver)
             }
         }
@@ -261,21 +279,4 @@ class SMSAutomation(private val context: Context) {
         })
     }
     
-    /**
-     * Xử lý phản hồi từ người dùng khi có danh bạ tương tự
-     */
-    fun handleUserResponse(userResponse: String, originalMessage: String, callback: SMSConversationCallback) {
-        if (userResponse.lowercase().contains("hủy") || userResponse.lowercase().contains("cancel")) {
-            callback.onError("Đã hủy gửi tin nhắn")
-            return
-        }
-        
-        val phoneNumber = findExactContact(userResponse.trim())
-        
-        if (phoneNumber.isNotEmpty()) {
-            sendSMSDirect(phoneNumber, originalMessage, callback)
-        } else {
-            callback.onError("Vẫn không tìm thấy danh bạ. Vui lòng kiểm tra lại danh bạ")
-        }
-    }
 }

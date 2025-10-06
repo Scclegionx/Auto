@@ -18,6 +18,7 @@ class CommandProcessor(private val context: Context) {
     interface CommandProcessorCallback {
         fun onCommandExecuted(success: Boolean, message: String)
         fun onError(error: String)
+        fun onNeedConfirmation(command: String, receiver: String, message: String)
     }
 
     /**
@@ -88,19 +89,8 @@ class CommandProcessor(private val context: Context) {
 
             when (command) {
                 "Gửi tin nhắn" -> {
-                    smsAutomation.sendSMSWithSmartHandling(receiver, value, object : SMSAutomation.SMSConversationCallback {
-                        override fun onSuccess() {
-                            callback.onCommandExecuted(true, "Đã gửi tin nhắn thành công")
-                        }
-                        override fun onError(error: String) {
-                            callback.onError(error)
-                        }
-                        override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
-                            val contactList = similarContacts.joinToString(" và ")
-                            val message = "Không tìm thấy danh bạ $originalName nhưng tìm được ${similarContacts.size} danh bạ có tên gần giống là $contactList. Liệu bạn có nhầm lẫn tên người gửi không? Nếu nhầm lẫn bạn hãy nói lại tên"
-                            callback.onError(message)
-                        }
-                    })
+                    // Luôn yêu cầu xác nhận trước khi gửi SMS
+                    callback.onNeedConfirmation("Gửi tin nhắn", receiver, value)
                 }
                 "call" -> {
                     phoneAutomation.makeCall(receiver, object : PhoneAutomation.PhoneCallback {
@@ -200,5 +190,24 @@ class CommandProcessor(private val context: Context) {
             Log.e("CommandProcessor", "Exception in format 2: ${e.message}")
             callback.onError("Lỗi xử lý dạng 2: ${e.message}")
         }
+    }
+    
+    /**
+     * Xử lý khi user nói lại tên người nhận
+     */
+    fun processSMSWithNewReceiver(newReceiver: String, message: String, callback: CommandProcessorCallback) {
+        smsAutomation.sendSMSWithSmartHandling(newReceiver, message, object : SMSAutomation.SMSConversationCallback {
+            override fun onSuccess() {
+                callback.onCommandExecuted(true, "Đã gửi tin nhắn thành công")
+            }
+            override fun onError(error: String) {
+                callback.onError(error)
+            }
+            override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
+                val contactList = similarContacts.joinToString(" và ")
+                val message = "Không tìm thấy danh bạ $originalName nhưng tìm được ${similarContacts.size} danh bạ có tên gần giống là $contactList. Liệu bạn có nhầm lẫn tên người gửi không? Nếu nhầm lẫn bạn hãy nói lại tên"
+                callback.onError(message)
+            }
+        })
     }
 }

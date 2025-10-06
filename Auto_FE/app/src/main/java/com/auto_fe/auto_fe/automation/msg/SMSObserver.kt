@@ -10,9 +10,6 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.Telephony
-import android.speech.RecognitionListener
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import android.util.Log
 import com.auto_fe.auto_fe.audio.VoiceManager
 
@@ -27,7 +24,6 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
     private var pendingSmsAddress: String = ""
     private val responseHandler = Handler(Looper.getMainLooper())
     private var responseRunnable: Runnable? = null
-    private var speechRecognizer: SpeechRecognizer? = null
     
     // Screen state management
     private var isScreenOn = true  // Mặc định là true (giả sử màn hình đang mở)
@@ -159,96 +155,40 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
         
         // Đợi nói xong rồi mới bắt đầu voice recognition
         responseHandler.postDelayed({
-            startSimpleVoiceRecognition()
+            startVoiceRecognitionWithVoiceManager()
         }, 3000) // Đợi 3 giây để nói xong
     }
     
-    private fun startSimpleVoiceRecognition() {
+    private fun startVoiceRecognitionWithVoiceManager() {
         if (!isWaitingForResponse) return
         
-        Log.d("SMSObserver", "Starting simple voice recognition...")
+        Log.d("SMSObserver", "Starting voice recognition with VoiceManager...")
+        
+        // Kiểm tra xem AudioManager có đang busy không
+        if (audioManager == null) {
+            Log.e("SMSObserver", "AudioManager is null")
+            handleVoiceRecognitionError()
+            return
+        }
         
         try {
-            if (!SpeechRecognizer.isRecognitionAvailable(context)) {
-                Log.e("SMSObserver", "Speech recognition not available")
-                handleVoiceRecognitionError()
-                return
-            }
-            
-            // Tạo SpeechRecognizer riêng cho SMS
-            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
-            speechRecognizer?.setRecognitionListener(object : RecognitionListener {
-                override fun onReadyForSpeech(params: android.os.Bundle?) {
-                    Log.d("SMSObserver", "Ready for speech")
+            // Sử dụng AudioManager với nhận diện im lặng (không nói gì)
+            audioManager?.startVoiceInteractionSilent(object : com.auto_fe.auto_fe.audio.VoiceManager.VoiceControllerCallback {
+                override fun onSpeechResult(spokenText: String) {
+                    Log.d("SMSObserver", "Voice recognition result: $spokenText")
+                    handleUserResponse(spokenText)
                 }
-                
-                override fun onBeginningOfSpeech() {
-                    Log.d("SMSObserver", "Beginning of speech")
-                }
-                
-                override fun onRmsChanged(rmsdB: Float) {}
-                override fun onBufferReceived(buffer: ByteArray?) {}
-                override fun onEndOfSpeech() {
-                    Log.d("SMSObserver", "End of speech")
-                }
-                
-                override fun onError(error: Int) {
-                    val errorMessage = when (error) {
-                        SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> "Lỗi mạng"
-                        SpeechRecognizer.ERROR_NETWORK -> "Lỗi kết nối mạng"
-                        SpeechRecognizer.ERROR_AUDIO -> "Lỗi âm thanh"
-                        SpeechRecognizer.ERROR_SERVER -> "Lỗi server"
-                        SpeechRecognizer.ERROR_CLIENT -> "Lỗi client"
-                        SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "Không nghe thấy giọng nói"
-                        SpeechRecognizer.ERROR_NO_MATCH -> "Không nhận diện được"
-                        SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "Hệ thống nhận diện đang bận"
-                        SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Không đủ quyền"
-                        else -> "Lỗi không xác định: $error"
-                    }
-                    Log.e("SMSObserver", "Speech recognition error: $errorMessage")
+                override fun onConfirmationResult(confirmed: Boolean) {}
+                override fun onError(error: String) {
+                    Log.e("SMSObserver", "Voice recognition error: $error")
                     handleVoiceRecognitionError()
                 }
-                
-                override fun onResults(results: android.os.Bundle?) {
-                    // Kiểm tra xem còn đang chờ phản hồi không
-                    if (!isWaitingForResponse) {
-                        Log.d("SMSObserver", "Not waiting for response, ignoring speech results")
-                        return
-                    }
-                    
-                    // Hủy timeout trước khi xử lý kết quả
-                    responseRunnable?.let { responseHandler.removeCallbacks(it) }
-                    
-                    val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    if (!matches.isNullOrEmpty()) {
-                        val spokenText = matches[0]
-                        Log.d("SMSObserver", "Speech recognition result: $spokenText")
-                        handleUserResponse(spokenText)
-                    } else {
-                        Log.d("SMSObserver", "No speech recognition results")
-                        handleVoiceRecognitionError()
-                    }
-                }
-                
-                override fun onPartialResults(partialResults: android.os.Bundle?) {}
-                override fun onEvent(eventType: Int, params: android.os.Bundle?) {}
             })
             
-            // Bắt đầu nhận diện
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-                putExtra(RecognizerIntent.EXTRA_LANGUAGE, "vi-VN")
-                putExtra(RecognizerIntent.EXTRA_PROMPT, "Bạn có muốn đọc tin nhắn không?")
-                putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-            }
-            
-            speechRecognizer?.startListening(intent)
-            
-            // Timeout 8 giây (tăng thời gian để tránh race condition)
+            // Timeout 8 giây
             responseRunnable = Runnable {
                 if (isWaitingForResponse) {
                     Log.d("SMSObserver", "Voice recognition timeout")
-                    speechRecognizer?.cancel()
                     handleVoiceRecognitionError()
                 }
             }
@@ -276,7 +216,7 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
                 // Thử voice recognition với fallback
                 try {
                     // Sử dụng AudioManager với thông báo tùy chỉnh
-                    audioManager?.startVoiceInteractionWithMessage(message, object : com.auto_fe.auto_fe.audio.VoiceManager.AudioManagerCallback {
+                    audioManager?.startVoiceInteractionWithMessage(message, object : com.auto_fe.auto_fe.audio.VoiceManager.VoiceControllerCallback {
                         override fun onSpeechResult(spokenText: String) {
                             Log.d("SMSObserver", "Voice recognition result: $spokenText")
                             handleUserResponse(spokenText)
@@ -330,9 +270,8 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
             return
         }
         
-        // Hủy timeout và speech recognizer
+        // Hủy timeout
         responseRunnable?.let { responseHandler.removeCallbacks(it) }
-        speechRecognizer?.cancel()
         isWaitingForResponse = false
         isProcessingSMS = false // Reset processing flag
         
@@ -496,10 +435,7 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
             responseRunnable?.let { responseHandler.removeCallbacks(it) }
             isWaitingForResponse = false
             
-            // Cleanup SpeechRecognizer
-            speechRecognizer?.cancel()
-            speechRecognizer?.destroy()
-            speechRecognizer = null
+            // SpeechRecognizer được quản lý bởi VoiceManager
             
             // Unregister SMS observer
             context.contentResolver.unregisterContentObserver(this)

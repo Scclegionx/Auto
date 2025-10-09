@@ -32,6 +32,7 @@ class VoiceManager private constructor(private val context: Context) {
         fun onSpeechResult(spokenText: String)
         fun onConfirmationResult(confirmed: Boolean)
         fun onError(error: String)
+        fun onAudioLevelChanged(level: Int) // Thêm callback cho audio level
     }
     
     init {
@@ -93,7 +94,19 @@ class VoiceManager private constructor(private val context: Context) {
             object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {}
                 override fun onBeginningOfSpeech() {}
-                override fun onRmsChanged(rmsdB: Float) {}
+                override fun onRmsChanged(rmsdB: Float) {
+                    // Chỉ gửi level khi đang busy (recording)
+                    if (isBusy) {
+                        // Convert RMS dB to level 0-3
+                        val level = when {
+                            rmsdB < 0.1f -> 0
+                            rmsdB < 0.3f -> 1
+                            rmsdB < 0.6f -> 2
+                            else -> 3
+                        }
+                        callback.onAudioLevelChanged(level)
+                    }
+                }
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {}
                 
@@ -151,7 +164,19 @@ class VoiceManager private constructor(private val context: Context) {
             object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {}
                 override fun onBeginningOfSpeech() {}
-                override fun onRmsChanged(rmsdB: Float) {}
+                override fun onRmsChanged(rmsdB: Float) {
+                    // Chỉ gửi level khi đang busy (recording)
+                    if (isBusy) {
+                        // Convert RMS dB to level 0-3
+                        val level = when {
+                            rmsdB < 0.1f -> 0
+                            rmsdB < 0.3f -> 1
+                            rmsdB < 0.6f -> 2
+                            else -> 3
+                        }
+                        callback.onAudioLevelChanged(level)
+                    }
+                }
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {}
                 

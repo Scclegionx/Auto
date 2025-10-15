@@ -38,82 +38,18 @@ class AudioRecorder(private val context: Context) {
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
     
-    fun startRecording(callback: AudioRecorderCallback) {
-        if (isRecording) return
-        
-        try {
-            val sampleRate = 44100
-            val channelConfig = AudioFormat.CHANNEL_IN_MONO
-            val audioFormat = AudioFormat.ENCODING_PCM_16BIT
-            
-            val bufferSize = AudioRecord.getMinBufferSize(
-                sampleRate, channelConfig, audioFormat
-            )
-            
-            audioRecord = AudioRecord(
-                MediaRecorder.AudioSource.MIC,
-                sampleRate,
-                channelConfig,
-                audioFormat,
-                bufferSize
-            )
-            
-            recordingFile = File(context.cacheDir, "recording_${System.currentTimeMillis()}.wav")
-            
-            audioRecord?.startRecording()
-            isRecording = true
-            
-            // Bắt đầu ghi âm trong background thread
-            Thread {
-                val buffer = ByteArray(bufferSize)
-                val outputStream = FileOutputStream(recordingFile)
-                
-                try {
-                    while (isRecording) {
-                        val bytesRead = audioRecord?.read(buffer, 0, bufferSize) ?: 0
-                        if (bytesRead > 0) {
-                            outputStream.write(buffer, 0, bytesRead)
-                        }
-                    }
-                } catch (e: IOException) {
-                    callback.onError("Lỗi khi ghi âm: ${e.message}")
-                } finally {
-                    outputStream.close()
-                }
-            }.start()
-            
-        } catch (e: Exception) {
-            callback.onError("Không thể bắt đầu ghi âm: ${e.message}")
-        }
+    fun speak(text: String, callback: () -> Unit) {
+        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+        // Đợi TTS hoàn thành rồi gọi callback
+        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+            callback()
+        }, 2000) // Đợi 2 giây
     }
     
-    fun stopRecording(callback: AudioRecorderCallback) {
-        if (!isRecording) return
-        
-        isRecording = false
-        audioRecord?.stop()
-        audioRecord?.release()
-        audioRecord = null
-        
-        recordingFile?.let { file ->
-            if (file.exists() && file.length() > 0) {
-                callback.onRecordingComplete(file)
-            } else {
-                callback.onError("File ghi âm không hợp lệ")
-            }
-        }
-    }
     
     fun release() {
         tts?.stop()
         tts?.shutdown()
         tts = null
-        
-        if (isRecording) {
-            stopRecording(object : AudioRecorderCallback {
-                override fun onRecordingComplete(audioFile: File) {}
-                override fun onError(error: String) {}
-            })
-        }
     }
 }

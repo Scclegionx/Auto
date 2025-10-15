@@ -173,7 +173,7 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
         
         try {
             // Sử dụng AudioManager với nhận diện im lặng (không nói gì)
-            audioManager?.startVoiceInteractionSilent(object : com.auto_fe.auto_fe.audio.VoiceManager.VoiceControllerCallback {
+            audioManager?.textToSpeech("", 0, object : com.auto_fe.auto_fe.audio.VoiceManager.VoiceControllerCallback {
                 override fun onSpeechResult(spokenText: String) {
                     Log.d("SMSObserver", "Voice recognition result: $spokenText")
                     handleUserResponse(spokenText)
@@ -182,6 +182,10 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
                 override fun onError(error: String) {
                     Log.e("SMSObserver", "Voice recognition error: $error")
                     handleVoiceRecognitionError()
+                }
+                override fun onAudioLevelChanged(level: Int) {
+                    // Audio level callback - có thể dùng để hiển thị visual feedback
+                    // Hiện tại không cần xử lý gì đặc biệt
                 }
             })
             
@@ -216,7 +220,7 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
                 // Thử voice recognition với fallback
                 try {
                     // Sử dụng AudioManager với thông báo tùy chỉnh
-                    audioManager?.startVoiceInteractionWithMessage(message, object : com.auto_fe.auto_fe.audio.VoiceManager.VoiceControllerCallback {
+                    audioManager?.textToSpeech(message, 2, object : com.auto_fe.auto_fe.audio.VoiceManager.VoiceControllerCallback {
                         override fun onSpeechResult(spokenText: String) {
                             Log.d("SMSObserver", "Voice recognition result: $spokenText")
                             handleUserResponse(spokenText)
@@ -226,6 +230,10 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
                             Log.e("SMSObserver", "Error in voice recognition: $error")
                             // Fallback: Nếu voice recognition lỗi, dùng manual input
                             handleVoiceRecognitionError()
+                        }
+                        override fun onAudioLevelChanged(level: Int) {
+                            // Audio level callback - có thể dùng để hiển thị visual feedback
+                            // Hiện tại không cần xử lý gì đặc biệt
                         }
                     })
                     

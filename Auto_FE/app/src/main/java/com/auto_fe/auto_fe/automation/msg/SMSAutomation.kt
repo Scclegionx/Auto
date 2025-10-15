@@ -11,92 +11,99 @@ import android.util.Log
 import android.telephony.SmsManager
 import androidx.core.content.ContextCompat
 
+/**
+ * SMSAutomation - Enhanced for State Machine
+ *
+ * THÊM:
+ * - Method findExactContactWithPhone() để tìm contact chính xác 100%
+ * - Improved logging
+ * - Better separation of concerns
+ */
 class SMSAutomation(private val context: Context) {
-    
+
+    companion object {
+        private const val TAG = "SMSAutomation"
+    }
+
     interface SMSCallback {
         fun onSuccess()
         fun onError(error: String)
     }
-    
+
     interface SMSConversationCallback {
         fun onSuccess()
         fun onError(error: String)
         fun onNeedConfirmation(similarContacts: List<String>, originalName: String)
     }
-    
+
     /**
-     * Gửi SMS sử dụng Android Intents API
-     * @param receiver Tên người nhận hoặc số điện thoại
-     * @param message Nội dung tin nhắn
+     * Gửi SMS sử dụng SmsManager API
      */
     fun sendSMS(receiver: String, message: String, callback: SMSCallback) {
         try {
-            Log.d("SMSAutomation", "sendSMS called with receiver: $receiver, message: $message")
-            
-            // Tìm số điện thoại từ tên liên hệ hoặc sử dụng trực tiếp nếu là số
+            Log.d(TAG, "sendSMS called with receiver: $receiver, message: $message")
+
             val phoneNumber = if (isPhoneNumber(receiver)) {
-                Log.d("SMSAutomation", "Receiver is phone number: $receiver")
+                Log.d(TAG, "Receiver is phone number: $receiver")
                 receiver
             } else {
-                Log.d("SMSAutomation", "Looking up phone number for contact: $receiver")
+                Log.d(TAG, "Looking up phone number for contact: $receiver")
                 val foundNumber = findPhoneNumberByName(receiver)
-                Log.d("SMSAutomation", "Found phone number: $foundNumber")
+                Log.d(TAG, "Found phone number: $foundNumber")
                 foundNumber
             }
-            
+
             if (phoneNumber.isEmpty()) {
-                Log.e("SMSAutomation", "No phone number found for: $receiver")
+                Log.e(TAG, "No phone number found for: $receiver")
                 callback.onError("Không tìm thấy số điện thoại cho: $receiver")
                 return
             }
-            
-            Log.d("SMSAutomation", "Using phone number: $phoneNumber")
-            
-            // Gửi SMS trực tiếp bằng SmsManager API
+
+            Log.d(TAG, "Using phone number: $phoneNumber")
+
             try {
                 val smsManager = SmsManager.getDefault()
                 smsManager.sendTextMessage(phoneNumber, null, message, null, null)
-                Log.d("SMSAutomation", "SMS sent successfully via SmsManager")
+                Log.d(TAG, "SMS sent successfully via SmsManager")
                 callback.onSuccess()
             } catch (e: Exception) {
-                Log.e("SMSAutomation", "Failed to send SMS via SmsManager: ${e.message}")
+                Log.e(TAG, "Failed to send SMS via SmsManager: ${e.message}")
                 callback.onError("Không thể gửi tin nhắn: ${e.message}")
             }
-            
+
         } catch (e: Exception) {
-            Log.e("SMSAutomation", "Exception in sendSMS: ${e.message}", e)
+            Log.e(TAG, "Exception in sendSMS: ${e.message}", e)
             callback.onError("Lỗi gửi SMS: ${e.message}")
         }
     }
-    
+
     /**
      * Kiểm tra xem chuỗi có phải là số điện thoại không
      */
     private fun isPhoneNumber(input: String): Boolean {
         return input.matches(Regex("^[+]?[0-9\\s\\-\\(\\)]+$"))
     }
-    
+
     /**
-     * Tìm số điện thoại từ tên liên hệ
+     * Tìm số điện thoại từ tên liên hệ (fuzzy search)
      */
     fun findPhoneNumberByName(contactName: String): String {
-        Log.d("SMSAutomation", "Searching for contact: $contactName")
-        
-        // Kiểm tra quyền đọc danh bạ
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) 
+        Log.d(TAG, "Searching for contact: $contactName")
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
             != PackageManager.PERMISSION_GRANTED) {
-            Log.e("SMSAutomation", "READ_CONTACTS permission not granted")
+            Log.e(TAG, "READ_CONTACTS permission not granted")
             return ""
         }
-        
+
         val projection = arrayOf(
             ContactsContract.CommonDataKinds.Phone.NUMBER,
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
         )
-        
+
         val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?"
         val selectionArgs = arrayOf("%$contactName%")
-        
+
         val cursor: Cursor? = context.contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             projection,
@@ -104,27 +111,70 @@ class SMSAutomation(private val context: Context) {
             selectionArgs,
             null
         )
-        
+
         cursor?.use {
             if (it.moveToFirst()) {
                 val phoneNumber = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
                 return phoneNumber
             }
         }
-        
-        Log.d("SMSAutomation", "No contact found for: $contactName")
+
+        Log.d(TAG, "No contact found for: $contactName")
         return ""
     }
-    
+
     /**
-     * Danh sách từ cần bỏ khi tách tên (hardcode)
+     * NEW: Tìm contact chính xác 100% và trả về phone number
+     * Dùng cho State Machine khi đã có exact match
+     */
+    fun findExactContactWithPhone(contactName: String): Pair<String, String>? {
+        Log.d(TAG, "Searching for exact contact: $contactName")
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+            != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "READ_CONTACTS permission not granted")
+            return null
+        }
+
+        val projection = arrayOf(
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+        )
+
+        // Exact match với =
+        val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} = ?"
+        val selectionArgs = arrayOf(contactName)
+
+        val cursor: Cursor? = context.contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            null
+        )
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val phoneNumber = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                val displayName = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                Log.d(TAG, "Found exact contact: $displayName with phone: $phoneNumber")
+                return Pair(displayName, phoneNumber)
+            }
+        }
+
+        Log.d(TAG, "No exact contact found for: $contactName")
+        return null
+    }
+
+    /**
+     * Danh sách từ cần bỏ khi tách tên
      */
     private val excludedWords = setOf(
         "cháu", "anh", "chị", "em", "bác", "cô", "dì", "thầy", "cô giáo",
         "bà", "ông", "nội", "ngoại", "cậu", "mợ", "dượng", "ba",
         "con", "chú", "bác", "cô", "dì", "thầy", "cô giáo", "bạn", "bạn bè"
     )
-    
+
     /**
      * Tách từ thông minh - bỏ các từ không phải tên riêng
      */
@@ -135,26 +185,26 @@ class SMSAutomation(private val context: Context) {
             cleanWord.isNotEmpty() && !excludedWords.contains(cleanWord)
         }
     }
-    
+
     /**
      * Tìm kiếm danh bạ fuzzy - tìm tất cả danh bạ chứa từ khóa
      */
     private fun findSimilarContacts(searchWords: List<String>): List<String> {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) 
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
             != PackageManager.PERMISSION_GRANTED) {
             return emptyList()
         }
-        
-        val similarContacts = mutableListOf<String>()
-        
+
+        val similarContacts = mutableSetOf<String>() // Dùng Set để tránh duplicate
+
         for (word in searchWords) {
             val projection = arrayOf(
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
             )
-            
+
             val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?"
             val selectionArgs = arrayOf("%$word%")
-            
+
             val cursor: Cursor? = context.contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 projection,
@@ -162,109 +212,77 @@ class SMSAutomation(private val context: Context) {
                 selectionArgs,
                 null
             )
-            
+
             cursor?.use {
                 while (it.moveToNext()) {
                     val displayName = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-                    if (!similarContacts.contains(displayName)) {
-                        similarContacts.add(displayName)
-                    }
+                    similarContacts.add(displayName)
                 }
             }
         }
-        
-        return similarContacts
+
+        return similarContacts.toList()
     }
-    
+
     /**
-     * Kiểm tra khớp 100% với tên mới
+     * Kiểm tra khớp 100% với tên mới (DEPRECATED - dùng findExactContactWithPhone)
      */
+    @Deprecated("Use findExactContactWithPhone instead", ReplaceWith("findExactContactWithPhone(contactName)"))
     private fun findExactContact(contactName: String): String {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) 
-            != PackageManager.PERMISSION_GRANTED) {
-            return ""
-        }
-        
-        val projection = arrayOf(
-            ContactsContract.CommonDataKinds.Phone.NUMBER,
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
-        )
-        
-        val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} = ?"
-        val selectionArgs = arrayOf(contactName)
-        
-        val cursor: Cursor? = context.contentResolver.query(
-            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-            projection,
-            selection,
-            selectionArgs,
-            null
-        )
-        
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val phoneNumber = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                return phoneNumber
-            }
-        }
-        
-        return ""
+        return findExactContactWithPhone(contactName)?.second ?: ""
     }
-    
+
     /**
      * Luồng xử lý SMS với xử lý ngoại lệ thông minh
+     * Được gọi từ State Machine
      */
     fun sendSMSWithSmartHandling(receiver: String, message: String, callback: SMSConversationCallback) {
-        Log.d("SMSAutomation", "sendSMSWithSmartHandling called with receiver: $receiver, message: $message")
-        
+        Log.d(TAG, "sendSMSWithSmartHandling called with receiver: $receiver, message: $message")
+
         // Bước 1: Tách từ thông minh
         val searchWords = smartWordParsing(receiver)
-        Log.d("SMSAutomation", "Search words after parsing: $searchWords")
-        
+        Log.d(TAG, "Search words after parsing: $searchWords")
+
         if (searchWords.isEmpty()) {
-            Log.d("SMSAutomation", "No search words found")
+            Log.d(TAG, "No search words found")
             callback.onError("Không tìm thấy người này trong danh bạ")
             return
         }
-        
+
         // Bước 2: Tìm kiếm fuzzy
         val similarContacts = findSimilarContacts(searchWords)
-        Log.d("SMSAutomation", "Similar contacts found: $similarContacts")
-        
+        Log.d(TAG, "Similar contacts found: $similarContacts")
+
         when {
             similarContacts.isEmpty() -> {
-                Log.d("SMSAutomation", "No similar contacts found")
+                Log.d(TAG, "No similar contacts found")
                 callback.onError("Không tìm thấy người này trong danh bạ")
             }
-            
+
             similarContacts.size == 1 -> {
                 val contactName = similarContacts[0]
-                Log.d("SMSAutomation", "Found 1 similar contact: $contactName, original: $receiver")
-                
+                Log.d(TAG, "Found 1 similar contact: $contactName, original: $receiver")
+
                 // Kiểm tra xem tên có khớp 100% không
-                if (contactName.lowercase() == receiver.lowercase()) {
-                    Log.d("SMSAutomation", "Contact name matches exactly, sending directly")
-                    // Tên khớp 100%, gửi trực tiếp
-                    val phoneNumber = findExactContact(contactName)
-                    if (phoneNumber.isNotEmpty()) {
-                        sendSMSDirect(phoneNumber, message, callback)
-                    } else {
-                        callback.onError("Không tìm thấy người này trong danh bạ")
-                    }
+                if (contactName.equals(receiver, ignoreCase = true)) {
+                    Log.d(TAG, "Contact name matches exactly, sending directly")
+                    // Tên khớp 100% - nhưng vẫn cần confirm qua callback
+                    // State Machine sẽ xử lý việc gửi
+                    callback.onNeedConfirmation(similarContacts, receiver)
                 } else {
-                    Log.d("SMSAutomation", "Contact name differs, need confirmation")
+                    Log.d(TAG, "Contact name differs, need confirmation")
                     // Tên khác nhau, cần xác nhận
                     callback.onNeedConfirmation(similarContacts, receiver)
                 }
             }
-            
+
             else -> {
-                Log.d("SMSAutomation", "Found multiple similar contacts: $similarContacts")
+                Log.d(TAG, "Found multiple similar contacts: $similarContacts")
                 callback.onNeedConfirmation(similarContacts, receiver)
             }
         }
     }
-    
+
     /**
      * Gửi SMS trực tiếp với số điện thoại
      */
@@ -278,5 +296,4 @@ class SMSAutomation(private val context: Context) {
             }
         })
     }
-    
 }

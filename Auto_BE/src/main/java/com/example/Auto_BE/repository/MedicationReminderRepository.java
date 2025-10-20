@@ -19,4 +19,21 @@ public interface MedicationReminderRepository extends JpaRepository<MedicationRe
             "LEFT JOIN FETCH u.deviceTokens " +
             "WHERE m.id = :id")
     java.util.Optional<MedicationReminder> findByIdWithUserAndDeviceTokens(@org.springframework.data.repository.query.Param("id") Long id);
+
+    // Query để lấy tất cả thuốc cùng thời gian của user với eager loading
+    @Query("SELECT DISTINCT m FROM MedicationReminder m " +
+            "LEFT JOIN FETCH m.user u " +
+            "WHERE u.id = :userId " +
+            "AND m.reminderTime = :reminderTime " +
+            "AND m.isActive = true")
+    List<MedicationReminder> findByUserIdAndReminderTime(@org.springframework.data.repository.query.Param("userId") Long userId, 
+                                                         @org.springframework.data.repository.query.Param("reminderTime") String reminderTime);
+    
+    // Query đơn giản không eager loading (backup)                                                     
+    @Query("SELECT m FROM MedicationReminder m " +
+            "WHERE m.user.id = :userId " +
+            "AND m.reminderTime = :reminderTime " +
+            "AND m.isActive = true")
+    List<MedicationReminder> findByUserIdAndReminderTimeSimple(@org.springframework.data.repository.query.Param("userId") Long userId, 
+                                                              @org.springframework.data.repository.query.Param("reminderTime") String reminderTime);
 }

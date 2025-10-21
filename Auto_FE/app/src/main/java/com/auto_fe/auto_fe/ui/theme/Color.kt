@@ -46,6 +46,7 @@ val DarkWaveColor5      = Color(0xFF3949AB)   // Xanh tím rất đậm
 // ===== SEMANTIC (Tông xanh nhất quán) =====
 val SuccessColor        = Color(0xFF4CAF50)   // Xanh lá
 val ErrorColor          = Color(0xFFF44336)   // Đỏ (giữ nguyên cho cảnh báo)
+val DarkError           = Color(0xFFFF6B6B)   // Đỏ sáng cho dark theme
 val WarningColor        = Color(0xFFFF9800)   // Cam (giữ nguyên cho cảnh báo)
 val InfoColor           = Color(0xFF2196F3)   // Xanh dương
 

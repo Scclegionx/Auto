@@ -25,7 +25,7 @@ import androidx.compose.ui.draw.alpha
 import com.auto_fe.auto_fe.ui.theme.*
 
 /**
- * Bottom Navigation với 3 nút: Thuốc, Ghi âm (chính), Cài đặt
+ * Bottom Navigation với 3 nút: Đăng nhập/Auth, Ghi âm (chính), Cài đặt
  * Nút ghi âm ở giữa có style đặc biệt và nổi bật hơn
  */
 @Composable
@@ -48,10 +48,10 @@ fun CustomBottomNavigation(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Nút Thuốc (trái)
+            // Nút Đăng nhập (trái)
             BottomNavItem(
-                icon = "💊",
-                label = "Thuốc",
+                icon = "�",
+                label = "Đăng nhập",
                 isSelected = selectedTab == 0,
                 onClick = { onTabSelected(0) },
                 modifier = Modifier.weight(1f)

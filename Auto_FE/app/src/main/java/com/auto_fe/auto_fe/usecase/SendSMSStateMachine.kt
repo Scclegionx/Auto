@@ -33,6 +33,9 @@ class SendSMSStateMachine(
     
     // Callback cho audio level
     var onAudioLevelChanged: ((Int) -> Unit)? = null
+    
+    // Callback cho transcript
+    var onTranscriptUpdated: ((String) -> Unit)? = null
 
     /**
      * Định nghĩa State Transitions
@@ -344,30 +347,40 @@ class SendSMSStateMachine(
      * Xử lý kết quả speech recognition dựa vào state hiện tại
      */
     private fun handleSpeechResult(spokenText: String) {
-        when (currentState) {
-            is VoiceState.ListeningForSMSCommand -> {
-                processEvent(VoiceEvent.SMSCommandReceived(spokenText))
-            }
+        try {
+            Log.d(TAG, "Handling speech result: $spokenText")
+            
+            // Update transcript in popup
+            onTranscriptUpdated?.invoke(spokenText)
+            
+            when (currentState) {
+                is VoiceState.ListeningForSMSCommand -> {
+                    processEvent(VoiceEvent.SMSCommandReceived(spokenText))
+                }
 
-            is VoiceState.ConfirmingSMSCommand,
-            is VoiceState.WaitingForUserConfirmation -> {
-                val confirmed = isConfirmationPositive(spokenText)
-                processEvent(VoiceEvent.UserConfirmed(confirmed))
-            }
+                is VoiceState.ConfirmingSMSCommand,
+                is VoiceState.WaitingForUserConfirmation -> {
+                    val confirmed = isConfirmationPositive(spokenText)
+                    processEvent(VoiceEvent.UserConfirmed(confirmed))
+                }
 
-            is VoiceState.SuggestingSimilarContacts,
-            is VoiceState.WaitingForNewContactName -> {
-                // Check if user declined
-                if (isDeclined(spokenText)) {
-                    processEvent(VoiceEvent.UserDeclinedRetry)
-                } else {
-                    processEvent(VoiceEvent.NewContactNameProvided(spokenText.trim()))
+                is VoiceState.SuggestingSimilarContacts,
+                is VoiceState.WaitingForNewContactName -> {
+                    // Check if user declined
+                    if (isDeclined(spokenText)) {
+                        processEvent(VoiceEvent.UserDeclinedRetry)
+                    } else {
+                        processEvent(VoiceEvent.NewContactNameProvided(spokenText.trim()))
+                    }
+                }
+
+                else -> {
+                    Log.w(TAG, "Unexpected speech result in state: ${currentState.getName()}")
                 }
             }
-
-            else -> {
-                Log.w(TAG, "Unexpected speech result in state: ${currentState.getName()}")
-            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in handleSpeechResult: ${e.message}")
+            processEvent(VoiceEvent.SpeechRecognitionFailed)
         }
     }
 
@@ -377,35 +390,55 @@ class SendSMSStateMachine(
     private fun parseCommandAsync(command: String) {
         Log.d(TAG, "Parsing command with NLP: $command")
         
-        commandProcessor.processCommand(command, object : CommandProcessor.CommandProcessorCallback {
-            override fun onCommandExecuted(success: Boolean, message: String) {
-                if (success) {
-                    Log.d(TAG, "Command executed successfully: $message")
-                    processEvent(VoiceEvent.SMSCommandParsed("", "")) // CommandProcessor handles the actual execution
-                } else {
-                    Log.e(TAG, "Command execution failed: $message")
-                    processEvent(VoiceEvent.SMSCommandParseFailed(message))
+        try {
+            commandProcessor.processCommand(command, object : CommandProcessor.CommandProcessorCallback {
+                override fun onCommandExecuted(success: Boolean, message: String) {
+                    try {
+                        if (success) {
+                            Log.d(TAG, "Command executed successfully: $message")
+                            processEvent(VoiceEvent.SMSCommandParsed("", "")) // CommandProcessor handles the actual execution
+                        } else {
+                            Log.e(TAG, "Command execution failed: $message")
+                            processEvent(VoiceEvent.SMSCommandParseFailed(message))
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error in onCommandExecuted: ${e.message}")
+                        processEvent(VoiceEvent.SMSCommandParseFailed("Lỗi xử lý lệnh: ${e.message}"))
+                    }
                 }
-            }
 
-            override fun onError(error: String) {
-                Log.e(TAG, "NLP Error: $error")
-                // Phân biệt lỗi hệ thống vs lỗi không hỗ trợ lệnh
-                if (error.contains("Lỗi NLP") || error.contains("Server error") || error.contains("Connection")) {
-                    processEvent(VoiceEvent.SMSCommandParseFailed("Lỗi hệ thống: $error"))
-                } else {
-                    processEvent(VoiceEvent.SMSCommandParseFailed("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ."))
+                override fun onError(error: String) {
+                    try {
+                        Log.e(TAG, "NLP Error: $error")
+                        // Phân biệt lỗi hệ thống vs lỗi không hỗ trợ lệnh
+                        if (error.contains("Lỗi NLP") || error.contains("Server error") || error.contains("Connection")) {
+                            processEvent(VoiceEvent.SMSCommandParseFailed("Lỗi hệ thống: $error"))
+                        } else {
+                            processEvent(VoiceEvent.SMSCommandParseFailed("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ."))
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error in onError: ${e.message}")
+                        processEvent(VoiceEvent.SMSCommandParseFailed("Lỗi xử lý: ${e.message}"))
+                    }
                 }
-            }
 
-            override fun onNeedConfirmation(command: String, receiver: String, message: String) {
-                Log.d(TAG, "Need confirmation: $command -> $receiver: $message")
-                // Lưu thông tin để xác nhận
-                currentReceiver = receiver
-                currentMessage = message
-                processEvent(VoiceEvent.SMSCommandParsed(receiver, message))
-            }
-        })
+                override fun onNeedConfirmation(command: String, receiver: String, message: String) {
+                    try {
+                        Log.d(TAG, "Need confirmation: $command -> $receiver: $message")
+                        // Lưu thông tin để xác nhận
+                        currentReceiver = receiver
+                        currentMessage = message
+                        processEvent(VoiceEvent.SMSCommandParsed(receiver, message))
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error in onNeedConfirmation: ${e.message}")
+                        processEvent(VoiceEvent.SMSCommandParseFailed("Lỗi xác nhận: ${e.message}"))
+                    }
+                }
+            })
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in parseCommandAsync: ${e.message}")
+            processEvent(VoiceEvent.SMSCommandParseFailed("Lỗi phân tích lệnh: ${e.message}"))
+        }
     }
 
     /**

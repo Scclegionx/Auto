@@ -5,6 +5,7 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,18 +35,29 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun AuthScreen(
-    onLoginSuccess: (String) -> Unit = {} // Callback với accessToken
+    onLoginSuccess: (String, String?, String?, Long?) -> Unit = { _, _, _, _ -> } // Callback với accessToken, email, name, userId
 ) {
     var isLoginMode by remember { mutableStateOf(true) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val authService = remember { AuthService() }
+    val sessionManager = remember { com.auto_fe.auto_fe.utils.SessionManager(context) }
 
     // Login states
     var loginEmail by remember { mutableStateOf("") }
     var loginPassword by remember { mutableStateOf("") }
     var loginPasswordVisible by remember { mutableStateOf(false) }
     var isLoginLoading by remember { mutableStateOf(false) }
+    var rememberMe by remember { mutableStateOf(false) }
+    
+    // Load saved credentials khi màn hình mở
+    LaunchedEffect(Unit) {
+        if (sessionManager.isRememberMeEnabled()) {
+            loginEmail = sessionManager.getSavedEmail() ?: ""
+            loginPassword = sessionManager.getSavedPassword() ?: ""
+            rememberMe = true
+        }
+    }
 
     // Register states
     var registerEmail by remember { mutableStateOf("") }
@@ -165,7 +177,30 @@ fun AuthScreen(
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        // Checkbox Ghi nhớ đăng nhập
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = rememberMe,
+                                onCheckedChange = { rememberMe = it },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = DarkPrimary,
+                                    uncheckedColor = DarkOnSurface.copy(alpha = 0.5f)
+                                )
+                            )
+                            Text(
+                                text = "Ghi nhớ đăng nhập",
+                                fontSize = 14.sp,
+                                color = DarkOnSurface.copy(alpha = 0.8f),
+                                modifier = Modifier.clickable { rememberMe = !rememberMe }
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         Button(
                             onClick = {
@@ -177,7 +212,20 @@ fun AuthScreen(
                                             result.fold(
                                                 onSuccess = { response ->
                                                     val token = response.data?.accessToken
+                                                    val userInfo = response.data?.user
+                                                    
                                                     if (token != null) {
+                                                        // Lưu credentials nếu checkbox được check
+                                                        if (rememberMe) {
+                                                            sessionManager.saveRememberedCredentials(
+                                                                loginEmail,
+                                                                loginPassword
+                                                            )
+                                                        } else {
+                                                            // Xóa credentials đã lưu nếu uncheck
+                                                            sessionManager.clearRememberedCredentials()
+                                                        }
+                                                        
                                                         // Đăng ký device token sau khi login thành công
                                                         registerDeviceToken(
                                                             authService = authService,
@@ -192,10 +240,14 @@ fun AuthScreen(
                                                             Toast.LENGTH_SHORT
                                                         ).show()
                                                         
-                                                        // TODO: Save token to SharedPreferences
-                                                        
                                                         // Chuyển sang màn hình danh sách đơn thuốc
-                                                        onLoginSuccess(token)
+                                                        // Trả về token, email, name và userId từ response
+                                                        onLoginSuccess(
+                                                            token,
+                                                            userInfo?.email ?: loginEmail, // Ưu tiên email từ response
+                                                            userInfo?.name, // name từ response
+                                                            userInfo?.id // userId từ response
+                                                        )
                                                     }
                                                 },
                                                 onFailure = { error ->

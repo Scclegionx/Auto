@@ -15,4 +15,7 @@ public interface DeviceTokenRepository extends JpaRepository<DeviceToken, Long> 
     
     // Tìm theo FCM token
     DeviceToken findByFcmToken(String fcmToken);
+    
+    // Kiểm tra token đã tồn tại cho user chưa
+    boolean existsByUserIdAndFcmToken(Long userId, String fcmToken);
 }

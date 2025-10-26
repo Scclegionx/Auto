@@ -1,27 +1,22 @@
 package com.auto_fe.auto_fe.ui.service
 
 import android.util.Log
+import com.auto_fe.auto_fe.network.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 
 /**
  * Service để xử lý authentication với Auto_BE API
  */
 class AuthService {
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
+    private val client by lazy { ApiClient.getClient() }
 
     // TODO: Thay đổi URL này thành URL server của bạn
-    private val baseUrl = "http://192.168.33.103:8080/api/auth" // For Android Emulator
+    private val baseUrl = "http://192.168.33.100:8080/api/auth" // For Android Emulator
     // private val baseUrl = "http://YOUR_IP:8080/api/auth" // For Real Device
 
     /**
@@ -34,7 +29,14 @@ class AuthService {
     )
 
     data class LoginData(
-        val accessToken: String
+        val accessToken: String,
+        val user: UserInfo?
+    )
+    
+    data class UserInfo(
+        val id: Long?,
+        val email: String?,
+        val name: String?
     )
 
     data class RegisterResponse(
@@ -92,8 +94,20 @@ class AuthService {
                     
                     val data = if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
                         val dataJson = jsonResponse.getJSONObject("data")
+                        
+                        // Parse user info if available
+                        val userInfo = if (dataJson.has("user") && !dataJson.isNull("user")) {
+                            val userJson = dataJson.getJSONObject("user")
+                            UserInfo(
+                                id = if (userJson.has("id")) userJson.getLong("id") else null,
+                                email = userJson.optString("email", null),
+                                name = userJson.optString("name", null)
+                            )
+                        } else null
+                        
                         LoginData(
-                            accessToken = dataJson.getString("accessToken")
+                            accessToken = dataJson.getString("accessToken"),
+                            user = userInfo
                         )
                     } else null
 
@@ -102,12 +116,12 @@ class AuthService {
                     val errorMessage = if (responseBody != null) {
                         try {
                             val errorJson = JSONObject(responseBody)
-                            errorJson.optString("message", "Login failed: ${response.code}")
+                            errorJson.optString("message", "Đăng nhập thất bại")
                         } catch (e: Exception) {
-                            "Login failed: ${response.code}"
+                            "Đăng nhập thất bại"
                         }
                     } else {
-                        "Login failed: ${response.code}"
+                        "Đăng nhập thất bại"
                     }
                     Result.failure(Exception(errorMessage))
                 }
@@ -156,12 +170,12 @@ class AuthService {
                     val errorMessage = if (responseBody != null) {
                         try {
                             val errorJson = JSONObject(responseBody)
-                            errorJson.optString("message", "Register failed: ${response.code}")
+                            errorJson.optString("message", "Đăng ký thất bại")
                         } catch (e: Exception) {
-                            "Register failed: ${response.code}"
+                            "Đăng ký thất bại"
                         }
                     } else {
-                        "Register failed: ${response.code}"
+                        "Đăng ký thất bại"
                     }
                     Result.failure(Exception(errorMessage))
                 }
@@ -233,12 +247,12 @@ class AuthService {
                     val errorMessage = if (responseBody != null) {
                         try {
                             val errorJson = JSONObject(responseBody)
-                            errorJson.optString("message", "Register device token failed: ${response.code}")
+                            errorJson.optString("message", "Đăng ký thiết bị thất bại")
                         } catch (e: Exception) {
-                            "Register device token failed: ${response.code}"
+                            "Đăng ký thiết bị thất bại"
                         }
                     } else {
-                        "Register device token failed: ${response.code}"
+                        "Đăng ký thiết bị thất bại"
                     }
                     Result.failure(Exception(errorMessage))
                 }

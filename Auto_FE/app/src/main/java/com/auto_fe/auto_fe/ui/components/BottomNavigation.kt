@@ -25,13 +25,14 @@ import androidx.compose.ui.draw.alpha
 import com.auto_fe.auto_fe.ui.theme.*
 
 /**
- * Bottom Navigation với 3 nút: Đăng nhập/Auth, Ghi âm (chính), Cài đặt
+ * Bottom Navigation với 3 nút: Đơn thuốc/Auth, Ghi âm (chính), Cài đặt
  * Nút ghi âm ở giữa có style đặc biệt và nổi bật hơn
  */
 @Composable
 fun CustomBottomNavigation(
     selectedTab: Int,
-    onTabSelected: (Int) -> Unit
+    onTabSelected: (Int) -> Unit,
+    isLoggedIn: Boolean = false
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -48,10 +49,10 @@ fun CustomBottomNavigation(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Nút Đăng nhập (trái)
+            // Nút Đơn thuốc / Đăng nhập (trái)
             BottomNavItem(
-                icon = "�",
-                label = "Đăng nhập",
+                icon = if (isLoggedIn) "💊" else "🔐",
+                label = if (isLoggedIn) "Đơn thuốc" else "Đăng nhập",
                 isSelected = selectedTab == 0,
                 onClick = { onTabSelected(0) },
                 modifier = Modifier.weight(1f)

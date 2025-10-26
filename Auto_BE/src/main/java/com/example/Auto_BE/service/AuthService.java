@@ -56,10 +56,23 @@ public class AuthService {
                 )
         );
         String accessToken = jwtUtils.generateAccessToken(authentication);
+        
+        // Tạo UserInfo để trả về
+        LoginResponse.UserInfo userInfo = LoginResponse.UserInfo.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getFullName())
+                .build();
+        
+        LoginResponse loginResponse = LoginResponse.builder()
+                .accessToken(accessToken)
+                .user(userInfo)
+                .build();
+        
         return BaseResponse.<LoginResponse>builder()
                 .status(SUCCESS)
                 .message(USER_LOGGED_IN)
-                .data(new LoginResponse(accessToken))
+                .data(loginResponse)
                 .build();
     }
 

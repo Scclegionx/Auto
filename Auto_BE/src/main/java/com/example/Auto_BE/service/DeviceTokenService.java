@@ -29,10 +29,19 @@ public class DeviceTokenService {
     public BaseResponse<DeviceTokenResponse> registerDeviceToken(DeviceTokenRequest deviceTokenRequest, Authentication authentication) {
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
-//        // Kiểm tra xem token đã tồn tại chưa
-//        if (deviceTokenRepository.existsByUserIdAndToken(user.getId(), deviceTokenRequest.getToken())) {
-//            throw new BaseException.BadRequestException("Token thiết bị đã được đăng ký trước đó");
-//        }
+        
+        // Kiểm tra xem token đã tồn tại chưa
+        if (deviceTokenRepository.existsByUserIdAndFcmToken(user.getId(), deviceTokenRequest.getFcmToken())) {
+            // Nếu token đã tồn tại, trả về thông báo thành công mà không lưu lại
+            DeviceToken existingToken = deviceTokenRepository.findByFcmToken(deviceTokenRequest.getFcmToken());
+            DeviceTokenResponse deviceTokenResponse = DeviceTokenMapper.toResponse(existingToken);
+            
+            return BaseResponse.<DeviceTokenResponse>builder()
+                    .status(SUCCESS)
+                    .message("Token thiết bị đã được đăng ký trước đó")
+                    .data(deviceTokenResponse)
+                    .build();
+        }
 
         DeviceToken deviceToken = DeviceTokenMapper.toEntity(deviceTokenRequest, user);
         deviceTokenRepository.save(deviceToken);

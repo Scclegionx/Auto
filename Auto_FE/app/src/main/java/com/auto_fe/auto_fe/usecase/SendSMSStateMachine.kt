@@ -7,6 +7,7 @@ import com.auto_fe.auto_fe.automation.msg.SMSAutomation
 import com.auto_fe.auto_fe.domain.VoiceEvent
 import com.auto_fe.auto_fe.domain.VoiceState
 import com.auto_fe.auto_fe.domain.VoiceStateMachine
+import com.auto_fe.auto_fe.core.CommandProcessor
 
 /**
  * State Machine cho luồng gửi SMS tự động
@@ -17,6 +18,8 @@ class SendSMSStateMachine(
     private val voiceManager: VoiceManager,
     private val smsAutomation: SMSAutomation
 ) : VoiceStateMachine() {
+    
+    private val commandProcessor = CommandProcessor(context)
 
     companion object {
         private const val TAG = "SendSMSStateMachine"
@@ -27,6 +30,9 @@ class SendSMSStateMachine(
     private var currentReceiver: String = ""
     private var currentMessage: String = ""
     private var similarContacts: List<String> = emptyList()
+    
+    // Callback cho audio level
+    var onAudioLevelChanged: ((Int) -> Unit)? = null
 
     /**
      * Định nghĩa State Transitions
@@ -38,6 +44,7 @@ class SendSMSStateMachine(
             is VoiceState.Idle -> {
                 when (event) {
                     is VoiceEvent.StartRecording -> VoiceState.ListeningForSMSCommand
+                    is VoiceEvent.UserCancelled -> VoiceState.Idle // Already idle
                     else -> null
                 }
             }
@@ -49,10 +56,13 @@ class SendSMSStateMachine(
                         VoiceState.ParsingSMSCommand
                     }
                     is VoiceEvent.SpeechRecognitionFailed -> {
-                        VoiceState.Error("Tôi chưa hiểu yêu cầu của bạn, vui lòng thử lại.")
+                        VoiceState.Error("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ.")
                     }
                     is VoiceEvent.Timeout -> {
                         VoiceState.Error("Không nhận được phản hồi.")
+                    }
+                    is VoiceEvent.UserCancelled -> {
+                        VoiceState.Idle
                     }
                     else -> null
                 }
@@ -70,6 +80,9 @@ class SendSMSStateMachine(
                     is VoiceEvent.SMSCommandParseFailed -> {
                         VoiceState.Error(event.reason)
                     }
+                    is VoiceEvent.UserCancelled -> {
+                        VoiceState.Idle
+                    }
                     else -> null
                 }
             }
@@ -86,6 +99,9 @@ class SendSMSStateMachine(
                     }
                     is VoiceEvent.Timeout -> {
                         VoiceState.Error("Tôi không thực hiện gửi tin nhắn.")
+                    }
+                    is VoiceEvent.UserCancelled -> {
+                        VoiceState.Idle
                     }
                     else -> null
                 }
@@ -106,6 +122,9 @@ class SendSMSStateMachine(
                     }
                     is VoiceEvent.Timeout -> {
                         VoiceState.Error("Tôi không thực hiện gửi tin nhắn.")
+                    }
+                    is VoiceEvent.UserCancelled -> {
+                        VoiceState.Idle
                     }
                     else -> null
                 }
@@ -133,6 +152,9 @@ class SendSMSStateMachine(
                     is VoiceEvent.NoContactFound -> {
                         VoiceState.Error("Không tìm thấy người này trong danh bạ")
                     }
+                    is VoiceEvent.UserCancelled -> {
+                        VoiceState.Idle
+                    }
                     else -> null
                 }
             }
@@ -158,6 +180,9 @@ class SendSMSStateMachine(
                     is VoiceEvent.Timeout -> {
                         VoiceState.Error("Tôi không thực hiện gửi tin nhắn.")
                     }
+                    is VoiceEvent.UserCancelled -> {
+                        VoiceState.Idle
+                    }
                     else -> null
                 }
             }
@@ -172,6 +197,9 @@ class SendSMSStateMachine(
                     is VoiceEvent.UserDeclinedRetry -> {
                         VoiceState.Error("Tôi không thực hiện gửi tin nhắn.")
                     }
+                    is VoiceEvent.UserCancelled -> {
+                        VoiceState.Idle
+                    }
                     else -> null
                 }
             }
@@ -184,6 +212,9 @@ class SendSMSStateMachine(
                     }
                     is VoiceEvent.SMSSendFailed -> {
                         VoiceState.Error("Gửi tin nhắn thất bại, vui lòng thử lại sau.")
+                    }
+                    is VoiceEvent.UserCancelled -> {
+                        VoiceState.Idle
                     }
                     else -> null
                 }
@@ -204,6 +235,8 @@ class SendSMSStateMachine(
 
         when (state) {
             is VoiceState.ListeningForSMSCommand -> {
+                // Reset VoiceManager trước khi bắt đầu
+                voiceManager.resetBusyState()
                 // Phát câu hỏi và bắt đầu lắng nghe
                 speakAndListen("Bạn cần tôi trợ giúp điều gì?")
             }
@@ -255,6 +288,19 @@ class SendSMSStateMachine(
                 speak(state.errorMessage)
             }
 
+            is VoiceState.Idle -> {
+                // Reset state when cancelled
+                if (event is VoiceEvent.UserCancelled) {
+                    speak("Đã hủy ghi âm")
+                    // Reset all context data
+                    currentReceiver = ""
+                    currentMessage = ""
+                    similarContacts = emptyList()
+                    // Reset VoiceManager busy state
+                    voiceManager.resetBusyState()
+                }
+            }
+
             else -> {
                 // Do nothing
             }
@@ -280,8 +326,8 @@ class SendSMSStateMachine(
             }
 
             override fun onAudioLevelChanged(level: Int) {
-                // Audio level callback - có thể dùng để hiển thị visual feedback
-                // Hiện tại không cần xử lý gì đặc biệt
+                // Forward audio level to UI
+                onAudioLevelChanged?.invoke(level)
             }
         })
     }
@@ -326,23 +372,40 @@ class SendSMSStateMachine(
     }
 
     /**
-     * Parse SMS command
+     * Parse SMS command using NLP service
      */
     private fun parseCommandAsync(command: String) {
-        try {
-            val regex = """nhắn tin cho (.+?) là (.+)""".toRegex(RegexOption.IGNORE_CASE)
-            val matchResult = regex.find(command)
-
-            if (matchResult != null) {
-                val receiver = matchResult.groupValues[1].trim()
-                val message = matchResult.groupValues[2].trim()
-                processEvent(VoiceEvent.SMSCommandParsed(receiver, message))
-            } else {
-                processEvent(VoiceEvent.SMSCommandParseFailed("Tôi chưa hiểu yêu cầu của bạn, vui lòng thử lại."))
+        Log.d(TAG, "Parsing command with NLP: $command")
+        
+        commandProcessor.processCommand(command, object : CommandProcessor.CommandProcessorCallback {
+            override fun onCommandExecuted(success: Boolean, message: String) {
+                if (success) {
+                    Log.d(TAG, "Command executed successfully: $message")
+                    processEvent(VoiceEvent.SMSCommandParsed("", "")) // CommandProcessor handles the actual execution
+                } else {
+                    Log.e(TAG, "Command execution failed: $message")
+                    processEvent(VoiceEvent.SMSCommandParseFailed(message))
+                }
             }
-        } catch (e: Exception) {
-            processEvent(VoiceEvent.SMSCommandParseFailed("Lỗi phân tích lệnh: ${e.message}"))
-        }
+
+            override fun onError(error: String) {
+                Log.e(TAG, "NLP Error: $error")
+                // Phân biệt lỗi hệ thống vs lỗi không hỗ trợ lệnh
+                if (error.contains("Lỗi NLP") || error.contains("Server error") || error.contains("Connection")) {
+                    processEvent(VoiceEvent.SMSCommandParseFailed("Lỗi hệ thống: $error"))
+                } else {
+                    processEvent(VoiceEvent.SMSCommandParseFailed("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ."))
+                }
+            }
+
+            override fun onNeedConfirmation(command: String, receiver: String, message: String) {
+                Log.d(TAG, "Need confirmation: $command -> $receiver: $message")
+                // Lưu thông tin để xác nhận
+                currentReceiver = receiver
+                currentMessage = message
+                processEvent(VoiceEvent.SMSCommandParsed(receiver, message))
+            }
+        })
     }
 
     /**
@@ -430,5 +493,6 @@ class SendSMSStateMachine(
         currentReceiver = ""
         currentMessage = ""
         similarContacts = emptyList()
+        commandProcessor.release()
     }
 }

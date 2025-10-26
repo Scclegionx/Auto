@@ -186,9 +186,10 @@ class FloatingWindow(private val context: Context) {
                 // Bắt đầu SMS flow mới
                 startSMSFlow()
             } else {
-                // Đang trong flow - KHÔNG cho phép bấm
-                Log.d("FloatingWindow", "Button disabled - flow in progress")
-                Toast.makeText(context, "Đang xử lý, vui lòng đợi...", Toast.LENGTH_SHORT).show()
+                // Đang trong flow - Hủy flow hiện tại
+                Log.d("FloatingWindow", "Cancelling current flow")
+                smsStateMachine?.processEvent(VoiceEvent.UserCancelled)
+                Toast.makeText(context, "Đã hủy ghi âm", Toast.LENGTH_SHORT).show()
             }
         }
 

@@ -142,6 +142,12 @@ class VoiceManager private constructor(private val context: Context) {
         // Không cần pending request nữa - FE đã disable button
     }
     
+    fun resetBusyState() {
+        isBusy = false
+        pendingCallback = null
+        Log.d("VoiceManager", "Reset busy state")
+    }
+    
     fun release() {
         // Release SpeechRecognizerManager
         SpeechRecognizerManager.getInstance(context).release()

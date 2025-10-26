@@ -103,7 +103,7 @@ class CommandProcessor(private val context: Context) {
                     })
                 }
                 else -> {
-                    callback.onError("Không hỗ trợ lệnh: $command")
+                    callback.onError("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ.")
                 }
             }
         } catch (e: Exception) {
@@ -183,7 +183,7 @@ class CommandProcessor(private val context: Context) {
                 }
                 else -> {
                     Log.e("CommandProcessor", "Unsupported command: $command")
-                    callback.onError("Không hỗ trợ lệnh: $command")
+                    callback.onError("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ.")
                 }
             }
         } catch (e: Exception) {

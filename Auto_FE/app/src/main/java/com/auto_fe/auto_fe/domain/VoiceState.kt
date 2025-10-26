@@ -60,13 +60,80 @@ sealed class VoiceState {
     ) : VoiceState()
 
 
-    // ========== FUTURE: PHONE CALL STATES (để sau) ==========
+    // ========== PHONE CALL STATES ==========
 
     /** Đang lắng nghe lệnh gọi điện */
     object ListeningForCallCommand : VoiceState()
 
+    /** Đang phân tích lệnh gọi điện (parsing command) */
+    object ParsingCallCommand : VoiceState()
+
     /** Đang thực hiện cuộc gọi */
     data class MakingCall(val phoneNumber: String) : VoiceState()
+
+
+    // ========== CHROME SEARCH STATES ==========
+
+    /** Đang lắng nghe lệnh tìm kiếm Chrome */
+    object ListeningForChromeCommand : VoiceState()
+
+    /** Đang phân tích lệnh tìm kiếm Chrome (parsing command) */
+    object ParsingChromeCommand : VoiceState()
+
+    /** Đang thực hiện tìm kiếm Chrome */
+    data class SearchingChrome(val query: String) : VoiceState()
+
+
+    // ========== YOUTUBE SEARCH STATES ==========
+
+    /** Đang lắng nghe lệnh tìm kiếm YouTube */
+    object ListeningForYouTubeCommand : VoiceState()
+
+    /** Đang phân tích lệnh tìm kiếm YouTube (parsing command) */
+    object ParsingYouTubeCommand : VoiceState()
+
+    /** Đang thực hiện tìm kiếm YouTube */
+    data class SearchingYouTube(val query: String) : VoiceState()
+
+
+    // ========== ALARM STATES ==========
+
+    /** Đang lắng nghe lệnh tạo báo thức */
+    object ListeningForAlarmCommand : VoiceState()
+
+    /** Đang phân tích lệnh tạo báo thức (parsing command) */
+    object ParsingAlarmCommand : VoiceState()
+
+    /** Đang thực hiện tạo báo thức */
+    data class CreatingAlarm(val hour: Int, val minute: Int, val message: String) : VoiceState()
+
+
+    // ========== CALENDAR STATES ==========
+
+    /** Đang lắng nghe lệnh tạo sự kiện lịch */
+    object ListeningForCalendarCommand : VoiceState()
+
+    /** Đang phân tích lệnh tạo sự kiện lịch (parsing command) */
+    object ParsingCalendarCommand : VoiceState()
+
+    /** Đang thực hiện tạo sự kiện lịch */
+    data class CreatingCalendarEvent(val title: String, val location: String, val begin: Long, val end: Long) : VoiceState()
+
+    // ========== CAMERA STATES ==========
+    object ListeningForCameraCommand : VoiceState()
+    object ParsingCameraCommand : VoiceState()
+
+    // ========== WIFI STATES ==========
+    object ListeningForWifiCommand : VoiceState()
+    object ParsingWifiCommand : VoiceState()
+
+    // ========== VOLUME STATES ==========
+    object ListeningForVolumeCommand : VoiceState()
+    object ParsingVolumeCommand : VoiceState()
+
+    // ========== FLASH STATES ==========
+    object ListeningForFlashCommand : VoiceState()
+    object ParsingFlashCommand : VoiceState()
 
 
     // ========== UTILITY METHODS ==========
@@ -94,6 +161,71 @@ sealed class VoiceState {
     }
 
     /**
+     * Kiểm tra xem state có phải đang trong Phone flow không
+     */
+    fun isPhoneFlow(): Boolean {
+        return this is ListeningForCallCommand ||
+                this is ParsingCallCommand ||
+                this is MakingCall
+    }
+
+    /**
+     * Kiểm tra xem state có phải đang trong Chrome flow không
+     */
+    fun isChromeFlow(): Boolean {
+        return this is ListeningForChromeCommand ||
+                this is ParsingChromeCommand ||
+                this is SearchingChrome
+    }
+
+    /**
+     * Kiểm tra xem state có phải đang trong YouTube flow không
+     */
+    fun isYouTubeFlow(): Boolean {
+        return this is ListeningForYouTubeCommand ||
+                this is ParsingYouTubeCommand ||
+                this is SearchingYouTube
+    }
+
+    /**
+     * Kiểm tra xem state có phải đang trong Alarm flow không
+     */
+    fun isAlarmFlow(): Boolean {
+        return this is ListeningForAlarmCommand ||
+                this is ParsingAlarmCommand ||
+                this is CreatingAlarm
+    }
+
+    /**
+     * Kiểm tra xem state có phải đang trong Calendar flow không
+     */
+    fun isCalendarFlow(): Boolean {
+        return this is ListeningForCalendarCommand || 
+               this is ParsingCalendarCommand || 
+               this is CreatingCalendarEvent
+    }
+
+    fun isCameraFlow(): Boolean {
+        return this is ListeningForCameraCommand || 
+               this is ParsingCameraCommand
+    }
+
+    fun isWifiFlow(): Boolean {
+        return this is ListeningForWifiCommand || 
+               this is ParsingWifiCommand
+    }
+
+    fun isVolumeFlow(): Boolean {
+        return this is ListeningForVolumeCommand || 
+               this is ParsingVolumeCommand
+    }
+
+    fun isFlashFlow(): Boolean {
+        return this is ListeningForFlashCommand || 
+               this is ParsingFlashCommand
+    }
+
+    /**
      * Lấy tên state để logging
      */
     fun getName(): String {
@@ -110,7 +242,30 @@ sealed class VoiceState {
             is WaitingForNewContactName -> "WaitingForNewContactName"
             is SendingSMS -> "SendingSMS($contactName)"
             is ListeningForCallCommand -> "ListeningForCallCommand"
+            is ParsingCallCommand -> "ParsingCallCommand"
             is MakingCall -> "MakingCall($phoneNumber)"
+            is ListeningForChromeCommand -> "ListeningForChromeCommand"
+            is ParsingChromeCommand -> "ParsingChromeCommand"
+            is SearchingChrome -> "SearchingChrome($query)"
+            is ListeningForYouTubeCommand -> "ListeningForYouTubeCommand"
+            is ParsingYouTubeCommand -> "ParsingYouTubeCommand"
+            is SearchingYouTube -> "SearchingYouTube($query)"
+            is ListeningForAlarmCommand -> "ListeningForAlarmCommand"
+            is ParsingAlarmCommand -> "ParsingAlarmCommand"
+            is CreatingAlarm -> "CreatingAlarm($hour:$minute - $message)"
+            is ListeningForCalendarCommand -> "ListeningForCalendarCommand"
+            is ParsingCalendarCommand -> "ParsingCalendarCommand"
+            is CreatingCalendarEvent -> "CreatingCalendarEvent($title)"
+            
+            // Device Control States
+            is ListeningForCameraCommand -> "ListeningForCameraCommand"
+            is ParsingCameraCommand -> "ParsingCameraCommand"
+            is ListeningForWifiCommand -> "ListeningForWifiCommand"
+            is ParsingWifiCommand -> "ParsingWifiCommand"
+            is ListeningForVolumeCommand -> "ListeningForVolumeCommand"
+            is ParsingVolumeCommand -> "ParsingVolumeCommand"
+            is ListeningForFlashCommand -> "ListeningForFlashCommand"
+            is ParsingFlashCommand -> "ParsingFlashCommand"
         }
     }
 }

@@ -42,6 +42,9 @@ class FloatingWindow(private val context: Context) {
 
     // State Machine thay thế cho các biến state cũ
     private var smsStateMachine: SendSMSStateMachine? = null
+    
+    // Voice recording popup
+    private var voiceRecordingPopup: SimpleVoicePopup? = null
 
     // Drag functionality
     private var initialX = 0
@@ -57,6 +60,7 @@ class FloatingWindow(private val context: Context) {
         audioManager = VoiceManager.getInstance(context)
         smsAutomation = SMSAutomation(context)
         smsObserver = SMSObserver(context)
+        voiceRecordingPopup = SimpleVoicePopup(context)
 
         // Khởi tạo State Machine
         initializeStateMachine()
@@ -94,6 +98,36 @@ class FloatingWindow(private val context: Context) {
         smsStateMachine?.onEventProcessed = { event ->
             Log.d("FloatingWindow", "Event processed: ${event.getName()}")
         }
+        
+        // Setup popup callbacks
+        setupPopupCallbacks()
+    }
+    
+    /**
+     * Setup callbacks cho voice recording popup
+     */
+    private fun setupPopupCallbacks() {
+        voiceRecordingPopup?.onCancelClick = {
+            Log.d("FloatingWindow", "Popup cancel clicked")
+            smsStateMachine?.processEvent(VoiceEvent.UserCancelled)
+        }
+        
+        voiceRecordingPopup?.onStopClick = {
+            Log.d("FloatingWindow", "Popup stop clicked")
+            smsStateMachine?.processEvent(VoiceEvent.UserCancelled)
+        }
+        
+        // SimpleVoicePopup doesn't have onAudioLevelChanged callback
+        
+        // Setup State Machine audio level callback
+        smsStateMachine?.onAudioLevelChanged = { level ->
+            voiceRecordingPopup?.updateAudioLevel(level)
+        }
+        
+        // Setup State Machine transcript callback
+        smsStateMachine?.onTranscriptUpdated = { transcript ->
+            voiceRecordingPopup?.updateTranscript(transcript)
+        }
     }
 
     /**
@@ -102,18 +136,29 @@ class FloatingWindow(private val context: Context) {
     private fun handleStateChange(newState: VoiceState) {
         when (newState) {
             is VoiceState.ListeningForSMSCommand -> {
-                // Update button to recording state
+                // Show popup and update button
                 isRecording = true
+                voiceRecordingPopup?.show()
                 updateFloatingButtonIcon()
             }
 
             is VoiceState.Success, is VoiceState.Error -> {
+                // Hide popup and reset
+                voiceRecordingPopup?.hide()
+                isRecording = false
+                updateFloatingButtonIcon()
+                
                 // Reset về idle state sau 2 giây
                 android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
                     smsStateMachine?.reset()
-                    isRecording = false
-                    updateFloatingButtonIcon()
                 }, 2000)
+            }
+
+            is VoiceState.Idle -> {
+                // Hide popup when idle
+                voiceRecordingPopup?.hide()
+                isRecording = false
+                updateFloatingButtonIcon()
             }
 
             else -> {
@@ -186,9 +231,10 @@ class FloatingWindow(private val context: Context) {
                 // Bắt đầu SMS flow mới
                 startSMSFlow()
             } else {
-                // Đang trong flow - KHÔNG cho phép bấm
-                Log.d("FloatingWindow", "Button disabled - flow in progress")
-                Toast.makeText(context, "Đang xử lý, vui lòng đợi...", Toast.LENGTH_SHORT).show()
+                // Đang trong flow - Hủy flow hiện tại
+                Log.d("FloatingWindow", "Cancelling current flow")
+                smsStateMachine?.processEvent(VoiceEvent.UserCancelled)
+                Toast.makeText(context, "Đã hủy ghi âm", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -347,6 +393,10 @@ class FloatingWindow(private val context: Context) {
         if (isRecording) {
             stopCurrentFlow()
         }
+
+        // Hide and cleanup popup
+        voiceRecordingPopup?.hide()
+        voiceRecordingPopup?.release()
 
         floatingView?.let { view ->
             windowManager?.removeView(view)

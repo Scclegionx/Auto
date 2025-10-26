@@ -76,6 +76,7 @@ import com.auto_fe.auto_fe.ui.theme.Auto_FETheme
 import com.auto_fe.auto_fe.ui.screens.VoiceScreen
 import com.auto_fe.auto_fe.ui.screens.AuthScreen
 import com.auto_fe.auto_fe.ui.screens.SettingsScreen
+import com.auto_fe.auto_fe.ui.screens.GuideScreen
 import com.auto_fe.auto_fe.ui.screens.PrescriptionListScreen
 import com.auto_fe.auto_fe.ui.screens.PrescriptionDetailScreen
 import com.auto_fe.auto_fe.ui.screens.CreatePrescriptionScreen
@@ -327,9 +328,10 @@ fun MainScreen(sessionManager: SessionManager) {
                                     }
                                 )
                             }
-                        }
-                        1 -> VoiceScreen() // Màn hình ghi âm
-                        2 -> SettingsScreen() // Màn hình cài đặt
+                        )
+                        1 -> VoiceScreen() // Màn hình ghi âm là mặc định
+                        2 -> GuideScreen() // Màn hình hướng dẫn
+                        // 3 -> SettingsScreen()
                     }
                 }
             }

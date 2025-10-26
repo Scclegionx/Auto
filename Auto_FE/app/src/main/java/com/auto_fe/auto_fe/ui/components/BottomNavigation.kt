@@ -25,7 +25,7 @@ import androidx.compose.ui.draw.alpha
 import com.auto_fe.auto_fe.ui.theme.*
 
 /**
- * Bottom Navigation với 3 nút: Đơn thuốc/Auth, Ghi âm (chính), Cài đặt
+ * Bottom Navigation với 3 nút: Đơn thuốc/Auth, Ghi âm (chính), Hướng dẫn
  * Nút ghi âm ở giữa có style đặc biệt và nổi bật hơn
  */
 @Composable
@@ -45,7 +45,7 @@ fun CustomBottomNavigation(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 12.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -58,21 +58,30 @@ fun CustomBottomNavigation(
                 modifier = Modifier.weight(1f)
             )
             
-            // Nút Ghi âm (giữa) - Style đặc biệt
+            // Nút Ghi âm (giữa trái) - Style đặc biệt
             BottomNavItemSpecial(
                 icon = "🎤",
                 label = "Ghi âm",
                 isSelected = selectedTab == 1,
                 onClick = { onTabSelected(1) },
-                modifier = Modifier.weight(1.2f)
+                modifier = Modifier.weight(1.1f)
+            )
+            
+            // Nút Hướng dẫn (giữa phải)
+            BottomNavItem(
+                icon = "📚",
+                label = "Hướng dẫn",
+                isSelected = selectedTab == 2,
+                onClick = { onTabSelected(2) },
+                modifier = Modifier.weight(1f)
             )
             
             // Nút Cài đặt (phải)
             BottomNavItem(
                 icon = "⚙️",
                 label = "Cài đặt",
-                isSelected = selectedTab == 2,
-                onClick = { onTabSelected(2) },
+                isSelected = selectedTab == 3,
+                onClick = { onTabSelected(3) },
                 modifier = Modifier.weight(1f)
             )
         }

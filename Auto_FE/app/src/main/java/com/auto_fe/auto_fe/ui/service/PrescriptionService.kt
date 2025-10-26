@@ -2,27 +2,22 @@ package com.auto_fe.auto_fe.ui.service
 
 import android.util.Log
 import com.auto_fe.auto_fe.ui.screens.MedicationReminderForm
+import com.auto_fe.auto_fe.network.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaType
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 
 /**
  * Service để xử lý Prescription (Đơn thuốc) với Auto_BE API
  */
 class PrescriptionService {
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
+    private val client by lazy { ApiClient.getClient() }
 
-    private val baseUrl = "http://192.168.33.103:8080/api/cron-prescriptions"
+    private val baseUrl = "http://192.168.33.100:8080/api/cron-prescriptions"
 
     /**
      * Data classes
@@ -95,7 +90,7 @@ class PrescriptionService {
 
                     Result.success(PrescriptionListResponse(status, message, prescriptions))
                 } else {
-                    Result.failure(Exception("Failed to get prescriptions: ${response.code}"))
+                    Result.failure(Exception("Không thể tải danh sách đơn thuốc: ${response.code}"))
                 }
             } catch (e: Exception) {
                 Log.e("PrescriptionService", "Get all prescriptions error", e)
@@ -134,7 +129,7 @@ class PrescriptionService {
 
                     Result.success(PrescriptionDetailResponse(status, message, prescription))
                 } else {
-                    Result.failure(Exception("Failed to get prescription: ${response.code}"))
+                    Result.failure(Exception("Không thể tải chi tiết đơn thuốc: ${response.code}"))
                 }
             } catch (e: Exception) {
                 Log.e("PrescriptionService", "Get prescription by id error", e)
@@ -263,19 +258,19 @@ class PrescriptionService {
                 val errorMessage = if (responseBody != null) {
                     try {
                         val json = JSONObject(responseBody)
-                        json.optString("message", "Failed to create prescription")
+                        json.optString("message", "Không thể tạo đơn thuốc")
                     } catch (e: Exception) {
-                        responseBody
+                        "Lỗi không xác định"
                     }
                 } else {
-                    "Unknown error"
+                    "Lỗi không xác định"
                 }
                 Log.e("PrescriptionService", "Error: $errorMessage")
                 Result.failure(Exception(errorMessage))
             }
         } catch (e: Exception) {
             Log.e("PrescriptionService", "Exception in createPrescription", e)
-            Result.failure(e)
+            Result.failure(Exception("Lỗi kết nối: ${e.message}"))
         }
     }
 }

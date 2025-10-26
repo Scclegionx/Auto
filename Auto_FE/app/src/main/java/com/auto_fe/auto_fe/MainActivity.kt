@@ -80,12 +80,15 @@ import com.auto_fe.auto_fe.ui.screens.PrescriptionListScreen
 import com.auto_fe.auto_fe.ui.screens.PrescriptionDetailScreen
 import com.auto_fe.auto_fe.ui.screens.CreatePrescriptionScreen
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
+import com.auto_fe.auto_fe.utils.SessionManager
 import com.auto_fe.auto_fe.utils.PermissionManager
+import com.auto_fe.auto_fe.network.ApiClient
 import android.util.Log
 
 class MainActivity : ComponentActivity() {
     private lateinit var permissionManager: PermissionManager
     private lateinit var floatingWindow: FloatingWindow
+    private lateinit var sessionManager: SessionManager
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -128,13 +131,14 @@ class MainActivity : ComponentActivity() {
 
         permissionManager = PermissionManager(this)
         floatingWindow = FloatingWindow(this)
+        sessionManager = SessionManager(this)
 
         // Request notification permission cho Android 13+
         requestNotificationPermission()
 
         setContent {
             Auto_FETheme(darkTheme = true) {
-                MainScreen()
+                MainScreen(sessionManager = sessionManager)
             }
         }
 
@@ -190,18 +194,53 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(sessionManager: SessionManager) {
     val context = LocalContext.current
     var selectedTab by remember { mutableStateOf(1) } // Default là tab ghi âm (index 1)
     
     // State để quản lý navigation
-    var isLoggedIn by remember { mutableStateOf(false) }
-    var accessToken by remember { mutableStateOf<String?>(null) }
+    var isLoggedIn by remember { mutableStateOf(sessionManager.isLoggedIn()) }
+    var accessToken by remember { mutableStateOf(sessionManager.getAccessToken()) }
     var selectedPrescriptionId by remember { mutableStateOf<Long?>(null) }
     var showCreatePrescription by remember { mutableStateOf(false) }
+    
+    // Callback để logout
+    val onLogout: () -> Unit = {
+        sessionManager.clearSession()
+        isLoggedIn = false
+        accessToken = null
+        selectedPrescriptionId = null
+        showCreatePrescription = false
+        selectedTab = 0
+    }
+    
+    // Initialize ApiClient với callback khi token hết hạn
+    LaunchedEffect(Unit) {
+        ApiClient.initialize(sessionManager) {
+            // Token hết hạn - hiển thị thông báo và logout
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                Toast.makeText(
+                    context,
+                    "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+                    Toast.LENGTH_LONG
+                ).show()
+                onLogout()
+            }
+        }
+    }
+    
+    // Auto-login nếu đã có session
+    LaunchedEffect(Unit) {
+        if (sessionManager.isLoggedIn() && sessionManager.getAccessToken() != null) {
+            isLoggedIn = true
+            accessToken = sessionManager.getAccessToken()
+            // Không cần chuyển tab, để user ở tab hiện tại
+            Log.d("MainActivity", "Auto-login successful: ${sessionManager.getUserEmail()}")
+        }
+    }
 
     // BackHandler để xử lý nút back
-    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || (isLoggedIn && accessToken != null)) {
+    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription) {
         when {
             // Nếu đang ở màn tạo đơn thuốc → quay về danh sách
             showCreatePrescription -> {
@@ -211,17 +250,12 @@ fun MainScreen() {
             selectedPrescriptionId != null -> {
                 selectedPrescriptionId = null
             }
-            // Nếu đang ở danh sách đơn thuốc → logout và quay về auth
-            isLoggedIn && accessToken != null -> {
-                isLoggedIn = false
-                accessToken = null
-                selectedTab = 0
-            }
+            // Không handle case danh sách thuốc - để system thoát app
         }
     }
 
     when {
-        // Màn hình tạo đơn thuốc mới
+        // Màn hình tạo đơn thuốc mới (fullscreen, không có bottom nav)
         showCreatePrescription && accessToken != null -> {
             CreatePrescriptionScreen(
                 accessToken = accessToken!!,
@@ -232,29 +266,12 @@ fun MainScreen() {
                 }
             )
         }
-        // Màn hình chi tiết đơn thuốc
+        // Màn hình chi tiết đơn thuốc (fullscreen, không có bottom nav)
         selectedPrescriptionId != null -> {
             PrescriptionDetailScreen(
                 prescriptionId = selectedPrescriptionId!!,
                 accessToken = accessToken ?: "",
                 onBackClick = { selectedPrescriptionId = null }
-            )
-        }
-        // Màn hình danh sách đơn thuốc (sau khi login)
-        isLoggedIn && accessToken != null -> {
-            PrescriptionListScreen(
-                accessToken = accessToken!!,
-                onPrescriptionClick = { prescriptionId ->
-                    selectedPrescriptionId = prescriptionId
-                },
-                onCreateClick = {
-                    showCreatePrescription = true
-                },
-                onLogout = {
-                    isLoggedIn = false
-                    accessToken = null
-                    selectedTab = 0
-                }
             )
         }
         // Màn hình chính với bottom navigation
@@ -264,7 +281,8 @@ fun MainScreen() {
                 bottomBar = {
                     CustomBottomNavigation(
                         selectedTab = selectedTab,
-                        onTabSelected = { selectedTab = it }
+                        onTabSelected = { selectedTab = it },
+                        isLoggedIn = isLoggedIn
                     )
                 }
             ) { innerPadding ->
@@ -275,14 +293,43 @@ fun MainScreen() {
                 ) {
                     // Tab Content
                     when (selectedTab) {
-                        0 -> AuthScreen(
-                            onLoginSuccess = { token ->
-                                accessToken = token
-                                isLoggedIn = true
+                        0 -> {
+                            // Tab Đơn thuốc - chỉ hiển thị khi đã login
+                            if (isLoggedIn && accessToken != null) {
+                                PrescriptionListScreen(
+                                    accessToken = accessToken!!,
+                                    userName = sessionManager.getUserName() ?: "User",
+                                    userEmail = sessionManager.getUserEmail() ?: "",
+                                    onPrescriptionClick = { prescriptionId ->
+                                        selectedPrescriptionId = prescriptionId
+                                    },
+                                    onCreateClick = {
+                                        showCreatePrescription = true
+                                    },
+                                    onLogout = {
+                                        onLogout()
+                                    }
+                                )
+                            } else {
+                                // Chưa login → Hiển thị màn đăng nhập
+                                AuthScreen(
+                                    onLoginSuccess = { token, userEmail, userName, userId ->
+                                        // Lưu session
+                                        sessionManager.saveLoginSession(
+                                            accessToken = token,
+                                            userEmail = userEmail,
+                                            userName = userName,
+                                            userId = userId
+                                        )
+                                        accessToken = token
+                                        isLoggedIn = true
+                                        // Giữ nguyên tab 0 để hiển thị PrescriptionList
+                                    }
+                                )
                             }
-                        )
-                        1 -> VoiceScreen() // Màn hình ghi âm là mặc định
-                        2 -> SettingsScreen()
+                        }
+                        1 -> VoiceScreen() // Màn hình ghi âm
+                        2 -> SettingsScreen() // Màn hình cài đặt
                     }
                 }
             }

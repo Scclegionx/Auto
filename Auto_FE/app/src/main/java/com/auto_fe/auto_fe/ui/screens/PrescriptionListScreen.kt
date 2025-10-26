@@ -6,13 +6,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -29,7 +35,9 @@ fun PrescriptionListScreen(
     accessToken: String,
     onPrescriptionClick: (Long) -> Unit,
     onCreateClick: () -> Unit = {},
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    userName: String = "User", // Thêm tên user
+    userEmail: String = "" // Thêm email user
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -38,6 +46,7 @@ fun PrescriptionListScreen(
     var prescriptions by remember { mutableStateOf<List<PrescriptionService.Prescription>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showMenu by remember { mutableStateOf(false) } // State cho dropdown menu
 
     // Load prescriptions when screen opens
     LaunchedEffect(Unit) {
@@ -73,36 +82,170 @@ fun PrescriptionListScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
         ) {
-            // Header với Logout button
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            // Header Card với Avatar và Dropdown Menu
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = DarkSurface.copy(alpha = 0.9f)
+                ),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
-                Text(
-                    text = "💊 Đơn thuốc của tôi",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = DarkPrimary
-                )
-                
-                TextButton(onClick = onLogout) {
-                    Text(
-                        text = "🚪 Đăng xuất",
-                        color = DarkError,
-                        fontSize = 14.sp
-                    )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Thông tin user và tiêu đề
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "💊 Đơn thuốc của tôi",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = DarkOnSurface
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Xin chào, $userName",
+                            fontSize = 14.sp,
+                            color = DarkOnSurface.copy(alpha = 0.7f)
+                        )
+                    }
+                    
+                    // Avatar với Dropdown Menu
+                    Box {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(DarkPrimary)
+                                .clickable { showMenu = !showMenu },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "User Menu",
+                                tint = DarkOnPrimary,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+                        
+                        // Dropdown Menu
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false },
+                            modifier = Modifier
+                                .background(DarkSurface)
+                                .width(200.dp)
+                        ) {
+                            // User Info
+                            Column(
+                                modifier = Modifier.padding(16.dp, 12.dp)
+                            ) {
+                                Text(
+                                    text = userName,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = DarkOnSurface
+                                )
+                                if (userEmail.isNotEmpty()) {
+                                    Text(
+                                        text = userEmail,
+                                        fontSize = 12.sp,
+                                        color = DarkOnSurface.copy(alpha = 0.6f)
+                                    )
+                                }
+                            }
+                            
+                            Divider(color = DarkOnSurface.copy(alpha = 0.2f))
+                            
+                            // Menu Items - Có thể mở rộng thêm
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Person,
+                                            contentDescription = null,
+                                            tint = DarkOnSurface,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Text("Hồ sơ", color = DarkOnSurface)
+                                    }
+                                },
+                                onClick = {
+                                    showMenu = false
+                                    // TODO: Navigate to profile
+                                    Toast.makeText(context, "Chức năng sắp ra mắt", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                            
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Settings,
+                                            contentDescription = null,
+                                            tint = DarkOnSurface,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Text("Cài đặt", color = DarkOnSurface)
+                                    }
+                                },
+                                onClick = {
+                                    showMenu = false
+                                    // TODO: Navigate to settings
+                                    Toast.makeText(context, "Chức năng sắp ra mắt", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                            
+                            Divider(color = DarkOnSurface.copy(alpha = 0.2f))
+                            
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.ExitToApp,
+                                            contentDescription = null,
+                                            tint = DarkError,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Text("Đăng xuất", color = DarkError)
+                                    }
+                                },
+                                onClick = {
+                                    showMenu = false
+                                    onLogout()
+                                }
+                            )
+                        }
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Subtitle
             Text(
                 text = "Quản lý lịch nhắc uống thuốc",
                 fontSize = 14.sp,
-                color = DarkOnSurface.copy(alpha = 0.7f)
+                color = DarkOnSurface.copy(alpha = 0.7f),
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -201,6 +344,7 @@ fun PrescriptionListScreen(
                 }
                 else -> {
                     LazyColumn(
+                        modifier = Modifier.padding(horizontal = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(prescriptions) { prescription ->
@@ -208,6 +352,11 @@ fun PrescriptionListScreen(
                                 prescription = prescription,
                                 onClick = { onPrescriptionClick(prescription.id) }
                             )
+                        }
+                        
+                        // Thêm spacing cuối để FAB không che content
+                        item {
+                            Spacer(modifier = Modifier.height(80.dp))
                         }
                     }
                 }

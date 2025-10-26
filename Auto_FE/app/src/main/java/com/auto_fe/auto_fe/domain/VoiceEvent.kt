@@ -75,16 +75,122 @@ sealed class VoiceEvent {
     data class UnclearSpeechResult(val possibleResults: List<String>) : VoiceEvent()
 
 
-    // ========== FUTURE: PHONE CALL EVENTS (để sau) ==========
+    // ========== PHONE CALL EVENTS ==========
 
     /** Nhận được lệnh gọi điện */
-    data class CallCommandReceived(val contactName: String) : VoiceEvent()
+    data class CallCommandReceived(val rawCommand: String) : VoiceEvent()
+
+    /** Lệnh gọi điện được phân tích thành công */
+    data class CallCommandParsed(val contactName: String) : VoiceEvent()
+
+    /** Lệnh gọi điện không thể phân tích (parsing failed) */
+    data class CallCommandParseFailed(val reason: String) : VoiceEvent()
 
     /** Cuộc gọi được thực hiện thành công */
     object CallMadeSuccessfully : VoiceEvent()
 
     /** Cuộc gọi thất bại */
     data class CallFailed(val error: String) : VoiceEvent()
+
+
+    // ========== CHROME SEARCH EVENTS ==========
+
+    /** Nhận được lệnh tìm kiếm Chrome */
+    data class ChromeCommandReceived(val rawCommand: String) : VoiceEvent()
+
+    /** Lệnh tìm kiếm Chrome được phân tích thành công */
+    data class ChromeCommandParsed(val query: String) : VoiceEvent()
+
+    /** Lệnh tìm kiếm Chrome không thể phân tích (parsing failed) */
+    data class ChromeCommandParseFailed(val reason: String) : VoiceEvent()
+
+    /** Tìm kiếm Chrome thành công */
+    object ChromeSearchSuccessfully : VoiceEvent()
+
+    /** Tìm kiếm Chrome thất bại */
+    data class ChromeSearchFailed(val error: String) : VoiceEvent()
+
+
+    // ========== YOUTUBE SEARCH EVENTS ==========
+
+    /** Nhận được lệnh tìm kiếm YouTube */
+    data class YouTubeCommandReceived(val rawCommand: String) : VoiceEvent()
+
+    /** Lệnh tìm kiếm YouTube được phân tích thành công */
+    data class YouTubeCommandParsed(val query: String) : VoiceEvent()
+
+    /** Lệnh tìm kiếm YouTube không thể phân tích (parsing failed) */
+    data class YouTubeCommandParseFailed(val reason: String) : VoiceEvent()
+
+    /** Tìm kiếm YouTube thành công */
+    object YouTubeSearchSuccessfully : VoiceEvent()
+
+    /** Tìm kiếm YouTube thất bại */
+    data class YouTubeSearchFailed(val error: String) : VoiceEvent()
+
+
+    // ========== ALARM EVENTS ==========
+
+    /** Nhận được lệnh tạo báo thức */
+    data class AlarmCommandReceived(val rawCommand: String) : VoiceEvent()
+
+    /** Lệnh tạo báo thức được phân tích thành công */
+    data class AlarmCommandParsed(val hour: Int, val minute: Int, val message: String) : VoiceEvent()
+
+    /** Lệnh tạo báo thức không thể phân tích (parsing failed) */
+    data class AlarmCommandParseFailed(val reason: String) : VoiceEvent()
+
+    /** Tạo báo thức thành công */
+    object AlarmCreatedSuccessfully : VoiceEvent()
+
+    /** Tạo báo thức thất bại */
+    data class AlarmCreationFailed(val error: String) : VoiceEvent()
+
+
+    // ========== CALENDAR EVENTS ==========
+
+    /** Nhận được lệnh tạo sự kiện lịch */
+    data class CalendarCommandReceived(val rawCommand: String) : VoiceEvent()
+
+    /** Lệnh tạo sự kiện lịch được phân tích thành công */
+    data class CalendarCommandParsed(val title: String, val location: String, val begin: Long, val end: Long) : VoiceEvent()
+
+    /** Lệnh tạo sự kiện lịch không thể phân tích (parsing failed) */
+    data class CalendarCommandParseFailed(val reason: String) : VoiceEvent()
+
+    /** Tạo sự kiện lịch thành công */
+    object CalendarEventCreatedSuccessfully : VoiceEvent()
+
+    /** Tạo sự kiện lịch thất bại */
+    data class CalendarEventCreationFailed(val error: String) : VoiceEvent()
+
+    // ========== CAMERA EVENTS ==========
+    data class CameraCommandReceived(val rawCommand: String) : VoiceEvent()
+    data class CameraCommandParsed(val action: String) : VoiceEvent()
+    data class CameraCommandParseFailed(val reason: String) : VoiceEvent()
+    object CameraCapturedSuccessfully : VoiceEvent()
+    data class CameraCaptureFailed(val error: String) : VoiceEvent()
+
+    // ========== WIFI EVENTS ==========
+    data class WifiCommandReceived(val rawCommand: String) : VoiceEvent()
+    data class WifiCommandParsed(val action: String) : VoiceEvent()
+    data class WifiCommandParseFailed(val reason: String) : VoiceEvent()
+    object WifiToggledSuccessfully : VoiceEvent()
+    data class WifiToggleFailed(val error: String) : VoiceEvent()
+
+    // ========== VOLUME EVENTS ==========
+    data class VolumeCommandReceived(val rawCommand: String) : VoiceEvent()
+    data class VolumeCommandParsed(val action: String, val value: Int) : VoiceEvent()
+    data class VolumeCommandParseFailed(val reason: String) : VoiceEvent()
+    object VolumeAdjustedSuccessfully : VoiceEvent()
+    data class VolumeAdjustmentFailed(val error: String) : VoiceEvent()
+
+    // ========== FLASH EVENTS ==========
+    data class FlashCommandReceived(val rawCommand: String) : VoiceEvent()
+    data class FlashCommandParsed(val action: String) : VoiceEvent()
+    data class FlashCommandParseFailed(val reason: String) : VoiceEvent()
+    object FlashToggledSuccessfully : VoiceEvent()
+    data class FlashToggleFailed(val error: String) : VoiceEvent()
 
 
     // ========== UTILITY METHODS ==========
@@ -111,9 +217,53 @@ sealed class VoiceEvent {
             is SMSSendFailed -> "SMSSendFailed($error)"
             is SpeechRecognitionFailed -> "SpeechRecognitionFailed"
             is UnclearSpeechResult -> "UnclearSpeechResult(${possibleResults.size} results)"
-            is CallCommandReceived -> "CallCommandReceived($contactName)"
+            is CallCommandReceived -> "CallCommandReceived(${rawCommand.take(50)}...)"
+            is CallCommandParsed -> "CallCommandParsed($contactName)"
+            is CallCommandParseFailed -> "CallCommandParseFailed($reason)"
             is CallMadeSuccessfully -> "CallMadeSuccessfully"
             is CallFailed -> "CallFailed($error)"
+            is ChromeCommandReceived -> "ChromeCommandReceived(${rawCommand.take(50)}...)"
+            is ChromeCommandParsed -> "ChromeCommandParsed($query)"
+            is ChromeCommandParseFailed -> "ChromeCommandParseFailed($reason)"
+            is ChromeSearchSuccessfully -> "ChromeSearchSuccessfully"
+            is ChromeSearchFailed -> "ChromeSearchFailed($error)"
+            is YouTubeCommandReceived -> "YouTubeCommandReceived(${rawCommand.take(50)}...)"
+            is YouTubeCommandParsed -> "YouTubeCommandParsed($query)"
+            is YouTubeCommandParseFailed -> "YouTubeCommandParseFailed($reason)"
+            is YouTubeSearchSuccessfully -> "YouTubeSearchSuccessfully"
+            is YouTubeSearchFailed -> "YouTubeSearchFailed($error)"
+            is AlarmCommandReceived -> "AlarmCommandReceived(${rawCommand.take(50)}...)"
+            is AlarmCommandParsed -> "AlarmCommandParsed($hour:$minute - $message)"
+            is AlarmCommandParseFailed -> "AlarmCommandParseFailed($reason)"
+            is AlarmCreatedSuccessfully -> "AlarmCreatedSuccessfully"
+            is AlarmCreationFailed -> "AlarmCreationFailed($error)"
+            is CalendarCommandReceived -> "CalendarCommandReceived(${rawCommand.take(50)}...)"
+            is CalendarCommandParsed -> "CalendarCommandParsed($title)"
+            is CalendarCommandParseFailed -> "CalendarCommandParseFailed($reason)"
+            is CalendarEventCreatedSuccessfully -> "CalendarEventCreatedSuccessfully"
+            is CalendarEventCreationFailed -> "CalendarEventCreationFailed($error)"
+            
+            // Device Control Events
+            is CameraCommandReceived -> "CameraCommandReceived($rawCommand)"
+            is CameraCommandParsed -> "CameraCommandParsed($action)"
+            is CameraCommandParseFailed -> "CameraCommandParseFailed($reason)"
+            is CameraCapturedSuccessfully -> "CameraCapturedSuccessfully"
+            is CameraCaptureFailed -> "CameraCaptureFailed($error)"
+            is WifiCommandReceived -> "WifiCommandReceived($rawCommand)"
+            is WifiCommandParsed -> "WifiCommandParsed($action)"
+            is WifiCommandParseFailed -> "WifiCommandParseFailed($reason)"
+            is WifiToggledSuccessfully -> "WifiToggledSuccessfully"
+            is WifiToggleFailed -> "WifiToggleFailed($error)"
+            is VolumeCommandReceived -> "VolumeCommandReceived($rawCommand)"
+            is VolumeCommandParsed -> "VolumeCommandParsed($action, $value)"
+            is VolumeCommandParseFailed -> "VolumeCommandParseFailed($reason)"
+            is VolumeAdjustedSuccessfully -> "VolumeAdjustedSuccessfully"
+            is VolumeAdjustmentFailed -> "VolumeAdjustmentFailed($error)"
+            is FlashCommandReceived -> "FlashCommandReceived($rawCommand)"
+            is FlashCommandParsed -> "FlashCommandParsed($action)"
+            is FlashCommandParseFailed -> "FlashCommandParseFailed($reason)"
+            is FlashToggledSuccessfully -> "FlashToggledSuccessfully"
+            is FlashToggleFailed -> "FlashToggleFailed($error)"
         }
     }
 
@@ -126,6 +276,24 @@ sealed class VoiceEvent {
                 this is NoContactFound ||
                 this is SMSSendFailed ||
                 this is SpeechRecognitionFailed ||
-                this is CallFailed
+                this is CallCommandParseFailed ||
+                this is CallFailed ||
+                this is ChromeCommandParseFailed ||
+                this is ChromeSearchFailed ||
+                this is YouTubeCommandParseFailed ||
+                this is YouTubeSearchFailed ||
+                this is AlarmCommandParseFailed ||
+                this is AlarmCreationFailed ||
+                this is CalendarCommandParseFailed ||
+                this is CalendarEventCreationFailed ||
+                // Device Control Error Events
+                this is CameraCommandParseFailed ||
+                this is CameraCaptureFailed ||
+                this is WifiCommandParseFailed ||
+                this is WifiToggleFailed ||
+                this is VolumeCommandParseFailed ||
+                this is VolumeAdjustmentFailed ||
+                this is FlashCommandParseFailed ||
+                this is FlashToggleFailed
     }
 }

@@ -4,20 +4,20 @@ Hệ thống NLP Hybrid kết hợp trained model với reasoning engine cho ng�
 
 ## 🚀 Quick Start
 
-### 1. Cài đặt
+### Luồng Clone và Setup (Thống Nhất)
 ```bash
-# Clone repository
+# 1. Clone repository
 git clone <repository-url>
 cd Auto_NLP
 
-# Tạo virtual environment
-python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
+# 2. Setup tự động (khuyến nghị)
+python setup_new_machine.py
 
-# Cài đặt dependencies
-pip install -r requirements.txt
+# 3. Chạy training
+python src/training/scripts/train_gpu.py
 ```
+
+📋 **Xem hướng dẫn chi tiết**: [CLONE_SETUP_GUIDE.md](CLONE_SETUP_GUIDE.md)
 
 ### 2. Training Model
 ```bash

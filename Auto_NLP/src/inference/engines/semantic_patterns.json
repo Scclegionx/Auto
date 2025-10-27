@@ -106,6 +106,241 @@
           "confidence": 0.8
         }
       ]
+    },
+    "get-info": {
+      "patterns": [
+        {
+          "pattern": "tìm kiếm thông tin {query}",
+          "entities": ["query"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "thông tin về {query}",
+          "entities": ["query"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "tìm hiểu về {query}",
+          "entities": ["query"],
+          "confidence": 0.8
+        },
+        {
+          "pattern": "hỏi về {query}",
+          "entities": ["query"],
+          "confidence": 0.8
+        },
+        {
+          "pattern": "giá {query}",
+          "entities": ["query"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "thời tiết {location}",
+          "entities": ["location"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "tin tức {query}",
+          "entities": ["query"],
+          "confidence": 0.85
+        }
+      ]
+    },
+    "search-internet": {
+      "patterns": [
+        {
+          "pattern": "tìm kiếm {query} trên internet",
+          "entities": ["query"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "tìm kiếm {query} trên google",
+          "entities": ["query"],
+          "confidence": 0.95
+        },
+        {
+          "pattern": "tìm kiếm {query}",
+          "entities": ["query"],
+          "confidence": 0.8
+        },
+        {
+          "pattern": "search {query}",
+          "entities": ["query"],
+          "confidence": 0.8
+        }
+      ]
+    },
+    "search-youtube": {
+      "patterns": [
+        {
+          "pattern": "tìm kiếm {query} trên youtube",
+          "entities": ["query"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "tìm video {query}",
+          "entities": ["query"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "xem video {query}",
+          "entities": ["query"],
+          "confidence": 0.8
+        }
+      ]
+    },
+    "set-alarm": {
+      "patterns": [
+        {
+          "pattern": "đặt báo thức {time}",
+          "entities": ["time"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "nhắc nhở {time}",
+          "entities": ["time"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "đặt lịch hẹn {time}",
+          "entities": ["time"],
+          "confidence": 0.8
+        }
+      ]
+    },
+    "set-event-calendar": {
+      "patterns": [
+        {
+          "pattern": "đặt lịch hẹn {event}",
+          "entities": ["event"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "lên lịch {event}",
+          "entities": ["event"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "đặt lịch {event}",
+          "entities": ["event"],
+          "confidence": 0.8
+        }
+      ]
+    },
+    "play-media": {
+      "patterns": [
+        {
+          "pattern": "phát {media_type}",
+          "entities": ["media_type"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "nghe {media_type}",
+          "entities": ["media_type"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "xem {media_type}",
+          "entities": ["media_type"],
+          "confidence": 0.8
+        }
+      ]
+    },
+    "add-contacts": {
+      "patterns": [
+        {
+          "pattern": "thêm {person} vào danh bạ",
+          "entities": ["person"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "lưu số {phone} với tên {person}",
+          "entities": ["phone", "person"],
+          "confidence": 0.95
+        },
+        {
+          "pattern": "thêm liên hệ {person}",
+          "entities": ["person"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "lưu danh bạ {person}",
+          "entities": ["person"],
+          "confidence": 0.8
+        }
+      ]
+    },
+    "control-device": {
+      "patterns": [
+        {
+          "pattern": "bật {device}",
+          "entities": ["device"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "tắt {device}",
+          "entities": ["device"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "điều chỉnh {device}",
+          "entities": ["device"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "kiểm soát {device}",
+          "entities": ["device"],
+          "confidence": 0.8
+        }
+      ]
+    },
+    "open-cam": {
+      "patterns": [
+        {
+          "pattern": "mở camera",
+          "entities": [],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "chụp ảnh",
+          "entities": [],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "quay video",
+          "entities": [],
+          "confidence": 0.8
+        },
+        {
+          "pattern": "bật camera",
+          "entities": [],
+          "confidence": 0.85
+        }
+      ]
+    },
+    "view-content": {
+      "patterns": [
+        {
+          "pattern": "xem {content_type}",
+          "entities": ["content_type"],
+          "confidence": 0.9
+        },
+        {
+          "pattern": "đọc {content_type}",
+          "entities": ["content_type"],
+          "confidence": 0.85
+        },
+        {
+          "pattern": "mở {content_type}",
+          "entities": ["content_type"],
+          "confidence": 0.8
+        },
+        {
+          "pattern": "hiển thị {content_type}",
+          "entities": ["content_type"],
+          "confidence": 0.8
+        }
+      ]
     }
   },
   "entity_semantic_patterns": {

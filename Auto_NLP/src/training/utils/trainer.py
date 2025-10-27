@@ -30,7 +30,7 @@ class IntentDataset(Dataset):
         return {
             "input_ids": item["input_ids"],
             "attention_mask": item["attention_mask"],
-            "intent_id": torch.tensor(item["intent_label"], dtype=torch.long),
+            "intent_id": torch.tensor(item.get("intent_label", item.get("intent_id", 0)), dtype=torch.long),
             "confidence": torch.tensor(item.get("confidence", 1.0), dtype=torch.float),
             "text": item.get("text", ""),
             "original_intent": item.get("original_intent", "")
@@ -71,7 +71,13 @@ class CommandDataset(Dataset):
         }
 
 class UnifiedDataset(Dataset):
-    """Dataset cho Unified Model (Intent + Entity + Command)"""
+    """Dataset cho Unified Model (Intent + Entity + Command)
+    
+    Lưu ý: Dataset này kỳ vọng 3 nhánh dữ liệu:
+    - intent_data: Intent recognition data
+    - entity_data: Entity extraction data (CE-based, không CRF)
+    - command_data: Command processing data
+    """
     
     def __init__(self, intent_data: List[Dict], entity_data: List[Dict], command_data: List[Dict]):
         self.intent_data = intent_data
@@ -155,8 +161,15 @@ class Trainer:
                 optimizer.zero_grad()
                 
                 if self.use_confidence_weighting:
-                    logits, pred_confidences = self.model(input_ids, attention_mask, return_confidence=True)
-                    loss = criterion(logits, intent_labels, confidences, pred_confidences)
+                    # Try confidence-aware forward pass
+                    try:
+                        logits, pred_confidences = self.model(input_ids, attention_mask, return_confidence=True)
+                        loss = criterion(logits, intent_labels, confidences, pred_confidences)
+                    except TypeError:
+                        # Fallback to standard forward if model doesn't support confidence
+                        logits = self.model(input_ids, attention_mask)
+                        pred_confidences = torch.softmax(logits, dim=-1).max(dim=-1)[0]
+                        loss = criterion(logits, intent_labels, confidences, pred_confidences)
                 else:
                     logits = self.model(input_ids, attention_mask)
                     loss = criterion(logits, intent_labels)
@@ -186,7 +199,7 @@ class Trainer:
                     'train_accuracy': 100 * train_correct / train_total,
                     'val_accuracy': val_metrics['accuracy'],
                     'val_f1': val_metrics['f1_score'],
-                    'val_confidence_accuracy': val_metrics['confidence_accuracy'],
+                    'val_confidence_coverage': val_metrics['confidence_coverage'],
                     'val_high_confidence_accuracy': val_metrics['high_confidence_accuracy']
                 })
             
@@ -226,9 +239,14 @@ class Trainer:
                 attention_mask = batch["attention_mask"].to(self.device)
                 intent_labels = batch["intent_id"].to(self.device)
                 
-                predicted_intents, confidences = self.model.predict_with_confidence(
-                    input_ids, attention_mask, self.confidence_threshold
-                )
+                # Use standard forward pass and compute confidence manually
+                logits = self.model(input_ids, attention_mask)
+                probabilities = torch.softmax(logits, dim=-1)
+                confidences, predicted_intents = torch.max(probabilities, dim=-1)
+                
+                # Apply confidence threshold
+                low_conf_mask = confidences < self.confidence_threshold
+                predicted_intents[low_conf_mask] = -1  # Mark as unknown
                 
                 all_predictions.extend(predicted_intents.cpu().numpy())
                 all_targets.extend(intent_labels.cpu().numpy())
@@ -261,15 +279,19 @@ class Trainer:
             metrics['high_confidence_accuracy'] = 0.0
         
         high_conf_ratio = len(all_high_confidence_predictions) / len(all_predictions) if all_predictions else 0
-        metrics['confidence_accuracy'] = high_conf_ratio * 100
+        metrics['confidence_coverage'] = high_conf_ratio * 100  # Renamed for clarity
         
         metrics['avg_confidence'] = np.mean(all_confidences) * 100
         
         return metrics
     
     def train_entity_model(self, train_data: List[Dict], val_data: List[Dict]):
-        """Huấn luyện mô hình Entity Extraction"""
-        print("Bắt đầu huấn luyện Entity Extraction Model...")
+        """Huấn luyện mô hình Entity Extraction với CrossEntropyLoss
+        
+        Lưu ý: Hàm này sử dụng CrossEntropyLoss cho entity extraction.
+        Nếu muốn sử dụng CRF layer, hãy dùng train_gpu.py thay thế.
+        """
+        print("Bắt đầu huấn luyện Entity Extraction Model (CE-based)...")
         
         train_dataset = EntityDataset(train_data)
         val_dataset = EntityDataset(val_data)

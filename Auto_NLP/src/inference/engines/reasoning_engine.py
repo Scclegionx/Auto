@@ -15,7 +15,7 @@ import faiss
 from collections import defaultdict, deque
 from rapidfuzz import fuzz, process
 import time
-from src.training.configs.config import model_config, intent_config
+from src.training.configs.config import ModelConfig, IntentConfig
 
 logging.basicConfig(
     level=logging.INFO,
@@ -299,12 +299,18 @@ class EntityExtractor:
         
         # Xử lý đặc biệt cho từng loại entity
         if entity_type == "person":
-            # Chỉ giữ lại từ quan hệ + từ sở hữu
-            person_words = []
-            for word in cleaned_words:
-                if word.lower() in ["mẹ", "ba", "bố", "bạn", "anh", "chị", "em", "cô", "chú", "bác", "ông", "bà", "tôi", "tui", "mình"]:
-                    person_words.append(word)
-            return " ".join(person_words)
+            # Giữ nguyên cụm đầy đủ nếu có tên sau quan hệ
+            # Pattern đã match: ((?:ba|bố|mẹ|...)\s+[\w\s]+?) - giữ nguyên
+            if len(cleaned_words) > 1:
+                # Có từ quan hệ + tên riêng, giữ nguyên
+                return " ".join(cleaned_words)
+            else:
+                # Chỉ có từ quan hệ, giữ lại
+                person_words = []
+                for word in cleaned_words:
+                    if word.lower() in ["mẹ", "ba", "bố", "bạn", "anh", "chị", "em", "cô", "chú", "bác", "ông", "bà", "tôi", "tui", "mình"]:
+                        person_words.append(word)
+                return " ".join(person_words)
         
         elif entity_type == "time":
             # Liệt kê tất cả thông tin thời gian
@@ -354,26 +360,108 @@ class ReasoningEngine:
         self.config = self._load_config(config_path)
         
         try:
-            self.tokenizer = AutoTokenizer.from_pretrained(self.config.get("model_name", model_config.model_name))
-            self.model = AutoModel.from_pretrained(
-                self.config.get("model_name", model_config.model_name),
-                use_safetensors=True,
-                trust_remote_code=True
-            )
-            self.model.eval()
-            logger.info("✅ Model loaded successfully")
+            # Load PhoBERT with correct settings - SAME AS TRAINING SYSTEM
+            model_name = self.config.get("model_name", "vinai/phobert-large")
+            
+            # Try loading with local cache first (same as training system)
+            try:
+                # Sử dụng cache mặc định của HuggingFace
+                cache_dir = os.path.expanduser("~/.cache/huggingface/hub")
+                self.tokenizer = AutoTokenizer.from_pretrained(
+                    model_name, 
+                    use_fast=False,
+                    cache_dir=cache_dir,
+                    local_files_only=True
+                )
+                self.model = AutoModel.from_pretrained(
+                    model_name,
+                    use_safetensors=True,
+                    trust_remote_code=False,
+                    cache_dir=cache_dir,
+                    local_files_only=True
+                )
+                self.model.eval()
+                logger.info("Model loaded successfully from local cache")
+            except Exception:
+                # Fallback: try with specific snapshot path
+                snapshots_dir = os.path.join(cache_dir, "models--vinai--phobert-large", "snapshots")
+                if os.path.exists(snapshots_dir):
+                    # Find the snapshot with model.safetensors
+                    snapshot_dirs = [d for d in os.listdir(snapshots_dir) if os.path.isdir(os.path.join(snapshots_dir, d))]
+                    model_path = None
+                    for snapshot_dir in snapshot_dirs:
+                        snapshot_path = os.path.join(snapshots_dir, snapshot_dir)
+                        if os.path.exists(os.path.join(snapshot_path, "model.safetensors")):
+                            model_path = snapshot_path
+                            break
+                    
+                    if model_path:
+                        logger.info(f"Trying to load from snapshot: {model_path}")
+                        # Try to load tokenizer from model name (download if needed)
+                        try:
+                            self.tokenizer = AutoTokenizer.from_pretrained(
+                                model_name, 
+                                use_fast=False,
+                                cache_dir=cache_dir,
+                                local_files_only=False  # Allow download for tokenizer
+                            )
+                        except:
+                            # Fallback: try to load from snapshot
+                            self.tokenizer = AutoTokenizer.from_pretrained(
+                                model_path, 
+                                use_fast=False,
+                                local_files_only=True
+                            )
+                        
+                        self.model = AutoModel.from_pretrained(
+                            model_path,
+                            use_safetensors=True,
+                            trust_remote_code=False,
+                            local_files_only=True
+                        )
+                        self.model.eval()
+                        logger.info("Model loaded successfully from snapshot path")
+                    else:
+                        raise Exception("No snapshot with model.safetensors found in cache")
+                else:
+                    raise Exception("Model not found in cache")
         except Exception as e:
-            logger.error(f"❌ Error loading model: {e}")
-            # Fallback to a simpler model or disable model-based features
-            self.tokenizer = None
-            self.model = None
+            # Fallback: try with different settings
+            try:
+                self.tokenizer = AutoTokenizer.from_pretrained(
+                    model_name, 
+                    use_fast=False,
+                    cache_dir=cache_dir,
+                    local_files_only=False
+                )
+                self.model = AutoModel.from_pretrained(
+                    model_name,
+                    use_safetensors=True,
+                    trust_remote_code=False,
+                    cache_dir=cache_dir,
+                    local_files_only=False
+                )
+                self.model.eval()
+                logger.info("Model loaded successfully with download fallback")
+            except Exception as e2:
+                logger.error(f"Error loading model: {e2}")
+                # Final fallback: disable model-based features but keep reasoning engine working
+                self.tokenizer = None
+                self.model = None
+                logger.warning("Using fallback embedding mode - reasoning engine will work with reduced accuracy")
         
         self.fuzzy_matcher = FuzzyMatcher(threshold=self.config.get("fuzzy_threshold", 75))
         
         # Chỉ khởi tạo vector store nếu model đã load thành công
-        if self.model is not None:
-            self.vector_store = VectorStore(vector_dim=self.model.config.hidden_size)
-        else:
+        try:
+            if self.model is not None:
+                self.vector_store = VectorStore(vector_dim=self.model.config.hidden_size)
+            else:
+                # Fallback: tạo vector store với dimension mặc định
+                self.vector_store = VectorStore(vector_dim=768)  # PhoBERT hidden size
+        except Exception as e:
+            logger.warning(f"Vector store initialization failed: {e}")
+            # Disable vector store for stability
             self.vector_store = None
         
         self.entity_extractor = EntityExtractor(self.fuzzy_matcher)
@@ -401,13 +489,39 @@ class ReasoningEngine:
         
         self.similarity_threshold = self.config.get("similarity_threshold", 0.6)
         
+        # Bảng normalize intent cũ → 13 command chuẩn
+        self.normalize_intent = {
+            # Giữ nguyên 13 command chuẩn
+            "call": "call",
+            "send-mess": "send-mess", 
+            "make-video-call": "make-video-call",
+            "play-media": "play-media",
+            "view-content": "view-content",
+            "search-internet": "search-internet",
+            "search-youtube": "search-youtube",
+            "get-info": "get-info",
+            "set-alarm": "set-alarm",
+            "set-event-calendar": "set-event-calendar",
+            "open-cam": "open-cam",
+            "control-device": "control-device",
+            "add-contacts": "add-contacts",
+            "unknown": "unknown",
+            # Map từ intent cũ → command mới
+            "set-reminder": "set-event-calendar",
+            "check-weather": "get-info",
+            "read-news": "get-info", 
+            "check-health-status": "get-info",
+            "general-conversation": "unknown",
+            "help": "unknown"
+        }
+        
         logger.info("ReasoningEngine đã được khởi tạo thành công")
     
     def _load_config(self, config_path: Optional[str]) -> Dict[str, Any]:
         """Load config từ file"""
         default_config = {
-            "model_name": model_config.model_name,
-            "max_length": model_config.max_length,
+            "model_name": "vinai/phobert-large",
+            "max_length": 256,
             "similarity_threshold": 0.6,
             "fuzzy_threshold": 75,
             "max_history": 5,
@@ -440,17 +554,24 @@ class ReasoningEngine:
         """Load knowledge base từ file hoặc sử dụng mặc định"""
         default_kb = {
             "intent_synonyms": {
+                # 13 command chuẩn
                 "call": ["gọi", "điện thoại", "alo", "kết nối", "liên lạc", "quay số", "bấm số", "phone", "call"],
-                "set-alarm": ["đặt báo thức", "nhắc nhở", "hẹn giờ", "đánh thức", "chuông báo", "ghi nhớ", "alarm", "reminder"],
+                "make-video-call": ["gọi video", "video call", "face time", "zalo video", "gọi facetime"],
                 "send-mess": ["gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo", "soạn tin", "message", "send"],
-                "set-reminder": ["đặt nhắc nhở", "ghi nhớ", "lời nhắc", "nhắc tôi", "tạo lời nhắc", "reminder"],
-                "check-weather": ["thời tiết", "nhiệt độ", "mưa", "nắng", "dự báo thời tiết", "weather", "temperature"],
+                "add-contacts": ["thêm liên lạc", "lưu số", "thêm số", "lưu danh bạ", "thêm danh bạ"],
                 "play-media": ["phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc", "play", "music"],
-                "read-news": ["đọc tin tức", "tin tức", "báo", "thời sự", "cập nhật tin", "news", "read"],
-                "check-health-status": ["kiểm tra sức khỏe", "đo", "theo dõi", "chỉ số", "tình trạng", "health", "check"],
-                "general-conversation": ["xin chào", "tạm biệt", "cảm ơn", "trò chuyện", "nói chuyện", "hello", "conversation"],
-                "help": ["giúp đỡ", "trợ giúp", "hướng dẫn", "hỗ trợ", "không hiểu", "help", "support"],
-                "unknown": ["không hiểu", "không rõ", "lạ", "không biết", "chưa rõ"]
+                "view-content": ["xem nội dung", "mở bài", "xem bài", "mở link", "xem link"],
+                "search-internet": ["tìm kiếm", "tìm", "search", "tra cứu", "google"],
+                "search-youtube": ["tìm youtube", "tìm trên youtube", "youtube", "yt"],
+                "get-info": ["thông tin", "thời tiết", "nhiệt độ", "mưa", "nắng", "dự báo thời tiết", "weather", "temperature", 
+                           "đọc tin tức", "tin tức", "báo", "thời sự", "cập nhật tin", "news", "read",
+                           "kiểm tra sức khỏe", "đo", "theo dõi", "chỉ số", "tình trạng", "health", "check"],
+                "set-alarm": ["đặt báo thức", "nhắc nhở", "hẹn giờ", "đánh thức", "chuông báo", "ghi nhớ", "alarm", "reminder"],
+                "set-event-calendar": ["đặt nhắc nhở", "ghi nhớ", "lời nhắc", "nhắc tôi", "tạo lời nhắc", "reminder", "tạo sự kiện", "lịch"],
+                "open-cam": ["mở camera", "bật camera", "camera", "chụp ảnh"],
+                "control-device": ["điều khiển", "bật", "tắt", "wifi", "bluetooth", "đèn pin", "âm lượng", "volume"],
+                "unknown": ["không hiểu", "không rõ", "lạ", "không biết", "chưa rõ", "xin chào", "tạm biệt", "cảm ơn", "trò chuyện", "nói chuyện", "hello", "conversation",
+                          "giúp đỡ", "trợ giúp", "hướng dẫn", "hỗ trợ", "không hiểu", "help", "support"]
             },
             "context_keywords": {
                 "time": ["giờ", "phút", "sáng", "chiều", "tối", "mai", "hôm nay", "tuần", "tháng"],
@@ -460,22 +581,28 @@ class ReasoningEngine:
                 "object": ["thuốc", "nước", "cơm", "sách", "điện thoại", "tivi", "radio"]
             },
             "intent_indicators": {
+                # 13 command chuẩn
                 "call": ["gọi", "điện", "phone", "call", "kết nối", "liên lạc", "cuộc gọi", "gọi thoại", "gọi điện", "thực hiện gọi", "thực hiện cuộc gọi"],
-                "set-alarm": ["báo thức", "nhắc", "hẹn", "alarm", "reminder", "giờ"],
+                "make-video-call": ["gọi video", "video call", "face time", "zalo video", "gọi facetime", "video"],
                 "send-mess": ["nhắn", "tin", "message", "sms", "text", "gửi", "nhắn tin", "gửi tin", "soạn tin", "tin nhắn"],
-                "set-reminder": ["nhắc", "nhớ", "reminder", "ghi", "lời nhắc", "uống thuốc", "thuốc", "viên thuốc"],
-                "check-weather": ["thời tiết", "weather", "nhiệt", "mưa", "nắng"],
-                "play-media": ["nhạc", "music", "phát", "bật", "nghe", "play"],
-                "read-news": ["tin", "news", "báo", "đọc", "thời sự"],
-                "check-health-status": ["sức khỏe", "health", "kiểm tra", "đo", "theo dõi"],
-                "general-conversation": ["chào", "hello", "cảm ơn", "tạm biệt", "nói chuyện"],
-                "help": ["giúp", "help", "hướng dẫn", "hỗ trợ"],
-                "unknown": ["không hiểu", "chưa rõ", "không biết"]
+                "add-contacts": ["thêm liên lạc", "lưu số", "thêm số", "lưu danh bạ", "thêm danh bạ", "lưu", "thêm"],
+                "play-media": ["nhạc", "music", "phát", "bật", "nghe", "play", "video", "audio"],
+                "view-content": ["xem", "mở", "đọc", "bài", "link", "nội dung"],
+                "search-internet": ["tìm kiếm", "tìm", "search", "tra cứu", "google", "internet"],
+                "search-youtube": ["youtube", "yt", "tìm youtube", "tìm trên youtube"],
+                "get-info": ["thông tin", "thời tiết", "weather", "nhiệt", "mưa", "nắng", "tin", "news", "báo", "đọc", "thời sự", 
+                            "sức khỏe", "health", "kiểm tra", "đo", "theo dõi", "chỉ số", "tình trạng"],
+                "set-alarm": ["báo thức", "nhắc", "hẹn", "alarm", "reminder", "giờ", "chuông"],
+                "set-event-calendar": ["nhắc", "nhớ", "reminder", "ghi", "lời nhắc", "uống thuốc", "thuốc", "viên thuốc", "tạo sự kiện", "lịch", "sự kiện"],
+                "open-cam": ["camera", "chụp", "ảnh", "mở camera", "bật camera"],
+                "control-device": ["điều khiển", "bật", "tắt", "wifi", "bluetooth", "đèn pin", "âm lượng", "volume", "thiết bị"],
+                "unknown": ["không hiểu", "chưa rõ", "không biết", "chào", "hello", "cảm ơn", "tạm biệt", "nói chuyện", 
+                          "giúp", "help", "hướng dẫn", "hỗ trợ"]
             },
             "multi_intent_indicators": {
                 "call,send-mess": ["gọi", "nhắn", "liên lạc"],
-                "set-alarm,set-reminder": ["nhắc", "giờ", "hẹn", "đặt"],
-                "check-weather,read-news": ["thời tiết", "tin tức", "cập nhật"]
+                "set-alarm,set-event-calendar": ["nhắc", "giờ", "hẹn", "đặt"],
+                "get-info,search-internet": ["thông tin", "tìm kiếm", "cập nhật"]
             }
         }
         
@@ -702,27 +829,35 @@ class ReasoningEngine:
         if not self.config.get("enable_vectorstore", True):
             logger.info("Vector store đã bị tắt trong config")
             return
+            
+        if self.vector_store is None:
+            logger.warning("Vector store not available, skipping initialization")
+            return
         
         logger.info("Đang khởi tạo vector store...")
         all_texts = []
         all_intent_mapping = {}
         
-        for intent, synonyms in self.knowledge_base["intent_synonyms"].items():
-            for synonym in synonyms:
-                all_texts.append(synonym)
-                all_intent_mapping[synonym] = intent
-        
-        embeddings = []
-        batch_size = 16
-        for i in range(0, len(all_texts), batch_size):
-            batch = all_texts[i:i+batch_size]
-            batch_embeddings = self._batch_encode_texts(batch)
-            embeddings.extend(batch_embeddings)
-        
-        embeddings_array = np.array(embeddings)
-        
-        self.vector_store.add_vectors(all_texts, embeddings_array)
-        logger.info(f"Vector store đã được khởi tạo với {len(all_texts)} vectors")
+        try:
+            for intent, synonyms in self.knowledge_base["intent_synonyms"].items():
+                for synonym in synonyms:
+                    all_texts.append(synonym)
+                    all_intent_mapping[synonym] = intent
+            
+            embeddings = []
+            batch_size = 16
+            for i in range(0, len(all_texts), batch_size):
+                batch = all_texts[i:i+batch_size]
+                batch_embeddings = self._batch_encode_texts(batch)
+                embeddings.extend(batch_embeddings)
+            
+            embeddings_array = np.array(embeddings, dtype=np.float32)
+            
+            self.vector_store.add_vectors(all_texts, embeddings_array)
+            logger.info(f"Vector store đã được khởi tạo với {len(all_texts)} vectors")
+        except Exception as e:
+            logger.warning(f"Vector store initialization failed: {e}")
+            # Continue without vector store
     
     def _batch_encode_texts(self, texts: List[str]) -> List[np.ndarray]:
         """Encode một batch các texts thành embeddings"""
@@ -745,7 +880,7 @@ class ReasoningEngine:
         # Nếu model không có, trả về embedding giả
         if self.model is None or self.tokenizer is None:
             logger.warning("Model not available, using fallback embedding")
-            return np.zeros(1024)  # Fallback embedding for PhoBERT-large
+            return np.zeros(768, dtype=np.float32)  # Fallback embedding for PhoBERT-base
             
         cached_embedding = self.cache.get_embedding(text)
         if cached_embedding is not None and self.config.get("enable_cache", True):
@@ -790,6 +925,11 @@ class ReasoningEngine:
     
     def calculate_semantic_similarity(self, text1: str, text2: str) -> float:
         """Tính semantic similarity giữa 2 text"""
+        # Fallback nếu model không có
+        if self.model is None or self.tokenizer is None:
+            logger.warning("Model not available, using fallback similarity")
+            return 0.0
+            
         cache_key = (text1, text2)
         reverse_cache_key = (text2, text1)
         
@@ -801,18 +941,27 @@ class ReasoningEngine:
         if cached_similarity is not None and self.config.get("enable_cache", True):
             return cached_similarity
         
-        emb1 = self.get_text_embedding(text1)
-        emb2 = self.get_text_embedding(text2)
-        
-        similarity = cosine_similarity([emb1], [emb2])[0][0]
-        
-        if self.config.get("enable_cache", True):
-            self.cache.set_similarity(cache_key, similarity)
-        
-        return similarity
+        try:
+            emb1 = self.get_text_embedding(text1)
+            emb2 = self.get_text_embedding(text2)
+            
+            similarity = cosine_similarity([emb1], [emb2])[0][0]
+            
+            if self.config.get("enable_cache", True):
+                self.cache.set_similarity(cache_key, similarity)
+            
+            return similarity
+        except Exception as e:
+            logger.warning(f"Semantic similarity calculation failed: {e}")
+            return 0.0
     
     def find_similar_intents(self, text: str, top_k: int = 3) -> List[Tuple[str, float]]:
         """Tìm các intent tương tự dựa trên semantic similarity"""
+        # Fallback nếu vector store không có
+        if self.vector_store is None:
+            logger.warning("Vector store not available, using fallback similarity")
+            return [("call", 0.0)]
+            
         cached_result = self.cache.get_result(text)
         if cached_result is not None and self.config.get("enable_cache", True):
             if "semantic_similarity" in cached_result:
@@ -821,16 +970,20 @@ class ReasoningEngine:
                 return semantic_results[:top_k]
         
         if self.config.get("enable_vectorstore", True):
-            text_embedding = self.get_text_embedding(text)
-            similar_texts = self.vector_store.search(text_embedding, top_k * 2)  # Lấy nhiều hơn để đảm bảo đủ intent
-            
-            intent_scores = defaultdict(float)
-            for synonym, score in similar_texts:
-                for intent, synonyms in self.knowledge_base["intent_synonyms"].items():
-                    if synonym in synonyms:
-                        intent_scores[intent] = max(intent_scores[intent], score)
-            
-            similarities = [(intent, score) for intent, score in intent_scores.items()]
+            try:
+                text_embedding = self.get_text_embedding(text)
+                similar_texts = self.vector_store.search(text_embedding, top_k * 2)  # Lấy nhiều hơn để đảm bảo đủ intent
+                
+                intent_scores = defaultdict(float)
+                for synonym, score in similar_texts:
+                    for intent, synonyms in self.knowledge_base["intent_synonyms"].items():
+                        if synonym in synonyms:
+                            intent_scores[intent] = max(intent_scores[intent], score)
+                
+                similarities = [(intent, score) for intent, score in intent_scores.items()]
+            except Exception as e:
+                logger.warning(f"Vector store search failed: {e}")
+                return [("call", 0.0)]
             similarities.sort(key=lambda x: x[1], reverse=True)
             
             return similarities[:top_k]
@@ -955,8 +1108,8 @@ class ReasoningEngine:
                             confidence_boost = rule.get("confidence_boost", 0)
                             
                             if base_intent != rule_intent:
-                                base_synonyms = " ".join(self.knowledge_base["intent_synonyms"][base_intent])
-                                rule_synonyms = " ".join(self.knowledge_base["intent_synonyms"][rule_intent])
+                                base_synonyms = " ".join(self.knowledge_base["intent_synonyms"].get(base_intent, []))
+                                rule_synonyms = " ".join(self.knowledge_base["intent_synonyms"].get(rule_intent, []))
                                 
                                 base_similarity = self.calculate_semantic_similarity(base_synonyms, rule_synonyms)
                                 
@@ -976,6 +1129,13 @@ class ReasoningEngine:
             adjusted_confidence += 0.1
             logger.debug(f"Boosted confidence for {adjusted_intent} due to person entity")
         
+        # Special rule for video call detection
+        if "video call" in text.lower() or "video" in text.lower():
+            if adjusted_intent == "call":
+                adjusted_intent = "make-video-call"
+                adjusted_confidence += 0.2
+                logger.debug(f"Changed intent from call to make-video-call due to video call keyword")
+        
         adjusted_confidence = min(adjusted_confidence, 1.0)
         
         return adjusted_intent, adjusted_confidence
@@ -994,11 +1154,11 @@ class ReasoningEngine:
             intent_mapping = {
                 "alarm": "set-alarm",
                 "message": "send-mess",
-                "weather": "check-weather",
+                "weather": "get-info",
                 "media": "play-media",
-                "news": "read-news",
-                "health": "check-health-status",
-                "conversation": "general-conversation"
+                "news": "get-info",
+                "health": "get-info",
+                "conversation": "unknown"
             }
             
             if intent in intent_mapping:
@@ -1140,7 +1300,7 @@ class ReasoningEngine:
     def reasoning_predict(self, text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Predict intent sử dụng reasoning engine"""
         start_time = time.time()
-        logger.info(f"🧠 REASONING ENGINE: Phân tích text: '{text}'")
+        logger.info(f"REASONING ENGINE: Phan tich text: '{text}'")
         
         cached_result = self.cache.get_result(text)
         if cached_result is not None and self.config.get("enable_cache", True):
@@ -1151,26 +1311,26 @@ class ReasoningEngine:
             self.conversation_context.session_data.update(context)
         
         semantic_results = self.find_similar_intents(text)
-        logger.info(f"📊 Semantic similarity results: {semantic_results}")
+        logger.info(f"Semantic similarity results: {semantic_results}")
         
         pattern_results = self.pattern_matching(text)
-        logger.info(f"🔍 Pattern matching results: {pattern_results}")
+        logger.info(f"Pattern matching results: {pattern_results}")
         
         keyword_results = self.keyword_matching(text)
-        logger.info(f"🔑 Keyword matching results: {keyword_results}")
+        logger.info(f"Keyword matching results: {keyword_results}")
         
         try:
             entities = self.entity_extractor.extract_entities(text)
             # Ensure entities is a dict
             if not isinstance(entities, dict):
                 entities = {}
-            logger.info(f"👤 Extracted entities: {entities}")
+            logger.info(f"Extracted entities: {entities}")
         except Exception as e:
-            logger.error(f"❌ Error extracting entities: {e}")
+            logger.error(f"ERROR Error extracting entities: {e}")
             entities = {}
         
         context_features = self.extract_context_features(text)
-        logger.info(f"🌐 Context features: {context_features}")
+        logger.info(f"Context features: {context_features}")
         
         combined_scores = defaultdict(float)
         
@@ -1196,7 +1356,10 @@ class ReasoningEngine:
                 text, base_intent, base_confidence, context_features
             )
             
-            logger.info(f"🎯 Context adjustment: {base_intent} ({base_confidence:.3f}) -> {adjusted_intent} ({adjusted_confidence:.3f})")
+            # Normalize intent về 13 command chuẩn
+            adjusted_intent = self.normalize_intent.get(adjusted_intent, adjusted_intent)
+            
+            logger.info(f"Context adjustment: {base_intent} ({base_confidence:.3f}) -> {adjusted_intent} ({adjusted_confidence:.3f})")
             
             validation_result = self.validate_reasoning_result(
                 text, adjusted_intent, adjusted_confidence, entities
@@ -1283,11 +1446,18 @@ class ReasoningEngine:
         
         intent_entity_requirements = {
             "call": ["person"],
-            "send-mess": ["person"],
+            "send-mess": ["person"],                 # message text là optional
             "set-alarm": ["time"],
-            "set-reminder": ["time", "action"],
-            "check-weather": ["location", "time"],
-            "play-media": ["object"]
+            "set-event-calendar": ["time"],          # mô tả optional
+            "play-media": [],                        # object optional
+            "view-content": [],                      # optional
+            "get-info": [],                          # location/time optional
+            "search-internet": [], 
+            "search-youtube": [],
+            "make-video-call": ["person"],
+            "open-cam": [], 
+            "control-device": [],
+            "add-contacts": ["person"]
         }
         
         if intent in intent_entity_requirements and entities:
@@ -1464,8 +1634,8 @@ class ReasoningEngine:
                     explanation_parts.append(f"Context: {', '.join(context_explanations)}")
         
         current_context = self.conversation_context.get_current_context()
-        if isinstance(current_context, dict) and current_context.get("previous_intent"):
-            explanation_parts.append(f"Previous intent: {current_context['previous_intent']}")
+        if isinstance(current_context, dict) and current_context.get("current_intent"):
+            explanation_parts.append(f"Previous intent: {current_context['current_intent']}")
         
         return ". ".join(explanation_parts)
     

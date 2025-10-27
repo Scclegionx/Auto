@@ -18,3 +18,28 @@ fastapi>=0.100.0
 uvicorn>=0.20.0
 faiss-cpu>=1.7.0
 rapidfuzz>=3.0.0
+
+# Optional packages for advanced features
+# PEFT (Parameter Efficient Fine-Tuning)
+peft>=0.4.0
+
+# Hyperparameter optimization
+optuna>=3.0.0
+
+# Distributed training and optimization
+bitsandbytes>=0.41.0
+
+# Ray for distributed training
+ray[train]>=2.0.0
+
+# Apex for mixed precision training (optional, requires CUDA)
+# apex  # Uncomment if you have CUDA and want mixed precision training
+
+# Additional optimizers (optional)
+# galore-torch  # Uncomment if needed
+# apollo-torch  # Uncomment if needed
+# lomo-optim  # Uncomment if needed
+# grokadamw  # Uncomment if needed
+# torchao  # Uncomment if needed
+# schedulefree  # Uncomment if needed
+# optimi  # Uncomment if needed

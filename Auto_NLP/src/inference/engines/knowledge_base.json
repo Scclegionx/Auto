@@ -18,6 +18,97 @@
         "gọi cho",
         "phone cho"
       ]
+    },
+    "get-info": {
+      "keywords": ["tìm kiếm", "thông tin", "hỏi", "giá", "thời tiết", "tin tức"],
+      "contexts": ["về", "của", "trong", "vào"],
+      "examples": [
+        "tìm kiếm thông tin",
+        "thông tin về",
+        "giá vàng",
+        "thời tiết hôm nay"
+      ]
+    },
+    "search-internet": {
+      "keywords": ["tìm kiếm", "search", "google", "internet"],
+      "contexts": ["trên", "về", "của"],
+      "examples": [
+        "tìm kiếm trên internet",
+        "search trên google",
+        "tìm kiếm thông tin"
+      ]
+    },
+    "search-youtube": {
+      "keywords": ["youtube", "video", "tìm kiếm", "xem"],
+      "contexts": ["trên", "về", "của"],
+      "examples": [
+        "tìm kiếm trên youtube",
+        "tìm video",
+        "xem video"
+      ]
+    },
+    "set-alarm": {
+      "keywords": ["đặt báo thức", "nhắc nhở", "báo thức", "lịch hẹn"],
+      "contexts": ["lúc", "vào", "tại"],
+      "examples": [
+        "đặt báo thức",
+        "nhắc nhở lúc",
+        "đặt lịch hẹn"
+      ]
+    },
+    "set-event-calendar": {
+      "keywords": ["đặt lịch", "lên lịch", "lịch hẹn", "hẹn"],
+      "contexts": ["vào", "lúc", "tại"],
+      "examples": [
+        "đặt lịch hẹn",
+        "lên lịch",
+        "đặt lịch"
+      ]
+    },
+    "play-media": {
+      "keywords": ["phát", "nghe", "xem", "nhạc", "video"],
+      "contexts": ["nhạc", "video", "phim"],
+      "examples": [
+        "phát nhạc",
+        "nghe nhạc",
+        "xem video"
+      ]
+    },
+    "add-contacts": {
+      "keywords": ["thêm", "lưu", "danh bạ", "liên hệ", "số điện thoại"],
+      "contexts": ["vào", "với", "tên"],
+      "examples": [
+        "thêm vào danh bạ",
+        "lưu số điện thoại",
+        "thêm liên hệ"
+      ]
+    },
+    "control-device": {
+      "keywords": ["bật", "tắt", "điều chỉnh", "kiểm soát", "điều khiển"],
+      "contexts": ["đèn", "quạt", "điều hòa", "tivi"],
+      "examples": [
+        "bật đèn",
+        "tắt quạt",
+        "điều chỉnh nhiệt độ"
+      ]
+    },
+    "open-cam": {
+      "keywords": ["mở", "camera", "chụp", "quay", "bật"],
+      "contexts": ["camera", "ảnh", "video"],
+      "examples": [
+        "mở camera",
+        "chụp ảnh",
+        "quay video"
+      ]
+    },
+    "view-content": {
+      "keywords": ["xem", "đọc", "mở", "hiển thị"],
+      "contexts": ["ảnh", "tin tức", "nội dung"],
+      "examples": [
+        "xem ảnh",
+        "đọc tin tức",
+        "mở nội dung"
+      ]
     }
   },
   "entity_patterns": {

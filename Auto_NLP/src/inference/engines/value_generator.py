@@ -13,30 +13,195 @@ class ValueGenerator:
         self.intent_templates = self._build_intent_templates()
         
     def _build_intent_templates(self) -> Dict[str, str]:
-        """Xây dựng templates cho các intent"""
+        """Xây dựng templates cho các intent - 13 unified commands"""
         return {
-            "call": "Gọi cho {receiver}",
-            "call": "Gọi cho {receiver}",
-            "make-video-call": "Gọi video cho {receiver}",
-            "send-mess": "Nhắn tin cho {receiver}: {message}",
-            "send-mess": "Nhắn tin cho {receiver}: {message}",
-            "set-reminder": "Nhắc nhở: {message} lúc {time}",
-            "set-alarm": "Báo thức lúc {time}",
-            "search": "Tìm kiếm: {query}",
-            "open-app": "Mở ứng dụng {app}",
+            # Communication
+            "call": "Gọi cho {receiver} qua {platform}",
+            "make-video-call": "Gọi video cho {receiver} qua {platform}",
+            "send-mess": "Nhắn tin cho {receiver} qua {platform}: {message}",
+            "add-contacts": "Thêm liên lạc {receiver}",
+            
+            # Media & Content
             "play-media": "Phát {content}",
-            "check-weather": "Kiểm tra thời tiết",
-            "check-messages": "Kiểm tra tin nhắn",
-            "help": "Trợ giúp",
+            "view-content": "Xem {content}",
+            
+            # Search
+            "search-internet": "Tìm kiếm: {query}",
+            "search-youtube": "Tìm kiếm trên YouTube: {query}",
+            
+            # Information
+            "get-info": "Thông tin {topic} {when} {location}",
+            
+            # Reminders & Alarms
+            "set-alarm": "Báo thức lúc {time}",
+            "set-event-calendar": "Nhắc nhở: {message} lúc {time}",
+            
+            # Device Control
+            "open-cam": "Mở camera",
+            "control-device": "Điều khiển {device}",
+            
+            # Fallback
             "unknown": "Không thể xác định"
         }
     
     def generate_value(self, intent: str, entities: Dict[str, str], original_text: str) -> str:
-        """Tạo giá trị output từ intent và entities"""
+        """Tạo giá trị output từ intent và entities - Extract nội dung chính từ text"""
         if intent == "unknown" or intent == "error":
             return "Không thể xác định"
         
-        # Ensure entities is a dict
+        # Extract main content from original text based on intent
+        main_content = self._extract_main_content(intent, original_text, entities)
+        if main_content:
+            return main_content
+    
+    def _extract_main_content(self, intent: str, original_text: str, entities: Dict[str, str]) -> Optional[str]:
+        """Extract nội dung chính từ text dựa trên intent"""
+        text_lower = original_text.lower()
+        # print(f"Extracting main content for intent: {intent}, text: {original_text}")
+        
+        if intent == "send-mess":
+            # Extract message content after "là" or "rằng"
+            message_patterns = [
+                r"là\s+(.+?)(?:$|\.)",
+                r"rằng\s+(.+?)(?:$|\.)",
+                r"nói\s+(.+?)(?:$|\.)",
+                r"nhắn\s+(.+?)(?:$|\.)",
+                r"là\s+(.+?)$",  # Match to end of string
+                r"rằng\s+(.+?)$"  # Match to end of string
+            ]
+            
+            for pattern in message_patterns:
+                match = re.search(pattern, original_text, re.IGNORECASE)
+                if match:
+                    content = match.group(1).strip()
+                    if content and len(content) > 3:  # Avoid very short content
+                        return content
+            
+            # Fallback: use MESSAGE entity if available
+            if entities.get("MESSAGE"):
+                return entities.get("MESSAGE")
+        
+        elif intent in ["search-internet", "search-youtube"]:
+            # Extract search query after "là" or "tìm kiếm"
+            query_patterns = [
+                r"là\s+(.+?)(?:$|\.)",
+                r"tìm\s+kiếm\s+(.+?)(?:$|\.)",
+                r"search\s+(.+?)(?:$|\.)",
+                r"tra\s+cứu\s+(.+?)(?:$|\.)"
+            ]
+            
+            for pattern in query_patterns:
+                match = re.search(pattern, original_text, re.IGNORECASE)
+                if match:
+                    content = match.group(1).strip()
+                    if content and len(content) > 3:
+                        return content
+            
+            # Fallback: use QUERY entity if available
+            if entities.get("QUERY"):
+                return entities.get("QUERY")
+        
+        elif intent == "play-media":
+            # Extract media content after "phát" or "nghe"
+            media_patterns = [
+                r"phát\s+(.+?)(?:$|\.)",
+                r"nghe\s+(.+?)(?:$|\.)",
+                r"chơi\s+(.+?)(?:$|\.)",
+                r"mở\s+(.+?)(?:$|\.)"
+            ]
+            
+            for pattern in media_patterns:
+                match = re.search(pattern, original_text, re.IGNORECASE)
+                if match:
+                    content = match.group(1).strip()
+                    if content and len(content) > 3:
+                        return content
+            
+            # Fallback: use CONTENT entity if available
+            if entities.get("CONTENT"):
+                return entities.get("CONTENT")
+        
+        elif intent == "view-content":
+            # Extract content to view after "xem" or "đọc"
+            view_patterns = [
+                r"xem\s+(.+?)(?:$|\.)",
+                r"đọc\s+(.+?)(?:$|\.)",
+                r"mở\s+(.+?)(?:$|\.)"
+            ]
+            
+            for pattern in view_patterns:
+                match = re.search(pattern, original_text, re.IGNORECASE)
+                if match:
+                    content = match.group(1).strip()
+                    if content and len(content) > 3:
+                        return content
+            
+            # Fallback: use CONTENT entity if available
+            if entities.get("CONTENT"):
+                return entities.get("CONTENT")
+        
+        elif intent == "get-info":
+            # Extract info query after "thông tin" or "kiểm tra"
+            info_patterns = [
+                r"thông\s+tin\s+(.+?)(?:$|\.)",
+                r"kiểm\s+tra\s+(.+?)(?:$|\.)",
+                r"đọc\s+(.+?)(?:$|\.)"
+            ]
+            
+            for pattern in info_patterns:
+                match = re.search(pattern, original_text, re.IGNORECASE)
+                if match:
+                    content = match.group(1).strip()
+                    if content and len(content) > 3:
+                        return content
+            
+            # Fallback: use TOPIC entity if available
+            if entities.get("TOPIC"):
+                return entities.get("TOPIC")
+        
+        # Fallback: Nếu intent không được nhận diện đúng, extract từ text
+        # Kiểm tra các từ khóa tìm kiếm trong text
+        search_keywords = ["tìm kiếm", "search", "tìm", "tra cứu", "kiểm tra", "thông tin"]
+        for keyword in search_keywords:
+            if keyword in text_lower:
+                # Extract phần sau từ khóa
+                pattern = rf"{keyword}\s+(.+?)(?:$|\.)"
+                match = re.search(pattern, original_text, re.IGNORECASE)
+                if match:
+                    content = match.group(1).strip()
+                    if content and len(content) > 3:
+                        return content
+                else:
+                    # Nếu không match pattern, return toàn bộ text
+                    return original_text
+        
+        # Nếu không có keyword nào match, return None để fallback
+        return None
+        
+        # Các intent khác
+        if intent == "set-alarm":
+            # Extract alarm details
+            if entities.get("TIME"):
+                time_info = entities.get("TIME")
+                label_info = entities.get("LABEL", "")
+                if label_info:
+                    return f"Báo thức lúc {time_info} - {label_info}"
+                else:
+                    return f"Báo thức lúc {time_info}"
+        
+        elif intent == "set-event-calendar":
+            # Extract event details
+            if entities.get("TITLE"):
+                title = entities.get("TITLE")
+                time_info = entities.get("TIME", "")
+                if time_info:
+                    return f"{title} lúc {time_info}"
+                else:
+                    return title
+        
+        return None
+        
+        # Fallback: use template with entities
         if not isinstance(entities, dict):
             entities = {}
         
@@ -48,78 +213,37 @@ class ValueGenerator:
         app = entities.get("APP", "")
         content = entities.get("CONTENT", "")
         platform = entities.get("PLATFORM", "")
+        topic = entities.get("TOPIC", "")
+        when = entities.get("WHEN", "")
+        location = entities.get("LOCATION", "")
         
-        # Generate value based on intent
-        if intent in ["call", "call", "make-video-call"]:
-            # Ưu tiên trả về số điện thoại nếu có
-            phone_number = entities.get("PHONE_NUMBER", "")
-            if phone_number:
-                return phone_number
+        # Generate value based on intent using templates
+        if intent in self.intent_templates:
+            template = self.intent_templates[intent]
             
-            # Nếu không có số điện thoại, trả về receiver
-            if not receiver:
-                receiver = self._extract_receiver_fallback(original_text)
-            if not receiver:
-                receiver = "người nhận"
+            # Prepare template variables
+            template_vars = {
+                "receiver": receiver or "người nhận",
+                "message": message or "tin nhắn",
+                "time": time or "thời gian",
+                "query": query or "từ khóa",
+                "content": content or "nội dung",
+                "platform": platform or "web",
+                "device": entities.get("DEVICE", "thiết bị"),
+                "topic": topic or "",
+                "when": when or "",
+                "location": location or ""
+            }
             
-            # Trả về receiver thay vì câu lệnh mô tả
-            return receiver
+            # Fill template
+            try:
+                return template.format(**template_vars)
+            except KeyError as e:
+                # Fallback nếu template có key không tồn tại
+                return f"Thực hiện: {intent}"
         
-        elif intent in ["send-mess", "send-mess", "MESSAGE"]:
-            # For message intents, extract the full message content
-            if message:
-                # Chuyển đổi số điện thoại từ chữ sang số trong message
-                processed_message = self._convert_phone_numbers_in_text(message)
-                return processed_message
-            else:
-                # Fallback: extract message from original text
-                message_fallback = self._extract_message_fallback(original_text)
-                if message_fallback:
-                    # Chuyển đổi số điện thoại từ chữ sang số trong message
-                    processed_message = self._convert_phone_numbers_in_text(message_fallback)
-                    return processed_message
-                else:
-                    # Chuyển đổi số điện thoại từ chữ sang số trong original text
-                    processed_text = self._convert_phone_numbers_in_text(original_text)
-                    return processed_text
-        
-        elif intent == "set-reminder":
-            if message and time:
-                return f"{message} lúc {time}"
-            elif message:
-                return message
-            elif time:
-                return f"Nhắc nhở lúc {time}"
-            else:
-                return "Nhắc nhở"
-        
-        elif intent == "set-alarm":
-            if time:
-                return time
-            else:
-                return "Báo thức"
-        
-        elif intent == "search":
-            if query:
-                return query
-            else:
-                return "Tìm kiếm"
-        
-        elif intent == "open-app":
-            if app:
-                return f"Mở ứng dụng {app}"
-            else:
-                return "Mở ứng dụng"
-        
-        elif intent == "play-media":
-            if content:
-                return content
-            else:
-                return "Media"
-        
-        else:
-            # Fallback: return original text if no specific template found
-            return original_text
+        # Fallback cho intent không có template
+        return f"Thực hiện: {intent}"
     
     def _extract_receiver_fallback(self, text: str) -> str:
         """Fallback method để extract receiver"""

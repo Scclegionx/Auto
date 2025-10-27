@@ -1,113 +1,110 @@
-# Auto NLP - Vietnamese Intent Recognition System
+# Auto NLP Hybrid System
 
-## 🎯 Overview
-Hệ thống nhận diện ý định tiếng Việt sử dụng PhoBERT-Large cho ứng dụng chăm sóc người cao tuổi.
-
-## ✨ Features
-- **Multi-task learning**: Intent, Entity, Value, Command
-- **PhoBERT-Large**: Kiến trúc mạnh mẽ cho tiếng Việt
-- **GPU-optimized**: Tối ưu cho GPU 6GB
-- **RESTful API**: Dễ dàng tích hợp
-- **High Accuracy**: 84% accuracy, 0.8331 F1 score
+Hệ thống NLP Hybrid kết hợp trained model với reasoning engine cho người cao tuổi.
 
 ## 🚀 Quick Start
 
-### 1. Installation
+### 1. Cài đặt
 ```bash
+# Clone repository
+git clone <repository-url>
+cd Auto_NLP
+
+# Tạo virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Linux/Mac
+
+# Cài đặt dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Training
+### 2. Training Model
 ```bash
-python run_training.py
+
+python src/training/scripts/train_gpu.py
+
+# Hoặc sử dụng main.py
+python main.py train
 ```
 
-### 3. API Server
+### 3. Chạy API Server
 ```bash
-python run_api.py
+# Chạy API server
+python main.py api
+
+# Hoặc trực tiếp
+python api/server.py
 ```
 
-## 📊 Performance
-- **Accuracy**: 84.00%
-- **F1 Score**: 0.8331
-- **Training Time**: 41.70 phút
-- **Model Size**: PhoBERT-Large
-- **Intent Classes**: 26 classes
+### 4. Test System
+```bash
+# Test hybrid system
+python main.py test
 
-## 🏗️ Project Structure
+# Test API
+python test_api.py
+```
+
+## 📁 Cấu trúc dự án
+
 ```
 Auto_NLP/
-├── src/                    # Source code
-│   ├── training/           # Training modules
-│   ├── inference/          # Inference modules
-│   ├── data/              # Data processing
-│   └── utils/             # Utilities
-├── models/                 # Trained models
-├── data/                   # Dataset files
-└── scripts/               # Management scripts
+├── core/                       # Core components
+│   ├── hybrid_system.py       # Model-first hybrid system
+│   ├── model_loader.py        # Model loading & inference
+│   └── reasoning_engine.py    # Reasoning engine
+├── api/                       # API layer
+│   └── server.py              # FastAPI server
+├── src/                       # Source code
+│   ├── data/                  # Data management
+│   │   ├── raw/               # Raw datasets
+│   │   ├── processed/         # Processed datasets (train/val/test)
+│   │   └── grouped/           # Grouped by intent
+│   ├── training/              # Training pipeline
+│   │   ├── scripts/           # Training scripts
+│   │   └── configs/           # Training configs
+│   └── inference/             # Inference components
+│       ├── engines/           # Rule-based engines
+│       └── interfaces/        # Web interface
+├── models/                    # Trained models
+│   └── phobert_large_intent_model/
+├── config.py                  # Main configuration
+├── main.py                    # Main entry point
+└── requirements.txt           # Dependencies
 ```
 
-## 🔧 Configuration
-- **Model**: vinai/phobert-large
-- **Max Length**: 64 tokens
-- **Batch Size**: 2
-- **Learning Rate**: 1e-5 (encoder), 3e-4 (heads)
-- **GPU Memory**: 6GB optimized
+## 🎯 Sử dụng
 
-## 📋 Intent Classes (26 classes)
-1. **call** - Gọi điện
-2. **send-mess** - Gửi tin nhắn
-3. **check-weather** - Kiểm tra thời tiết
-4. **play-content** - Phát nội dung
-5. **set-reminder** - Đặt nhắc nhở
-6. **make-video-call** - Gọi video
-7. **search-content** - Tìm kiếm nội dung
-8. **check-device-status** - Kiểm tra trạng thái thiết bị
-9. **play-media** - Phát media
-... và 17 classes khác
-
-## 💻 Usage Examples
-
-### Training
+### Command Line Interface
 ```bash
-python run_training.py
+# Training
+python main.py train
+
+# Chạy API server
+python main.py api
+
+# Test system
+python main.py test
+
+# Xem config
+python main.py config
 ```
 
-### API Usage
-```bash
-curl -X POST "http://localhost:8000/predict" \
-     -H "Content-Type: application/json" \
-     -d '{"text": "Gọi điện cho mẹ"}'
-```
 
-### Data Management
-```bash
-python scripts/management/organize_dataset.py
-```
 
-## 📚 Documentation
-- [SYSTEM_OVERVIEW.md](SYSTEM_OVERVIEW.md) - Chi tiết hệ thống
-- [QUICK_START.md](QUICK_START.md) - Hướng dẫn nhanh
+1. **call** - Gọi điện thoại
+2. **control-device** - Điều khiển thiết bị
+3. **play-media** - Phát media
+4. **search-internet** - Tìm kiếm internet
+5. **search-youtube** - Tìm kiếm YouTube
+6. **set-alarm** - Đặt báo thức
+7. **send-mess** - Gửi tin nhắn
+8. **open-cam** - Mở camera
+9. **set-event-calendar** - Đặt lịch
+10. **make-video-call** - Gọi video
+11. **add-contacts** - Thêm danh bạ
+12. **view-content** - Xem nội dung
+13. **get-info** - Lấy thông tin
 
-## 🔧 Requirements
-- Python 3.11+
-- PyTorch 2.0+
-- Transformers 4.30+
-- CUDA 11.8+ (optional)
 
-## 📈 Results
-Model đã được training thành công với:
-- **84% accuracy** trên validation set
-- **0.8331 F1 score** - chỉ số cân bằng tốt
-- **26 intent classes** được nhận diện chính xác
-- **Real-time inference** với API server
-
-## 🎯 Next Steps
-1. Deploy model to production
-2. Add more intent classes
-3. Improve accuracy with more data
-4. Add entity extraction
-5. Multi-language support
-
-## 📄 License
-MIT

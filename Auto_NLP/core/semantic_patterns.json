@@ -1,0 +1,59 @@
+{
+  "call_patterns": [
+    "gọi.*(?:cho|tới|đến)",
+    "(?:điện thoại|phone).*(?:cho|tới)",
+    "kết nối.*(?:với|cho)",
+    "liên lạc.*(?:với|cho)",
+    "cuộc gọi.*(?:cho|tới|đến)",
+    "gọi thoại.*(?:cho|tới|đến)",
+    "thực hiện.*(?:cuộc gọi|gọi).*(?:cho|tới|đến)",
+    "gọi điện.*(?:cho|tới|đến)"
+  ],
+  "alarm_patterns": [
+    "đặt.*(?:báo thức|nhắc nhở)",
+    "hẹn.*(?:giờ|thời gian)",
+    "nhắc.*(?:tôi|lúc|khi)",
+    "báo thức.*(?:lúc|giờ)"
+  ],
+  "message_patterns": [
+    "gửi.*(?:tin nhắn|tin)",
+    "nhắn.*(?:tin|cho)",
+    "soạn.*(?:tin nhắn|tin)",
+    "text.*(?:cho|tới)",
+    "vào\\s+\\w+.*nhắn.*cho",
+    "nhắn\\s+cho.*rằng",
+    "gửi\\s+cho.*rằng"
+  ],
+  "weather_patterns": [
+    "thời tiết.*(?:hôm nay|mai|thế nào)",
+    "nhiệt độ.*(?:bao nhiêu|thế nào)",
+    "dự báo.*(?:thời tiết|mưa|nắng)"
+  ],
+  "media_patterns": [
+    "phát.*(?:nhạc|bài hát)",
+    "bật.*(?:nhạc|video)",
+    "nghe.*(?:nhạc|bài hát)",
+    "mở.*(?:nhạc|video)"
+  ],
+  "news_patterns": [
+    "đọc.*(?:tin tức|báo)",
+    "tin tức.*(?:mới nhất|hôm nay)",
+    "báo.*(?:hôm nay|mới nhất)"
+  ],
+  "health_patterns": [
+    "kiểm tra.*(?:sức khỏe|huyết áp)",
+    "đo.*(?:huyết áp|nhịp tim)",
+    "theo dõi.*(?:sức khỏe|tình trạng)"
+  ],
+  "conversation_patterns": [
+    "xin chào",
+    "chào.*(?:bạn|anh|chị)",
+    "cảm ơn.*(?:bạn|anh|chị)",
+    "tạm biệt"
+  ],
+  "help_patterns": [
+    "giúp.*(?:tôi|đỡ|với)",
+    "hướng dẫn.*(?:tôi|cách)",
+    "hỗ trợ.*(?:tôi|với)"
+  ]
+}

@@ -1,8 +1,3 @@
-"""
-Communication Optimizer Module
-Tối ưu hóa hệ thống cho gọi điện và nhắn tin
-"""
-
 import re
 from typing import Dict, List, Optional, Tuple
 from .entity_extractor import EntityExtractor
@@ -17,15 +12,15 @@ class CommunicationOptimizer:
         
         # Từ khóa ưu tiên cho gọi điện/nhắn tin
         self.call_keywords = [
-            "gọi", "alo", "gọi điện", "gọi thoại", "gọi ngay", "gọi khẩn cấp"
+            "goi", "gọi", "alo", "gọi điện", "gọi thoại", "gọi ngay", "gọi khẩn cấp"
         ]
         
         self.video_call_keywords = [
-            "gọi video", "facetime", "video call", "video"
+            "goi video", "gọi video", "facetime", "video call", "zalo video", "messenger video"
         ]
         
         self.message_keywords = [
-            "nhắn", "gửi", "tin nhắn", "sms", "soạn tin", "liên lạc"
+            "nhan", "nhắn", "gui", "gửi", "tin nhắn", "sms", "soạn tin", "liên lạc"
         ]
         
         # Quan hệ gia đình ưu tiên
@@ -34,11 +29,21 @@ class CommunicationOptimizer:
             "chú", "bác", "cô", "dì", "dượng", "mợ", "cả nhà", "gia đình"
         ]
         
-        # Platforms ưu tiên
-        self.priority_platforms = {
-            "call": ["phone", "zalo", "messenger"],
-            "message": ["sms", "zalo", "messenger"],
-            "video": ["zalo", "messenger"]
+        # Platforms được phép cho từng loại giao tiếp
+        self.allowed_platforms = {
+            "call": {"phone", "zalo", "messenger", "whatsapp", "sms"},
+            "message": {"sms", "zalo", "messenger", "whatsapp"},
+            "video_call": {"zalo", "messenger", "whatsapp"}
+        }
+        
+        # Platform aliases để normalize
+        self.platform_aliases = {
+            "tin nhắn": "sms",
+            "messages": "sms", 
+            "facebook messenger": "messenger",
+            "wa": "whatsapp",
+            "call": "phone",
+            "điện thoại": "phone"
         }
     
     def optimize_for_communication(self, text: str) -> Dict[str, any]:
@@ -73,13 +78,16 @@ class CommunicationOptimizer:
         message_score = sum(1 for keyword in self.message_keywords if keyword in text_lower)
         
         # Ưu tiên message nếu có từ khóa "nhắn" hoặc "gửi"
-        if "nhắn" in text_lower or "gửi" in text_lower or "tin" in text_lower:
+        if "nhan" in text_lower or "gui" in text_lower or "tin" in text_lower:
             message_score += 2
         
+        # Ưu tiên video call nếu có từ khóa video call
         if video_call_score > 0:
             return "video_call"
+        # Ưu tiên message nếu có từ khóa nhắn/gửi
         elif message_score > call_score:
             return "message"
+        # Ưu tiên call nếu có từ khóa gọi
         elif call_score > 0:
             return "call"
         else:
@@ -114,20 +122,25 @@ class CommunicationOptimizer:
     
     def _optimize_platform(self, entities: Dict[str, str], communication_type: str, text_lower: str) -> Dict[str, str]:
         """Tối ưu hóa platform dựa trên context"""
-        current_platform = entities.get("PLATFORM", "")
+        current_platform = (entities.get("PLATFORM") or "").lower().strip()
         
+        # Normalize platform aliases
+        if current_platform in self.platform_aliases:
+            current_platform = self.platform_aliases[current_platform]
+        
+        # Nếu platform đã có và thuộc danh sách được phép → giữ nguyên
+        if current_platform and communication_type in self.allowed_platforms:
+            if current_platform in self.allowed_platforms[communication_type]:
+                entities["PLATFORM"] = current_platform
+                return entities
+        
+        # Chỉ gán default platform khi chưa có platform hợp lệ
         if communication_type == "call":
-            if not current_platform or current_platform == "sms":
-                # Ưu tiên phone cho gọi điện
-                entities["PLATFORM"] = "phone"
+            entities["PLATFORM"] = "phone"
         elif communication_type == "message":
-            if not current_platform:
-                # Ưu tiên sms cho nhắn tin
-                entities["PLATFORM"] = "sms"
+            entities["PLATFORM"] = "sms"
         elif communication_type == "video_call":
-            if not current_platform or current_platform == "phone":
-                # Ưu tiên zalo/messenger cho video call
-                entities["PLATFORM"] = "zalo"
+            entities["PLATFORM"] = "zalo"
         
         return entities
     
@@ -226,13 +239,10 @@ class CommunicationOptimizer:
             base_confidence += 0.3
         
         # Tăng confidence nếu có platform phù hợp
-        platform = entities.get("PLATFORM", "")
-        if communication_type == "call" and platform in ["phone", "zalo", "messenger"]:
-            base_confidence += 0.1
-        elif communication_type == "message" and platform in ["sms", "zalo", "messenger"]:
-            base_confidence += 0.1
-        elif communication_type == "video_call" and platform in ["zalo", "messenger"]:
-            base_confidence += 0.1
+        platform = entities.get("PLATFORM", "").lower()
+        if communication_type in self.allowed_platforms:
+            if platform in self.allowed_platforms[communication_type]:
+                base_confidence += 0.1
         
         # Tăng confidence nếu có message (cho nhắn tin)
         if communication_type == "message" and entities.get("MESSAGE"):
@@ -241,23 +251,32 @@ class CommunicationOptimizer:
         return min(base_confidence, 1.0)
     
     def get_optimized_value(self, intent: str, entities: Dict[str, str], original_text: str) -> str:
-        """Tạo value tối ưu hóa"""
+        """Tạo value tối ưu hóa với payload gọn"""
         try:
-            return self.value_generator.generate_value(intent, entities, original_text)
-        except Exception as e:
-            print(f"⚠️ Error in value generator: {e}")
-            # Fallback to simple value generation
-            if intent in ["send-mess", "send-mess"]:
-                message = entities.get("MESSAGE", "")
-                if message:
-                    return message
-                else:
-                    return "Tin nhắn"
-            elif intent in ["call", "call"]:
+            # Tạo payload gọn cho communication intents
+            if intent in ["call", "make-video-call"]:
                 receiver = entities.get("RECEIVER", "người nhận")
-                return f"Gọi cho {receiver}"
+                platform = entities.get("PLATFORM", "phone")
+                return f"CALL|{receiver}|{platform}"
+            
+            elif intent == "send-mess":
+                receiver = entities.get("RECEIVER", "người nhận")
+                platform = entities.get("PLATFORM", "sms")
+                message = entities.get("MESSAGE", "tin nhắn")
+                return f"MSG|{receiver}|{platform}|{message}"
+            
+            elif intent == "add-contacts":
+                receiver = entities.get("RECEIVER", "người nhận")
+                return f"CONTACT|{receiver}"
+            
             else:
-                return f"Thực hiện: {intent}"
+                # Fallback to value generator for non-communication intents
+                return self.value_generator.generate_value(intent, entities, original_text)
+                
+        except Exception as e:
+            print(f"⚠️ Error in communication optimizer: {e}")
+            # Fallback to value generator
+            return self.value_generator.generate_value(intent, entities, original_text)
     
     def validate_communication_entities(self, entities: Dict[str, str], communication_type: str) -> Dict[str, str]:
         """Validate entities cho giao tiếp"""
@@ -281,5 +300,17 @@ class CommunicationOptimizer:
                 validated["PLATFORM"] = "sms"
             if "MESSAGE" not in validated:
                 validated["MESSAGE"] = "Tin nhắn"
+        
+        # Đảm bảo platform thuộc danh sách được phép
+        if communication_type in self.allowed_platforms:
+            current_platform = validated.get("PLATFORM", "").lower()
+            if current_platform and current_platform not in self.allowed_platforms[communication_type]:
+                # Gán default platform nếu platform hiện tại không hợp lệ
+                if communication_type == "call":
+                    validated["PLATFORM"] = "phone"
+                elif communication_type == "message":
+                    validated["PLATFORM"] = "sms"
+                elif communication_type == "video_call":
+                    validated["PLATFORM"] = "zalo"
         
         return validated

@@ -1,220 +1,147 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+config.py - OPTIMIZED for RTX 2060 6GB GPU with VITEXT dataset
+Updated for normalized Vietnamese text and processed data
+"""
+
 import os
-from dataclasses import dataclass
-from typing import List
 
 class ModelConfig:
+    # Model settings - OPTIMIZED for Vietnamese text
+    model_name = "vinai/phobert-large"
+    model_size = "large"
+    max_length = 128  # Reduced for Vietnamese text efficiency
+    use_safetensors = True
+    
+    # Training settings - OPTIMIZED for balanced dataset (VITEXT normalized)
+    num_epochs = int(os.environ.get('EPOCHS', 4))  # Reduced epochs to prevent overfitting
+    batch_size = 16  # Optimal for RTX 2060 6GB
+    learning_rate = 2e-05  # Standard LR for PhoBERT fine-tuning
+    weight_decay = 0.01
+    warmup_steps = 500  # Reduced for faster convergence
+    
+    # Loss weights - OPTIMIZED for multi-task learning
+    LAMBDA_INTENT = 0.7  # Primary focus on intent
+    LAMBDA_ENTITY = 0.2  # Increased entity weight for NER
+    LAMBDA_COMMAND = 0.1  # Command classification
+    LAMBDA_VALUE = 0.0   # Disabled value extraction
+    
+    # Label smoothing
+    label_smoothing = 0.1
+    
+    # Freeze encoder - OPTIMIZED for PhoBERT-large fine-tuning
+    freeze_encoder_epochs = 0  # No freezing for better learning
+    freeze_layers = 0  # No layer freezing
+    
+    # Gradient clipping - OPTIMIZED for RTX 2060 6GB VRAM
+    max_grad_norm = 1.0
+    gradient_accumulation_steps = 2  # Effective batch size = 32
+    
+    # Mixed precision training - ENABLED for GPU
+    use_mixed_precision = True  # Enable AMP for memory efficiency
+    fp16 = True  # Enable FP16 training
+    
+    # Early stopping - OPTIMIZED for fewer epochs
+    patience = 3  # Reduced patience for 4 epochs
+    min_delta = 0.001
+    
+    # Optimizer - OPTIMIZED for GPU
+    optimizer = "adamw"
+    adam_epsilon = 1e-8
+    adam_betas = (0.9, 0.999)
+    clip_threshold = 1.0
+    
+    # Dropout - OPTIMIZED
+    dropout = 0.1
+    
+    # Data paths - UPDATED for processed VITEXT data
+    dataset_path = "src/data/raw/elderly_command_dataset_MERGED_13C_VITEXT.json"
+    train_data_path = "src/data/processed/train.json"
+    val_data_path = "src/data/processed/val.json"
+    test_data_path = "src/data/processed/test.json"
+    
+    # Output paths
+    output_dir = "models/phobert_large_intent_model"
+    log_dir = "logs/vitext_training"
+    
+    # Metrics
+    metrics = ['accuracy', 'f1', 'precision', 'recall', 'confusion_matrix']
+    
+    # GPU-specific settings
+    device = "cuda"
+    use_cuda = True
+    cuda_visible_devices = "0"  # Use first GPU
+    
+    # Memory optimization
+    gradient_checkpointing = False  # Disabled for stability
+    use_gradient_accumulation = True  # Simulate larger batch
+    
+    # Training stability
+    seed = 42
+    deterministic = True
 
-    def __init__(self):
-        self.model_name = "vinai/phobert-large"
-        self.model_size = "large"
-        
-        # Tham số cơ bản - tối ưu cho GPU 6GB
-        # Điều chỉnh dựa trên environment variables nếu có
-        self.max_length = int(os.environ.get('MAX_LENGTH', 64))   # Tối ưu cho GPU 6GB
-        self.batch_size = int(os.environ.get('BATCH_SIZE', 2))   # Tối ưu cho GPU 6GB
-        self.num_epochs = 10   # Tăng epochs cho GPU
-        self.learning_rate = 3e-5  
-        self.freeze_layers = 4 
-        
-        # Device và precision được quản lý bởi TrainingConfig
-        
-        self.gradient_accumulation_steps = 4  # Tương đương batch 8 logic  
-        self.weight_decay = 0.01
-        self.adam_epsilon = 1e-8
-        self.max_grad_norm = 1.0
-        self.warmup_steps = 1000  
-        
-        self.num_workers = 0  # Windows - tránh multiprocessing issues
-        self.pin_memory = True  # CUDA cần pin_memory
-        self.persistent_workers = False  # Không cần khi num_workers=0
-        self.dropout = 0.1  
-        self.optimizer = "adamw"
-    
-    @property
-    def hidden_size(self) -> int:
-        """Lấy hidden size dựa trên model size"""
-        if self.model_size == "large":
-            return 1024
-        else:
-            return 768
-    
-    @property
-    def num_layers(self) -> int:
-        """Lấy số layers dựa trên model size"""
-        if self.model_size == "large":
-            return 24
-        else:
-            return 12
-    
-    @property
-    def num_attention_heads(self) -> int:
-        """Lấy số attention heads dựa trên model size"""
-        if self.model_size == "large":
-            return 16
-        else:
-            return 12
-    
-    def __post_init__(self):
-        """Validate model size"""
-        if self.model_size not in ["base", "large"]:
-            raise ValueError("model_size phải là 'base' hoặc 'large'")
-
-@dataclass
 class IntentConfig:
-    """Cấu hình cho Intent Recognition nâng cao"""
-    num_intents: int = 26  
-    intent_labels: List[str] = None
-    
-    confidence_threshold: float = 0.7
-    unknown_intent_label: str = "unknown"
-    
-    use_attention: bool = True
-    num_attention_heads: int = 8
-    attention_dropout: float = 0.1
-    
-    use_multi_layer: bool = True
-    hidden_layer_sizes: List[int] = None  
-    
-    use_crf: bool = False
-    
-    use_ensemble: bool = False
-    ensemble_method: str = "weighted"  # "weighted", "voting", "stacking"
-    
-    use_confidence_scoring: bool = True
-    use_batch_norm: bool = True
-    use_residual_connections: bool = True
-    
-    def __post_init__(self):
-        if self.intent_labels is None:
-            self.intent_labels = [
-                "adjust-settings", "app-tutorial", "browse-social-media", "call", 
-                "check-device-status", "check-health-status", "check-messages", 
-                "check-weather", "control-device", "general-conversation", 
-                "make-video-call", "navigation-help", "open-app", 
-                "open-app-action", "play-audio", "play-content", "play-media", 
-                "provide-instructions", "read-content", "read-news", "search-content", 
-                "search-internet", "send-mess", "set-alarm", 
-                "set-reminder", "view-content"
-            ]
-        
-        if self.hidden_layer_sizes is None:
-            # Sử dụng giá trị mặc định cho PhoBERT-large
-            large_size = 1024  # PhoBERT-large hidden size
-            self.hidden_layer_sizes = [large_size, large_size // 2, large_size // 4]
+    """Intent classification configuration - UPDATED for VITEXT dataset"""
+    num_intents = 13
+    intent_labels = [
+        "add-contacts", "call", "control-device", "get-info", "make-video-call", 
+        "open-cam", "play-media", "search-internet", "search-youtube", 
+        "send-mess", "set-alarm", "set-event-calendar", "view-content"
+    ]
 
-@dataclass
 class EntityConfig:
-    """Cấu hình cho Entity Extraction - Cập nhật theo dataset mới"""
-    entity_labels: List[str] = None
-    
-    def __post_init__(self):
-        if self.entity_labels is None:
-            self.entity_labels = [
-                "O",  # Outside
-                "B-PERSON", "I-PERSON",      # Người
-                "B-TIME", "I-TIME",          # Thời gian
-                "B-LOCATION", "I-LOCATION",  # Địa điểm
-                "B-MESSAGE", "I-MESSAGE",    # Tin nhắn
-                "B-PLATFORM", "I-PLATFORM",  # Nền tảng
-                "B-CONTENT", "I-CONTENT",    # Nội dung
-                "B-QUERY", "I-QUERY",        # Truy vấn
-                "B-REMINDER", "I-REMINDER",  # Nhắc nhở
-                "B-APP", "I-APP",           # Ứng dụng
-                "B-DEVICE", "I-DEVICE",      # Thiết bị
-                "B-ACTION", "I-ACTION",      # Hành động
-                "B-RECEIVER", "I-RECEIVER"   # Người nhận (đặc biệt)
-            ]
-    
-    @property
-    def num_entity_labels(self) -> int:
-        return len(self.entity_labels)
+    """Entity recognition configuration - UPDATED for VITEXT dataset"""
+    num_entity_labels = 30  # Updated to match actual dataset
+    entity_labels = [
+        "O", "B-ACTION", "B-CONTACT_NAME", "B-CONTENT_TYPE", "B-DATE", "B-DEVICE", 
+        "B-LEVEL", "B-LOCATION", "B-MEDIA_TYPE", "B-MESSAGE", "B-PHONE", "B-PLATFORM", 
+        "B-QUERY", "B-RECEIVER", "B-TIME", "B-TITLE", "I-CONTACT_NAME", "I-CONTENT_TYPE", 
+        "I-DATE", "I-DEVICE", "I-LEVEL", "I-LOCATION", "I-MEDIA_TYPE", "I-MESSAGE", 
+        "I-PHONE", "I-PLATFORM", "I-QUERY", "I-RECEIVER", "I-TIME", "I-TITLE"
+    ]
 
-@dataclass
 class ValueConfig:
-    """Cấu hình cho Value Extraction - Mới thêm"""
-    value_labels: List[str] = None
-    
-    def __post_init__(self):
-        if self.value_labels is None:
-            self.value_labels = [
-                "O",  # Outside
-                "B-VALUE", "I-VALUE",        # Giá trị chung
-                "B-TEXT", "I-TEXT",          # Văn bản
-                "B-NUMBER", "I-NUMBER",      # Số
-                "B-DATE", "I-DATE",          # Ngày
-                "B-TIME", "I-TIME",          # Thời gian
-                "B-URL", "I-URL",            # URL
-                "B-EMAIL", "I-EMAIL",        # Email
-                "B-PHONE", "I-PHONE",        # Số điện thoại
-                "B-ADDRESS", "I-ADDRESS",    # Địa chỉ
-                "B-MESSAGE", "I-MESSAGE"     # Nội dung tin nhắn (đặc biệt)
-            ]
-    
-    @property
-    def num_value_labels(self) -> int:
-        return len(self.value_labels)
+    """Value extraction configuration - UPDATED for VITEXT dataset"""
+    num_value_labels = 33  # Updated based on actual value labels
+    value_labels = [
+        "O", "B-action", "I-action", "B-contact_name", "I-contact_name", 
+        "B-content_type", "I-content_type", "B-date", "I-date", "B-device", 
+        "I-device", "B-level", "I-level", "B-location", "I-location", 
+        "B-media_type", "I-media_type", "B-phone", "I-phone", "B-platform", 
+        "I-platform", "B-query", "I-query", "B-time", "I-time", "B-title", 
+        "I-title", "B-value", "I-value", "B-number", "I-number", "B-percentage", "I-percentage"
+    ]
 
-@dataclass
 class CommandConfig:
-    command_labels: List[str] = None
-    
-    def __post_init__(self):
-        if self.command_labels is None:
-            self.command_labels = [
-                "adjust-settings", "app-tutorial", "browse-social-media", "call", 
-                "check-device-status", "check-health-status", "check-messages", 
-                "check-weather", "control-device", "general-conversation", 
-                "make-video-call", "navigation-help", "open-app", "open-app-action", 
-                "play-audio", "play-content", "play-media", "provide-instructions", 
-                "read-content", "read-news", "search-content", "search-internet", 
-                "send-mess", "set-alarm", "set-reminder", "view-content", "unknown"
-            ]
-    
-    @property
-    def num_command_labels(self) -> int:
-        return len(self.command_labels)
+    """Command classification configuration - UPDATED for VITEXT dataset"""
+    num_command_labels = 13
+    command_labels = [
+        "add-contacts", "call", "control-device", "get-info", "make-video-call", 
+        "open-cam", "play-media", "search-internet", "search-youtube", 
+        "send-mess", "set-alarm", "set-event-calendar", "view-content"
+    ]
 
-@dataclass
 class TrainingConfig:
-    """Cấu hình cho training - Nguồn chân lý cho device & precision"""
-    output_dir: str = "./models"
-    data_dir: str = "./data"
-    log_dir: str = "./logs"
-    seed: int = 42
-    device: str = "auto"
+    """Training configuration - OPTIMIZED for VITEXT dataset"""
+    device = "cuda"
+    seed = 42
+    deterministic = True
     
-    # Tham số training
-    save_steps: int = 25      
-    eval_steps: int = 25     
-    logging_steps: int = 5   
-    early_stopping_patience: int = 10  
-    save_total_limit: int = 5  
+    # GPU memory management
+    empty_cache_frequency = 20  # Clear GPU cache every 20 batches
+    max_memory_usage = 0.85  # Use max 85% of GPU memory for stability
     
-    # Precision settings (gộp thành một cờ)
-    use_amp: bool = False  # Tắt AMP để tránh dtype mismatch
-    max_grad_norm: float = 1.0
-    save_best_only: bool = True 
-    use_gradient_checkpointing: bool = False  # Tắt để tránh lỗi
-    max_memory_usage: str = "auto"
+    # Training monitoring
+    log_interval = 100  # Log every 100 batches
+    save_interval = 1  # Save every epoch
+    eval_interval = 1  # Evaluate every epoch
     
-    def __post_init__(self):
-        os.makedirs(self.output_dir, exist_ok=True)
-        os.makedirs(self.data_dir, exist_ok=True)
-        os.makedirs(self.log_dir, exist_ok=True)
-
-
-# Khởi tạo các config
-model_config = ModelConfig()
-intent_config = IntentConfig()
-entity_config = EntityConfig()
-value_config = ValueConfig()
-command_config = CommandConfig()
-training_config = TrainingConfig()
-
-# Kiểm định kích thước nhãn ngay khi load
-assert intent_config.num_intents == len(intent_config.intent_labels), f"Intent mismatch: {intent_config.num_intents} vs {len(intent_config.intent_labels)}"
-assert entity_config.num_entity_labels > 0, f"Entity labels empty: {entity_config.num_entity_labels}"
-assert value_config.num_value_labels > 0, f"Value labels empty: {value_config.num_value_labels}"
-assert command_config.num_command_labels > 0, f"Command labels empty: {command_config.num_command_labels}"
-
-# Removed print statements to avoid Unicode errors 
+    # Validation settings
+    val_batch_size = 32  # Larger batch for validation
+    val_metrics = ['accuracy', 'f1_macro', 'f1_weighted']
+    
+    # Model saving
+    save_best_model = True
+    save_last_model = True
+    model_save_format = "pytorch"  # Save as .pth files

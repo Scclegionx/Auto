@@ -393,8 +393,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>PhoBERT_SAM</h1>
-            <p>Intent Recognition & Entity Extraction cho người cao tuổi</p>
+            <h1>Auto NLP Hybrid System</h1>
+            <p>Model-First Hybrid System với Trained Model + Reasoning Engine</p>
         </div>
 
         <div class="main-content">
@@ -403,7 +403,7 @@
                     <label for="input-text">Nhập câu để phân tích:</label>
                     <textarea 
                         id="input-text" 
-                        placeholder="Ví dụ: nhắc tôi lúc 5 giờ chiều, alo cho bố, gửi tin nhắn cho mẹ rằng tối con sẽ về ăn cơm..."
+                        placeholder="Ví dụ: gọi điện cho mẹ, bật đèn phòng khách, phát nhạc, tìm kiếm nhạc trên youtube, đặt báo thức 7 giờ sáng..."
                     ></textarea>
                     <div class="keyboard-shortcut">Phím tắt: <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> để phân tích</div>
                 </div>
@@ -448,8 +448,8 @@
                             <p id="command-value">-</p>
                         </div>
                         <div class="result-item">
-                            <h4>Value</h4>
-                            <p id="value-display">-</p>
+                            <h4>Message Content</h4>
+                            <p id="message-content">-</p>
                         </div>
                         <div class="result-item">
                             <h4>Processing Time</h4>
@@ -458,12 +458,12 @@
                     </div>
 
                     <div class="result-item">
-                        <h4>Entities</h4>
+                        <h4>Relevant Entities</h4>
                         <p id="entities-value">-</p>
                     </div>
 
                     <div class="result-item">
-                        <h4>JSON Response</h4>
+                        <h4>Full JSON Response</h4>
                         <div class="json-output" id="json-output"></div>
                     </div>
                 </div>
@@ -493,13 +493,14 @@
             clearMessages();
 
             try {
-                const response = await fetch(`${API_BASE_URL}/predict-with-reasoning`, {
+                const response = await fetch(`${API_BASE_URL}/predict-simple`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        text: inputText
+                        text: inputText,
+                        context: {}
                     })
                 });
 
@@ -538,18 +539,44 @@
 
             // Update values
             document.getElementById('command-value').textContent = result.command || 'unknown';
-            document.getElementById('value-display').textContent = result.value || 'Không có giá trị';
             document.getElementById('processing-time').textContent = `${(result.processing_time || 0).toFixed(3)}s`;
 
-            // Update entities
+            // Extract and display MESSAGE content
             const entities = result.entities || {};
-            if (Object.keys(entities).length > 0) {
-                const entitiesText = Object.entries(entities)
-                    .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+            let messageContent = 'Không có nội dung tin nhắn';
+            
+            // Look for MESSAGE in entities
+            if (entities.MESSAGE) {
+                messageContent = entities.MESSAGE;
+            } else if (entities.message) {
+                messageContent = entities.message;
+            } else if (entities.Message) {
+                messageContent = entities.Message;
+            }
+            
+            document.getElementById('message-content').textContent = messageContent;
+
+            // Display only relevant entities (filter out MESSAGE)
+            const relevantEntities = {};
+            Object.entries(entities).forEach(([key, value]) => {
+                if (key.toLowerCase() !== 'message') {
+                    relevantEntities[key] = value;
+                }
+            });
+
+            if (Object.keys(relevantEntities).length > 0) {
+                const entitiesText = Object.entries(relevantEntities)
+                    .map(([key, value]) => {
+                        if (Array.isArray(value)) {
+                            return `${key}: ${value.length > 0 ? value.join(', ') : '[]'}`;
+                        } else {
+                            return `${key}: ${value}`;
+                        }
+                    })
                     .join(', ');
                 document.getElementById('entities-value').textContent = entitiesText;
             } else {
-                document.getElementById('entities-value').textContent = 'Không tìm thấy entities';
+                document.getElementById('entities-value').textContent = 'Không có entities liên quan';
             }
 
             // Update JSON output

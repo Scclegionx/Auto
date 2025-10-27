@@ -1,68 +1,78 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual Environment
+# Virtual environments (completely ignore)
 venv/
+venv_new/
+venv_backup/
+venv_fixed/
+venv_*/
+**/venv/
+**/venv_*/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
 env/
-ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
 
 # IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.pth
+*.pt
+*.bin
+*.safetensors
+model_cache/
+
+# Large files (>100MB) - Avoid pushing to repo
+# Model files (only large .pth files)
+models/phobert_large_intent_model/*.pth
+src/training/scripts/models/
+cleanup_backup_*/
+
+# Virtual environments (large files)
+venv/
+venv_new/
+venv_backup/
+venv_fixed/
+
+# PyTorch CUDA libraries (very large)
+**/torch/lib/torch_cuda.dll
+**/torch/lib/dnnl.lib
+**/torch/lib/cudnn_engines_precompiled64_9.dll
+**/torch/lib/cublasLt64_12.dll
+**/torch/lib/cusparse64_12.dll
+**/torch/lib/torch_cpu.dll
+**/torch/lib/cudnn_adv64_9.dll
+**/torch/lib/cufft64_11.dll
+**/torch/lib/cusolver64_11.dll
+**/torch/lib/cudnn_ops64_9.dll
 
 # Logs
 *.log
-logs/
-training_*.log
-
-# Model Cache
-model_cache/
-.cache/
+reasoning_engine.log
 
 # Temporary files
 *.tmp
 *.temp
-.DS_Store
-Thumbs.db
-
-# Training artifacts
-models/phobert_large_intent_model/model_epoch_*.pth
-models/phobert_large_intent_model/model_best.pth
-models/phobert_large_intent_model/model_*.pth
-!models/phobert_large_intent_model/config.json
-!models/phobert_large_intent_model/*.json
-!models/phobert_large_intent_model/*.txt
-!models/phobert_large_intent_model/*.codes
-
-# Data backups
-src/data/backup/
+*.bak
 *.backup
-
-# Test files
-test_*.py
-*_test.py
-debug_*.py
-simple_*.py
-direct_*.py
-demo_*.py

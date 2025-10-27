@@ -5,6 +5,8 @@ import com.example.Auto_BE.dto.request.ForgotPasswordRequest;
 import com.example.Auto_BE.dto.request.LoginRequest;
 import com.example.Auto_BE.dto.request.RegisterRequest;
 import com.example.Auto_BE.dto.request.ResendVerificationRequest;
+import com.example.Auto_BE.dto.request.SendVerificationRequest;
+import com.example.Auto_BE.dto.request.VerifyOtpRequest;
 import com.example.Auto_BE.dto.response.LoginResponse;
 import com.example.Auto_BE.entity.User;
 import com.example.Auto_BE.entity.Verification;
@@ -26,7 +28,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.example.Auto_BE.constants.ErrorMessages.*;
 import static com.example.Auto_BE.constants.SuccessMessage.*;
@@ -82,14 +86,20 @@ public class AuthService {
         if (existingUserOpt.isPresent()) {
             User existingUser = existingUserOpt.get();
             if (!existingUser.getIsActive()) {
-                String verificationToken = jwtUtils.generateVerificationToken(existingUser.getEmail());
+                // Nếu email đã tồn tại nhưng chưa active, gửi lại mã OTP mới
+                existingUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+                userRepository.save(existingUser);
 
+                // Xóa các OTP cũ
                 verificationRepository.deleteAllByUser(existingUser);
-
+                
+                // Tạo và gửi OTP mới
+                String otp = generateOtp();
+                
                 Verification verification = new Verification();
                 verification.setUser(existingUser)
-                        .setToken(verificationToken)
-                        .setExpiredAt(jwtUtils.getVerificationTokenExpirationTime(verificationToken));
+                        .setToken(otp)
+                        .setExpiredAt(LocalDateTime.now().plusMinutes(5));
                 verificationRepository.save(verification);
 
                 applicationEventPublisher.publishEvent(new UserRegistrationEvent(this, verification));
@@ -107,22 +117,103 @@ public class AuthService {
         User newUser = new User();
         newUser.setEmail(registerRequest.getEmail())
                 .setPassword(passwordEncoder.encode(registerRequest.getPassword()))
-                .setIsActive(false);
+                .setIsActive(false); // Chưa active, phải verify email trước
         userRepository.save(newUser);
 
-        String verificationToken = jwtUtils.generateVerificationToken(newUser.getEmail());
-
+        // Tự động gửi mã OTP sau khi đăng ký
+        String otp = generateOtp();
+        
         Verification verification = new Verification();
         verification.setUser(newUser)
-                .setToken(verificationToken)
-                .setExpiredAt(jwtUtils.getVerificationTokenExpirationTime(verificationToken));
+                .setToken(otp)
+                .setExpiredAt(LocalDateTime.now().plusMinutes(5));
         verificationRepository.save(verification);
 
+        // Gửi email chứa mã OTP
         applicationEventPublisher.publishEvent(new UserRegistrationEvent(this, verification));
+        
         return BaseResponse.<Void>builder()
                 .status(SUCCESS)
                 .message(USER_REGISTERED)
                 .build();
+    }
+
+    /**
+     * Gửi mã OTP xác thực email (user chủ động gọi từ FE)
+     */
+    @Transactional
+    public BaseResponse<Void> sendVerificationOtp(SendVerificationRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
+
+        if (user.getIsActive()) {
+            throw new BaseException.BadRequestException(USER_ALREADY_VERIFIED);
+        }
+
+        // Xóa các OTP cũ của user (nếu có)
+        verificationRepository.deleteAllByUser(user);
+
+        // Tạo mã OTP 6 số
+        String otp = generateOtp();
+        
+        // Lưu OTP vào database, hết hạn sau 5 phút
+        Verification verification = new Verification();
+        verification.setUser(user)
+                .setToken(otp)
+                .setExpiredAt(LocalDateTime.now().plusMinutes(5));
+        verificationRepository.save(verification);
+
+        // Gửi email chứa mã OTP
+        applicationEventPublisher.publishEvent(new UserRegistrationEvent(this, verification));
+
+        return BaseResponse.<Void>builder()
+                .status(SUCCESS)
+                .message(VERIFICATION_EMAIL_SENT)
+                .build();
+    }
+
+    /**
+     * Xác thực mã OTP
+     */
+    @Transactional
+    public BaseResponse<Void> verifyOtp(VerifyOtpRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
+
+        if (user.getIsActive()) {
+            throw new BaseException.BadRequestException(USER_ALREADY_VERIFIED);
+        }
+
+        // Tìm verification theo user và OTP
+        Verification verification = verificationRepository.findByUserAndToken(user, request.getOtp())
+                .orElseThrow(() -> new BaseException.BadRequestException("Mã OTP không đúng"));
+
+        // Kiểm tra OTP đã hết hạn chưa
+        if (verification.getExpiredAt().isBefore(LocalDateTime.now())) {
+            verificationRepository.delete(verification);
+            throw new BaseException.BadRequestException("Mã OTP đã hết hạn");
+        }
+
+        // Active user
+        user.setIsActive(true);
+        userRepository.save(user);
+
+        // Xóa tất cả verification của user
+        verificationRepository.deleteAllByUser(user);
+
+        return BaseResponse.<Void>builder()
+                .status(SUCCESS)
+                .message(EMAIL_VERIFIED)
+                .build();
+    }
+
+    /**
+     * Tạo mã OTP 6 số ngẫu nhiên
+     */
+    private String generateOtp() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000); // Tạo số từ 100000 đến 999999
+        return String.valueOf(otp);
     }
 
     @Transactional

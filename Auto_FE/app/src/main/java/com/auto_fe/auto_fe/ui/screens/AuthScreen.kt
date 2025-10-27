@@ -35,7 +35,10 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun AuthScreen(
-    onLoginSuccess: (String, String?, String?, Long?) -> Unit = { _, _, _, _ -> } // Callback với accessToken, email, name, userId
+    onLoginSuccess: (String, String?, String?, Long?) -> Unit = { _, _, _, _ -> }, // Callback với accessToken, email, name, userId
+    onVerificationClick: (String, String) -> Unit = { _, _ -> }, // Callback với email và password
+    verifiedEmail: String? = null, // Email sau khi verify thành công
+    verifiedPassword: String? = null // Password sau khi verify thành công
 ) {
     var isLoginMode by remember { mutableStateOf(true) }
     val context = LocalContext.current
@@ -50,9 +53,15 @@ fun AuthScreen(
     var isLoginLoading by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
     
-    // Load saved credentials khi màn hình mở
-    LaunchedEffect(Unit) {
-        if (sessionManager.isRememberMeEnabled()) {
+    // Load saved credentials hoặc verified credentials khi màn hình mở
+    LaunchedEffect(verifiedEmail, verifiedPassword) {
+        if (verifiedEmail != null && verifiedPassword != null) {
+            // Autofill từ verification
+            loginEmail = verifiedEmail
+            loginPassword = verifiedPassword
+            isLoginMode = true // Chuyển sang login mode
+        } else if (sessionManager.isRememberMeEnabled()) {
+            // Load từ remember me
             loginEmail = sessionManager.getSavedEmail() ?: ""
             loginPassword = sessionManager.getSavedPassword() ?: ""
             rememberMe = true
@@ -416,14 +425,12 @@ fun AuthScreen(
                                                 onSuccess = { response ->
                                                     Toast.makeText(
                                                         context,
-                                                        "✅ ${response.message}\nVui lòng kiểm tra email để xác thực tài khoản!",
+                                                        "✅ ${response.message}\nĐã gửi mã xác thực qua email!",
                                                         Toast.LENGTH_LONG
                                                     ).show()
-                                                    // Switch to login mode
-                                                    isLoginMode = true
-                                                    registerEmail = ""
-                                                    registerPassword = ""
-                                                    registerConfirmPassword = ""
+                                                    // Chuyển sang màn hình verification với email và password
+                                                    onVerificationClick(registerEmail, registerPassword)
+                                                    // Không xóa email và password để có thể autofill sau khi verify
                                                 },
                                                 onFailure = { error ->
                                                     Toast.makeText(

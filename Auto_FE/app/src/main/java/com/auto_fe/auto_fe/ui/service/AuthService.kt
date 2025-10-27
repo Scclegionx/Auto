@@ -16,7 +16,7 @@ class AuthService {
     private val client by lazy { ApiClient.getClient() }
 
     // TODO: Thay đổi URL này thành URL server của bạn
-    private val baseUrl = "http://192.168.33.100:8080/api/auth" // For Android Emulator
+    private val baseUrl = "http://192.168.33.102:8080/api/auth" // For Android Emulator
     // private val baseUrl = "http://YOUR_IP:8080/api/auth" // For Real Device
 
     /**
@@ -50,7 +50,7 @@ class AuthService {
         val message: String,
         val data: DeviceTokenData?
     )
-
+    
     data class DeviceTokenData(
         val id: String,
         val fcmToken: String,
@@ -58,8 +58,12 @@ class AuthService {
         val deviceType: String,
         val deviceName: String
     )
-
-    /**
+    
+    data class VerificationResponse(
+        val status: String,
+        val message: String,
+        val data: Any?
+    )    /**
      * Đăng nhập với email và password
      * @param email Email của user
      * @param password Password của user
@@ -258,6 +262,107 @@ class AuthService {
                 }
             } catch (e: Exception) {
                 Log.e("AuthService", "Register device token error", e)
+                Result.failure(Exception("Lỗi kết nối: ${e.message}"))
+            }
+        }
+    }
+
+    /**
+     * Gửi mã OTP xác thực email
+     */
+    suspend fun sendVerificationOtp(email: String): Result<VerificationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val json = JSONObject().apply {
+                    put("email", email)
+                }
+
+                val requestBody = json.toString()
+                    .toRequestBody("application/json".toMediaType())
+
+                val request = Request.Builder()
+                    .url("$baseUrl/send-verification-otp")
+                    .post(requestBody)
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string()
+
+                Log.d("AuthService", "Send OTP Response Code: ${response.code}")
+                Log.d("AuthService", "Send OTP Response Body: $responseBody")
+
+                if (response.isSuccessful && responseBody != null) {
+                    val jsonResponse = JSONObject(responseBody)
+                    val status = jsonResponse.getString("status")
+                    val message = jsonResponse.getString("message")
+                    
+                    Result.success(VerificationResponse(status, message, null))
+                } else {
+                    val errorMessage = if (responseBody != null) {
+                        try {
+                            val errorJson = JSONObject(responseBody)
+                            errorJson.optString("message", "Gửi mã OTP thất bại")
+                        } catch (e: Exception) {
+                            "Gửi mã OTP thất bại"
+                        }
+                    } else {
+                        "Gửi mã OTP thất bại"
+                    }
+                    Result.failure(Exception(errorMessage))
+                }
+            } catch (e: Exception) {
+                Log.e("AuthService", "Send OTP error", e)
+                Result.failure(Exception("Lỗi kết nối: ${e.message}"))
+            }
+        }
+    }
+
+    /**
+     * Xác thực mã OTP
+     */
+    suspend fun verifyOtp(email: String, otp: String): Result<VerificationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val json = JSONObject().apply {
+                    put("email", email)
+                    put("otp", otp)
+                }
+
+                val requestBody = json.toString()
+                    .toRequestBody("application/json".toMediaType())
+
+                val request = Request.Builder()
+                    .url("$baseUrl/verify-otp")
+                    .post(requestBody)
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string()
+
+                Log.d("AuthService", "Verify OTP Response Code: ${response.code}")
+                Log.d("AuthService", "Verify OTP Response Body: $responseBody")
+
+                if (response.isSuccessful && responseBody != null) {
+                    val jsonResponse = JSONObject(responseBody)
+                    val status = jsonResponse.getString("status")
+                    val message = jsonResponse.getString("message")
+                    
+                    Result.success(VerificationResponse(status, message, null))
+                } else {
+                    val errorMessage = if (responseBody != null) {
+                        try {
+                            val errorJson = JSONObject(responseBody)
+                            errorJson.optString("message", "Xác thực OTP thất bại")
+                        } catch (e: Exception) {
+                            "Xác thực OTP thất bại"
+                        }
+                    } else {
+                        "Xác thực OTP thất bại"
+                    }
+                    Result.failure(Exception(errorMessage))
+                }
+            } catch (e: Exception) {
+                Log.e("AuthService", "Verify OTP error", e)
                 Result.failure(Exception("Lỗi kết nối: ${e.message}"))
             }
         }

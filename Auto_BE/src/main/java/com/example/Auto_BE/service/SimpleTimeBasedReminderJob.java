@@ -159,14 +159,28 @@ public class SimpleTimeBasedReminderJob implements Job {
                 String desc = med.getDescription();
                 
                 System.out.println("✅ Successfully accessed fields: name=" + name + ", time=" + time);
-                return String.format("💊 %s lúc %s\n📝 %s", 
-                        name, time, desc != null ? desc : "Uống theo chỉ dẫn");
+                
+                // ✅ Format gọn cho 1 thuốc (1 dòng)
+                StringBuilder result = new StringBuilder();
+                result.append(String.format("🕐 %s - %s", time, name));
+                
+                if (desc != null && !desc.trim().isEmpty()) {
+                    result.append(String.format("\n%s", desc));
+                }
+                
+                return result.toString();
             }
 
             System.out.println("📝 Multiple medications: building grouped message");
             StringBuilder body = new StringBuilder();
-            body.append(String.format("Bạn cần uống %d loại thuốc:\n\n", medications.size()));
             
+            // ✅ FORMAT COMPACT: Gộp thời gian và số lượng vào 1 dòng
+            if (!medications.isEmpty()) {
+                String time = medications.get(0).getReminderTime();
+                body.append(String.format("🕐 %s • %d loại thuốc:\n", time, medications.size()));
+            }
+            
+            // ✅ Mỗi thuốc chỉ 1 dòng (gộn tên + ghi chú)
             for (int i = 0; i < medications.size(); i++) {
                 MedicationReminder med = medications.get(i);
                 System.out.println("📝 Processing medication " + (i+1) + ": " + med.getClass().getSimpleName());
@@ -176,14 +190,12 @@ public class SimpleTimeBasedReminderJob implements Job {
                     String desc = med.getDescription();
                     
                     System.out.println("✅ Medication " + (i+1) + " fields accessed successfully");
-                    body.append(String.format("%d. 💊 %s", (i + 1), name));
                     
+                    // ✅ GỌN: 1 dòng cho 1 thuốc (bỏ icon 💊)
                     if (desc != null && !desc.trim().isEmpty()) {
-                        body.append(String.format("\n   📝 %s", desc));
-                    }
-                    
-                    if (i < medications.size() - 1) {
-                        body.append("\n\n");
+                        body.append(String.format("%d. %s - %s\n", (i + 1), name, desc));
+                    } else {
+                        body.append(String.format("%d. %s\n", (i + 1), name));
                     }
                     
                 } catch (Exception e) {
@@ -192,8 +204,7 @@ public class SimpleTimeBasedReminderJob implements Job {
                 }
             }
             
-            body.append("\n\n⚡ Nhớ uống đúng giờ để đảm bảo sức khỏe!");
-            String result = body.toString();
+            String result = body.toString().trim();
             System.out.println("✅ Notification body built successfully (" + result.length() + " chars)");
             return result;
             

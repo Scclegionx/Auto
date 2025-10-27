@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface VerificationRepository extends JpaRepository<Verification, Long> {
     Optional<Verification> findByToken(String token);
 
+    Optional<Verification> findByUserAndToken(User user, String token);
+
     boolean existsByToken(String token);
 
     void deleteAllByUser(User user);

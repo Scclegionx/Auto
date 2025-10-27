@@ -17,7 +17,7 @@ import org.json.JSONObject
 class PrescriptionService {
     private val client by lazy { ApiClient.getClient() }
 
-    private val baseUrl = "http://192.168.33.100:8080/api/cron-prescriptions"
+    private val baseUrl = "http://192.168.33.102:8080/api/cron-prescriptions"
 
     /**
      * Data classes
@@ -198,21 +198,10 @@ class PrescriptionService {
                     val medJson = JSONObject().apply {
                         put("name", med.name)
                         
-                        // Ghép meal timing vào description
-                        val mealTimingText = when (med.mealTiming) {
-                            "BEFORE_MEAL" -> "Uống trước ăn"
-                            "AFTER_MEAL" -> "Uống sau ăn"
-                            "WITH_MEAL" -> "Uống trong bữa ăn"
-                            else -> ""
-                        }
-                        val fullDescription = if (med.description.isNotBlank()) {
-                            "${med.description}\n📝 $mealTimingText"
-                        } else {
-                            "📝 $mealTimingText"
-                        }
-                        put("description", fullDescription)
+                        // Ghi chú thuốc (user tự nhập, bao gồm cả thời điểm uống nếu muốn)
+                        put("description", med.description)
                         
-                        put("type", med.type) // PRESCRIPTION or OVER_THE_COUNTER
+                        put("type", med.type) // Mặc định là PRESCRIPTION
 
                         // Convert List<String> to JSONArray
                         val timesArray = JSONArray()
@@ -270,6 +259,52 @@ class PrescriptionService {
             }
         } catch (e: Exception) {
             Log.e("PrescriptionService", "Exception in createPrescription", e)
+            Result.failure(Exception("Lỗi kết nối: ${e.message}"))
+        }
+    }
+
+    /**
+     * Xóa đơn thuốc
+     */
+    suspend fun deletePrescription(
+        prescriptionId: Long,
+        accessToken: String
+    ): Result<String> = withContext(Dispatchers.IO) {
+        try {
+            Log.d("PrescriptionService", "Deleting prescription: $prescriptionId")
+
+            val request = Request.Builder()
+                .url("$baseUrl/$prescriptionId")
+                .delete()
+                .addHeader("Authorization", "Bearer $accessToken")
+                .build()
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string()
+
+            Log.d("PrescriptionService", "Delete Response Code: ${response.code}")
+            Log.d("PrescriptionService", "Delete Response Body: $responseBody")
+
+            if (response.isSuccessful && responseBody != null) {
+                val json = JSONObject(responseBody)
+                val message = json.optString("message", "Đã xóa đơn thuốc thành công")
+                Result.success(message)
+            } else {
+                val errorMessage = if (responseBody != null) {
+                    try {
+                        val json = JSONObject(responseBody)
+                        json.optString("message", "Không thể xóa đơn thuốc")
+                    } catch (e: Exception) {
+                        "Lỗi không xác định"
+                    }
+                } else {
+                    "Lỗi không xác định"
+                }
+                Log.e("PrescriptionService", "Delete Error: $errorMessage")
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Log.e("PrescriptionService", "Exception in deletePrescription", e)
             Result.failure(Exception("Lỗi kết nối: ${e.message}"))
         }
     }

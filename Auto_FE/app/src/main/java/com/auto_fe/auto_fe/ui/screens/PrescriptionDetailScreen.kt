@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -37,6 +38,8 @@ fun PrescriptionDetailScreen(
     var prescription by remember { mutableStateOf<PrescriptionService.Prescription?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var isDeleting by remember { mutableStateOf(false) }
 
     // Load prescription detail when screen opens
     LaunchedEffect(prescriptionId) {
@@ -67,6 +70,19 @@ fun PrescriptionDetailScreen(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Quay lại",
                             tint = DarkOnSurface
+                        )
+                    }
+                },
+                actions = {
+                    // Nút xóa đơn thuốc
+                    IconButton(
+                        onClick = { showDeleteDialog = true },
+                        enabled = !isDeleting
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Xóa đơn thuốc",
+                            tint = DarkError
                         )
                     }
                 },
@@ -128,6 +144,64 @@ fun PrescriptionDetailScreen(
                     PrescriptionDetailContent(prescription = prescription!!)
                 }
             }
+        }
+        
+        // Delete Confirmation Dialog
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Xác nhận xóa", color = DarkOnSurface) },
+                text = { 
+                    Text(
+                        "Bạn có chắc muốn xóa đơn thuốc \"${prescription?.name}\"?\n\nThao tác này không thể hoàn tác và sẽ xóa tất cả thuốc trong đơn.",
+                        color = DarkOnSurface
+                    ) 
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showDeleteDialog = false
+                            isDeleting = true
+                            scope.launch {
+                                val result = prescriptionService.deletePrescription(
+                                    prescriptionId = prescriptionId,
+                                    accessToken = accessToken
+                                )
+                                result.fold(
+                                    onSuccess = { message ->
+                                        Toast.makeText(context, "✅ $message", Toast.LENGTH_SHORT).show()
+                                        onBackClick() // Quay về màn hình trước
+                                    },
+                                    onFailure = { error ->
+                                        Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                                        isDeleting = false
+                                    }
+                                )
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkError),
+                        enabled = !isDeleting
+                    ) {
+                        if (isDeleting) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp),
+                                color = DarkOnPrimary
+                            )
+                        } else {
+                            Text("Xóa")
+                        }
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showDeleteDialog = false },
+                        enabled = !isDeleting
+                    ) {
+                        Text("Hủy", color = DarkOnSurface)
+                    }
+                },
+                containerColor = DarkSurface
+            )
         }
     }
 }

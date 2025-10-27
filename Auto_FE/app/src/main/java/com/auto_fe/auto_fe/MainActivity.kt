@@ -79,6 +79,8 @@ import com.auto_fe.auto_fe.ui.screens.SettingsScreen
 import com.auto_fe.auto_fe.ui.screens.PrescriptionListScreen
 import com.auto_fe.auto_fe.ui.screens.PrescriptionDetailScreen
 import com.auto_fe.auto_fe.ui.screens.CreatePrescriptionScreen
+import com.auto_fe.auto_fe.ui.screens.VerificationScreen
+import com.auto_fe.auto_fe.ui.screens.ProfileScreen
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
 import com.auto_fe.auto_fe.utils.SessionManager
 import com.auto_fe.auto_fe.utils.PermissionManager
@@ -203,6 +205,12 @@ fun MainScreen(sessionManager: SessionManager) {
     var accessToken by remember { mutableStateOf(sessionManager.getAccessToken()) }
     var selectedPrescriptionId by remember { mutableStateOf<Long?>(null) }
     var showCreatePrescription by remember { mutableStateOf(false) }
+    var showVerification by remember { mutableStateOf(false) }
+    var showProfile by remember { mutableStateOf(false) }
+    var verificationEmail by remember { mutableStateOf("") }
+    var verificationPassword by remember { mutableStateOf("") }
+    var verifiedEmail by remember { mutableStateOf<String?>(null) }
+    var verifiedPassword by remember { mutableStateOf<String?>(null) }
     
     // Callback để logout
     val onLogout: () -> Unit = {
@@ -211,6 +219,12 @@ fun MainScreen(sessionManager: SessionManager) {
         accessToken = null
         selectedPrescriptionId = null
         showCreatePrescription = false
+        showVerification = false
+        showProfile = false
+        verificationEmail = ""
+        verificationPassword = ""
+        verifiedEmail = null
+        verifiedPassword = null
         selectedTab = 0
     }
     
@@ -240,8 +254,18 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     // BackHandler để xử lý nút back
-    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription) {
+    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile) {
         when {
+            // Nếu đang ở màn profile → quay về danh sách
+            showProfile -> {
+                showProfile = false
+            }
+            // Nếu đang ở màn verification → quay về auth
+            showVerification -> {
+                showVerification = false
+                verificationEmail = ""
+                verificationPassword = ""
+            }
             // Nếu đang ở màn tạo đơn thuốc → quay về danh sách
             showCreatePrescription -> {
                 showCreatePrescription = false
@@ -255,6 +279,34 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     when {
+        // Màn hình profile (fullscreen)
+        showProfile && accessToken != null -> {
+            ProfileScreen(
+                accessToken = accessToken!!,
+                onBackClick = { showProfile = false }
+            )
+        }
+        // Màn hình verification (fullscreen)
+        showVerification -> {
+            VerificationScreen(
+                email = verificationEmail,
+                password = verificationPassword,
+                onVerificationSuccess = { email, password ->
+                    // Verification thành công → quay về login với autofill
+                    showVerification = false
+                    verificationEmail = ""
+                    verificationPassword = ""
+                    verifiedEmail = email
+                    verifiedPassword = password
+                    Toast.makeText(context, "✅ Xác thực thành công! Vui lòng đăng nhập.", Toast.LENGTH_LONG).show()
+                },
+                onBackClick = {
+                    showVerification = false
+                    verificationEmail = ""
+                    verificationPassword = ""
+                }
+            )
+        }
         // Màn hình tạo đơn thuốc mới (fullscreen, không có bottom nav)
         showCreatePrescription && accessToken != null -> {
             CreatePrescriptionScreen(
@@ -296,15 +348,22 @@ fun MainScreen(sessionManager: SessionManager) {
                         0 -> {
                             // Tab Đơn thuốc - chỉ hiển thị khi đã login
                             if (isLoggedIn && accessToken != null) {
+                                val displayName = sessionManager.getUserName()
+                                    ?.takeIf { it.isNotBlank() && it != "null" } 
+                                    ?: "Người dùng"
+                                
                                 PrescriptionListScreen(
                                     accessToken = accessToken!!,
-                                    userName = sessionManager.getUserName() ?: "User",
+                                    userName = displayName,
                                     userEmail = sessionManager.getUserEmail() ?: "",
                                     onPrescriptionClick = { prescriptionId ->
                                         selectedPrescriptionId = prescriptionId
                                     },
                                     onCreateClick = {
                                         showCreatePrescription = true
+                                    },
+                                    onProfileClick = {
+                                        showProfile = true
                                     },
                                     onLogout = {
                                         onLogout()
@@ -323,8 +382,19 @@ fun MainScreen(sessionManager: SessionManager) {
                                         )
                                         accessToken = token
                                         isLoggedIn = true
+                                        // Clear verified credentials sau khi login thành công
+                                        verifiedEmail = null
+                                        verifiedPassword = null
                                         // Giữ nguyên tab 0 để hiển thị PrescriptionList
-                                    }
+                                    },
+                                    onVerificationClick = { email, password ->
+                                        // Chuyển sang màn hình verification với email và password
+                                        verificationEmail = email
+                                        verificationPassword = password
+                                        showVerification = true
+                                    },
+                                    verifiedEmail = verifiedEmail,
+                                    verifiedPassword = verifiedPassword
                                 )
                             }
                         }

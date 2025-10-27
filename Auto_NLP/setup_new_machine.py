@@ -12,7 +12,7 @@ def install_requirements():
     print("📦 Cài đặt requirements...")
     
     requirements = [
-        'torch>=2.5.0',  # Compatible with current version
+        'torch>=2.6.0',  # Fix vulnerability issue
         'transformers>=4.20.0',
         'scikit-learn>=1.0.0',
         'seqeval>=1.2.0',
@@ -61,10 +61,6 @@ def download_models():
     print("🤖 Tải PhoBERT-large model...")
     
     try:
-        import warnings
-        # Suppress vulnerability warnings for PyTorch < 2.6
-        warnings.filterwarnings("ignore", message=".*vulnerability.*")
-        
         from transformers import AutoTokenizer, AutoModel
         
         # Force download lại để đảm bảo có đầy đủ files
@@ -95,7 +91,7 @@ def download_models():
     except Exception as e:
         print(f"❌ Lỗi tải model: {e}")
         print("💡 Tip: Kiểm tra kết nối internet và thử lại")
-        print("💡 Tip: Nếu gặp vulnerability warning, có thể bỏ qua")
+        print("💡 Tip: Có thể cần upgrade PyTorch: pip install torch>=2.6.0")
         return False
 
 def main():

@@ -64,23 +64,68 @@ def install_packages():
     
     # Uninstall packages cũ trước
     print("🗑️ Uninstall packages cũ...")
-    old_packages = ["torch", "transformers", "scikit-learn", "seqeval", "tqdm", "numpy", "regex", "fastapi", "uvicorn", "pydantic"]
+    old_packages = [
+        "torch", "torchvision", "torchaudio", "transformers", "datasets", "accelerate",
+        "scikit-learn", "seqeval", "numpy", "pandas", "tqdm", "matplotlib", "seaborn",
+        "wandb", "tensorboard", "underthesea", "pyvi", "fastapi", "uvicorn", "faiss-cpu",
+        "rapidfuzz", "peft", "optuna", "bitsandbytes", "ray", "pydantic", "regex"
+    ]
     
     for package in old_packages:
         cmd = f"venv_new\\Scripts\\pip uninstall {package} -y"
         run_command(cmd, f"Uninstall {package}", ignore_errors=True)
     
+    # Cài đặt packages mới với phiên bản cụ thể
     packages = [
+        # Core ML packages
         "torch>=2.5.0 --index-url https://download.pytorch.org/whl/cu121",
-        "transformers>=4.20.0",
-        "scikit-learn>=1.0.0", 
-        "seqeval>=1.2.0",
-        "tqdm>=4.60.0",
-        "numpy>=1.21.0",
+        "torchvision>=0.20.0 --index-url https://download.pytorch.org/whl/cu121", 
+        "torchaudio>=2.5.0 --index-url https://download.pytorch.org/whl/cu121",
+        "transformers>=4.30.0",
+        "datasets>=2.12.0",
+        "accelerate>=0.20.0",
+        
+        # ML utilities
+        "scikit-learn>=1.3.0",
+        "seqeval>=1.2.2",
+        "numpy>=1.24.0",
+        "pandas>=2.0.0",
+        "tqdm>=4.65.0",
+        
+        # Visualization
+        "matplotlib>=3.7.0",
+        "seaborn>=0.12.0",
+        
+        # Logging and monitoring
+        "wandb>=0.15.0",
+        "tensorboard>=2.13.0",
+        
+        # Vietnamese NLP
+        "underthesea>=6.6.0",
+        "pyvi>=0.1.1",
+        
+        # API and web
+        "fastapi>=0.100.0",
+        "uvicorn>=0.20.0",
+        "pydantic>=2.0.0",
+        
+        # Search and similarity
+        "faiss-cpu>=1.7.0",
+        "rapidfuzz>=3.0.0",
+        
+        # Advanced training
+        "peft>=0.4.0",
+        "optuna>=3.0.0",
+        "bitsandbytes>=0.41.0",
+        
+        # Text processing
         "regex>=2021.0.0",
-        "fastapi>=0.70.0",
-        "uvicorn>=0.15.0",
-        "pydantic>=2.0.0"
+        
+        # Additional utilities
+        "pyyaml>=6.0",
+        "requests>=2.28.0",
+        "click>=8.0.0",
+        "colorama>=0.4.0"
     ]
     
     for package in packages:

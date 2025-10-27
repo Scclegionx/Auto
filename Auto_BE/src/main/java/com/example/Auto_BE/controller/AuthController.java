@@ -5,6 +5,8 @@ import com.example.Auto_BE.dto.request.ForgotPasswordRequest;
 import com.example.Auto_BE.dto.request.LoginRequest;
 import com.example.Auto_BE.dto.request.RegisterRequest;
 import com.example.Auto_BE.dto.request.ResendVerificationRequest;
+import com.example.Auto_BE.dto.request.SendVerificationRequest;
+import com.example.Auto_BE.dto.request.VerifyOtpRequest;
 import com.example.Auto_BE.dto.response.LoginResponse;
 import com.example.Auto_BE.service.AuthService;
 import jakarta.validation.Valid;
@@ -29,6 +31,24 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<Void>> register(@RequestBody @Valid RegisterRequest registerRequest) {
         BaseResponse<Void> response = authService.register(registerRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * API mới: Gửi mã OTP xác thực email (user chủ động gọi)
+     */
+    @PostMapping("/send-verification-otp")
+    public ResponseEntity<BaseResponse<Void>> sendVerificationOtp(@RequestBody @Valid SendVerificationRequest request) {
+        BaseResponse<Void> response = authService.sendVerificationOtp(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * API mới: Xác thực mã OTP
+     */
+    @PostMapping("/verify-otp")
+    public ResponseEntity<BaseResponse<Void>> verifyOtp(@RequestBody @Valid VerifyOtpRequest request) {
+        BaseResponse<Void> response = authService.verifyOtp(request);
         return ResponseEntity.ok(response);
     }
 

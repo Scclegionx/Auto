@@ -12,7 +12,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.auto_fe.auto_fe.ui.service.PrescriptionService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
@@ -29,8 +33,7 @@ import kotlinx.coroutines.launch
 data class MedicationReminderForm(
     var name: String = "",
     var description: String = "",
-    var type: String = "PRESCRIPTION", // PRESCRIPTION, OVER_THE_COUNTER
-    var mealTiming: String = "AFTER_MEAL", // BEFORE_MEAL, AFTER_MEAL, WITH_MEAL - sẽ thêm vào description
+    var type: String = "PRESCRIPTION", // Mặc định là thuốc kê đơn (theo đơn thuốc)
     var reminderTimes: MutableList<String> = mutableListOf("08:00"),
     var daysOfWeek: String = "1111111" // Mon-Sun: 1111111 = everyday
 )
@@ -52,6 +55,11 @@ fun CreatePrescriptionScreen(
     var imageUrl by remember { mutableStateOf("https://via.placeholder.com/150") }
     var medications by remember { mutableStateOf(listOf(MedicationReminderForm())) }
     var isLoading by remember { mutableStateOf(false) }
+    
+    // Dialog states
+    var showEditDialog by remember { mutableStateOf(false) }
+    var editingIndex by remember { mutableStateOf<Int?>(null) }
+    var editingMedication by remember { mutableStateOf<MedicationReminderForm?>(null) }
 
     Scaffold(
         topBar = {
@@ -144,13 +152,14 @@ fun CreatePrescriptionScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Danh sách thuốc
+                // Danh sách thuốc - DẠNG BẢNG
                 Card(
                     colors = CardDefaults.cardColors(containerColor = DarkSurface.copy(alpha = 0.9f)),
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
+                        // Header với nút thêm
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -163,29 +172,77 @@ fun CreatePrescriptionScreen(
                                 color = DarkPrimary
                             )
 
-                            IconButton(
+                            Button(
                                 onClick = {
                                     medications = medications + MedicationReminderForm()
-                                }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = DarkPrimary
+                                ),
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
-                                    contentDescription = "Thêm thuốc",
-                                    tint = DarkPrimary
+                                    contentDescription = "Thêm",
+                                    modifier = Modifier.size(18.dp)
                                 )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Thêm", fontSize = 14.sp)
                             }
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
 
+                        // Table Header
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = DarkPrimary.copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .padding(vertical = 8.dp, horizontal = 12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "STT",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = DarkOnSurface,
+                                modifier = Modifier.width(35.dp)
+                            )
+                            Text(
+                                text = "Tên thuốc",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = DarkOnSurface,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "Giờ uống",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = DarkOnSurface,
+                                modifier = Modifier.width(80.dp),
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.width(48.dp)) // Space for action button
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Table Rows
                         medications.forEachIndexed { index, medication ->
-                            MedicationReminderCard(
+                            MedicationTableRow(
                                 medication = medication,
                                 index = index,
-                                onUpdate = { updated ->
-                                    medications = medications.toMutableList().apply {
-                                        set(index, updated)
-                                    }
+                                onEdit = { 
+                                    editingIndex = index
+                                    editingMedication = medication.copy(
+                                        reminderTimes = medication.reminderTimes.toMutableList()
+                                    )
+                                    showEditDialog = true
                                 },
                                 onDelete = {
                                     if (medications.size > 1) {
@@ -199,9 +256,10 @@ fun CreatePrescriptionScreen(
                             )
 
                             if (index < medications.size - 1) {
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Divider(color = DarkOnSurface.copy(alpha = 0.1f))
-                                Spacer(modifier = Modifier.height(12.dp))
+                                Divider(
+                                    color = DarkOnSurface.copy(alpha = 0.1f),
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                )
                             }
                         }
                     }
@@ -265,6 +323,26 @@ fun CreatePrescriptionScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
+    }
+
+    // Show edit dialog when needed
+    if (showEditDialog && editingMedication != null && editingIndex != null) {
+        MedicationEditDialog(
+            medication = editingMedication!!,
+            onDismiss = { 
+                showEditDialog = false
+                editingMedication = null
+                editingIndex = null
+            },
+            onConfirm = { updatedMedication ->
+                medications = medications.toMutableList().apply {
+                    set(editingIndex!!, updatedMedication)
+                }
+                showEditDialog = false
+                editingMedication = null
+                editingIndex = null
+            }
+        )
     }
 }
 
@@ -330,65 +408,6 @@ fun MedicationReminderCard(
             ),
             modifier = Modifier.fillMaxWidth()
         )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Medication Type selection (PRESCRIPTION or OVER_THE_COUNTER)
-        Text(
-            text = "Loại thuốc:",
-            fontSize = 14.sp,
-            color = DarkOnSurface.copy(alpha = 0.7f)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            listOf(
-                "PRESCRIPTION" to "💊 Thuốc kê đơn",
-                "OVER_THE_COUNTER" to "🏪 Thuốc không kê đơn"
-            ).forEach { (type, label) ->
-                FilterChip(
-                    selected = medication.type == type,
-                    onClick = { onUpdate(medication.copy(type = type)) },
-                    label = { Text(label, fontSize = 12.sp) },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = DarkPrimary,
-                        selectedLabelColor = DarkOnPrimary
-                    )
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Meal Timing selection
-        Text(
-            text = "Thời điểm uống:",
-            fontSize = 14.sp,
-            color = DarkOnSurface.copy(alpha = 0.7f)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            listOf(
-                "BEFORE_MEAL" to "🍽 Trước ăn",
-                "AFTER_MEAL" to "🍴 Sau ăn",
-                "WITH_MEAL" to "🥄 Trong bữa"
-            ).forEach { (mealTiming, label) ->
-                FilterChip(
-                    selected = medication.mealTiming == mealTiming,
-                    onClick = { onUpdate(medication.copy(mealTiming = mealTiming)) },
-                    label = { Text(label, fontSize = 12.sp) },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = DarkPrimary,
-                        selectedLabelColor = DarkOnPrimary
-                    )
-                )
-            }
-        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -466,6 +485,77 @@ fun MedicationReminderCard(
     }
 }
 
+// ✅ COMPONENT MỚI: Table Row hiển thị tóm tắt thuốc
+@Composable
+fun MedicationTableRow(
+    medication: MedicationReminderForm,
+    index: Int,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onEdit)
+            .padding(vertical = 12.dp, horizontal = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // STT
+        Text(
+            text = "${index + 1}",
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = DarkOnSurface,
+            modifier = Modifier.width(35.dp)
+        )
+
+        // Tên thuốc + Ghi chú
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = medication.name.ifBlank { "Chưa đặt tên" },
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = if (medication.name.isBlank()) DarkOnSurface.copy(alpha = 0.4f) else DarkOnSurface,
+                maxLines = 1
+            )
+            if (medication.description.isNotBlank()) {
+                Text(
+                    text = medication.description,
+                    fontSize = 12.sp,
+                    color = DarkOnSurface.copy(alpha = 0.6f),
+                    maxLines = 1
+                )
+            }
+        }
+
+        // Giờ uống
+        Text(
+            text = medication.reminderTimes.joinToString(", "),
+            fontSize = 13.sp,
+            color = DarkPrimary,
+            modifier = Modifier.width(80.dp),
+            textAlign = TextAlign.Center,
+            maxLines = 1
+        )
+
+        // Nút xóa
+        IconButton(
+            onClick = onDelete,
+            modifier = Modifier.size(36.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Xóa",
+                tint = DarkError,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
 @Composable
 fun DaysOfWeekSelector(
     selectedDays: String,
@@ -511,6 +601,329 @@ fun DaysOfWeekSelector(
         }
         TextButton(onClick = { onDaysChange("0000011") }) {
             Text("Cuối tuần", fontSize = 11.sp, color = DarkPrimary)
+        }
+    }
+}
+
+@Composable
+fun MedicationEditDialog(
+    medication: MedicationReminderForm,
+    onDismiss: () -> Unit,
+    onConfirm: (MedicationReminderForm) -> Unit
+) {
+    var editedMedication by remember { mutableStateOf(medication) }
+    var showTimePickerDialog by remember { mutableStateOf(false) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 600.dp),
+            colors = CardDefaults.cardColors(containerColor = DarkSurface)
+        ) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp)
+            ) {
+                // Title
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Chỉnh sửa thuốc",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = DarkOnSurface
+                    )
+                    IconButton(onClick = onDismiss) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Đóng",
+                            tint = DarkOnSurface
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Name field
+                OutlinedTextField(
+                    value = editedMedication.name,
+                    onValueChange = { editedMedication = editedMedication.copy(name = it) },
+                    label = { Text("Tên thuốc", color = DarkOnSurface.copy(alpha = 0.7f)) },
+                    placeholder = { Text("VD: Paracetamol 500mg") },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = DarkPrimary,
+                        unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
+                        focusedTextColor = DarkOnSurface,
+                        unfocusedTextColor = DarkOnSurface
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Description field
+                OutlinedTextField(
+                    value = editedMedication.description,
+                    onValueChange = { editedMedication = editedMedication.copy(description = it) },
+                    label = { Text("Ghi chú", color = DarkOnSurface.copy(alpha = 0.7f)) },
+                    placeholder = { Text("VD: Uống sau ăn") },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = DarkPrimary,
+                        unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
+                        focusedTextColor = DarkOnSurface,
+                        unfocusedTextColor = DarkOnSurface
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Reminder times section
+                Text(
+                    text = "Giờ nhắc nhở",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = DarkOnSurface
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // List of reminder times
+                    editedMedication.reminderTimes.forEachIndexed { index, time ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = time,
+                            fontSize = 16.sp,
+                            color = DarkOnSurface
+                        )
+                        IconButton(
+                            onClick = {
+                                editedMedication = editedMedication.copy(
+                                    reminderTimes = editedMedication.reminderTimes.toMutableList().apply {
+                                        removeAt(index)
+                                    }
+                                )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Xóa giờ",
+                                tint = DarkError
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Add time button
+                Button(
+                    onClick = { showTimePickerDialog = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = DarkPrimary.copy(alpha = 0.1f))
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Thêm giờ",
+                        tint = DarkPrimary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Thêm giờ nhắc", color = DarkPrimary)
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Action buttons
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = DarkOnSurface
+                        )
+                    ) {
+                        Text("Hủy")
+                    }
+
+                    Button(
+                        onClick = { onConfirm(editedMedication) },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkPrimary),
+                        enabled = editedMedication.name.isNotBlank() && editedMedication.reminderTimes.isNotEmpty()
+                    ) {
+                        Text("Lưu")
+                    }
+                }
+            }
+        }
+    }
+
+    // Time Picker Dialog
+    if (showTimePickerDialog) {
+        TimePickerDialog(
+            onDismiss = { showTimePickerDialog = false },
+            onTimeSelected = { time ->
+                if (!editedMedication.reminderTimes.contains(time)) {
+                    editedMedication = editedMedication.copy(
+                        reminderTimes = (editedMedication.reminderTimes + time).sorted().toMutableList()
+                    )
+                }
+                showTimePickerDialog = false
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimePickerDialog(
+    onDismiss: () -> Unit,
+    onTimeSelected: (String) -> Unit
+) {
+    var selectedHour by remember { mutableIntStateOf(8) }
+    var selectedMinute by remember { mutableIntStateOf(0) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            colors = CardDefaults.cardColors(containerColor = DarkSurface)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Chọn giờ nhắc nhở",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = DarkOnSurface
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Time display
+                Text(
+                    text = String.format("%02d:%02d", selectedHour, selectedMinute),
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = DarkPrimary
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Hour and Minute pickers
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    // Hour picker
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("Giờ", fontSize = 12.sp, color = DarkOnSurface.copy(alpha = 0.6f))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { 
+                                selectedHour = if (selectedHour > 0) selectedHour - 1 else 23 
+                            }) {
+                                Text("▲", fontSize = 20.sp, color = DarkPrimary)
+                            }
+                        }
+                        
+                        Text(
+                            text = String.format("%02d", selectedHour),
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = DarkOnSurface
+                        )
+                        
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { 
+                                selectedHour = if (selectedHour < 23) selectedHour + 1 else 0 
+                            }) {
+                                Text("▼", fontSize = 20.sp, color = DarkPrimary)
+                            }
+                        }
+                    }
+
+                    Text(":", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = DarkOnSurface)
+
+                    // Minute picker
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("Phút", fontSize = 12.sp, color = DarkOnSurface.copy(alpha = 0.6f))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { 
+                                selectedMinute = if (selectedMinute > 0) selectedMinute - 5 else 55 
+                            }) {
+                                Text("▲", fontSize = 20.sp, color = DarkPrimary)
+                            }
+                        }
+                        
+                        Text(
+                            text = String.format("%02d", selectedMinute),
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = DarkOnSurface
+                        )
+                        
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { 
+                                selectedMinute = if (selectedMinute < 55) selectedMinute + 5 else 0 
+                            }) {
+                                Text("▼", fontSize = 20.sp, color = DarkPrimary)
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Action buttons
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = DarkOnSurface
+                        )
+                    ) {
+                        Text("Hủy")
+                    }
+
+                    Button(
+                        onClick = { 
+                            val timeString = String.format("%02d:%02d", selectedHour, selectedMinute)
+                            onTimeSelected(timeString)
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkPrimary)
+                    ) {
+                        Text("Xác nhận")
+                    }
+                }
+            }
         }
     }
 }

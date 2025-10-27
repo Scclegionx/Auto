@@ -36,6 +36,7 @@ fun PrescriptionListScreen(
     onPrescriptionClick: (Long) -> Unit,
     onCreateClick: () -> Unit = {},
     onLogout: () -> Unit = {},
+    onProfileClick: () -> Unit = {}, // Thêm callback profile
     userName: String = "User", // Thêm tên user
     userEmail: String = "" // Thêm email user
 ) {
@@ -113,7 +114,7 @@ fun PrescriptionListScreen(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Xin chào, $userName",
+                            text = "Xin chào, ${userName.takeIf { it.isNotBlank() } ?: "Người dùng"}",
                             fontSize = 14.sp,
                             color = DarkOnSurface.copy(alpha = 0.7f)
                         )
@@ -150,7 +151,7 @@ fun PrescriptionListScreen(
                                 modifier = Modifier.padding(16.dp, 12.dp)
                             ) {
                                 Text(
-                                    text = userName,
+                                    text = userName.takeIf { it.isNotBlank() } ?: "Người dùng",
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = DarkOnSurface
@@ -184,8 +185,7 @@ fun PrescriptionListScreen(
                                 },
                                 onClick = {
                                     showMenu = false
-                                    // TODO: Navigate to profile
-                                    Toast.makeText(context, "Chức năng sắp ra mắt", Toast.LENGTH_SHORT).show()
+                                    onProfileClick()
                                 }
                             )
                             

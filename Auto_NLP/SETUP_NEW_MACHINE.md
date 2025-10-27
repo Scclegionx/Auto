@@ -1,5 +1,16 @@
 # Hướng dẫn Setup cho Máy Mới
 
+## 🤖 Model Information
+
+### Model được sử dụng
+- **PhoBERT-large**: `vinai/phobert-large` (khoảng 1.3GB)
+- **Không cần**: PhoBERT-base (tiết kiệm dung lượng)
+
+### Tại sao chỉ cần PhoBERT-large?
+- Dự án được cấu hình để sử dụng PhoBERT-large trong `src/training/configs/config.py`
+- PhoBERT-large có hiệu suất tốt hơn PhoBERT-base
+- Tiết kiệm dung lượng và thời gian download
+
 ## 🚀 Các bước setup dự án Auto_NLP trên máy mới
 
 ### 1. Clone dự án
@@ -73,7 +84,7 @@ pip install regex
 
 ### Lỗi Model Loading
 ```bash
-# Nếu thiếu model cache
+# Nếu thiếu model cache - chỉ cần PhoBERT-large
 python -c "from transformers import AutoTokenizer, AutoModel; AutoTokenizer.from_pretrained('vinai/phobert-large'); AutoModel.from_pretrained('vinai/phobert-large')"
 ```
 

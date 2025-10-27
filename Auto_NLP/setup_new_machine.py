@@ -32,25 +32,21 @@ def install_requirements():
 
 def download_models():
     """Tải models"""
-    print("🤖 Tải models...")
+    print("🤖 Tải PhoBERT-large model...")
     
     try:
         from transformers import AutoTokenizer, AutoModel
         
-        # Tải PhoBERT base
-        print("Tải PhoBERT base...")
-        tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
-        model = AutoModel.from_pretrained("vinai/phobert-base")
-        
-        # Tải PhoBERT large
-        print("Tải PhoBERT large...")
+        # Chỉ tải PhoBERT large (model được sử dụng trong dự án)
+        print("Tải PhoBERT-large...")
         tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-large")
         model = AutoModel.from_pretrained("vinai/phobert-large")
         
-        print("✅ Đã tải models")
+        print("✅ Đã tải PhoBERT-large model")
         
     except Exception as e:
-        print(f"❌ Lỗi tải models: {e}")
+        print(f"❌ Lỗi tải model: {e}")
+        print("💡 Tip: Kiểm tra kết nối internet và thử lại")
 
 def main():
     print("🚀 Setup cho máy mới...")

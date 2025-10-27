@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/voice_popup_background"
+    android:padding="20dp"
+    android:elevation="8dp">
+
+    <!-- Header với icon microphone -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/iv_microphone"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:layout_marginEnd="8dp"
+            android:tint="@android:color/white" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Đang ghi âm..."
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <!-- Animation line container -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/voice_line_container">
+
+        <!-- Base line -->
+        <View
+            android:id="@+id/base_line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:background="@android:color/white"
+            android:alpha="0.3" />
+
+        <!-- Animated line -->
+        <View
+            android:id="@+id/animated_line"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:background="@drawable/voice_line_gradient" />
+
+    </FrameLayout>
+
+    <!-- Transcript text -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/transcript_background"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tv_transcript"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:lineSpacingExtra="2dp"
+            android:gravity="start" />
+
+    </ScrollView>
+
+    <!-- Control buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Hủy"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_cancel_background"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_stop"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Dừng"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_stop_background"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -3,10 +3,19 @@ package com.example.Auto_BE.repository;
 import com.example.Auto_BE.entity.DeviceToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface DeviceTokenRepository extends JpaRepository<DeviceToken, Long> {
 
-    // Các phương thức truy vấn sẽ được định nghĩa ở đây
-    // Ví dụ: tìm kiếm theo user, fcmToken, deviceId, v.v.
-
-    // Bạn có thể thêm các phương thức tùy chỉnh nếu cần thiết
+    // Tìm device tokens của user theo user ID
+    List<DeviceToken> findByUserId(Long userId);
+    
+    // Tìm device tokens active của user
+    List<DeviceToken> findByUserIdAndIsActiveTrue(Long userId);
+    
+    // Tìm theo FCM token
+    DeviceToken findByFcmToken(String fcmToken);
+    
+    // Kiểm tra token đã tồn tại cho user chưa
+    boolean existsByUserIdAndFcmToken(Long userId, String fcmToken);
 }

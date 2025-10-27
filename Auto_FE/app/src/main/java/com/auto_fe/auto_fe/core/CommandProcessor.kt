@@ -89,21 +89,75 @@ class CommandProcessor(private val context: Context) {
 
             when (command) {
                 "Gửi tin nhắn" -> {
-                    // Luôn yêu cầu xác nhận trước khi gửi SMS
+                    // Parse thành công, trả về data cho FE xử lý
                     callback.onNeedConfirmation("Gửi tin nhắn", receiver, value)
                 }
                 "call" -> {
-                    phoneAutomation.makeCall(receiver, object : PhoneAutomation.PhoneCallback {
-                        override fun onSuccess() {
-                            callback.onCommandExecuted(true, "Đã gọi điện thành công")
-                        }
-                        override fun onError(error: String) {
-                            callback.onError("Lỗi gọi điện: $error")
-                        }
-                    })
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("call", receiver, "")
                 }
+                "search-chrome" -> {
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("search-chrome", receiver, "")
+                }
+                "search-youtube" -> {
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("search-youtube", receiver, "")
+                }
+                "set-alarm" -> {
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("set-alarm", receiver, value)
+                }
+                "add-calendar" -> {
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("add-calendar", receiver, value)
+                }
+                
+                // ========== DEVICE CONTROL COMMANDS ==========
+                
+                // Camera commands
+                "capture-photo" -> {
+                    callback.onNeedConfirmation("capture-photo", "photo", "")
+                }
+                "capture-video" -> {
+                    callback.onNeedConfirmation("capture-video", "video", "")
+                }
+                
+                // WiFi commands
+                "wifi-enable" -> {
+                    callback.onNeedConfirmation("wifi-enable", "enable", "")
+                }
+                "wifi-disable" -> {
+                    callback.onNeedConfirmation("wifi-disable", "disable", "")
+                }
+                "wifi-toggle" -> {
+                    callback.onNeedConfirmation("wifi-toggle", "toggle", "")
+                }
+                
+                // Volume commands
+                "volume-increase" -> {
+                    callback.onNeedConfirmation("volume-increase", "increase", "")
+                }
+                "volume-decrease" -> {
+                    callback.onNeedConfirmation("volume-decrease", "decrease", "")
+                }
+                "volume-set" -> {
+                    callback.onNeedConfirmation("volume-set", "set", receiver)
+                }
+                
+                // Flash commands
+                "flash-enable" -> {
+                    callback.onNeedConfirmation("flash-enable", "enable", "")
+                }
+                "flash-disable" -> {
+                    callback.onNeedConfirmation("flash-disable", "disable", "")
+                }
+                "flash-toggle" -> {
+                    callback.onNeedConfirmation("flash-toggle", "toggle", "")
+                }
+                
                 else -> {
-                    callback.onError("Không hỗ trợ lệnh: $command")
+                    callback.onError("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ.")
                 }
             }
         } catch (e: Exception) {
@@ -168,22 +222,88 @@ class CommandProcessor(private val context: Context) {
                     })
                 }
                 "call" -> {
-                    Log.d("CommandProcessor", "Executing call command")
-                    phoneAutomation.makeCall(ent, object : PhoneAutomation.PhoneCallback {
-                        override fun onSuccess() {
-                            Log.d("CommandProcessor", "Call initiated successfully")
-                            val successMessage = "Đã gọi điện thành công"
-                            callback.onCommandExecuted(true, successMessage)
-                        }
-                        override fun onError(error: String) {
-                            Log.e("CommandProcessor", "Call error: $error")
-                            callback.onError("Lỗi gọi điện: $error")
-                        }
-                    })
+                    Log.d("CommandProcessor", "Parsed call command - contact: $ent")
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("call", ent, "")
                 }
+                "search-chrome" -> {
+                    Log.d("CommandProcessor", "Parsed search-chrome command - query: $ent")
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("search-chrome", ent, "")
+                }
+                "search-youtube" -> {
+                    Log.d("CommandProcessor", "Parsed search-youtube command - query: $ent")
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("search-youtube", ent, "")
+                }
+                "set-alarm" -> {
+                    Log.d("CommandProcessor", "Parsed set-alarm command - time: $ent, message: $value")
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("set-alarm", ent, value)
+                }
+                "add-calendar" -> {
+                    Log.d("CommandProcessor", "Parsed add-calendar command - title: $ent, details: $value")
+                    // Parse thành công, trả về data cho FE xử lý
+                    callback.onNeedConfirmation("add-calendar", ent, value)
+                }
+                
+                // ========== DEVICE CONTROL COMMANDS ==========
+                
+                // Camera commands
+                "capture-photo" -> {
+                    Log.d("CommandProcessor", "Parsed capture-photo command")
+                    callback.onNeedConfirmation("capture-photo", "photo", "")
+                }
+                "capture-video" -> {
+                    Log.d("CommandProcessor", "Parsed capture-video command")
+                    callback.onNeedConfirmation("capture-video", "video", "")
+                }
+                
+                // WiFi commands
+                "wifi-enable" -> {
+                    Log.d("CommandProcessor", "Parsed wifi-enable command")
+                    callback.onNeedConfirmation("wifi-enable", "enable", "")
+                }
+                "wifi-disable" -> {
+                    Log.d("CommandProcessor", "Parsed wifi-disable command")
+                    callback.onNeedConfirmation("wifi-disable", "disable", "")
+                }
+                "wifi-toggle" -> {
+                    Log.d("CommandProcessor", "Parsed wifi-toggle command")
+                    callback.onNeedConfirmation("wifi-toggle", "toggle", "")
+                }
+                
+                // Volume commands
+                "volume-increase" -> {
+                    Log.d("CommandProcessor", "Parsed volume-increase command")
+                    callback.onNeedConfirmation("volume-increase", "increase", "")
+                }
+                "volume-decrease" -> {
+                    Log.d("CommandProcessor", "Parsed volume-decrease command")
+                    callback.onNeedConfirmation("volume-decrease", "decrease", "")
+                }
+                "volume-set" -> {
+                    Log.d("CommandProcessor", "Parsed volume-set command - value: $ent")
+                    callback.onNeedConfirmation("volume-set", "set", ent)
+                }
+                
+                // Flash commands
+                "flash-enable" -> {
+                    Log.d("CommandProcessor", "Parsed flash-enable command")
+                    callback.onNeedConfirmation("flash-enable", "enable", "")
+                }
+                "flash-disable" -> {
+                    Log.d("CommandProcessor", "Parsed flash-disable command")
+                    callback.onNeedConfirmation("flash-disable", "disable", "")
+                }
+                "flash-toggle" -> {
+                    Log.d("CommandProcessor", "Parsed flash-toggle command")
+                    callback.onNeedConfirmation("flash-toggle", "toggle", "")
+                }
+                
                 else -> {
                     Log.e("CommandProcessor", "Unsupported command: $command")
-                    callback.onError("Không hỗ trợ lệnh: $command")
+                    callback.onError("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ.")
                 }
             }
         } catch (e: Exception) {

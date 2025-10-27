@@ -39,47 +39,32 @@ class VoiceManager private constructor(private val context: Context) {
         audioRecorder = AudioRecorder(context)
     }
     
-    fun startVoiceInteraction(callback: VoiceControllerCallback) {
+    
+    /**
+     * API duy nhất: Text-to-Speech với delay tùy chỉnh
+     * @param text Text cần nói
+     * @param delaySeconds Số giây delay trước khi bắt đầu STT
+     * @param callback Callback để nhận kết quả STT
+     */
+    fun textToSpeech(text: String, delaySeconds: Int, callback: VoiceControllerCallback) {
         if (isBusy) {
-            Log.d("VoiceManager", "VoiceManager is busy, queuing request")
-            pendingCallback = callback
+            Log.d("VoiceManager", "VoiceManager is busy, rejecting request")
+            callback.onError("VoiceManager đang bận, vui lòng thử lại sau")
             return
         }
         
         isBusy = true
-        // Bước 1: Nói câu hỏi
-        audioRecorder?.speak("Bạn cần tôi trợ giúp bạn điều gì?")
+        Log.d("VoiceManager", "Speaking: $text")
         
-        // Bước 2: Bắt đầu nhận diện giọng nói
-        startSpeechRecognition(callback)
+        // Bước 1: Nói text
+        audioRecorder?.speak(text)
+        
+        // Bước 2: Đợi delaySeconds rồi bắt đầu STT
+        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+            startSpeechRecognition(callback)
+        }, delaySeconds * 1000L) // Convert to milliseconds
     }
     
-    fun startVoiceInteractionWithMessage(message: String, callback: VoiceControllerCallback) {
-        if (isBusy) {
-            Log.d("VoiceManager", "VoiceManager is busy, queuing request")
-            pendingCallback = callback
-            return
-        }
-        
-        isBusy = true
-        // Bước 1: Nói thông báo tùy chỉnh
-        audioRecorder?.speak(message)
-        
-        // Bước 2: Bắt đầu nhận diện giọng nói
-        startSpeechRecognition(callback)
-    }
-    
-    fun startVoiceInteractionSilent(callback: VoiceControllerCallback) {
-        if (isBusy) {
-            Log.d("VoiceManager", "VoiceManager is busy, queuing request")
-            pendingCallback = callback
-            return
-        }
-        
-        isBusy = true
-        // Bắt đầu nhận diện ngay lập tức mà không nói gì
-        startSpeechRecognition(callback)
-    }
     
     private fun startSpeechRecognition(callback: VoiceControllerCallback) {
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
@@ -146,73 +131,6 @@ class VoiceManager private constructor(private val context: Context) {
         )
     }
     
-    fun confirmCommand(command: String, callback: VoiceControllerCallback) {
-        // Nói câu xác nhận
-        val confirmationText = "Có phải bạn muốn $command?"
-        audioRecorder?.speak(confirmationText)
-        
-        // Đợi một chút để TTS hoàn thành
-        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-            // Bắt đầu nhận diện xác nhận
-            startConfirmationRecognition(callback)
-        }, 2000) // Đợi 2 giây
-    }
-    
-    private fun startConfirmationRecognition(callback: VoiceControllerCallback) {
-        val speechManager = SpeechRecognizerManager.getInstance(context)
-        speechManager.startRecognition(
-            object : RecognitionListener {
-                override fun onReadyForSpeech(params: Bundle?) {}
-                override fun onBeginningOfSpeech() {}
-                override fun onRmsChanged(rmsdB: Float) {
-                    // Chỉ gửi level khi đang busy (recording)
-                    if (isBusy) {
-                        // Convert RMS dB to level 0-3
-                        val level = when {
-                            rmsdB < 0.1f -> 0
-                            rmsdB < 0.3f -> 1
-                            rmsdB < 0.6f -> 2
-                            else -> 3
-                        }
-                        callback.onAudioLevelChanged(level)
-                    }
-                }
-                override fun onBufferReceived(buffer: ByteArray?) {}
-                override fun onEndOfSpeech() {}
-                
-                override fun onError(error: Int) {
-                    callback.onError("Lỗi khi xác nhận: $error")
-                    speechManager.release() // Release SpeechRecognizer
-                    releaseBusyState()
-                }
-                
-                override fun onResults(results: Bundle?) {
-                    val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    if (!matches.isNullOrEmpty()) {
-                        val response = matches[0].lowercase()
-                        Log.d("VoiceManager", "Confirmation response: $response")
-                        val confirmed = when {
-                            response.contains("không") || response.contains("không phải") || 
-                            response.contains("sai") || response.contains("no") -> false
-                            response.contains("có") || response.contains("đúng") || 
-                            response.contains("phải") || response.contains("yes") -> true
-                            else -> false
-                        }
-                        Log.d("VoiceManager", "Confirmation result: $confirmed")
-                        callback.onConfirmationResult(confirmed)
-                    } else {
-                        Log.d("VoiceManager", "No confirmation matches found")
-                        callback.onConfirmationResult(false)
-                    }
-                    speechManager.release() // Release SpeechRecognizer
-                    releaseBusyState()
-                }
-                
-                override fun onPartialResults(partialResults: Bundle?) {}
-                override fun onEvent(eventType: Int, params: Bundle?) {}
-            }
-        )
-    }
     
     fun speak(text: String) {
         audioRecorder?.speak(text)
@@ -221,16 +139,13 @@ class VoiceManager private constructor(private val context: Context) {
     private fun releaseBusyState() {
         isBusy = false
         Log.d("VoiceManager", "Released busy state")
-        
-        // Process pending request if any
-        pendingCallback?.let { callback ->
-            Log.d("VoiceManager", "Processing pending request")
-            pendingCallback = null
-            // Retry the last request
-            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                startVoiceInteraction(callback)
-            }, 1000) // Wait 1 second before retry
-        }
+        // Không cần pending request nữa - FE đã disable button
+    }
+    
+    fun resetBusyState() {
+        isBusy = false
+        pendingCallback = null
+        Log.d("VoiceManager", "Reset busy state")
     }
     
     fun release() {
@@ -240,7 +155,6 @@ class VoiceManager private constructor(private val context: Context) {
         audioRecorder?.release()
         audioRecorder = null
         isBusy = false
-        pendingCallback = null
     }
 }
 

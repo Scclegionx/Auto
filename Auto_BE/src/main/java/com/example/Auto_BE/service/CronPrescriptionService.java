@@ -27,16 +27,16 @@ public class CronPrescriptionService {
     private final UserRepository userRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final MedicationReminderRepository medicationReminderRepository;
-    private final CronSchedulerService cronSchedulerService;
+    private final SimpleTimeBasedScheduler simpleTimeBasedScheduler; // NEW - TIME-BASED SCHEDULING
 
     public CronPrescriptionService(UserRepository userRepository,
                                    PrescriptionRepository prescriptionRepository,
                                    MedicationReminderRepository medicationReminderRepository,
-                                   CronSchedulerService cronSchedulerService) {
+                                   SimpleTimeBasedScheduler simpleTimeBasedScheduler) {
         this.userRepository = userRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.medicationReminderRepository = medicationReminderRepository;
-        this.cronSchedulerService = cronSchedulerService;
+        this.simpleTimeBasedScheduler = simpleTimeBasedScheduler;
     }
 
     @Transactional
@@ -63,17 +63,15 @@ public class CronPrescriptionService {
 
         Prescriptions savedPrescription = prescriptionRepository.save(prescription);
 
-        // Tạo cron jobs cho medication reminders
-        if (savedPrescription.getMedicationReminders() != null &&
-                !savedPrescription.getMedicationReminders().isEmpty()) {
-
-            for (MedicationReminder reminder : savedPrescription.getMedicationReminders()) {
-                try {
-                    cronSchedulerService.scheduleWithCron(reminder.getId());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        System.out.println("🎯 PRESCRIPTION CREATE: Auto scheduling TIME-BASED reminders for user: " + user.getId());
+        
+        // AUTO SCHEDULE với TIME-BASED SCHEDULER thay vì cron cũ
+        try {
+            simpleTimeBasedScheduler.scheduleUserReminders(user.getId());
+            System.out.println("✅ TIME-BASED scheduling completed for prescription: " + savedPrescription.getId());
+        } catch (Exception e) {
+            System.err.println("⚠️ Prescription created but TIME-BASED scheduling failed: " + e.getMessage());
+            e.printStackTrace();
         }
 
         List<MedicationReminderResponse> medicationReminderResponses =
@@ -110,17 +108,10 @@ public class CronPrescriptionService {
 //        // Validate new data
 //        validateMedicationReminders(prescriptionUpdateRequest.getMedicationReminders());
 
-        // huy tất cả cron jobs cũ
+        System.out.println("🎯 PRESCRIPTION UPDATE: Preparing to reschedule TIME-BASED reminders for user: " + user.getId());
+        
+        // Lấy old reminders trước khi update
         List<MedicationReminder> oldReminders = existingPrescription.getMedicationReminders();
-        if (oldReminders != null && !oldReminders.isEmpty()) {
-            for (MedicationReminder oldReminder : oldReminders) {
-                try {
-                    cronSchedulerService.cancelCronSchedule(oldReminder.getId());
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-            }
-        }
 
         //cập nhật thông tin prescription
         existingPrescription.setName(prescriptionUpdateRequest.getName());
@@ -144,7 +135,7 @@ public class CronPrescriptionService {
 
             existingPrescription.setMedicationReminders(newReminders);
         } else {
-            // No new reminders
+            // No new reminders - delete all old ones
             if (oldReminders != null && !oldReminders.isEmpty()) {
                 medicationReminderRepository.deleteAll(oldReminders);
             }
@@ -153,17 +144,15 @@ public class CronPrescriptionService {
 
         Prescriptions updatedPrescription = prescriptionRepository.save(existingPrescription);
 
-        // tạo cron jobs mới cho medication reminders
-        if (updatedPrescription.getMedicationReminders() != null &&
-                !updatedPrescription.getMedicationReminders().isEmpty()) {
-
-            for (MedicationReminder newReminder : updatedPrescription.getMedicationReminders()) {
-                try {
-                    cronSchedulerService.scheduleWithCron(newReminder.getId());
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-            }
+        System.out.println("🎯 PRESCRIPTION UPDATE: Auto rescheduling TIME-BASED reminders for user: " + user.getId());
+        
+        // AUTO RESCHEDULE với TIME-BASED SCHEDULER thay vì tạo từng cron job
+        try {
+            simpleTimeBasedScheduler.scheduleUserReminders(user.getId());
+            System.out.println("✅ TIME-BASED rescheduling completed for prescription: " + updatedPrescription.getId());
+        } catch (Exception e) {
+            System.err.println("⚠️ Prescription updated but TIME-BASED rescheduling failed: " + e.getMessage());
+            e.printStackTrace();
         }
 
         List<MedicationReminderResponse> medicationReminderResponses =
@@ -244,23 +233,24 @@ public class CronPrescriptionService {
             throw new BaseException.BadRequestException(PERMISSION_ERROR);
         }
 
-        // hủy tất cả cron jobs liên quan đến medication reminders
-        if (prescription.getMedicationReminders() != null && !prescription.getMedicationReminders().isEmpty()) {
-            for (MedicationReminder reminder : prescription.getMedicationReminders()) {
-                try {
-                    cronSchedulerService.cancelCronSchedule(reminder.getId());
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-            }
-        }
+        System.out.println("🎯 PRESCRIPTION DELETE: Preparing to reschedule TIME-BASED reminders for user: " + user.getId());
 
+        // Delete prescription (cascade sẽ xóa luôn medication reminders)
         prescriptionRepository.delete(prescription);
+
+        // AUTO RESCHEDULE TIME-BASED reminders cho medications còn lại của user
+        try {
+            simpleTimeBasedScheduler.scheduleUserReminders(user.getId());
+            System.out.println("✅ TIME-BASED rescheduling completed after deleting prescription: " + prescriptionId);
+        } catch (Exception e) {
+            System.err.println("⚠️ Prescription deleted but TIME-BASED rescheduling failed: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         return BaseResponse.<String>builder()
                 .status(SUCCESS)
                 .message(PRESCRIPTION_DELETED)
-                .data(null)
+                .data("Prescription " + prescriptionId + " deleted and reminders rescheduled")
                 .build();
     }
 

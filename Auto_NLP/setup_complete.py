@@ -12,7 +12,7 @@ def print_step(step, description):
     print(f"BƯỚC {step}: {description}")
     print('='*60)
 
-def run_command(cmd, description=""):
+def run_command(cmd, description="", ignore_errors=False):
     if description:
         print(f"🔄 {description}")
     
@@ -21,9 +21,13 @@ def run_command(cmd, description=""):
         print(f"✅ Thành công: {description}")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"❌ Lỗi: {description}")
-        print(f"   Error: {e.stderr}")
-        return False
+        if ignore_errors:
+            print(f"⚠️ Bỏ qua: {description}")
+            return True
+        else:
+            print(f"❌ Lỗi: {description}")
+            print(f"   Error: {e.stderr}")
+            return False
 
 def check_python_version():
     print_step(1, "KIỂM TRA PYTHON VERSION")
@@ -57,6 +61,14 @@ def install_packages():
     print_step(3, "CÀI ĐẶT PACKAGES")
     
     warnings.filterwarnings("ignore")
+    
+    # Uninstall packages cũ trước
+    print("🗑️ Uninstall packages cũ...")
+    old_packages = ["torch", "transformers", "scikit-learn", "seqeval", "tqdm", "numpy", "regex", "fastapi", "uvicorn", "pydantic"]
+    
+    for package in old_packages:
+        cmd = f"venv_new\\Scripts\\pip uninstall {package} -y"
+        run_command(cmd, f"Uninstall {package}", ignore_errors=True)
     
     packages = [
         "torch>=2.5.0 --index-url https://download.pytorch.org/whl/cu121",

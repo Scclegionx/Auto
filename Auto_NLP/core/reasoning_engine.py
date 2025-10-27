@@ -349,6 +349,31 @@ class EntityExtractor:
             return " ".join(location_words)
         
         return " ".join(cleaned_words)
+    
+    def _convert_words_to_numbers(self, text: str) -> str:
+        """Convert số từ chữ sang số - Simplified version"""
+        result = text.lower()
+        
+        # Mapping cơ bản cho số từ chữ
+        number_words = {
+            'không': '0', 'một': '1', 'hai': '2', 'ba': '3', 'bốn': '4',
+            'năm': '5', 'sáu': '6', 'bảy': '7', 'tám': '8', 'chín': '9',
+            'mốt': '1', 'oan': '1', 'one': '1', 'mot': '1',
+            'tu': '2', 'two': '2',
+            'tư': '4', 'four': '4',
+            'lăm': '5', 'five': '5', 'lam': '5',
+            'sáu': '6', 'six': '6', 'sau': '6',
+            'bảy': '7', 'seven': '7', 'bay': '7',
+            'tám': '8', 'eight': '8', 'tam': '8',
+            'chín': '9', 'nine': '9', 'chin': '9',
+            'zê rô': '0', 'zero': '0', 'ze ro': '0', 'khong': '0',
+        }
+        
+        # Replace từ dài trước để tránh conflict
+        for word, number in sorted(number_words.items(), key=lambda x: len(x[0]), reverse=True):
+            result = result.replace(word, number)
+        
+        return result
 
 class ReasoningEngine:
     """Hệ thống tự suy luận sử dụng PhoBERT"""
@@ -464,7 +489,15 @@ class ReasoningEngine:
             # Disable vector store for stability
             self.vector_store = None
         
-        self.entity_extractor = EntityExtractor(self.fuzzy_matcher)
+        # Sử dụng SpecializedEntityExtractor thay vì EntityExtractor cơ bản
+        try:
+            from src.inference.engines.entity_extractor import EntityExtractor as SpecializedEntityExtractor
+            self.entity_extractor = SpecializedEntityExtractor()
+            logger.info("Using SpecializedEntityExtractor in reasoning engine")
+        except ImportError:
+            # Fallback to basic EntityExtractor
+            self.entity_extractor = EntityExtractor(self.fuzzy_matcher)
+            logger.warning("Using basic EntityExtractor as fallback")
         
         self.conversation_context = ConversationContext(max_history=self.config.get("max_history", 5))
         
@@ -1032,7 +1065,13 @@ class ReasoningEngine:
                     features[f"has_{category}"] = True
                     features[f"{category}_keywords"] = found_keywords
         
-        entities = self.entity_extractor.extract_entities(text)
+        # Sử dụng SpecializedEntityExtractor nếu có
+        if hasattr(self.entity_extractor, 'extract_all_entities'):
+            # SpecializedEntityExtractor - cần intent để extract chính xác
+            entities = self.entity_extractor.extract_all_entities(text, "call")  # Default intent
+        else:
+            # Legacy EntityExtractor
+            entities = self.entity_extractor.extract_entities(text)
         
         for entity_type, values in entities.items():
             if values:
@@ -1320,7 +1359,14 @@ class ReasoningEngine:
         logger.info(f"Keyword matching results: {keyword_results}")
         
         try:
-            entities = self.entity_extractor.extract_entities(text)
+            # Sử dụng SpecializedEntityExtractor nếu có
+            if hasattr(self.entity_extractor, 'extract_all_entities'):
+                # SpecializedEntityExtractor - cần intent để extract chính xác
+                entities = self.entity_extractor.extract_all_entities(text, "call")  # Default intent
+            else:
+                # Legacy EntityExtractor
+                entities = self.entity_extractor.extract_entities(text)
+            
             # Ensure entities is a dict
             if not isinstance(entities, dict):
                 entities = {}

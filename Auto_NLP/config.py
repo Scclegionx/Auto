@@ -1,80 +1,64 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Main Configuration
-Cấu hình chính của hệ thống
+Configuration for Auto NLP Hybrid System
 """
 
 import os
 from pathlib import Path
 
-class Config:
-    """Main configuration class"""
-    
-    # System
-    SYSTEM_NAME = "Auto_NLP_Hybrid_System"
-    VERSION = "1.0.0"
-    DEBUG = True
-    
-    # Paths
-    BASE_DIR = Path(__file__).parent
-    CORE_DIR = BASE_DIR / "core"
-    API_DIR = BASE_DIR / "api"
-    DATA_DIR = BASE_DIR / "src" / "data"
-    MODELS_DIR = BASE_DIR / "models"
-    TRAINING_DIR = BASE_DIR / "src" / "training"
-    
-    # Model
-    MODEL_PATH = MODELS_DIR / "phobert_large_intent_model"
-    MODEL_DEVICE = "auto"  # "cuda", "cpu", or "auto"
-    MAX_LENGTH = 128
-    
-    # Hybrid System
-    PRIMARY_MODEL = "trained_model"
-    SECONDARY_ENGINE = "reasoning_engine"
-    CONFIDENCE_THRESHOLD = 0.7
-    FALLBACK_ENABLED = True
-    
-    # API
-    API_HOST = "0.0.0.0"
-    API_PORT = 8000
-    API_WORKERS = 1
-    
-    # Logging
-    LOG_LEVEL = "INFO"
-    LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    
-    # Data
-    MAIN_DATASET = DATA_DIR / "raw" / "elderly_command_dataset_MERGED_13C_VITEXT.json"
-    TRAIN_DATA = DATA_DIR / "processed" / "train.json"
-    VAL_DATA = DATA_DIR / "processed" / "val.json"
-    TEST_DATA = DATA_DIR / "processed" / "test.json"
-    
-    @classmethod
-    def get_model_path(cls):
-        """Get model path"""
-        return str(cls.MODEL_PATH)
-    
-    @classmethod
-    def get_data_path(cls, data_type="main"):
-        """Get data path"""
-        paths = {
-            "main": cls.MAIN_DATASET,
-            "train": cls.TRAIN_DATA,
-            "val": cls.VAL_DATA,
-            "test": cls.TEST_DATA
-        }
-        return str(paths.get(data_type, cls.MAIN_DATASET))
-    
-    @classmethod
-    def print_config(cls):
-        """Print current configuration"""
-        print(f"🔧 {cls.SYSTEM_NAME} v{cls.VERSION}")
-        print(f"   Debug: {cls.DEBUG}")
-        print(f"   Model Path: {cls.MODEL_PATH}")
-        print(f"   Device: {cls.MODEL_DEVICE}")
-        print(f"   API: {cls.API_HOST}:{cls.API_PORT}")
-        print(f"   Confidence Threshold: {cls.CONFIDENCE_THRESHOLD}")
+# Project paths
+PROJECT_ROOT = Path(__file__).parent
+MODEL_DIR = PROJECT_ROOT / "models"
+DATA_DIR = PROJECT_ROOT / "src" / "data"
+CACHE_DIR = PROJECT_ROOT / "model_cache"
 
-# Global config instance
-config = Config()
+# Model configuration
+MODEL_NAME = "vinai/phobert-large"
+MODEL_CACHE_DIR = str(CACHE_DIR)
+
+# API configuration
+API_HOST = "0.0.0.0"
+API_PORT = 8000
+API_DEBUG = True
+
+# Training configuration
+BATCH_SIZE = 16
+LEARNING_RATE = 2e-5
+MAX_EPOCHS = 10
+EARLY_STOPPING_PATIENCE = 3
+
+# Hybrid system configuration
+CONFIDENCE_THRESHOLD = 0.7
+REASONING_ENABLED = True
+SPECIALIZED_ENTITY_EXTRACTION = True
+
+# Logging configuration
+LOG_LEVEL = "INFO"
+LOG_FILE = "hybrid_system.log"
+
+# Create directories if they don't exist
+for directory in [MODEL_DIR, DATA_DIR, CACHE_DIR]:
+    directory.mkdir(parents=True, exist_ok=True)
+
+# Configuration object
+config = {
+    "project_root": str(PROJECT_ROOT),
+    "model_dir": str(MODEL_DIR),
+    "data_dir": str(DATA_DIR),
+    "cache_dir": str(CACHE_DIR),
+    "model_name": MODEL_NAME,
+    "model_cache_dir": MODEL_CACHE_DIR,
+    "api_host": API_HOST,
+    "api_port": API_PORT,
+    "api_debug": API_DEBUG,
+    "batch_size": BATCH_SIZE,
+    "learning_rate": LEARNING_RATE,
+    "max_epochs": MAX_EPOCHS,
+    "early_stopping_patience": EARLY_STOPPING_PATIENCE,
+    "confidence_threshold": CONFIDENCE_THRESHOLD,
+    "reasoning_enabled": REASONING_ENABLED,
+    "specialized_entity_extraction": SPECIALIZED_ENTITY_EXTRACTION,
+    "log_level": LOG_LEVEL,
+    "log_file": LOG_FILE
+}

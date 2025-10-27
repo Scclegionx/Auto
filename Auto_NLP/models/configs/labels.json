@@ -1,0 +1,62 @@
+{
+  "intent_to_id": {
+    "add-contacts": 0,
+    "call": 1,
+    "control-device": 2,
+    "get-info": 3,
+    "make-video-call": 4,
+    "open-cam": 5,
+    "play-media": 6,
+    "search-internet": 7,
+    "search-youtube": 8,
+    "send-mess": 9,
+    "set-alarm": 10,
+    "set-event-calendar": 11,
+    "view-content": 12
+  },
+  "id_to_intent": {
+    "0": "add-contacts",
+    "1": "call",
+    "2": "control-device",
+    "3": "get-info",
+    "4": "make-video-call",
+    "5": "open-cam",
+    "6": "play-media",
+    "7": "search-internet",
+    "8": "search-youtube",
+    "9": "send-mess",
+    "10": "set-alarm",
+    "11": "set-event-calendar",
+    "12": "view-content"
+  },
+  "entity_to_id": {
+    "ACTION": 0,
+    "CONTACT_NAME": 1,
+    "CONTENT_TYPE": 2,
+    "DATE": 3,
+    "DEVICE": 4,
+    "LEVEL": 5,
+    "LOCATION": 6,
+    "MEDIA_TYPE": 7,
+    "PHONE": 8,
+    "PLATFORM": 9,
+    "QUERY": 10,
+    "TIME": 11,
+    "TITLE": 12
+  },
+  "id_to_entity": {
+    "0": "ACTION",
+    "1": "CONTACT_NAME",
+    "2": "CONTENT_TYPE",
+    "3": "DATE",
+    "4": "DEVICE",
+    "5": "LEVEL",
+    "6": "LOCATION",
+    "7": "MEDIA_TYPE",
+    "8": "PHONE",
+    "9": "PLATFORM",
+    "10": "QUERY",
+    "11": "TIME",
+    "12": "TITLE"
+  }
+}

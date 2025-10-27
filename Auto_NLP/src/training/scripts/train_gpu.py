@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader, WeightedRandomSampler
 import os
 import re
 import unicodedata
-import regex
+import re as regex
 import warnings
 
 # Fix PyTorch vulnerability trước khi import transformers
@@ -973,12 +973,12 @@ class OptimizedIntentModel(nn.Module):
                     model_name,
                     use_safetensors=True,  # Use safetensors to avoid torch.load vulnerability
                     trust_remote_code=False,  # Disable trust_remote_code
-                    cache_dir="../../model_cache",
+                    cache_dir="model_cache",
                     local_files_only=True  # Use local cache only
                 )
             except Exception:
                 # Fallback: try with different model path
-                model_path = "../../model_cache/models--vinai--phobert-large/snapshots"
+                model_path = "model_cache/models--vinai--phobert-large/snapshots"
                 if os.path.exists(model_path):
                     self.phobert = AutoModel.from_pretrained(
                         model_path,
@@ -995,7 +995,7 @@ class OptimizedIntentModel(nn.Module):
                     model_name,
                     use_safetensors=True,
                     trust_remote_code=False,
-                    cache_dir="../../model_cache",
+                    cache_dir="model_cache",
                     local_files_only=False
                 )
             except Exception as e2:

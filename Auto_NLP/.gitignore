@@ -81,3 +81,42 @@ reasoning_engine.log
 !check_training_issues.py
 !setup_complete.py
 !SETUP_COMPLETE_GUIDE.md
+
+# Temporary debug files
+debug_*.py
+test_*.py
+temp_*.py
+fix_*.py
+check_*.py
+analyze_*.py
+validate_*.py
+determine_*.py
+comprehensive_*.py
+
+# API test files
+simple_api.py
+cleanup_system.py
+
+# Model exports and logs (keep structure, ignore content)
+models/exports/*
+models/logs/*
+models/trained/*
+!models/exports/.gitkeep
+!models/logs/.gitkeep
+!models/trained/.gitkeep
+
+# Large model files
+*.pth
+*.pt
+*.bin
+*.safetensors
+models/phobert_large_intent_model/*.pth
+src/training/scripts/models/*.pth
+
+# Cache directories
+.cache/
+model_cache/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

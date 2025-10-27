@@ -23,17 +23,17 @@ sys.path.insert(0, str(project_root))
 # Import hybrid system
 try:
     from core.hybrid_system import ModelFirstHybridSystem
-    print("✅ Imported ModelFirstHybridSystem")
+    print("Imported ModelFirstHybridSystem")
 except ImportError as e:
-    print(f"❌ Failed to import hybrid system: {e}")
+    print(f"Failed to import hybrid system: {e}")
     sys.exit(1)
 
 # Import config
 try:
     from config import config
-    print("✅ Imported config")
+    print("Imported config")
 except ImportError as e:
-    print(f"❌ Failed to import config: {e}")
+    print(f"Failed to import config: {e}")
     sys.exit(1)
 
 # Setup logging
@@ -373,18 +373,16 @@ async def internal_error_handler(request, exc):
 
 if __name__ == "__main__":
     # Print startup info
-    print("🚀 Starting Auto NLP Hybrid System API...")
-    print(f"   System: {config.SYSTEM_NAME} v{config.VERSION}")
-    print(f"   Host: {config.API_HOST}:{config.API_PORT}")
-    print(f"   Debug: {config.DEBUG}")
-    print(f"   Model Path: {config.MODEL_PATH}")
-    print(f"   Device: {config.MODEL_DEVICE}")
+    print("Starting Auto NLP Hybrid System API...")
+    print(f"   Host: {config['api_host']}:{config['api_port']}")
+    print(f"   Debug: {config['api_debug']}")
+    print(f"   Model: {config['model_name']}")
+    print(f"   Cache: {config['model_cache_dir']}")
     
     # Run server
     uvicorn.run(
         app,
-        host=config.API_HOST,
-        port=config.API_PORT,
-        workers=config.API_WORKERS,
-        log_level="info" if not config.DEBUG else "debug"
+        host=config['api_host'],
+        port=config['api_port'],
+        log_level="info" if not config['api_debug'] else "debug"
     )

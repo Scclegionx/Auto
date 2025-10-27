@@ -24,9 +24,9 @@ sys.path.insert(0, str(project_root))
 # Fix torchvision issue
 try:
     import torchvision
-    print("✅ torchvision available")
+    print("torchvision available")
 except ImportError:
-    print("⚠️ torchvision not available - creating mock")
+    print("torchvision not available - creating mock")
     class MockTorchvision:
         class transforms:
             class InterpolationMode:
@@ -39,9 +39,9 @@ except ImportError:
 try:
     from core.reasoning_engine import ReasoningEngine
     from src.inference.engines.entity_extractor import EntityExtractor as SpecializedEntityExtractor
-    print("✅ Imported ReasoningEngine and SpecializedEntityExtractor")
+    print("Imported ReasoningEngine and SpecializedEntityExtractor")
 except ImportError as e:
-    print(f"❌ Failed to import components: {e}")
+    print(f"Failed to import components: {e}")
     sys.exit(1)
 
 class ModelFirstHybridSystem:
@@ -84,39 +84,39 @@ class ModelFirstHybridSystem:
         # Initialize components
         self._initialize_components()
         
-        print(f"🚀 Model-First Hybrid System initialized")
+        print(f"Model-First Hybrid System initialized")
         print(f"   Device: {self.device}")
-        print(f"   Trained model: {'✅' if self.model_loaded else '❌'}")
-        print(f"   Reasoning engine: {'✅' if self.reasoning_loaded else '❌'}")
+        print(f"   Trained model: {'OK' if self.model_loaded else 'FAILED'}")
+        print(f"   Reasoning engine: {'OK' if self.reasoning_loaded else 'FAILED'}")
     
     def _initialize_components(self):
         """Initialize all system components"""
-        print("🔧 Initializing model-first hybrid system...")
+        print("Initializing model-first hybrid system...")
         
         # 1. Load trained model (PRIMARY)
         try:
             self._load_trained_model()
-            print("✅ Trained model loaded as PRIMARY")
+            print("Trained model loaded as PRIMARY")
         except Exception as e:
-            print(f"❌ Failed to load trained model: {e}")
+            print(f"Failed to load trained model: {e}")
             self.model_loaded = False
         
         # 2. Initialize reasoning engine (SECONDARY)
         try:
             self.reasoning_engine = ReasoningEngine()
             self.reasoning_loaded = True
-            print("✅ Reasoning engine loaded as SECONDARY")
+            print("Reasoning engine loaded as SECONDARY")
         except Exception as e:
-            print(f"❌ Failed to initialize reasoning engine: {e}")
+            print(f"Failed to initialize reasoning engine: {e}")
             self.reasoning_loaded = False
         
         # 3. Initialize specialized entity extractor
         try:
             self.specialized_entity_extractor = SpecializedEntityExtractor()
             self.specialized_extractor_loaded = True
-            print("✅ Specialized entity extractor loaded")
+            print("Specialized entity extractor loaded")
         except Exception as e:
-            print(f"❌ Failed to initialize specialized entity extractor: {e}")
+            print(f"Failed to initialize specialized entity extractor: {e}")
             self.specialized_extractor_loaded = False
     
     def _load_trained_model(self):

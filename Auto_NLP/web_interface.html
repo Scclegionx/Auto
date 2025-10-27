@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhoBERT_SAM - Intent Recognition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px;
+            color: #212529;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #1a73e8;
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #444;
+            font-size: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            background-color: #fff;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .confidence-slider {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .slider-container {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #1a73e8;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #1a73e8;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .confidence-value {
+            font-weight: 600;
+            color: #1a73e8;
+            min-width: 45px;
+            text-align: center;
+            margin-left: 15px;
+            background: #e8f0fe;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+        }
+
+        #analyze-btn {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        #analyze-btn:active {
+            background-color: #1665d1;
+            transform: translateY(1px);
+        }
+
+        button:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+
+        button .icon {
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        #clear-btn {
+            background-color: #f1f3f5;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+
+        #clear-btn:active {
+            background-color: #e9ecef;
+            transform: translateY(1px);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1a73e8;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-section {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .intent-badge {
+            background-color: #1a73e8;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .confidence-badge {
+            background-color: #34a853;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .result-item {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .result-item h4 {
+            color: #6c757d;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .result-item p {
+            color: #212529;
+            font-weight: 500;
+            word-break: break-word;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+
+        .json-output {
+            background: #f8f9fa;
+            color: #212529;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            border: 1px solid #e9ecef;
+        }
+
+        .message {
+            padding: 16px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .message-icon {
+            margin-right: 12px;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-left: 4px solid #ef4444;
+        }
+
+        .success {
+            background: #f0fdf4;
+            color: #166534;
+            border-left: 4px solid #10b981;
+        }
+
+        .keyboard-shortcut {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .kbd {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+            display: inline-block;
+            font-size: 12px;
+            line-height: 1;
+            padding: 4px 6px;
+            margin: 0 2px;
+        }
+
+        /* Accessibility improvements */
+        button:focus {
+            outline: 2px solid #1a73e8;
+            outline-offset: 2px;
+        }
+
+        textarea:focus {
+            outline: 2px solid #1a73e8;
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.6em;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                padding: 14px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Auto NLP Hybrid System</h1>
+            <p>Model-First Hybrid System với Trained Model + Reasoning Engine</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="input-text">Nhập câu để phân tích:</label>
+                    <textarea 
+                        id="input-text" 
+                        placeholder="Ví dụ: gọi điện cho mẹ, bật đèn phòng khách, phát nhạc, tìm kiếm nhạc trên youtube, đặt báo thức 7 giờ sáng..."
+                    ></textarea>
+                    <div class="keyboard-shortcut">Phím tắt: <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> để phân tích</div>
+                </div>
+
+                <div class="controls">
+                    <div class="confidence-slider">
+                        <label for="confidence-threshold">Ngưỡng tin cậy:</label>
+                        <div class="slider-container">
+                            <input 
+                                type="range" 
+                                id="confidence-threshold" 
+                                min="0" 
+                                max="1" 
+                                step="0.1" 
+                                value="0.3"
+                            >
+                            <span class="confidence-value" id="confidence-value">0.3</span>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button id="analyze-btn" onclick="analyzeText()"><span class="icon">🔍</span> Phân tích</button>
+                        <button id="clear-btn" onclick="clearResults()"><span class="icon">🗑️</span> Xóa kết quả</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Đang xử lý...</p>
+            </div>
+
+            <div class="result-section" id="result-section" style="display: none;">
+                <div class="result-card">
+                    <div class="result-header">
+                        <span class="intent-badge" id="intent-badge">Intent</span>
+                        <span class="confidence-badge" id="confidence-badge">Confidence</span>
+                    </div>
+                    
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <h4>Command</h4>
+                            <p id="command-value">-</p>
+                        </div>
+                        <div class="result-item">
+                            <h4>Message Content</h4>
+                            <p id="message-content">-</p>
+                        </div>
+                        <div class="result-item">
+                            <h4>Processing Time</h4>
+                            <p id="processing-time">-</p>
+                        </div>
+                    </div>
+
+                    <div class="result-item">
+                        <h4>Relevant Entities</h4>
+                        <p id="entities-value">-</p>
+                    </div>
+
+                    <div class="result-item">
+                        <h4>Full JSON Response</h4>
+                        <div class="json-output" id="json-output"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+        
+        // Update confidence value display
+        document.getElementById('confidence-threshold').addEventListener('input', function(e) {
+            document.getElementById('confidence-value').textContent = e.target.value;
+        });
+
+        async function analyzeText() {
+            const inputText = document.getElementById('input-text').value.trim();
+            const confidenceThreshold = parseFloat(document.getElementById('confidence-threshold').value);
+            
+            if (!inputText) {
+                showMessage('Vui lòng nhập câu để phân tích!', 'error');
+                return;
+            }
+
+            // Show loading
+            showLoading(true);
+            clearMessages();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/predict-simple`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: inputText,
+                        context: {}
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                displayResult(result);
+                showMessage('Phân tích thành công!', 'success');
+
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage(`Lỗi kết nối API: ${error.message}. Vui lòng đảm bảo server đang chạy tại ${API_BASE_URL}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayResult(result) {
+            // Update badges
+            document.getElementById('intent-badge').textContent = result.intent || 'Unknown';
+            document.getElementById('confidence-badge').textContent = `${(result.confidence * 100).toFixed(1)}%`;
+            
+            // Update confidence badge color based on value
+            const confidenceBadge = document.getElementById('confidence-badge');
+            const confidenceValue = result.confidence;
+            
+            if (confidenceValue >= 0.7) {
+                confidenceBadge.style.backgroundColor = '#34a853'; // green
+            } else if (confidenceValue >= 0.4) {
+                confidenceBadge.style.backgroundColor = '#fbbc05'; // amber
+            } else {
+                confidenceBadge.style.backgroundColor = '#ea4335'; // red
+            }
+
+            // Update values
+            document.getElementById('command-value').textContent = result.command || 'unknown';
+            document.getElementById('processing-time').textContent = `${(result.processing_time || 0).toFixed(3)}s`;
+
+            // Extract and display MESSAGE content
+            const entities = result.entities || {};
+            let messageContent = 'Không có nội dung tin nhắn';
+            
+            // Look for MESSAGE in entities
+            if (entities.MESSAGE) {
+                messageContent = entities.MESSAGE;
+            } else if (entities.message) {
+                messageContent = entities.message;
+            } else if (entities.Message) {
+                messageContent = entities.Message;
+            }
+            
+            document.getElementById('message-content').textContent = messageContent;
+
+            // Display only relevant entities (filter out MESSAGE)
+            const relevantEntities = {};
+            Object.entries(entities).forEach(([key, value]) => {
+                if (key.toLowerCase() !== 'message') {
+                    relevantEntities[key] = value;
+                }
+            });
+
+            if (Object.keys(relevantEntities).length > 0) {
+                const entitiesText = Object.entries(relevantEntities)
+                    .map(([key, value]) => {
+                        if (Array.isArray(value)) {
+                            return `${key}: ${value.length > 0 ? value.join(', ') : '[]'}`;
+                        } else {
+                            return `${key}: ${value}`;
+                        }
+                    })
+                    .join(', ');
+                document.getElementById('entities-value').textContent = entitiesText;
+            } else {
+                document.getElementById('entities-value').textContent = 'Không có entities liên quan';
+            }
+
+            // Update JSON output
+            document.getElementById('json-output').textContent = JSON.stringify(result, null, 2);
+
+            // Show result section
+            document.getElementById('result-section').style.display = 'block';
+        }
+
+        function clearResults() {
+            document.getElementById('input-text').value = '';
+            document.getElementById('result-section').style.display = 'none';
+            clearMessages();
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('analyze-btn').disabled = show;
+        }
+
+        function showMessage(message, type) {
+            clearMessages();
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const icon = type === 'error' ? '⚠️' : '✅';
+            const messageContent = `<span class="message-icon">${icon}</span> ${message}`;
+            
+            messageDiv.innerHTML = messageContent;
+            document.querySelector('.result-section').appendChild(messageDiv);
+            
+            // Show result section if it was hidden
+            document.getElementById('result-section').style.display = 'block';
+        }
+
+        function clearMessages() {
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(message => message.remove());
+        }
+
+        // Handle Enter key in textarea
+        document.getElementById('input-text').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                analyzeText();
+            }
+        });
+
+        // Test API connection on page load
+        window.addEventListener('load', async function() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                if (response.ok) {
+                    console.log('API is running');
+                } else {
+                    showMessage('API không khả dụng. Vui lòng khởi động server.', 'error');
+                }
+            } catch (error) {
+                showMessage('Không thể kết nối API. Vui lòng đảm bảo server đang chạy.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

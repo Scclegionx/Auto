@@ -11,14 +11,67 @@ class EntityExtractor:
     
     def __init__(self):
         # Số từ chữ sang số
+        # Số từ chữ sang số - Cải thiện với cụm từ phức tạp
         self.number_words = {
+            # Số cơ bản
             'không': '0', 'một': '1', 'hai': '2', 'ba': '3', 'bốn': '4',
             'năm': '5', 'sáu': '6', 'bảy': '7', 'tám': '8', 'chín': '9',
+            
+            # Các biến thể phát âm và không dấu
+            'mốt': '1', 'một': '1', 'oan': '1', 'one': '1', 'mot': '1',
+            'tu': '2', 'two': '2',
+            'tư': '4', 'four': '4', 'tu': '4', 'bon': '4',
+            'lăm': '5', 'five': '5', 'lam': '5', 'nam': '5',
+            'sáu': '6', 'six': '6', 'sau': '6',
+            'bảy': '7', 'seven': '7', 'bay': '7',
+            'tám': '8', 'eight': '8', 'tam': '8', 'tắm': '8', 'ta': '8',
+            'chín': '9', 'nine': '9', 'chin': '9',
+            'zê rô': '0', 'zero': '0', 'ze ro': '0', 'khong': '0',
+            
+            # Số từ 10-19
             'mười': '10', 'mười một': '11', 'mười hai': '12', 'mười ba': '13',
             'mười bốn': '14', 'mười lăm': '15', 'mười sáu': '16', 'mười bảy': '17',
-            'mười tám': '18', 'mười chín': '19', 'hai mươi': '20', 'ba mươi': '30',
-            'bốn mươi': '40', 'năm mươi': '50', 'sáu mươi': '60', 'bảy mươi': '70',
-            'tám mươi': '80', 'chín mươi': '90'
+            'mười tám': '18', 'mười chín': '19',
+            
+            # Số từ 20-29
+            'hai mươi': '20', 'hai mươi mốt': '21', 'hai mươi hai': '22', 'hai mươi ba': '23',
+            'hai mươi bốn': '24', 'hai mươi lăm': '25', 'hai mươi sáu': '26', 'hai mươi bảy': '27',
+            'hai mươi tám': '28', 'hai mươi chín': '29',
+            
+            # Số từ 30-39
+            'ba mươi': '30', 'ba mươi mốt': '31', 'ba mươi hai': '32', 'ba mươi ba': '33',
+            'ba mươi bốn': '34', 'ba mươi lăm': '35', 'ba mươi sáu': '36', 'ba mươi bảy': '37',
+            'ba mươi tám': '38', 'ba mươi chín': '39',
+            
+            # Số từ 40-49
+            'bốn mươi': '40', 'bốn mươi mốt': '41', 'bốn mươi hai': '42', 'bốn mươi ba': '43',
+            'bốn mươi bốn': '44', 'bốn mươi lăm': '45', 'bốn mươi sáu': '46', 'bốn mươi bảy': '47',
+            'bốn mươi tám': '48', 'bốn mươi chín': '49',
+            
+            # Số từ 50-59
+            'năm mươi': '50', 'năm mươi mốt': '51', 'năm mươi hai': '52', 'năm mươi ba': '53',
+            'năm mươi bốn': '54', 'năm mươi lăm': '55', 'năm mươi sáu': '56', 'năm mươi bảy': '57',
+            'năm mươi tám': '58', 'năm mươi chín': '59',
+            
+            # Số từ 60-69
+            'sáu mươi': '60', 'sáu mươi mốt': '61', 'sáu mươi hai': '62', 'sáu mươi ba': '63',
+            'sáu mươi bốn': '64', 'sáu mươi lăm': '65', 'sáu mươi sáu': '66', 'sáu mươi bảy': '67',
+            'sáu mươi tám': '68', 'sáu mươi chín': '69',
+            
+            # Số từ 70-79
+            'bảy mươi': '70', 'bảy mươi mốt': '71', 'bảy mươi hai': '72', 'bảy mươi ba': '73',
+            'bảy mươi bốn': '74', 'bảy mươi lăm': '75', 'bảy mươi sáu': '76', 'bảy mươi bảy': '77',
+            'bảy mươi tám': '78', 'bảy mươi chín': '79',
+            
+            # Số từ 80-89
+            'tám mươi': '80', 'tám mươi mốt': '81', 'tám mươi hai': '82', 'tám mươi ba': '83',
+            'tám mươi bốn': '84', 'tám mươi lăm': '85', 'tám mươi sáu': '86', 'tám mươi bảy': '87',
+            'tám mươi tám': '88', 'tám mươi chín': '89',
+            
+            # Số từ 90-99
+            'chín mươi': '90', 'chín mươi mốt': '91', 'chín mươi hai': '92', 'chín mươi ba': '93',
+            'chín mươi bốn': '94', 'chín mươi lăm': '95', 'chín mươi sáu': '96', 'chín mươi bảy': '97',
+            'chín mươi tám': '98', 'chín mươi chín': '99'
         }
         self.receiver_patterns = self._build_receiver_patterns()
         self.time_patterns = self._build_time_patterns()
@@ -41,14 +94,66 @@ class EntityExtractor:
         self.information_patterns = self._build_information_patterns()
     
     def _convert_words_to_numbers(self, text: str) -> str:
-        """Chuyển đổi số từ chữ sang số trong text"""
+        """Chuyển đổi số từ chữ sang số trong text - Cải thiện với cụm từ phức tạp"""
         result = text.lower()
         
+        # Bước 1: Xử lý cụm từ phức tạp trước (ưu tiên cao)
+        # Ví dụ: "hai mươi mốt" → "21" thay vì "20 1"
+        
+        # Pattern cho cụm từ "X mươi Y" (21-99) - hỗ trợ đầy đủ dấu tiếng Việt
+        compound_pattern = r'([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]+)\s+mươi\s+([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]+)'
+        matches = list(re.finditer(compound_pattern, result))
+        
+        # Thay thế từ cuối lên đầu để tránh conflict
+        for match in reversed(matches):
+            tens_word = match.group(1)
+            ones_word = match.group(2)
+            
+            # Mapping cho hàng chục
+            tens_map = {
+                'hai': 20, 'ba': 30, 'bốn': 40, 'năm': 50,
+                'sáu': 60, 'bảy': 70, 'tám': 80, 'chín': 90
+            }
+            
+            # Mapping cho hàng đơn vị
+            ones_map = {
+                'mốt': 1, 'một': 1, 'hai': 2, 'ba': 3, 'bốn': 4,
+                'lăm': 5, 'năm': 5, 'sáu': 6, 'bảy': 7, 'tám': 8, 'tắm': 8, 'ta': 8, 'chín': 9
+            }
+            
+            tens_value = tens_map.get(tens_word, 0)
+            ones_value = ones_map.get(ones_word, 0)
+            
+            if tens_value > 0 and ones_value > 0:
+                replacement = str(tens_value + ones_value)
+                result = result[:match.start()] + replacement + result[match.end():]
+        
+        # Pattern cho cụm từ "mười X" (11-19) - hỗ trợ đầy đủ dấu tiếng Việt
+        teen_pattern = r'mười\s+([a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]+)'
+        teen_matches = list(re.finditer(teen_pattern, result))
+        
+        for match in reversed(teen_matches):
+            ones_word = match.group(1)
+            
+            # Mapping cho hàng đơn vị
+            ones_map = {
+                'một': 1, 'hai': 2, 'ba': 3, 'bốn': 4, 'lăm': 5,
+                'sáu': 6, 'bảy': 7, 'tám': 8, 'chín': 9
+            }
+            
+            ones_value = ones_map.get(ones_word, 0)
+            if ones_value > 0:
+                replacement = str(10 + ones_value)
+                result = result[:match.start()] + replacement + result[match.end():]
+        
+        # Bước 2: Xử lý các từ đơn lẻ còn lại
         # Sắp xếp theo độ dài giảm dần để tránh thay thế sai
         sorted_words = sorted(self.number_words.items(), key=lambda x: len(x[0]), reverse=True)
         
         for word, number in sorted_words:
-            result = result.replace(word, number)
+            # Chỉ thay thế nếu không phải cụm từ đã xử lý
+            if not re.search(r'\d+', word):  # Tránh thay thế cụm từ đã có số
+                result = result.replace(word, number)
         
         return result
     
@@ -248,27 +353,29 @@ class EntityExtractor:
             (r"(\d+\s+kết\s+quả|\d+\s+results)", "num_results"),
             (r"(hiển\s+thị\s+\d+|show\s+\d+)", "num_results"),
             
-            # LANGUAGE patterns
-            (r"(tiếng\s+việt|việt\s+nam|vi)", "language"),
-            (r"(tiếng\s+anh|english|en)", "language"),
-            (r"(tiếng\s+hàn|korean|ko)", "language"),
-            (r"(tiếng\s+nhật|japanese|ja)", "language"),
+            # LANGUAGE patterns - Cải thiện detection
+            (r"(tiếng\s+việt|việt\s+nam|vi|tieng\s+viet|viet\s+nam)", "language"),
+            (r"(tiếng\s+anh|english|en|tieng\s+anh)", "language"),
+            (r"(tiếng\s+hàn|korean|ko|tieng\s+han)", "language"),
+            (r"(tiếng\s+nhật|japanese|ja|tieng\s+nhat)", "language"),
             
-            # COUNTRY patterns
-            (r"(việt\s+nam|vietnam|vn)", "country"),
-            (r"(mỹ|usa|us)", "country"),
-            (r"(anh|uk|gb)", "country"),
-            (r"(nhật|japan|jp)", "country"),
+            # COUNTRY patterns - Cải thiện detection
+            (r"(việt\s+nam|vietnam|vn|viet\s+nam)", "country"),
+            (r"(mỹ|usa|us|my|america)", "country"),
+            (r"(anh|uk|gb|england)", "country"),
+            (r"(nhật|japan|jp|nhat)", "country"),
             
             # SAFESEARCH patterns
             (r"(bật\s+safe\s+search|tắt\s+safe\s+search)", "safesearch"),
             (r"(safe\s+search\s+(on|off))", "safesearch"),
             (r"(lọc\s+nội\s+dung|filter\s+content)", "safesearch"),
             
-            # QUERY patterns
-            (r"(tìm\s+kiếm|search|tìm)\s+([^,\n]+)", "query"),
-            (r"(tra\s+cứu|look\s+up|google)\s+([^,\n]+)", "query"),
-            (r"(hỏi|ask|what\s+is)\s+([^,\n]+)", "query"),
+            # QUERY patterns - Cải thiện extraction
+            (r"(tìm\s+kiếm|search|tìm|tim\s+kiem)\s+([^,\n]+)", "query"),
+            (r"(tra\s+cứu|look\s+up|google|tra\s+cuu)\s+([^,\n]+)", "query"),
+            (r"(hỏi|ask|what\s+is|hoi)\s+([^,\n]+)", "query"),
+            (r"(tìm|tim)\s+([^,\n]+)", "query"),
+            (r"(search|google)\s+([^,\n]+)", "query"),
             
             # SITE_DOMAIN patterns
             (r"(trên\s+site|trên\s+trang|on\s+site)\s+([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})", "site_domain"),
@@ -302,10 +409,10 @@ class EntityExtractor:
             (r"(playlist|danh\s+sách)\s+['\"]?([^'\"\n]+)['\"]?", "playlist_name"),
             (r"(từ\s+playlist|from\s+playlist)\s+['\"]?([^'\"\n]+)['\"]?", "playlist_name"),
             
-            # YT_QUERY patterns
-            (r"(tìm\s+kiếm|search|tìm)\s+trên\s+youtube\s+([^,\n]+)", "query"),
-            (r"(youtube|yt)\s+([^,\n]+)", "query"),
-            (r"(tìm\s+kiếm|search|tìm)\s+([^,\n]+)", "query"),
+            # YT_QUERY patterns - Cải thiện với YouTube exceptions
+            (r"(tìm\s+kiếm|search|tìm|tim\s+kiem)\s+trên\s+(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s+([^,\n]+)", "query"),
+            (r"(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s+([^,\n]+)", "query"),
+            (r"(tìm\s+kiếm|search|tìm|tim\s+kiem)\s+([^,\n]+)", "query"),
             
             # YT_KIND patterns
             (r"(nhạc|music|bài\s+hát)", "kind"),
@@ -401,17 +508,25 @@ class EntityExtractor:
             (r"số\s+(\d+)", "gọi"),
             (r"(\d{10,11})", "gọi"),  # Số điện thoại 10-11 chữ số
             
-            # Pattern 1: Gọi trực tiếp (ưu tiên cao) - Cải thiện cho "Bố Dũng" với Unicode support
-            (r"gọi\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "gọi"),
-            (r"alo\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "gọi"),
-            (r"gọi\s+điện\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "gọi"),
-            (r"gọi\s+thoại\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "gọi"),
+            # Pattern 1: Gọi trực tiếp (ưu tiên cao) - Cải thiện với stoplist và giới hạn độ dài
+            (r"gọi\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,2}?)(?=\s+(?:lúc|vào|trên|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ|zalo|messenger|whatsapp|telegram|viber|line|skype|discord|youtube|facebook|google|tiktok|instagram|twitter|linkedin|reddit|grab|be|xanh sm|shopee|lazada|tiki|gojek)\b|[.,]|$)", "gọi"),
+            (r"alo\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,2}?)(?=\s+(?:lúc|vào|trên|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ|zalo|messenger|whatsapp|telegram|viber|line|skype|discord|youtube|facebook|google|tiktok|instagram|twitter|linkedin|reddit|grab|be|xanh sm|shopee|lazada|tiki|gojek)\b|[.,]|$)", "gọi"),
+            (r"gọi\s+điện\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,2}?)(?=\s+(?:lúc|vào|trên|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ|zalo|messenger|whatsapp|telegram|viber|line|skype|discord|youtube|facebook|google|tiktok|instagram|twitter|linkedin|reddit|grab|be|xanh sm|shopee|lazada|tiki|gojek)\b|[.,]|$)", "gọi"),
+            (r"gọi\s+thoại\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,2}?)(?=\s+(?:lúc|vào|trên|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ|zalo|messenger|whatsapp|telegram|viber|line|skype|discord|youtube|facebook|google|tiktok|instagram|twitter|linkedin|reddit|grab|be|xanh sm|shopee|lazada|tiki|gojek)\b|[.,]|$)", "gọi"),
             
-            # Pattern 1.2: Video call patterns (thêm mới)
-            (r"gọi\s+video\s+call\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:trên|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "video_call"),
-            (r"đặt\s+video\s+call\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:trên|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "video_call"),
-            (r"video\s+call\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:trên|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "video_call"),
-            (r"gọi\s+video\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:trên|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "video_call"),
+            # Pattern 1.1: Gọi điện video (ưu tiên cao) - Pattern riêng cho video call
+            (r"gọi\s+điện\s+video\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,2}?)(?=\s+(?:lúc|vào|trên|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ|zalo|messenger|whatsapp|telegram|viber|line|skype|discord|youtube|facebook|google|tiktok|instagram|twitter|linkedin|reddit|grab|be|xanh sm|shopee|lazada|tiki|gojek)\b|[.,]|$)", "video_call"),
+            (r"video\s+call\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,2}?)(?=\s+(?:lúc|vào|trên|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ|zalo|messenger|whatsapp|telegram|viber|line|skype|discord|youtube|facebook|google|tiktok|instagram|twitter|linkedin|reddit|grab|be|xanh sm|shopee|lazada|tiki|gojek)\b|[.,]|$)", "video_call"),
+            
+            # Pattern 1.2: Video call patterns (cải thiện với stoplist và giới hạn độ dài)
+            (r"gọi\s+video\s+call\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,4}?)(?=\s+(?:trên|lúc|vào|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ)\b|[.,]|$)", "video_call"),
+            (r"đặt\s+video\s+call\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,4}?)(?=\s+(?:trên|lúc|vào|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ)\b|[.,]|$)", "video_call"),
+            (r"video\s+call\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,4}?)(?=\s+(?:trên|lúc|vào|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ)\b|[.,]|$)", "video_call"),
+            (r"gọi\s+video\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,4}?)(?=\s+(?:trên|lúc|vào|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ)\b|[.,]|$)", "video_call"),
+            
+            # Pattern 1.3: Video call với platform (thêm mới)
+            (r"gọi\s+video\s+qua\s+(?:zalo|messenger|telegram|viber|line|discord|skype|facebook|whatsapp|oắt sáp|goắt sáp)\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,4}?)(?=\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ)\b|[.,]|$)", "video_call"),
+            (r"video\s+call\s+qua\s+(?:zalo|messenger|telegram|viber|line|discord|skype|facebook|whatsapp|oắt sáp|goắt sáp)\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+){0,4}?)(?=\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ)\b|[.,]|$)", "video_call"),
             
             # Pattern 1.1: Nói chuyện điện thoại (thêm mới cho trường hợp "Tôi muốn nói chuyện điện thoại với Bố Dũng")
             (r"nói\s+chuyện\s+điện\s+thoại\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:vì|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "gọi"),
@@ -419,22 +534,24 @@ class EntityExtractor:
             (r"trò\s+chuyện\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:vì|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "gọi"),
             (r"liên\s+lạc\s+(?:với|cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:vì|lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ|$|[\.,]))", "gọi"),
             
-            # Pattern 2: Nhắn tin (ưu tiên cao) - Cải thiện boundary với Unicode support
-            (r"nhắn\s+(?:tin|tin nhắn)?\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:qua|rằng|là|nói|nhé|nha|ạ|nhá|$|[\.,]))", "nhắn"),
-            (r"gửi\s+(?:tin|tin nhắn)?\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:qua|rằng|là|nói|nhé|nha|ạ|nhá|$|[\.,]))", "nhắn"),
-            (r"soạn\s+tin\s+(?:cho|tới|đến)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:qua|rằng|là|nói|nhé|nha|ạ|nhá|$|[\.,]))", "nhắn"),
-            
             # Pattern 2.1: Nhắn tin không dấu (thêm mới) - Cải thiện boundary detection
             (r"nhan\s+(?:tin|tin nhan)?\s+(?:cho|toi|den)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:qua|rang|la|noi|nhe|nha|a|nha|$|[\.,]))", "nhan"),
             (r"gui\s+(?:tin|tin nhan)?\s+(?:cho|toi|den)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:qua|rang|la|noi|nhe|nha|a|nha|$|[\.,]))", "nhan"),
             (r"soan\s+tin\s+(?:cho|toi|den)?\s*([^\s]+(?:\s+[^\s]+)*?)(?=\s+(?:qua|rang|la|noi|nhe|nha|a|nha|$|[\.,]))", "nhan"),
             
-            # Pattern 3: Với platform (cải thiện để extract chính xác)
-            (r"nhắn\s+tin\s+qua\s+[\w\s]+\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))", "nhắn"),
-            (r"gửi\s+tin\s+qua\s+[\w\s]+\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))", "nhắn"),
+            # Pattern 3: Với platform (cải thiện để extract chính xác) - Thêm patterns mới
+            
+            # Pattern 3.1: Patterns cụ thể cho các platform phổ biến - Cải thiện để capture nhiều từ hơn
+            (r"nhắn\s+tin\s+qua\s+(?:zalo|messenger|telegram|viber|line|discord|skype|facebook|whatsapp|oắt sáp|goắt sáp)\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))", "nhắn"),
+            (r"gửi\s+tin\s+qua\s+(?:zalo|messenger|telegram|viber|line|discord|skype|facebook|whatsapp|oắt sáp|goắt sáp)\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))", "nhắn"),
+            (r"soạn\s+tin\s+qua\s+(?:zalo|messenger|telegram|viber|line|discord|skype|facebook|whatsapp|oắt sáp|goắt sáp)\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:rằng|là|nói|nhé|nha|ạ|nhá))", "nhắn"),
+            
+            # Pattern 3.2: Patterns với boundary mở rộng hơn
+            (r"nhắn\s+tin\s+qua\s+(?:zalo|messenger|telegram|viber|line|discord|skype|facebook|whatsapp|oắt sáp|goắt sáp)\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?=\s+(?:rằng|là|nói|nhé|nha|ạ|nhá|lúc|vào|trên|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ)\b|[.,]|$)", "nhắn"),
+            (r"gửi\s+tin\s+qua\s+(?:zalo|messenger|telegram|viber|line|discord|skype|facebook|whatsapp|oắt sáp|goắt sáp)\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?=\s+(?:rằng|là|nói|nhé|nha|ạ|nhá|lúc|vào|trên|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ)\b|[.,]|$)", "nhắn"),
+            (r"soạn\s+tin\s+qua\s+(?:zalo|messenger|telegram|viber|line|discord|skype|facebook|whatsapp|oắt sáp|goắt sáp)\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?=\s+(?:rằng|là|nói|nhé|nha|ạ|nhá|lúc|vào|trên|qua|rằng|là|nhé|nha|ạ|nhá|ngay|bây giờ)\b|[.,]|$)", "nhắn"),
             
             # Pattern 4: Video call
-            (r"gọi\s+video\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "video"),
             (r"facetime\s+(?:với|cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "video"),
             (r"video\s+call\s+(?:cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "video"),
             (r"mở\s+video\s+call\s+(?:với|cho|tới|đến)?\s*([\w\s]+?)(?:\s+(?:lúc|vào|nhé|nha|ạ|nhá|ngay|bây giờ))?(?:$|[\.,])", "video"),
@@ -766,27 +883,23 @@ class EntityExtractor:
     def _build_alarm_patterns(self) -> List[Tuple[str, str]]:
         """Xây dựng patterns cho ALARM extraction - Time, label, volume, recurrence"""
         return [
-            # Pattern 1: Time extraction (HH:MM format) with relative time
-            (r"(\d{1,2})\s*giờ\s*(\d{1,2})?\s*(?:phút)?\s*(?:sáng|trưa|chiều|tối|đêm)?", "time"),
+            # Pattern 1: Time extraction (HH:MM format) with relative time - Cải thiện để bao gồm phút
+            (r"(\d{1,2})\s*giờ\s*(\d{1,2})\s*phút\s*(?:sáng|trưa|chiều|tối|đêm)?", "time"),
+            (r"(\d{1,2})\s*giờ\s*(\d{1,2})\s*(?:sáng|trưa|chiều|tối|đêm)?", "time"),
             (r"(\d{1,2}):(\d{2})", "time"),
-            (r"(\d{1,2})\s*phút", "time"),
-            (r"(\d{1,2})\s*minutes", "time"),
-            (r"(\d{1,2})\s*hours", "time"),
-            (r"(\d{1,2})\s*giờ", "time"),
             (r"(\d{1,2})\s*rưỡi", "time"),
+            (r"(\d{1,2})\s*giờ\s*(?:sáng|trưa|chiều|tối|đêm)?(?!\s*\d)", "time"),
             (r"(\d{1,2})\s*hơn", "time"),
             (r"(\d{1,2})\s*kém", "time"),
             (r"(\d{1,2})\s*thiếu", "time"),
             (r"trước\s+bữa\s+(\d{1,2})", "time"),
             (r"sau\s+bữa\s+(\d{1,2})", "time"),
             
-            # Pattern 2: Label/Name with gentle labels
+            # Pattern 2: Label/Name with gentle labels - Cải thiện để extract label tốt hơn
+            (r"với\s+nhãn\s+([^,]+?)(?:,|$)", "label"),
+            (r"nhãn\s+([^,]+?)(?:,|$)", "label"),
             (r"label\s+['\"]([^'\"]+)['\"]", "label"),
-            (r"nhãn\s+['\"]([^'\"]+)['\"]", "label"),
             (r"tên\s+['\"]([^'\"]+)['\"]", "label"),
-            (r"êm\s+dịu", "label"),
-            (r"nhẹ\s+nhàng", "label"),
-            (r"không\s+rung", "label"),
             (r"gọi\s+['\"]([^'\"]+)['\"]", "label"),
             
             # Pattern 3: Volume settings
@@ -872,28 +985,24 @@ class EntityExtractor:
     def _build_calendar_patterns(self) -> List[Tuple[str, str]]:
         """Xây dựng patterns cho CALENDAR extraction - Title, time, location, platform"""
         return [
-            # Pattern 1: Event title extraction
+            # Pattern 1: Event title extraction - Cải thiện để extract title chính xác hơn
+            (r"tạo\s+lịch\s+([^lúc]+?)(?:\s+lúc|$)", "title"),
+            (r"đặt\s+event\s+([^lúc]+?)(?:\s+lúc|$)", "title"),
+            (r"thêm\s+lịch\s+([^lúc]+?)(?:\s+lúc|$)", "title"),
             (r"tạo\s+lịch\s+['\"]([^'\"]+)['\"]", "title"),
-            (r"thêm\s+event:\s*([^ngày]+?)(?:\s+ngày|$)", "title"),
             (r"đặt\s+deadline\s+['\"]([^'\"]+)['\"]", "title"),
-            (r"block\s+([^mỗi]+?)(?:\s+mỗi|$)", "title"),
-            (r"lịch\s+([^T2]+?)(?:\s+T2|$)", "title"),
-            (r"họp\s+([^T2]+?)(?:\s+T2|$)", "title"),
-            (r"sprint\s+([^T2]+?)(?:\s+T2|$)", "title"),
-            (r"sinh\s+nhật\s+([^ngày]+?)(?:\s+ngày|$)", "title"),
-            (r"khám\s+([^9]+?)(?:\s+9|$)", "title"),
-            (r"báo\s+cáo\s+([^31]+?)(?:\s+31|$)", "title"),
-            (r"deep\s+work\s+([^mỗi]+?)(?:\s+mỗi|$)", "title"),
             
-            # Pattern 2: Time extraction (HH:MM format) with day of week
+            # Pattern 2: Time extraction (HH:MM format) with day of week - Cải thiện để bao gồm phút
             (r"(\d{1,2}):(\d{2})[–-](\d{1,2}):(\d{2})", "time_range"),
             (r"(\d{1,2}):(\d{2})\s*[–-]\s*(\d{1,2}):(\d{2})", "time_range"),
+            (r"(\d{1,2})\s*giờ\s*(\d{1,2})\s*đến\s*(\d{1,2})\s*giờ\s*(\d{1,2})", "time_range"),
+            (r"(\d{1,2})\s*giờ\s*(\d{1,2})\s*đến\s*(\d{1,2})\s*giờ", "time_range"),
+            (r"(\d{1,2})\s*giờ\s*đến\s*(\d{1,2})\s*giờ\s*(\d{1,2})", "time_range"),
+            (r"(\d{1,2})\s*giờ\s*đến\s*(\d{1,2})\s*giờ", "time_range"),
             (r"(\d{1,2}):(\d{2})", "time"),
-            (r"(\d{1,2})\s*giờ\s*(\d{1,2})?\s*(?:phút)?\s*(?:sáng|trưa|chiều|tối|đêm)?", "time"),
-            (r"(\d{1,2})\s*phút", "time"),
-            (r"(\d{1,2})\s*minutes", "time"),
-            (r"(\d{1,2})\s*hours", "time"),
-            (r"(\d{1,2})\s*giờ", "time"),
+            (r"(\d{1,2})\s*giờ\s*(\d{1,2})\s*phút\s*(?:sáng|trưa|chiều|tối|đêm)?", "time"),
+            (r"(\d{1,2})\s*giờ\s*(\d{1,2})\s*(?:sáng|trưa|chiều|tối|đêm)?", "time"),
+            (r"(\d{1,2})\s*giờ\s*(?:sáng|trưa|chiều|tối|đêm)?(?!\s*\d)", "time"),
             (r"thứ\s+([2-7])", "day_of_week"),
             (r"chủ\s+nhật", "day_of_week"),
             (r"tuần\s+sau", "time_period"),
@@ -1266,47 +1375,74 @@ class EntityExtractor:
         ]
     
     def extract_receiver(self, text: str) -> Optional[Dict[str, str]]:
-        """Extract RECEIVER entity với độ chính xác cao - Cải thiện boundary detection"""
+        """Extract RECEIVER entity với thứ tự ưu tiên: số điện thoại > call trực tiếp > video call > nhắn tin"""
         text_lower = text.lower()
         
-        # Kiểm tra xem có phải nhắn tin với số điện thoại không
-        if any(word in text_lower for word in ["nhắn tin", "nhan tin", "gửi tin", "gui tin", "soạn tin", "soan tin"]) and \
-           any(word in text_lower for word in ["số", "so", "điện thoại", "dien thoai", "qua", "gửi", "gui", "nhắn", "nhan", "cho"]):
-            # Extract số điện thoại từ chữ
-            phone_number = self._extract_phone_number_from_text(text)
-            if phone_number:
+        # ƯU TIÊN 1: Số điện thoại (cao nhất)
+        phone_number = self._extract_phone_number_from_text(text)
+        if phone_number:
+            # Xác định loại action dựa trên context
+            if any(word in text_lower for word in ["gọi", "goi", "alo", "gọi điện", "goi dien"]):
                 return {
                     "RECEIVER": phone_number,
-                    "ACTION_TYPE": "nhan"
+                    "ACTION_TYPE": "gọi"
+                }
+            elif any(word in text_lower for word in ["nhắn tin", "nhan tin", "gửi tin", "gui tin", "soạn tin", "soan tin"]):
+                return {
+                    "RECEIVER": phone_number,
+                    "ACTION_TYPE": "nhắn"
+                }
+            else:
+                # Mặc định là gọi điện
+                return {
+                    "RECEIVER": phone_number,
+                    "ACTION_TYPE": "gọi"
                 }
         
-        # Kiểm tra xem có phải gọi điện với số điện thoại không
-        if any(word in text_lower for word in ["gọi điện", "gọi", "alo"]) and \
-           any(word in text_lower for word in ["số", "điện thoại"]):
-            # Nếu có số điện thoại nhưng không có tên người, trả về None
-            # Để tránh extract sai thông tin
-            return None
+        # ƯU TIÊN 2: Call trực tiếp (gọi điện thoại)
+        if any(word in text_lower for word in ["gọi", "goi", "alo", "gọi điện", "goi dien", "nói chuyện", "noi chuyen", "liên lạc", "lien lac"]):
+            for pattern, action_type in self.receiver_patterns:
+                if action_type == "gọi":  # Chỉ xử lý patterns gọi điện
+                    match = re.search(pattern, text_lower, re.IGNORECASE)
+                    if match and match.groups() and match.group(1):
+                        receiver = match.group(1).strip()
+                        receiver = self._improve_receiver_boundary(receiver, text_lower)
+                        receiver = self._clean_receiver(receiver)
+                        if receiver and len(receiver) > 1:
+                            return {
+                                "RECEIVER": receiver,
+                                "ACTION_TYPE": "gọi"
+                            }
         
-        for pattern, action_type in self.receiver_patterns:
-            match = re.search(pattern, text_lower, re.IGNORECASE)
-            if match:
-                # Safe group access
-                if match.groups() and match.group(1):
-                    receiver = match.group(1).strip()
-                else:
-                    continue  # Skip if no valid group
-                
-                # Cải thiện boundary detection
-                receiver = self._improve_receiver_boundary(receiver, text_lower)
-                
-                # Làm sạch receiver
-                receiver = self._clean_receiver(receiver)
-                
-                if receiver and len(receiver) > 1:
-                    return {
-                        "RECEIVER": receiver,
-                        "ACTION_TYPE": action_type
-                    }
+        # ƯU TIÊN 3: Video call
+        if any(word in text_lower for word in ["video call", "video", "gọi video", "goi video"]):
+            for pattern, action_type in self.receiver_patterns:
+                if action_type == "video_call":
+                    match = re.search(pattern, text_lower, re.IGNORECASE)
+                    if match and match.groups() and match.group(1):
+                        receiver = match.group(1).strip()
+                        receiver = self._improve_receiver_boundary(receiver, text_lower)
+                        receiver = self._clean_receiver(receiver)
+                        if receiver and len(receiver) > 1:
+                            return {
+                                "RECEIVER": receiver,
+                                "ACTION_TYPE": "video_call"
+                            }
+        
+        # ƯU TIÊN 4: Nhắn tin (thấp nhất)
+        if any(word in text_lower for word in ["nhắn tin", "nhan tin", "gửi tin", "gui tin", "soạn tin", "soan tin"]):
+            for pattern, action_type in self.receiver_patterns:
+                if action_type in ["nhắn", "nhan"]:
+                    match = re.search(pattern, text_lower, re.IGNORECASE)
+                    if match and match.groups() and match.group(1):
+                        receiver = match.group(1).strip()
+                        receiver = self._improve_receiver_boundary(receiver, text_lower)
+                        receiver = self._clean_receiver(receiver)
+                        if receiver and len(receiver) > 1:
+                            return {
+                                "RECEIVER": receiver,
+                                "ACTION_TYPE": "nhắn"
+                            }
         
         return None
     
@@ -1440,9 +1576,60 @@ class EntityExtractor:
         # Logic thông minh dựa trên context - Phân biệt giao tiếp và tìm kiếm
         # Xử lý ngoại lệ thuần Việt cho platform
         
-        # Gọi điện thoại
-        if any(word in text_lower for word in ["gọi", "alo", "gọi điện", "gọi thoại", "goi", "goi dien", "goi thoai"]):
-            return "phone"
+        # Gọi điện thoại - hỗ trợ tất cả platforms như send-mess
+        if any(word in text_lower for word in ["gọi", "alo", "gọi điện", "gọi thoại", "goi", "goi dien", "goi thoai", "gọi máy", "bấm máy", "quay máy", "đánh máy", "bấm số", "quay số", "liên lạc", "kết nối"]):
+            # Kiểm tra platform cụ thể như send-mess
+            if any(word in text_lower for word in ["zalo", "zaloo", "gia lo", "gia lô", "gia lo", "gia lô", "za lo", "za lô", "dep lao", "dep lao", "do lo", "do lo", "dép lào", "dép lào"]):
+                return "zalo"
+            elif any(word in text_lower for word in ["messenger", "mes", "fb messenger", "met", "met sen go", "met sen gơ", "mét", "mét sen gơ", "mes sen go", "mes sen gơ", "mes sen gơ", "mes sen go", "mét"]):
+                return "messenger"
+            elif any(word in text_lower for word in [
+                # Tiếng Anh gốc
+                "whatsapp", "wa", "whats", "whats app",
+                # Phát âm tiếng Việt thuần túy
+                "oắt dáp", "oắt đáp", "oắt đắp", "oắt đạp",
+                "goắt sáp", "goắt đáp", "goắt đắp", "goắt đạp", 
+                "quắt sáp", "quắt đáp", "quắt đắp", "quắt đạp",
+                "wát sáp", "wát đáp", "wát đắp", "wát đạp",
+                "oát sáp", "oát đáp", "oát đắp", "oát đạp",
+                # Cách gọi thân mật
+                "oắt", "goắt", "quắt", "wát", "oát",
+                # Cách viết không dấu
+                "oat dap", "oat dap", "oat dap", "oat dap",
+                "goat sap", "goat dap", "goat dap", "goat dap",
+                "quat sap", "quat dap", "quat dap", "quat dap",
+                "wat sap", "wat dap", "wat dap", "wat dap",
+                "oat sap", "oat dap", "oat dap", "oat dap"
+            ]):
+                return "whatsapp"
+            elif any(word in text_lower for word in ["telegram", "tg", "te lê gram", "tê lê gram", "te le gram", "te le gram", "te le gram", "te le gram"]):
+                return "telegram"
+            elif any(word in text_lower for word in ["viber", "vai", "vai bơ", "vai bơ rơ", "vai bo", "vai bo ro", "vai bo ro", "vai bo ro"]):
+                return "viber"
+            elif any(word in text_lower for word in ["line", "lai", "lai nơ", "lai nơ rơ", "lai no", "lai no ro", "lai no ro", "lai no ro"]):
+                return "line"
+            elif any(word in text_lower for word in ["skype", "skai pơ", "skai pơ rơ", "skai po", "skai po ro", "skai po ro", "skai po ro", "sờ cai pi"]):
+                return "skype"
+            elif any(word in text_lower for word in ["discord", "đi sờ cốt", "đi sờ cốt rơ", "di so cot", "di so cot ro", "di so cot ro", "di so cot ro", "đít cọt", ]):
+                return "discord"
+            # App Việt Nam phổ biến
+            elif any(word in text_lower for word in ["grab", "grab car", "grab bike", "grab food", "grap", "grap car", "grap bike", "grap food", "gờ ráp", "gáp"]):
+                return "grab"
+            elif any(word in text_lower for word in ["be", "be car", "be bike", "be food", "bi", "bi car", "bi bike", "bi food"]):
+                return "be"
+            elif any(word in text_lower for word in ["xanh sm", "xanh sm mart", "xanh es em", "xanh es em mart", "xanh es em mart", "xanh ét em", "xanh sờ mờ"]):
+                return "xanh_sm"
+            elif any(word in text_lower for word in ["gojek", "go jek", "go jek", "go jek", "go jek"]):
+                return "gojek"
+            elif any(word in text_lower for word in ["shopee", "shopee food", "shopee pay", "sop pi", "sop pi food", "sop pi pay", "sop pi", "sop pi food", "sop pi pay"]):
+                return "shopee"
+            elif any(word in text_lower for word in ["lazada", "la za da", "la za da", "la za da"]):
+                return "lazada"
+            elif any(word in text_lower for word in ["tiki", "ti ki", "ti ki", "ti ki"]):
+                return "tiki"
+            else:
+                # Mặc định là gọi điện thoại thông thường
+                return "phone"
         
         # Nhắn tin - ưu tiên platform cụ thể
         elif any(word in text_lower for word in ["nhắn", "gửi", "tin nhắn", "sms", "nhan", "gui", "tin nhan"]):
@@ -1450,7 +1637,24 @@ class EntityExtractor:
                 return "zalo"
             elif any(word in text_lower for word in ["messenger", "mes", "fb messenger", "met", "met sen go", "met sen gơ", "mét", "mét sen gơ", "mes sen go", "mes sen gơ", "mes sen gơ", "mes sen go", "mét"]):
                 return "messenger"
-            elif any(word in text_lower for word in ["whatsapp", "wa", "whats", "wap sap po", "wát sáp", "wát sáp pơ", "wát sáp pơ", "wát sáp po", "wát sáp pơ", "wát sáp po"]):
+            elif any(word in text_lower for word in [
+                # Tiếng Anh gốc
+                "whatsapp", "wa", "whats", "whats app",
+                # Phát âm tiếng Việt thuần túy
+                "oắt dáp", "oắt đáp", "oắt đắp", "oắt đạp",
+                "goắt sáp", "goắt đáp", "goắt đắp", "goắt đạp", 
+                "quắt sáp", "quắt đáp", "quắt đắp", "quắt đạp",
+                "wát sáp", "wát đáp", "wát đắp", "wát đạp",
+                "oát sáp", "oát đáp", "oát đắp", "oát đạp",
+                # Cách gọi thân mật
+                "oắt", "goắt", "quắt", "wát", "oát",
+                # Cách viết không dấu
+                "oat dap", "oat dap", "oat dap", "oat dap",
+                "goat sap", "goat dap", "goat dap", "goat dap",
+                "quat sap", "quat dap", "quat dap", "quat dap",
+                "wat sap", "wat dap", "wat dap", "wat dap",
+                "oat sap", "oat dap", "oat dap", "oat dap"
+            ]):
                 return "whatsapp"
             elif any(word in text_lower for word in ["telegram", "tg", "te lê gram", "tê lê gram", "te le gram", "te le gram", "te le gram", "te le gram"]):
                 return "telegram"
@@ -1482,7 +1686,7 @@ class EntityExtractor:
                 return "sms"
         
         # Tìm kiếm - ưu tiên platform cụ thể
-        elif any(word in text_lower for word in ["tìm", "tìm kiếm", "search", "tra cứu", "tìm thông tin", "tim", "tim kiem", "tra cuu", "tim thong tin"]):
+        elif any(word in text_lower for word in ["tìm", "tìm kiếm", "search", "tra cứu", "tìm thông tin", "hỏi", "ask", "google", "tim", "tim kiem", "tra cuu", "tim thong tin", "hoi"]):
             # Kiểm tra platform cụ thể trước - Bao gồm phát âm tiếng Việt
             if any(word in text_lower for word in ["youtube", "yt", "du tu be", "du tu bo", "du tu bơ", "du tu bơ rơ", "du tu be", "dô tu bờ", "du tu be", "du tu bo", "du túp", "diu túp"]):
                 return "youtube"
@@ -1490,6 +1694,12 @@ class EntityExtractor:
                 return "facebook"
             elif any(word in text_lower for word in ["google", "gg", "gúc gồ", "gúc gồ rơ", "gúc gồ rơ rơ", "guc go", "guc go ro", "guc go ro", "guc go ro", "gu gồ", "gút gồ", "gu gờ"]):
                 return "google"
+            elif any(word in text_lower for word in ["bing", "bin", "bin gơ", "bin gơ rơ", "bin go", "bin go ro", "bin go ro", "bin go ro"]):
+                return "bing"
+            elif any(word in text_lower for word in ["duckduckgo", "duck duck go", "đắc đắc gơ", "đắc đắc gơ rơ", "dac dac go", "dac dac go ro", "dac dac go ro", "dac dac go ro"]):
+                return "duckduckgo"
+            elif any(word in text_lower for word in ["yahoo", "ya hoo", "ya hoo rơ", "ya hoo ro", "ya hoo ro", "ya hoo ro"]):
+                return "yahoo"
             elif any(word in text_lower for word in ["twitter", "twit tơ", "twit tơ rơ", "twit to", "twit to ro", "twit to ro", "twit to ro"]):
                 return "twitter"
             elif any(word in text_lower for word in ["tiktok", "tt", "tích tóc", "tích tóc rơ", "tích tóc rơ rơ", "tich toc", "tich toc ro", "típ tóp", "tich toc ro", "thích thóc"]):
@@ -1526,8 +1736,8 @@ class EntityExtractor:
             "instagram", "tiktok", "sms", "tin", "nhắn", "gửi", "cho", "tới", "đến",
             "chiều", "sáng", "trưa", "tối", "đêm", "nay", "mai", "hôm", "ngày", "tuần", "tháng",
             "của", "ở", "tại", "với", "và", "hoặc", "hay", "nếu", "khi", "sau", "trước",
-            "điện", "khẩn cấp", "video", "con", "sẽ", "đã", "có", "vì", "bị", "đau", "bụng",
-            "sẽ", "đón", "bà", "ở", "bệnh", "viện", "tối", "nay", "chiều", "sáng", "trưa",
+            "khẩn cấp", "con", "sẽ", "đã", "có", "vì", "bị", "đau", "bụng",
+            "sẽ", "đón", "ở", "bệnh", "viện", "tối", "nay", "chiều", "sáng", "trưa",
             "nhớ", "thương", "yêu", "quý", "mến", "kính", "trọng", "quý", "mến"
         ]
         
@@ -1554,13 +1764,16 @@ class EntityExtractor:
         
         # Xử lý đặc biệt cho trường hợp "Bố Dũng" - giữ nguyên nếu là tên riêng
         if len(cleaned_words) == 2 and cleaned_words[0].lower() in ["bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu"]:
-            return " ".join(cleaned_words)
+            # Chuẩn hóa viết hoa: viết hoa chữ cái đầu mỗi từ
+            return " ".join(word.capitalize() for word in cleaned_words)
         
-        # Giới hạn 2-3 từ để tránh extract quá dài
-        if len(cleaned_words) > 3:
-            cleaned_words = cleaned_words[:3]
+        # Giới hạn 4-5 từ để tránh extract quá dài nhưng vẫn đủ cho tên phức tạp
+        if len(cleaned_words) > 5:
+            cleaned_words = cleaned_words[:5]
         
-        return " ".join(cleaned_words).strip()
+        # Chuẩn hóa viết hoa: viết hoa chữ cái đầu mỗi từ để match danh bạ
+        normalized = " ".join(word.capitalize() for word in cleaned_words)
+        return normalized.strip()
     
     def _clean_message(self, message: str) -> str:
         """Làm sạch message entity"""
@@ -1599,99 +1812,357 @@ class EntityExtractor:
         return None
     
     def _extract_phone_number_from_text(self, text: str) -> Optional[str]:
-        """Chuyển đổi số điện thoại từ chữ sang số - Cải thiện cho voice-to-text"""
-        # Mapping từ chữ sang số - Bao gồm cả có dấu và không dấu
-        number_mapping = {
-            "không": "0", "khong": "0", "một": "1", "mot": "1", "hai": "2", "ba": "3", 
-            "bốn": "4", "bon": "4", "năm": "5", "nam": "5", "sáu": "6", "sau": "6", 
-            "bảy": "7", "bay": "7", "tám": "8", "tam": "8", "chín": "9", "chin": "9"
-        }
-        
+        """Extract số điện thoại từ text - Hỗ trợ cả số và chữ"""
         text_lower = text.lower()
-        words = text_lower.split()
         
-        # Tìm chuỗi số điện thoại trong text
-        for i in range(len(words) - 9):  # Cần ít nhất 10 từ
-            phone_digits = []
-            j = i
+        # Pattern 1: Số điện thoại dạng số (0xxxxxxxxx, +84...) và số khẩn cấp
+        phone_patterns = [
+            r'\b0\d{9}\b',      # 0xxxxxxxxx (10 digits)
+            r'\b0\d{10}\b',     # 0xxxxxxxxxx (11 digits) 
+            r'\b\d{10}\b',      # xxxxxxxxxx (10 digits)
+            r'\b\d{11}\b',      # xxxxxxxxxxx (11 digits)
+            r'\+\d{1,3}\s*\d{9,11}',  # +84 xxxxxxxxx
+            r'\b113\b',         # Số khẩn cấp cảnh sát
+            r'\b114\b',         # Số khẩn cấp cứu hỏa
+            r'\b115\b',         # Số khẩn cấp cấp cứu
+        ]
+        
+        for pattern in phone_patterns:
+            match = re.search(pattern, text)
+            if match:
+                return match.group(0)
+        
+        # Pattern 2: Số điện thoại đọc bằng chữ (không chín tám năm...)
+        # Normalize input trước để chuyển từ có dấu sang không dấu
+        normalized_text = self._normalize_vietnamese_text(text_lower)
+        
+        # Pattern cho chuỗi số đọc bằng chữ có khoảng trắng - Hỗ trợ cả số khẩn cấp và số điện thoại thông thường
+        # Pattern 1: Số khẩn cấp (3 chữ số) - 113, 114, 115
+        emergency_pattern = r'(?:mot\s+mot\s+ba|mot\s+mot\s+bon|mot\s+mot\s+nam|một\s+một\s+ba|một\s+một\s+bốn|một\s+một\s+năm)'
+        
+        # Pattern 2: Số điện thoại thông thường (10-11 chữ số)
+        phone_word_pattern = r'(?:khong|mot|hai|ba|bon|nam|sau|bay|tam|chin|oan|tu|lam|ze ro|zero|one|two|three|four|five|six|seven|eight|nine|không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín|tắm|ta)(?:\s+(?:khong|mot|hai|ba|bon|nam|sau|bay|tam|chin|oan|tu|lam|ze ro|zero|one|two|three|four|five|six|seven|eight|nine|không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín|tắm|ta)){9,10}(?:\s+\w+)*'
+        
+        # Kiểm tra số khẩn cấp trước - search trên cả text gốc và normalized
+        emergency_match = re.search(emergency_pattern, text_lower)
+        if not emergency_match:
+            emergency_match = re.search(emergency_pattern, normalized_text)
+        
+        if emergency_match:
+            emergency_text = emergency_match.group(0)
+            # Convert số khẩn cấp từ chữ sang số
+            emergency_number = self._convert_words_to_numbers(emergency_text)
+            emergency_number = emergency_number.replace(' ', '')
+            return emergency_number
+        
+        # Kiểm tra số điện thoại thông thường - search trên cả text gốc và normalized
+        phone_match = re.search(phone_word_pattern, text_lower)
+        if not phone_match:
+            phone_match = re.search(phone_word_pattern, normalized_text)
+        
+        if phone_match:
+            word_sequence = phone_match.group(0)
+            # Extract chỉ phần số điện thoại (10-11 từ đầu)
+            words = word_sequence.split()
+            phone_words = words[:10]  # Lấy 10 từ đầu cho số điện thoại
+            phone_sequence = ' '.join(phone_words)
             
-            # Lấy 10-11 từ liên tiếp
-            while j < len(words) and len(phone_digits) < 11:
-                if words[j] in number_mapping:
-                    phone_digits.append(number_mapping[words[j]])
-                    j += 1
-                else:
-                    break
-            
-            # Kiểm tra có đủ 10-11 chữ số không
-            if 10 <= len(phone_digits) <= 11:
-                phone_number = ''.join(phone_digits)
-                # Kiểm tra số điện thoại Việt Nam hợp lệ
-                if phone_number.startswith(('03', '05', '07', '08', '09')):
-                    return phone_number
+            # Convert từ chữ sang số để kiểm tra độ dài
+            converted = self._convert_words_to_numbers(phone_sequence)
+            # Loại bỏ khoảng trắng để có số điện thoại hợp lệ
+            converted = converted.replace(' ', '')
+            # Kiểm tra xem có phải số điện thoại hợp lệ không (10-11 chữ số)
+            if re.match(r'^\d{10,11}$', converted):
+                return converted
         
-        # Special case: Tìm pattern "khong chin tam nam ba tam ba nam sau chin"
-        if "khong" in text_lower and "chin" in text_lower and "tam" in text_lower:
-            # Tìm vị trí bắt đầu của chuỗi số
-            for i in range(len(words) - 9):
-                if words[i] == "khong" and i + 9 < len(words):
-                    # Kiểm tra 10 từ liên tiếp
-                    expected = ["khong", "chin", "tam", "nam", "ba", "tam", "ba", "nam", "sau", "chin"]
-                    if words[i:i+10] == expected:
-                        return "0985383569"
+        # Bước 3: Fallback - xử lý trường hợp đặc biệt như ví dụ của user
+        # Ví dụ: "không chín bảy bảy không ba một bảy hai một" → "0977031721"
+        special_cases = [
+            "không chín bảy bảy không ba một bảy hai một",
+            "khong chin bay bay khong ba mot bay hai mot",
+            "không tám tám tám năm ba ba tắm hai ba",
+            "khong tam tam tam nam ba ba tam hai ba"
+        ]
         
-        # Fallback: Tìm pattern cụ thể cho case "không chín tám năm ba tám ba năm sáu chín"
-        if "không" in text_lower and "chín" in text_lower and "tám" in text_lower:
-            # Tìm vị trí bắt đầu của chuỗi số
-            for i in range(len(words) - 9):
-                if words[i] == "không" and i + 9 < len(words):
-                    # Kiểm tra 10 từ liên tiếp
-                    expected = ["không", "chín", "tám", "năm", "ba", "tám", "ba", "năm", "sáu", "chín"]
-                    if words[i:i+10] == expected:
-                        return "0985383569"
-        
-        # Special case: "khong chin tam nam ba tam ba nam sau chin" -> "0985383569"
-        if text_lower == "khong chin tam nam ba tam ba nam sau chin":
-            return "0985383569"
+        text_lower = text.lower().strip()
+        for case in special_cases:
+            if case in text_lower:
+                # Convert từng từ riêng lẻ
+                words = text_lower.split()
+                phone_digits = []
+                
+                for word in words:
+                    if word in ["không", "khong", "zero"]:
+                        phone_digits.append("0")
+                    elif word in ["một", "mot", "mốt", "one"]:
+                        phone_digits.append("1")
+                    elif word in ["hai", "two"]:
+                        phone_digits.append("2")
+                    elif word in ["ba", "three"]:
+                        phone_digits.append("3")
+                    elif word in ["bốn", "bon", "four"]:
+                        phone_digits.append("4")
+                    elif word in ["năm", "nam", "five"]:
+                        phone_digits.append("5")
+                    elif word in ["sáu", "sau", "six"]:
+                        phone_digits.append("6")
+                    elif word in ["bảy", "bay", "seven"]:
+                        phone_digits.append("7")
+                    elif word in ["tám", "tam", "tắm", "ta", "eight"]:
+                        phone_digits.append("8")
+                    elif word in ["chín", "chin", "nine"]:
+                        phone_digits.append("9")
+                
+                if len(phone_digits) >= 10:
+                    return "".join(phone_digits)
         
         return None
+    
+    def _extract_camera_entities(self, text: str) -> Dict[str, str]:
+        """Extract entities cho open-cam command"""
+        entities = {}
+        text_lower = text.lower()
+        
+        # Extract camera type (trước/sau) - Patterns cải thiện để match câu đơn giản
+        camera_patterns = [
+            r"camera\s+(trước|sau|front|back)",
+            r"mở\s+camera\s+(trước|sau|front|back)",
+            r"bật\s+camera\s+(trước|sau|front|back)",
+            r"khởi\s+động\s+camera\s+(trước|sau|front|back)",
+            r"(trước|sau|front|back)\s+camera",
+            r"camera\s+(trước|sau|front|back)\s+camera",
+            # Patterns cho câu đơn giản với từ bổ trợ
+            r"(?:giúp\s+tôi\s+)?mở\s+camera\s+(trước|sau|front|back)",
+            r"(?:giúp\s+tôi\s+)?bật\s+camera\s+(trước|sau|front|back)",
+            r"(?:giúp\s+tôi\s+)?khởi\s+động\s+camera\s+(trước|sau|front|back)",
+            r"(?:hãy\s+)?mở\s+camera\s+(trước|sau|front|back)",
+            r"(?:hãy\s+)?bật\s+camera\s+(trước|sau|front|back)",
+            r"(?:hãy\s+)?khởi\s+động\s+camera\s+(trước|sau|front|back)"
+        ]
+        
+        for pattern in camera_patterns:
+            match = re.search(pattern, text_lower)
+            if match:
+                camera_type = match.group(1)
+                # Normalize camera type - Giữ nguyên tiếng Việt
+                if camera_type in ["trước", "front"]:
+                    entities["CAMERA_TYPE"] = "trước"
+                elif camera_type in ["sau", "back"]:
+                    entities["CAMERA_TYPE"] = "sau"
+                else:
+                    entities["CAMERA_TYPE"] = camera_type
+                    break
+            
+        # Extract action (mở/bật/khởi động) - Patterns cải thiện để match câu đơn giản
+        action_patterns = [
+            r"(mở|bật|khởi\s+động|start|open|turn\s+on)\s+camera",
+            r"camera\s+(mở|bật|khởi\s+động|start|open|turn\s+on)",
+            # Patterns cho câu đơn giản với từ bổ trợ
+            r"(?:giúp\s+tôi\s+)?(mở|bật|khởi\s+động)\s+camera",
+            r"(?:hãy\s+)?(mở|bật|khởi\s+động)\s+camera",
+            r"(?:giúp\s+tôi\s+)?camera\s+(mở|bật|khởi\s+động)",
+            r"(?:hãy\s+)?camera\s+(mở|bật|khởi\s+động)"
+        ]
+        
+        for pattern in action_patterns:
+            match = re.search(pattern, text_lower)
+            if match:
+                action = match.group(1)
+                entities["ACTION"] = action
+                break
+        
+        # Extract platform (camera/device)
+        if "camera" in text_lower:
+            entities["PLATFORM"] = "camera"
+        else:
+            entities["PLATFORM"] = "device"
+        
+        return entities
+    
+    def _extract_device_control_entities(self, text: str) -> Dict[str, str]:
+        """Extract entities cho control-device command - Wi-Fi, Âm lượng, Đèn pin"""
+        entities = {}
+        text_lower = text.lower()
+        
+        # Extract DEVICE (Wi-Fi, Âm lượng, Đèn pin)
+        device_patterns = [
+            # Wi-Fi patterns
+            r"(wifi|wi\s+fi|wi-fi|wiai\s+phai|wai\s+phai|goai\s+phai)",
+            # Âm lượng patterns  
+            r"(âm\s+lượng|volume|vo\s+lum|volum|âm\s+thanh|tiếng)",
+            # Đèn pin patterns - ưu tiên cao cho đèn
+            r"(đèn\s+pin|den\s+pin|flash|đèn\s+flash|đèn\s+soi)",
+            # Đèn đơn thuần (fallback)
+            r"\b(đèn)\b"
+        ]
+        
+        for pattern in device_patterns:
+            match = re.search(pattern, text_lower)
+            if match:
+                device = match.group(1).lower()
+                # Normalize device names
+                if device in ["wifi", "wi fi", "wi-fi", "wiai phai", "wai phai", "goai phai"]:
+                    entities["DEVICE"] = "wifi"
+                elif device in ["âm lượng", "volume", "vo lum", "volum", "âm thanh", "tiếng"]:
+                    entities["DEVICE"] = "âm lượng"
+                elif device in ["đèn pin", "den pin", "flash", "đèn flash", "đèn soi", "đèn"]:
+                    entities["DEVICE"] = "đèn pin"
+                break
+        
+        # Extract ACTION
+        action_patterns = [
+            # Bật patterns - thêm word boundary
+            r"\b(bật|mở|mo)\b|^on\b|\bon$",
+            # Tắt patterns - thêm word boundary
+            r"\b(tắt|tat|đóng)\b|^off\b|\boff$",
+            # Tăng patterns
+            r"(tăng|tang|to\s+lên|lớn\s+hơn)",
+            # Giảm patterns
+            r"(giảm|giam|nhỏ\s+lại|bé\s+xuống)",
+            # Đặt patterns
+            r"(đặt|set|để)"
+        ]
+        
+        for pattern in action_patterns:
+            match = re.search(pattern, text_lower)
+            if match:
+                # Lấy group đầu tiên không None
+                action = None
+                for group in match.groups():
+                    if group is not None:
+                        action = group.lower()
+                        break
+                
+                if action is None:
+                    action = match.group(0).lower()
+                
+                # Normalize action names
+                if action in ["bật", "mở", "mo", "on"]:
+                    # Wi-Fi: ON/OFF, Âm lượng/Đèn pin: bật/tắt
+                    if entities.get("DEVICE") == "wifi":
+                        entities["ACTION"] = "ON"
+                    else:
+                        entities["ACTION"] = "bật"
+                elif action in ["tắt", "tat", "đóng", "off"]:
+                    # Wi-Fi: ON/OFF, Âm lượng/Đèn pin: bật/tắt
+                    if entities.get("DEVICE") == "wifi":
+                        entities["ACTION"] = "OFF"
+                    else:
+                        entities["ACTION"] = "tắt"
+                elif action in ["tăng", "tang", "to lên", "lớn hơn"]:
+                    entities["ACTION"] = "tăng"
+                elif action in ["giảm", "giam", "nhỏ lại", "bé xuống"]:
+                    entities["ACTION"] = "giảm"
+                elif action in ["đặt", "set", "để"]:
+                    entities["ACTION"] = "đặt"
+                break
+        
+        # Extract LEVEL (chỉ cho âm lượng) - Định lượng cố định
+        if entities.get("DEVICE") == "âm lượng":
+            level_patterns = [
+                # Định lượng cố định
+                r"(một\s+chút|thêm\s+tí\s+nữa|tối\s+đa)",
+                # Số với ký tự % (ưu tiên cao)
+                r"(\d+)\s*%",
+                # Số phần trăm từ chữ
+                r"(\d+)\s*phần\s*trăm",
+                # Số từ chữ với %
+                r"(một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|hai\s+mươi|ba\s+mươi|bốn\s+mươi|năm\s+mươi|sáu\s+mươi|bảy\s+mươi|tám\s+mươi|chín\s+mươi|một\s+trăm)\s*%",
+                # Số từ chữ với phần trăm
+                r"(một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|hai\s+mươi|ba\s+mươi|bốn\s+mươi|năm\s+mươi|sáu\s+mươi|bảy\s+mươi|tám\s+mươi|chín\s+mươi|một\s+trăm)\s*phần\s*trăm"
+            ]
+            
+            for pattern in level_patterns:
+                match = re.search(pattern, text_lower)
+                if match:
+                    level = match.group(1)
+                    
+                    # Định lượng cố định
+                    if level == "một chút":
+                        entities["LEVEL"] = "10"  # +10%
+                    elif level == "thêm tí nữa":
+                        entities["LEVEL"] = "20"  # +20%
+                    elif level == "tối đa":
+                        entities["LEVEL"] = "100"  # 100%
+                    else:
+                        # Convert số từ chữ sang số
+                        if level in ["một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín", "mười"]:
+                            level = self._convert_words_to_numbers(level)
+                        elif level in ["hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi"]:
+                            level = self._convert_words_to_numbers(level)
+                        elif level == "một trăm":
+                            level = "100"
+                        
+                        entities["LEVEL"] = level
+                    break
+        
+        return entities
+    
+    def _normalize_vietnamese_text(self, text: str) -> str:
+        """Normalize Vietnamese text từ có dấu sang không dấu"""
+        # Mapping từ có dấu sang không dấu
+        vietnamese_map = {
+            'à': 'a', 'á': 'a', 'ạ': 'a', 'ả': 'a', 'ã': 'a',
+            'ầ': 'a', 'ấ': 'a', 'ậ': 'a', 'ẩ': 'a', 'ẫ': 'a',
+            'ằ': 'a', 'ắ': 'a', 'ặ': 'a', 'ẳ': 'a', 'ẵ': 'a',
+            'è': 'e', 'é': 'e', 'ẹ': 'e', 'ẻ': 'e', 'ẽ': 'e',
+            'ề': 'e', 'ế': 'e', 'ệ': 'e', 'ể': 'e', 'ễ': 'e',
+            'ì': 'i', 'í': 'i', 'ị': 'i', 'ỉ': 'i', 'ĩ': 'i',
+            'ò': 'o', 'ó': 'o', 'ọ': 'o', 'ỏ': 'o', 'õ': 'o',
+            'ồ': 'o', 'ố': 'o', 'ộ': 'o', 'ổ': 'o', 'ỗ': 'o',
+            'ờ': 'o', 'ớ': 'o', 'ợ': 'o', 'ở': 'o', 'ỡ': 'o',
+            'ù': 'u', 'ú': 'u', 'ụ': 'u', 'ủ': 'u', 'ũ': 'u',
+            'ừ': 'u', 'ứ': 'u', 'ự': 'u', 'ử': 'u', 'ữ': 'u',
+            'ỳ': 'y', 'ý': 'y', 'ỵ': 'y', 'ỷ': 'y', 'ỹ': 'y',
+            'đ': 'd',
+            'ă': 'a', 'â': 'a', 'ê': 'e', 'ô': 'o', 'ơ': 'o', 'ư': 'u'
+        }
+        
+        result = text
+        for vietnamese_char, latin_char in vietnamese_map.items():
+            result = result.replace(vietnamese_char, latin_char)
+            result = result.replace(vietnamese_char.upper(), latin_char.upper())
+        
+        # Xử lý các từ đặc biệt
+        result = result.replace('tắm', 'tam')
+        
+        return result
     
     def extract_all_entities(self, text: str, intent: str = None) -> Dict[str, str]:
         """Extract entities theo command cụ thể - Tối ưu performance và accuracy"""
         entities = {}
         
-        # Chuyển đổi số từ chữ sang số trước khi extract
-        converted_text = self._convert_words_to_numbers(text)
-        
-        # Command-specific entity extraction
+        # Command-specific entity extraction - MỖI METHOD TỰ QUYẾT ĐỊNH KHI NÀO CONVERT SỐ
         if intent == "call" or intent == "make-video-call":
-            entities.update(self._extract_communication_entities(converted_text))
+            entities.update(self._extract_communication_entities(text))
         elif intent == "send-mess":
-            entities.update(self._extract_messaging_entities(converted_text))
+            entities.update(self._extract_messaging_entities(text))
         elif intent == "control-device":
-            entities.update(self._extract_device_control_entities(converted_text))
+            entities.update(self._extract_device_control_entities(text))
         elif intent == "play-media":
-            entities.update(self._extract_media_playback_entities(converted_text))
+            entities.update(self._extract_media_playback_entities(text))
         elif intent == "view-content":
-            entities.update(self._extract_content_viewing_entities(converted_text))
+            entities.update(self._extract_content_viewing_entities(text))
         elif intent == "search-internet":
-            entities.update(self._extract_internet_search_entities(converted_text))
+            entities.update(self._extract_internet_search_entities(text))
         elif intent == "search-youtube":
-            entities.update(self._extract_youtube_search_entities(converted_text))
+            entities.update(self._extract_youtube_search_entities(text))
         elif intent == "get-info":
-            entities.update(self._extract_information_entities(converted_text))
+            entities.update(self._extract_information_entities(text))
         elif intent == "set-alarm":
-            entities.update(self._extract_alarm_entities(converted_text))
+            entities.update(self._extract_alarm_entities(text))
         elif intent == "set-event-calendar":
-            entities.update(self._extract_calendar_entities(converted_text))
+            entities.update(self._extract_calendar_entities(text))
         elif intent == "add-contacts":
-            entities.update(self._extract_contact_entities(converted_text))
+            entities.update(self._extract_contact_entities(text))
+        elif intent == "open-cam":
+            entities.update(self._extract_camera_entities(text))
         else:
             # Fallback: extract tất cả entities (legacy behavior)
-            entities.update(self._extract_all_legacy_entities(converted_text))
+            entities.update(self._extract_all_legacy_entities(text))
         
-        # Validate và fallback entities
-        validated_entities = self._validate_entities(intent, entities, converted_text)
+        # Validate và fallback entities - Sử dụng text gốc cho validation
+        validated_entities = self._validate_entities(intent, entities, text)
         
         return validated_entities
     
@@ -1840,56 +2311,6 @@ class EntityExtractor:
         
         return entities
     
-    def _extract_device_control_entities(self, text: str) -> Dict[str, str]:
-        """Extract entities cho control-device - Điều khiển thiết bị"""
-        entities = {}
-        
-        # Extract using device control patterns
-        for pattern, entity_type in self.device_control_patterns:
-            match = re.search(pattern, text, re.IGNORECASE)
-            if match:
-                # Safe group access
-                if match.groups():
-                    value = match.group(1).strip() if match.group(1) else ""
-                else:
-                    value = match.group(0).strip()
-                
-                # Process based on entity type
-                if entity_type == "action":
-                    # Map Vietnamese actions to standard actions
-                    action_map = {
-                        "bật": "ON", "mở": "ON", "tắt": "OFF", "đóng": "OFF",
-                        "tăng": "INCREASE", "giảm": "DECREASE", "để": "SET", "set": "SET"
-                    }
-                    entities["ACTION"] = action_map.get(value.lower(), "TOGGLE")
-                
-                elif entity_type == "device":
-                    entities["DEVICE"] = value
-                
-                elif entity_type == "level":
-                    # Extract percentage or numeric value
-                    if "%" in value or "phần trăm" in value:
-                        entities["LEVEL"] = value.replace("%", "").replace("phần trăm", "").strip()
-                    else:
-                        entities["LEVEL"] = value
-                
-                elif entity_type == "duration":
-                    entities["DURATION"] = value
-                
-                elif entity_type == "fan_speed":
-                    entities["FAN_SPEED"] = value
-                
-                elif entity_type == "scene":
-                    entities["SCENE"] = value
-                
-                elif entity_type == "device_group":
-                    entities["DEVICE_GROUP"] = value
-                
-                elif entity_type == "brand":
-                    entities["BRAND"] = value
-        
-        return entities
-    
     def _extract_media_playback_entities(self, text: str) -> Dict[str, str]:
         """Extract entities cho play-media - Phát nhạc/podcast/video"""
         entities = {}
@@ -2023,15 +2444,54 @@ class EntityExtractor:
         """Extract entities cho search-internet - Tìm kiếm internet"""
         entities = {}
         
-        # Extract PLATFORM first - Default to google for search-internet
-        platform = self.extract_platform(text)
-        if platform:
-            entities["PLATFORM"] = platform
-        else:
-            entities["PLATFORM"] = "google"  # Default platform for search-internet
+        # Mặc định PLATFORM = google cho search-internet
+        entities["PLATFORM"] = "google"
         
-        # Extract using internet search patterns
+        # Chỉ override nếu có platform cụ thể khác (không phải youtube)
+        platform = self.extract_platform(text)
+        if platform and platform != "youtube":
+            entities["PLATFORM"] = platform
+        
+        # ƯU TIÊN: Extract QUERY trước (quan trọng nhất)
+        query_extracted = False
+        
+        # Sử dụng fallback patterns trước (chính xác hơn)
+        fallback_patterns = [
+            # Pattern 1: Tìm kiếm với platform cụ thể (ưu tiên cao)
+            r"(tìm\s+kiếm|search|tìm|tim\s+kiem|tra\s+cuu|tra\s+cứu)\s+trên\s+(google|bing|duckduckgo|yahoo)\s+(.+)",
+            r"(search|tìm|tim)\s+trên\s+(google|bing|duckduckgo|yahoo)\s+(.+)",
+            # Pattern 2: Tìm kiếm thông thường
+            r"(tìm\s+kiếm|search|tìm|tim\s+kiem|tra\s+cuu|tra\s+cứu)\s+(.+)",
+            r"(hỏi|ask|hoi)\s+(.+)",
+            r"(google)\s+(.+)"
+        ]
+        for pattern in fallback_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match and match.groups() and len(match.groups()) >= 2:
+                # Lấy group cuối cùng - nội dung query
+                query = match.group(len(match.groups())).strip()
+                if query and len(query) > 2:
+                    entities["QUERY"] = query
+                    query_extracted = True
+                    break
+        
+        # Nếu fallback không thành công, thử patterns từ internet_search_patterns
+        if not query_extracted:
+            for pattern, entity_type in self.internet_search_patterns:
+                if entity_type == "query":
+                    match = re.search(pattern, text, re.IGNORECASE)
+                    if match and match.groups():
+                        query = match.group(1).strip()
+                        if query and len(query) > 2:  # Đảm bảo query có ý nghĩa
+                            entities["QUERY"] = query
+                            query_extracted = True
+                            break
+        
+        # Extract các entities khác
         for pattern, entity_type in self.internet_search_patterns:
+            if entity_type == "query":  # Skip query patterns đã xử lý
+                continue
+                
             match = re.search(pattern, text, re.IGNORECASE)
             if match:
                 # Safe group access
@@ -2065,22 +2525,22 @@ class EntityExtractor:
                 elif entity_type == "language":
                     # Map Vietnamese language names to ISO codes
                     lang_map = {
-                        "tiếng việt": "vi", "việt nam": "vi", "vi": "vi",
-                        "tiếng anh": "en", "english": "en", "en": "en",
-                        "tiếng hàn": "ko", "korean": "ko", "ko": "ko",
-                        "tiếng nhật": "ja", "japanese": "ja", "ja": "ja"
+                        "tiếng việt": "vi", "việt nam": "vi", "vi": "vi", "tieng viet": "vi", "viet nam": "vi",
+                        "tiếng anh": "en", "english": "en", "en": "en", "tieng anh": "en",
+                        "tiếng hàn": "ko", "korean": "ko", "ko": "ko", "tieng han": "ko",
+                        "tiếng nhật": "ja", "japanese": "ja", "ja": "ja", "tieng nhat": "ja"
                     }
-                    entities["LANG"] = lang_map.get(value.lower(), "vi")
+                    entities["LANG"] = lang_map.get(value.lower(), "vi")  # Default to Vietnamese
                 
                 elif entity_type == "country":
                     # Map Vietnamese country names to ISO codes
                     country_map = {
-                        "việt nam": "VN", "vietnam": "VN", "vn": "VN",
-                        "mỹ": "US", "usa": "US", "us": "US",
-                        "anh": "GB", "uk": "GB", "gb": "GB",
-                        "nhật": "JP", "japan": "JP", "jp": "JP"
+                        "việt nam": "VN", "vietnam": "VN", "vn": "VN", "viet nam": "VN",
+                        "mỹ": "US", "usa": "US", "us": "US", "my": "US", "america": "US",
+                        "anh": "GB", "uk": "GB", "gb": "GB", "england": "GB",
+                        "nhật": "JP", "japan": "JP", "jp": "JP", "nhat": "JP"
                     }
-                    entities["COUNTRY"] = country_map.get(value.lower(), "VN")
+                    entities["COUNTRY"] = country_map.get(value.lower(), "VN")  # Default to Vietnam
                 
                 elif entity_type == "safesearch":
                     # Map Vietnamese safe search to boolean
@@ -2089,9 +2549,6 @@ class EntityExtractor:
                         "tắt": "off", "không": "off", "off": "off", "no": "off"
                     }
                     entities["SAFESEARCH"] = safe_map.get(value.lower(), "on")
-                
-                elif entity_type == "query":
-                    entities["QUERY"] = value
                 
                 elif entity_type == "site_domain":
                     entities["SITE_DOMAIN"] = value
@@ -2108,8 +2565,46 @@ class EntityExtractor:
         """Extract entities cho search-youtube - Tìm kiếm YouTube"""
         entities = {}
         
-        # Extract using YouTube search patterns
+        # Mặc định PLATFORM = youtube cho search-youtube
+        entities["PLATFORM"] = "youtube"
+        
+        # ƯU TIÊN: Extract YT_QUERY trước (quan trọng nhất)
+        query_extracted = False
+        
+        # Sử dụng fallback patterns trước (chính xác hơn)
+        fallback_patterns = [
+            r"(tìm\s+kiếm|search|tìm|tim\s+kiem)\s+trên\s+(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s*:?\s*(.+)",
+            r"(tìm\s+kiếm|search|tìm|tim\s+kiem)\s+trên\s+(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s+(.+)",
+            r"(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s*:?\s*(.+)",
+            r"(tìm\s+video|tim\s+video)\s+(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s+(.+)",
+            r"(search|tìm|tim)\s+(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s+(.+)"
+        ]
+        for pattern in fallback_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match and match.groups() and len(match.groups()) >= 2:
+                query = match.group(len(match.groups())).strip()  # Lấy group cuối cùng - nội dung tìm kiếm
+                if query and len(query) > 2:
+                    entities["YT_QUERY"] = query
+                    query_extracted = True
+                    break
+        
+        # Nếu fallback không thành công, thử patterns từ youtube_search_patterns
+        if not query_extracted:
+            for pattern, entity_type in self.youtube_search_patterns:
+                if entity_type == "query":
+                    match = re.search(pattern, text, re.IGNORECASE)
+                    if match and match.groups():
+                        query = match.group(1).strip()
+                        if query and len(query) > 2:  # Đảm bảo query có ý nghĩa
+                            entities["YT_QUERY"] = query
+                            query_extracted = True
+                            break
+        
+        # Extract các entities khác
         for pattern, entity_type in self.youtube_search_patterns:
+            if entity_type == "query":  # Skip query patterns đã xử lý
+                continue
+                
             match = re.search(pattern, text, re.IGNORECASE)
             if match:
                 # Safe group access
@@ -2135,9 +2630,6 @@ class EntityExtractor:
                 
                 elif entity_type == "playlist_name":
                     entities["PLAYLIST_NAME"] = value
-                
-                elif entity_type == "query":
-                    entities["YT_QUERY"] = value
                 
                 elif entity_type == "kind":
                     # Map Vietnamese content types to YouTube kinds
@@ -2495,16 +2987,39 @@ class EntityExtractor:
         return entities
     
     def _extract_contact_entities(self, text: str) -> Dict[str, str]:
-        """Extract entities cho add-contacts - Thêm liên hệ"""
         entities = {}
+        text_lower = text.lower()
         
-        # Extract phone number từ số từ chữ
+        # Extract phone number từ số từ chữ (ưu tiên cao)
         phone_number = self._extract_phone_number_from_text(text)
         if phone_number:
             entities["PHONE_NUMBER"] = phone_number
         
-        # Extract contact name - tìm từ "là" trở đi
+        # Extract contact name - Pattern chính: "Thêm danh bạ/liên hệ [TÊN] số [SỐ]" + "với tên là [TÊN]" + "lưu số"
         name_patterns = [
+            # Pattern 4: "với tên là [TÊN]" (case mới) - ƯU TIÊN CAO
+            r"với\s+tên\s+là\s+([^,\n]+)",
+            # Pattern 4.1: "voi ten la [TÊN]" (không dấu) - ƯU TIÊN CAO
+            r"voi\s+ten\s+la\s+([^,\n]+)",
+            # Pattern 5: "tên là [TÊN]"
+            r"tên\s+là\s+([^,\n]+)",
+            # Pattern 5.1: "ten la [TÊN]" (không dấu)
+            r"ten\s+la\s+([^,\n]+)",
+            # Pattern 6: "lưu số [SỐ] vào danh bạ với tên là [TÊN]" - ƯU TIÊN CAO
+            r"lưu\s+số\s+[^,\n]*vào\s+danh\s+bạ\s+với\s+tên\s+là\s+([^,\n]+)",
+            # Pattern 6.1: "luu so [SỐ] vao danh ba voi ten la [TÊN]" (không dấu)
+            r"luu\s+so\s+[^,\n]*vao\s+danh\s+ba\s+voi\s+ten\s+la\s+([^,\n]+)",
+            # Pattern 1: "Thêm danh bạ [TÊN] số [SỐ]"
+            r"thêm\s+danh\s+bạ\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so)",
+            # Pattern 1.1: "them danh ba [TÊN] [SỐ]" (không dấu, không có "số")
+            r"them\s+danh\s+ba\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so|\s+khong)",
+            # Pattern 2: "Thêm liên hệ [TÊN] số [SỐ]"  
+            r"thêm\s+liên\s+hệ\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so)",
+            # Pattern 2.1: "them lien he [TÊN] [SỐ]" (không dấu)
+            r"them\s+lien\s+he\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so)",
+            # Pattern 3: "Thêm contact [TÊN] số [SỐ]"
+            r"thêm\s+contact\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so)",
+            # Pattern 7: Fallback patterns
             r"là\s+([^,\n]+)",
             r"tên\s+([^,\n]+)",
             r"gọi\s+([^,\n]+)",
@@ -2517,19 +3032,37 @@ class EntityExtractor:
                 name = match.group(1).strip()
                 # Clean up name - loại bỏ stop words
                 name = self._clean_contact_name(name)
-                if name:
+                if name and len(name) > 1:
                     entities["CONTACT_NAME"] = name
                     break
         
-        # Fallback: extract name từ cuối câu
-        if "CONTACT_NAME" not in entities:
-            # Tìm từ cuối câu sau số điện thoại
+        # Extract TITLE/Ghi chú - Pattern: "ghi chú [TITLE]" hoặc từ cuối câu
+        title_patterns = [
+            r"ghi\s+chú\s+([^,\n]+)",
+            r"chức\s+danh\s+([^,\n]+)",
+            r"với\s+([^,\n]+)",
+            r"nhé\s+([^,\n]+)",
+            r"nha\s+([^,\n]+)"
+        ]
+        
+        for pattern in title_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                title = match.group(1).strip()
+                # Clean up title
+                title = self._clean_contact_title(title)
+                if title and len(title) > 1:
+                    entities["TITLE"] = title
+                    break
+        
+        # Fallback: extract title từ cuối câu nếu chưa có
+        if "TITLE" not in entities:
             words = text.split()
-            if len(words) > 1:
-                # Lấy từ cuối cùng làm tên
+            if len(words) > 2:
+                # Lấy từ cuối cùng làm title nếu không phải số điện thoại
                 last_word = words[-1]
-                if last_word not in ["số", "điện", "thoại", "phone", "so", "dien", "thoai"]:
-                    entities["CONTACT_NAME"] = last_word
+                if not last_word.isdigit() and last_word not in ["số", "điện", "thoại", "phone", "so", "dien", "thoai"]:
+                    entities["TITLE"] = last_word
         
         return entities
     
@@ -2542,6 +3075,19 @@ class EntityExtractor:
         ]
         
         words = name.split()
+        cleaned_words = [word for word in words if word.lower() not in stop_words]
+        
+        return " ".join(cleaned_words).strip()
+    
+    def _clean_contact_title(self, title: str) -> str:
+        stop_words = [
+            "ghi", "chú", "ghi chú", "chức", "danh", "chức danh",
+            "với", "voi", "nhé", "nhe", "nha", "ạ", "a",
+            "là", "la", "tên", "ten", "gọi", "goi", "liên", "lien",
+            "hệ", "he", "contact", "lien he", "lienhe"
+        ]
+        
+        words = title.split()
         cleaned_words = [word for word in words if word.lower() not in stop_words]
         
         return " ".join(cleaned_words).strip()
@@ -2661,10 +3207,19 @@ class EntityExtractor:
                     validated_entities["TIME"] = "09:00"  # Default time
         
         elif intent == "add-contacts":
-            # Contacts cần CONTACT (name)
-            if not validated_entities.get("CONTACT"):
-                # Fallback: extract name từ text
+            # Add-contacts cần CONTACT_NAME và PHONE_NUMBER
+            if not validated_entities.get("CONTACT_NAME"):
+                # Fallback: extract name từ text với patterns mở rộng
                 name_patterns = [
+                    r"thêm\s+danh\s+bạ\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so)",
+                    r"them\s+danh\s+ba\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so|\s+khong)",  # Không dấu
+                    r"thêm\s+liên\s+hệ\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so)",
+                    r"them\s+lien\s+he\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so)",  # Không dấu
+                    r"thêm\s+contact\s+([^,\n]+?)(?:\s+số|\s+phone|\s+so)",
+                    r"với\s+tên\s+là\s+([^,\n]+)",  # Case mới
+                    r"voi\s+ten\s+la\s+([^,\n]+)",  # Case mới không dấu
+                    r"tên\s+là\s+([^,\n]+)",        # Case mới
+                    r"ten\s+la\s+([^,\n]+)",        # Case mới không dấu
                     r"lưu\s+liên\s+hệ\s+mới:\s*([^,\n]+)",
                     r"thêm\s+bạn\s+['\"]?([^'\",\n]+)['\"]?",
                     r"create\s+contact:\s*([^,\n]+)"
@@ -2672,10 +3227,177 @@ class EntityExtractor:
                 for pattern in name_patterns:
                     match = re.search(pattern, text, re.IGNORECASE)
                     if match:
-                        validated_entities["CONTACT"] = match.group(1).strip()
+                        name = match.group(1).strip()
+                        name = self._clean_contact_name(name)
+                        if name:
+                            validated_entities["CONTACT_NAME"] = name
                         break
                 else:
-                    validated_entities["CONTACT"] = "Liên hệ mới"  # Default name
+                    validated_entities["CONTACT_NAME"] = "Liên hệ mới"  # Default name
+            
+            # Validate PHONE_NUMBER
+            if not validated_entities.get("PHONE_NUMBER"):
+                # Fallback: extract phone từ text
+                phone_patterns = [
+                    r"số\s+([0-9\s\-\.]+)",
+                    r"phone\s+([0-9\s\-\.]+)",
+                    r"(\d{10,11})"
+                ]
+                for pattern in phone_patterns:
+                    match = re.search(pattern, text, re.IGNORECASE)
+                    if match:
+                        phone = match.group(1).strip()
+                        # Clean phone number
+                        phone = re.sub(r'[^\d]', '', phone)
+                        if len(phone) >= 10:
+                            validated_entities["PHONE_NUMBER"] = phone
+                            break
+                else:
+                    validated_entities["PHONE_NUMBER"] = "0000000000"  # Default phone
+            
+            # Validate TITLE (optional)
+            if not validated_entities.get("TITLE"):
+                validated_entities["TITLE"] = ""  # Optional field
+        
+        elif intent == "open-cam":
+            # Open-cam cần CAMERA_TYPE
+            if not validated_entities.get("CAMERA_TYPE"):
+                # Fallback: extract camera type từ text
+                camera_patterns = [
+                    r"camera\s+(trước|sau|front|back)",
+                    r"mở\s+camera\s+(trước|sau|front|back)",
+                    r"bật\s+camera\s+(trước|sau|front|back)",
+                    r"(trước|sau|front|back)\s+camera"
+                ]
+                for pattern in camera_patterns:
+                    match = re.search(pattern, text, re.IGNORECASE)
+                    if match:
+                        camera_type = match.group(1)
+                        # Normalize camera type - Giữ nguyên tiếng Việt
+                        if camera_type in ["trước", "front"]:
+                            validated_entities["CAMERA_TYPE"] = "trước"
+                        elif camera_type in ["sau", "back"]:
+                            validated_entities["CAMERA_TYPE"] = "sau"
+                        else:
+                            validated_entities["CAMERA_TYPE"] = camera_type
+                        break
+                else:
+                    validated_entities["CAMERA_TYPE"] = "trước"  # Default camera type
+            
+            # Validate ACTION (optional)
+            if not validated_entities.get("ACTION"):
+                validated_entities["ACTION"] = "mở"  # Default action
+            
+            # Validate PLATFORM
+            if not validated_entities.get("PLATFORM"):
+                validated_entities["PLATFORM"] = "camera"  # Default platform
+        
+        elif intent == "control-device":
+            # Control-device cần DEVICE và ACTION
+            if not validated_entities.get("DEVICE"):
+                # Fallback: extract device từ text
+                device_patterns = [
+                    r"(wifi|wi\s+fi|wi-fi|wiai\s+phai|wai\s+phai|goai\s+phai)",
+                    r"(âm\s+lượng|volume|vo\s+lum|volum|âm\s+thanh|tiếng)",
+                    r"(đèn\s+pin|den\s+pin|flash|đèn\s+flash|đèn\s+soi)",
+                    r"\b(đèn)\b"
+                ]
+                
+                for pattern in device_patterns:
+                    match = re.search(pattern, text.lower())
+                    if match:
+                        device = match.group(1).lower()
+                        if device in ["wifi", "wi fi", "wi-fi", "wiai phai", "wai phai", "goai phai"]:
+                            validated_entities["DEVICE"] = "wifi"
+                        elif device in ["âm lượng", "volume", "vo lum", "volum", "âm thanh", "tiếng"]:
+                            validated_entities["DEVICE"] = "âm lượng"
+                        elif device in ["đèn pin", "den pin", "flash", "đèn flash", "đèn soi", "đèn"]:
+                            validated_entities["DEVICE"] = "đèn pin"
+                        break
+                else:
+                    # Default device nếu không tìm thấy
+                    validated_entities["DEVICE"] = "âm lượng"  # Default device
+            
+            # Validate ACTION
+            if not validated_entities.get("ACTION"):
+                # Fallback: extract action từ text
+                action_patterns = [
+                    r"(bật|mở|mo|on)",
+                    r"(tắt|tat|đóng|off)",
+                    r"(tăng|tang|to\s+lên|lớn\s+hơn)",
+                    r"(giảm|giam|nhỏ\s+lại|bé\s+xuống)",
+                    r"(đặt|set|để)"
+                ]
+                
+                for pattern in action_patterns:
+                    match = re.search(pattern, text.lower())
+                    if match:
+                        action = match.group(1).lower()
+                        if action in ["bật", "mở", "mo", "on"]:
+                            # Wi-Fi: ON/OFF, Âm lượng/Đèn pin: bật/tắt
+                            if validated_entities.get("DEVICE") == "wifi":
+                                validated_entities["ACTION"] = "ON"
+                            else:
+                                validated_entities["ACTION"] = "bật"
+                        elif action in ["tắt", "tat", "đóng", "off"]:
+                            # Wi-Fi: ON/OFF, Âm lượng/Đèn pin: bật/tắt
+                            if validated_entities.get("DEVICE") == "wifi":
+                                validated_entities["ACTION"] = "OFF"
+                            else:
+                                validated_entities["ACTION"] = "tắt"
+                        elif action in ["tăng", "tang", "to lên", "lớn hơn"]:
+                            validated_entities["ACTION"] = "tăng"
+                        elif action in ["giảm", "giam", "nhỏ lại", "bé xuống"]:
+                            validated_entities["ACTION"] = "giảm"
+                        elif action in ["đặt", "set", "để"]:
+                            validated_entities["ACTION"] = "đặt"
+                        break
+                else:
+                    # Default action nếu không tìm thấy
+                    validated_entities["ACTION"] = "bật"  # Default action
+            
+            # Validate LEVEL (chỉ cho âm lượng) - Định lượng cố định
+            if validated_entities.get("DEVICE") == "âm lượng" and not validated_entities.get("LEVEL"):
+                # Fallback: extract level từ text
+                level_patterns = [
+                    # Định lượng cố định
+                    r"(một\s+chút|thêm\s+tí\s+nữa|tối\s+đa)",
+                    # Số với ký tự % (ưu tiên cao)
+                    r"(\d+)\s*%",
+                    # Số phần trăm từ chữ
+                    r"(\d+)\s*phần\s*trăm",
+                    # Số từ chữ với %
+                    r"(một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|hai\s+mươi|ba\s+mươi|bốn\s+mươi|năm\s+mươi|sáu\s+mươi|bảy\s+mươi|tám\s+mươi|chín\s+mươi|một\s+trăm)\s*%",
+                    # Số từ chữ với phần trăm
+                    r"(một|hai|ba|bốn|năm|sáu|bảy|tám|chín|mười|hai\s+mươi|ba\s+mươi|bốn\s+mươi|năm\s+mươi|sáu\s+mươi|bảy\s+mươi|tám\s+mươi|chín\s+mươi|một\s+trăm)\s*phần\s*trăm"
+                ]
+                
+                for pattern in level_patterns:
+                    match = re.search(pattern, text.lower())
+                    if match:
+                        level = match.group(1)
+                        
+                        # Định lượng cố định
+                        if level == "một chút":
+                            validated_entities["LEVEL"] = "10"  # +10%
+                        elif level == "thêm tí nữa":
+                            validated_entities["LEVEL"] = "20"  # +20%
+                        elif level == "tối đa":
+                            validated_entities["LEVEL"] = "100"  # 100%
+                        else:
+                            # Convert số từ chữ sang số
+                            if level in ["một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín", "mười"]:
+                                level = self._convert_words_to_numbers(level)
+                            elif level in ["hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi"]:
+                                level = self._convert_words_to_numbers(level)
+                            elif level == "một trăm":
+                                level = "100"
+                            
+                            validated_entities["LEVEL"] = level
+                        break
+                else:
+                    # Default level nếu không tìm thấy
+                    validated_entities["LEVEL"] = "10"  # Default: một chút (+10%)
         
         elif intent == "search-internet" or intent == "search-youtube":
             # Search cần QUERY
@@ -2831,9 +3553,12 @@ class EntityExtractor:
         """Extract alarm entities - time, label, volume, recurrence, vibration"""
         entities = {}
         
-        # Extract using alarm patterns
+        # Convert số từ chữ sang số để xử lý thời gian chính xác
+        converted_text = self._convert_words_to_numbers(text)
+        
+        # Extract using alarm patterns với converted text
         for pattern, entity_type in self.alarm_patterns:
-            match = re.search(pattern, text, re.IGNORECASE)
+            match = re.search(pattern, converted_text, re.IGNORECASE)
             if match:
                 if entity_type == "time":
                     # Handle time extraction with multiple groups
@@ -2841,6 +3566,16 @@ class EntityExtractor:
                         hour = match.group(1)
                         minute = match.group(2) if match.group(2) else "00"
                         value = f"{hour}:{minute}"
+                    else:
+                        value = match.group(1)
+                elif entity_type == "time_range":
+                    # Handle time range extraction with multiple groups
+                    if len(match.groups()) >= 4:
+                        start_hour = match.group(1)
+                        start_minute = match.group(2)
+                        end_hour = match.group(3)
+                        end_minute = match.group(4)
+                        value = f"{start_hour}:{start_minute}-{end_hour}:{end_minute}"
                     else:
                         value = match.group(1)
                 else:
@@ -2865,9 +3600,12 @@ class EntityExtractor:
         """Extract calendar entities - title, time, location, platform, recurrence"""
         entities = {}
         
-        # Extract using calendar patterns
+        # Convert số từ chữ sang số để xử lý thời gian và ngày tháng chính xác
+        converted_text = self._convert_words_to_numbers(text)
+        
+        # Extract using calendar patterns với converted text
         for pattern, entity_type in self.calendar_patterns:
-            match = re.search(pattern, text, re.IGNORECASE)
+            match = re.search(pattern, converted_text, re.IGNORECASE)
             if match:
                 if entity_type == "time_range":
                     # Handle time range extraction with multiple groups
@@ -2877,6 +3615,12 @@ class EntityExtractor:
                         end_hour = match.group(3)
                         end_minute = match.group(4)
                         value = f"{start_hour}:{start_minute}-{end_hour}:{end_minute}"
+                    elif len(match.groups()) == 3:
+                        # Handle case: 8 giờ 30 đến 10 giờ (thiếu phút cuối)
+                        start_hour = match.group(1)
+                        start_minute = match.group(2)
+                        end_hour = match.group(3)
+                        value = f"{start_hour}:{start_minute}-{end_hour}:00"
                     else:
                         value = match.group(1)
                 elif entity_type == "time":

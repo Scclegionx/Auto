@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-Script setup hoàn chỉnh cho người mới clone dự án về máy mới
-Giải quyết tất cả vấn đề thường gặp khi setup lần đầu
-"""
 
 import os
 import sys
@@ -12,13 +8,11 @@ import warnings
 from pathlib import Path
 
 def print_step(step, description):
-    """Print step with formatting"""
     print(f"\n{'='*60}")
     print(f"BƯỚC {step}: {description}")
     print('='*60)
 
 def run_command(cmd, description=""):
-    """Run command with error handling"""
     if description:
         print(f"🔄 {description}")
     
@@ -32,7 +26,6 @@ def run_command(cmd, description=""):
         return False
 
 def check_python_version():
-    """Check Python version"""
     print_step(1, "KIỂM TRA PYTHON VERSION")
     
     version = sys.version_info
@@ -46,7 +39,6 @@ def check_python_version():
     return True
 
 def create_virtual_environment():
-    """Create virtual environment"""
     print_step(2, "TẠO VIRTUAL ENVIRONMENT")
     
     venv_path = Path("venv_new")
@@ -62,10 +54,8 @@ def create_virtual_environment():
     return True
 
 def install_packages():
-    """Install required packages"""
     print_step(3, "CÀI ĐẶT PACKAGES")
     
-    # Suppress warnings
     warnings.filterwarnings("ignore")
     
     packages = [
@@ -89,7 +79,6 @@ def install_packages():
     return True
 
 def clear_model_cache():
-    """Clear model cache"""
     print_step(4, "XÓA MODEL CACHE CŨ")
     
     cache_paths = [
@@ -106,10 +95,8 @@ def clear_model_cache():
     return True
 
 def download_models():
-    """Download models"""
     print_step(5, "TẢI MODEL PHOBERT-LARGE")
     
-    # Create test script
     test_script = """
 import warnings
 warnings.filterwarnings("ignore")
@@ -120,21 +107,18 @@ try:
     
     print("📥 Đang tải PhoBERT-large...")
     
-    # Download tokenizer
     tokenizer = AutoTokenizer.from_pretrained(
         "vinai/phobert-large",
         cache_dir="model_cache",
         force_download=True
     )
     
-    # Download model  
     model = AutoModel.from_pretrained(
         "vinai/phobert-large", 
         cache_dir="model_cache",
         force_download=True
     )
     
-    # Test loading
     test_text = "Xin chào"
     inputs = tokenizer(test_text, return_tensors="pt")
     outputs = model(**inputs)
@@ -149,23 +133,19 @@ except Exception as e:
     exit(1)
 """
     
-    # Write and run test script
     with open("test_model_download.py", "w", encoding="utf-8") as f:
         f.write(test_script)
     
     success = run_command("venv_new\\Scripts\\python test_model_download.py", "Tải và test model")
     
-    # Cleanup
     if os.path.exists("test_model_download.py"):
         os.remove("test_model_download.py")
     
     return success
 
 def test_training_script():
-    """Test training script"""
     print_step(6, "KIỂM TRA TRAINING SCRIPT")
     
-    # Check if training script exists
     train_script = Path("src/training/scripts/train_gpu.py")
     if not train_script.exists():
         print("❌ Không tìm thấy train_gpu.py")
@@ -173,7 +153,6 @@ def test_training_script():
     
     print("✅ Training script tồn tại")
     
-    # Test imports
     test_imports = """
 try:
     import torch
@@ -192,81 +171,12 @@ except Exception as e:
     
     success = run_command("venv_new\\Scripts\\python test_imports.py", "Test imports")
     
-    # Cleanup
     if os.path.exists("test_imports.py"):
         os.remove("test_imports.py")
     
     return success
 
-def create_setup_guide():
-    """Create setup guide"""
-    print_step(7, "TẠO HƯỚNG DẪN SETUP")
-    
-    guide_content = """# HƯỚNG DẪN SETUP CHO NGƯỜI MỚI
-
-## 🚀 Setup tự động (Khuyến nghị)
-```bash
-python setup_complete.py
-```
-
-## 📋 Setup thủ công
-
-### 1. Tạo virtual environment
-```bash
-python -m venv venv_new
-venv_new\\Scripts\\activate
-```
-
-### 2. Cài đặt packages
-```bash
-pip install torch>=2.5.0 --index-url https://download.pytorch.org/whl/cu121
-pip install transformers>=4.20.0 scikit-learn>=1.0.0 seqeval>=1.2.0 tqdm>=4.60.0 numpy>=1.21.0 regex>=2021.0.0 fastapi>=0.70.0 uvicorn>=0.15.0 pydantic>=2.0.0
-```
-
-### 3. Tải model
-```bash
-python -c "from transformers import AutoTokenizer, AutoModel; AutoTokenizer.from_pretrained('vinai/phobert-large'); AutoModel.from_pretrained('vinai/phobert-large')"
-```
-
-### 4. Training
-```bash
-python src/training/scripts/train_gpu.py
-```
-
-## 🔧 Troubleshooting
-
-### Lỗi: 'NoneType' object has no attribute 'endswith'
-```bash
-# Xóa cache và tải lại
-rmdir /s model_cache
-python -c "from transformers import AutoTokenizer, AutoModel; AutoTokenizer.from_pretrained('vinai/phobert-large', force_download=True); AutoModel.from_pretrained('vinai/phobert-large', force_download=True)"
-```
-
-### Lỗi import trong IDE
-1. Chọn interpreter: `.\venv_new\Scripts\python.exe`
-2. Restart IDE
-3. Chờ IDE index packages
-
-### Lỗi CUDA
-- Đảm bảo có GPU NVIDIA
-- Cài đặt CUDA toolkit
-- Kiểm tra: `python -c "import torch; print(torch.cuda.is_available())"`
-
-## 📞 Hỗ trợ
-Nếu gặp vấn đề, chạy:
-```bash
-python setup_complete.py
-```
-"""
-    
-    with open("SETUP_GUIDE.md", "w", encoding="utf-8") as f:
-        f.write(guide_content)
-    
-    print("✅ Đã tạo SETUP_GUIDE.md")
-    return True
-
 def main():
-    """Main setup function"""
     print("🚀 AUTO NLP - SETUP CHO NGƯỜI MỚI")
     print("=" * 60)
     print("Script này sẽ setup hoàn chỉnh dự án cho người mới clone về")
@@ -278,8 +188,7 @@ def main():
         install_packages,
         clear_model_cache,
         download_models,
-        test_training_script,
-        create_setup_guide
+        test_training_script
     ]
     
     for i, step_func in enumerate(steps, 1):
@@ -298,7 +207,6 @@ def main():
     print("   python src/training/scripts/train_gpu.py")
     print("\n3. Hoặc chạy API:")
     print("   python api/server.py")
-    print("\n📖 Xem hướng dẫn chi tiết: SETUP_GUIDE.md")
     
     return True
 

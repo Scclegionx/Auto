@@ -80,7 +80,4 @@ reasoning_engine.log
 # Setup files (keep these)
 !check_training_issues.py
 !setup_complete.py
-!fix_model_error.py
-!setup_new_machine.py
-!SETUP_GUIDE.md
-!SETUP_NEW_MACHINE.md
+!SETUP_COMPLETE_GUIDE.md

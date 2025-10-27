@@ -4,20 +4,33 @@ Hệ thống NLP Hybrid kết hợp trained model với reasoning engine cho ng�
 
 ## 🚀 Quick Start
 
-### Luồng Clone và Setup (Thống Nhất)
+### Setup Tự Động (Khuyến nghị)
 ```bash
-# 1. Clone repository
+# Clone repository
 git clone <repository-url>
 cd Auto_NLP
 
-# 2. Setup tự động (khuyến nghị)
-python setup_new_machine.py
-
-# 3. Chạy training
-python src/training/scripts/train_gpu.py
+# Chạy setup tự động
+python setup_complete.py
 ```
 
-📋 **Xem hướng dẫn chi tiết**: [CLONE_SETUP_GUIDE.md](CLONE_SETUP_GUIDE.md)
+### Setup Thủ Công (Nếu cần)
+```bash
+# Clone repository
+git clone <repository-url>
+cd Auto_NLP
+
+# Tạo virtual environment
+python -m venv venv_new
+venv_new\Scripts\activate
+
+# Cài đặt dependencies
+pip install torch>=2.5.0 --index-url https://download.pytorch.org/whl/cu121
+pip install transformers>=4.20.0 scikit-learn>=1.0.0 seqeval>=1.2.0 tqdm>=4.60.0 numpy>=1.21.0 regex>=2021.0.0 fastapi>=0.70.0 uvicorn>=0.15.0 pydantic>=2.0.0
+
+# Tải PhoBERT-large model
+python -c "from transformers import AutoTokenizer, AutoModel; AutoTokenizer.from_pretrained('vinai/phobert-large', force_download=True); AutoModel.from_pretrained('vinai/phobert-large', force_download=True)"
+```
 
 ### 2. Training Model
 ```bash

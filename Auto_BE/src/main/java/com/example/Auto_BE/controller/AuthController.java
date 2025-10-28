@@ -64,6 +64,18 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/send-forgot-password-otp")
+    public ResponseEntity<BaseResponse<Void>> sendForgotPasswordOtp(@RequestBody @Valid SendVerificationRequest request) {
+        BaseResponse<Void> response = authService.sendForgotPasswordOtp(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/verify-forgot-password-otp")
+    public ResponseEntity<BaseResponse<Void>> verifyForgotPasswordOtp(@RequestBody @Valid VerifyOtpRequest request) {
+        BaseResponse<Void> response = authService.verifyForgotPasswordOtp(request);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/forgot-password")
     public ResponseEntity<BaseResponse<Void>> forgotPassword(@RequestBody @Valid ForgotPasswordRequest forgotPasswordRequest) {
         BaseResponse<Void> response = authService.forgotPassword(forgotPasswordRequest);

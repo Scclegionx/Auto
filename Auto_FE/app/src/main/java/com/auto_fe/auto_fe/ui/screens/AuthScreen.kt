@@ -37,6 +37,7 @@ import kotlinx.coroutines.tasks.await
 fun AuthScreen(
     onLoginSuccess: (String, String?, String?, Long?) -> Unit = { _, _, _, _ -> }, // Callback với accessToken, email, name, userId
     onVerificationClick: (String, String) -> Unit = { _, _ -> }, // Callback với email và password
+    onForgotPasswordClick: () -> Unit = {}, // Callback khi click quên mật khẩu
     verifiedEmail: String? = null, // Email sau khi verify thành công
     verifiedPassword: String? = null // Password sau khi verify thành công
 ) {
@@ -189,23 +190,38 @@ fun AuthScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         
                         // Checkbox Ghi nhớ đăng nhập
+                        // Remember Me và Quên mật khẩu
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Checkbox(
-                                checked = rememberMe,
-                                onCheckedChange = { rememberMe = it },
-                                colors = CheckboxDefaults.colors(
-                                    checkedColor = DarkPrimary,
-                                    uncheckedColor = DarkOnSurface.copy(alpha = 0.5f)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = rememberMe,
+                                    onCheckedChange = { rememberMe = it },
+                                    colors = CheckboxDefaults.colors(
+                                        checkedColor = DarkPrimary,
+                                        uncheckedColor = DarkOnSurface.copy(alpha = 0.5f)
+                                    )
                                 )
-                            )
+                                Text(
+                                    text = "Ghi nhớ đăng nhập",
+                                    fontSize = 14.sp,
+                                    color = DarkOnSurface.copy(alpha = 0.8f),
+                                    modifier = Modifier.clickable { rememberMe = !rememberMe }
+                                )
+                            }
+                            
+                            Spacer(modifier = Modifier.weight(1f))
+                            
+                            // Nút quên mật khẩu
                             Text(
-                                text = "Ghi nhớ đăng nhập",
+                                text = "Quên mật khẩu?",
                                 fontSize = 14.sp,
-                                color = DarkOnSurface.copy(alpha = 0.8f),
-                                modifier = Modifier.clickable { rememberMe = !rememberMe }
+                                color = DarkPrimary,
+                                modifier = Modifier.clickable { onForgotPasswordClick() }
                             )
                         }
 

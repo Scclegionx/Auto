@@ -265,6 +265,63 @@ public class AuthService {
                 .build();
     }
 
+    /**
+     * Gửi OTP cho quên mật khẩu (không check isActive)
+     */
+    @Transactional
+    public BaseResponse<Void> sendForgotPasswordOtp(SendVerificationRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
+
+        // Xóa các OTP cũ của user (nếu có)
+        verificationRepository.deleteAllByUser(user);
+
+        // Tạo mã OTP 6 số
+        String otp = generateOtp();
+        
+        // Lưu OTP vào database, hết hạn sau 5 phút
+        Verification verification = new Verification();
+        verification.setUser(user)
+                .setToken(otp)
+                .setExpiredAt(LocalDateTime.now().plusMinutes(5));
+        verificationRepository.save(verification);
+
+        // Gửi email chứa mã OTP
+        applicationEventPublisher.publishEvent(new UserRegistrationEvent(this, verification));
+
+        return BaseResponse.<Void>builder()
+                .status(SUCCESS)
+                .message("Mã OTP đã được gửi đến email của bạn")
+                .build();
+    }
+
+    /**
+     * Xác thực OTP cho quên mật khẩu (không check isActive)
+     */
+    @Transactional
+    public BaseResponse<Void> verifyForgotPasswordOtp(VerifyOtpRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
+
+        // Tìm verification theo user và OTP
+        Verification verification = verificationRepository.findByUserAndToken(user, request.getOtp())
+                .orElseThrow(() -> new BaseException.BadRequestException("Mã OTP không đúng"));
+
+        // Kiểm tra OTP đã hết hạn chưa
+        if (verification.getExpiredAt().isBefore(LocalDateTime.now())) {
+            verificationRepository.delete(verification);
+            throw new BaseException.BadRequestException("Mã OTP đã hết hạn");
+        }
+
+        // Xóa verification sau khi verify thành công
+        verificationRepository.delete(verification);
+
+        return BaseResponse.<Void>builder()
+                .status(SUCCESS)
+                .message("Xác thực OTP thành công")
+                .build();
+    }
+
     public BaseResponse<Void> forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         User user = userRepository.findByEmail(forgotPasswordRequest.getEmail())
                 .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));

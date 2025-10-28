@@ -15,9 +15,8 @@ import org.json.JSONObject
 class AuthService {
     private val client by lazy { ApiClient.getClient() }
 
-    // TODO: Thay đổi URL này thành URL server của bạn
-    private val baseUrl = "http://192.168.33.102:8080/api/auth" // For Android Emulator
-    // private val baseUrl = "http://YOUR_IP:8080/api/auth" // For Real Device
+    // Lấy baseUrl từ ApiConfig
+    private val baseUrl = com.auto_fe.auto_fe.network.ApiConfig.BASE_URL + "/auth"
 
     /**
      * Response data classes

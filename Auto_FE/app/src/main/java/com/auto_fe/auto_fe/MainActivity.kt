@@ -206,6 +206,7 @@ fun MainScreen(sessionManager: SessionManager) {
     var accessToken by remember { mutableStateOf(sessionManager.getAccessToken()) }
     var selectedPrescriptionId by remember { mutableStateOf<Long?>(null) }
     var showCreatePrescription by remember { mutableStateOf(false) }
+    var editPrescriptionId by remember { mutableStateOf<Long?>(null) }  // ✅ Thêm state cho edit
     var showVerification by remember { mutableStateOf(false) }
     var showProfile by remember { mutableStateOf(false) }
     var verificationEmail by remember { mutableStateOf("") }
@@ -312,11 +313,16 @@ fun MainScreen(sessionManager: SessionManager) {
         showCreatePrescription && accessToken != null -> {
             CreatePrescriptionScreen(
                 accessToken = accessToken!!,
-                onBackClick = { showCreatePrescription = false },
+                onBackClick = { 
+                    showCreatePrescription = false
+                    editPrescriptionId = null  // ✅ Reset edit state
+                },
                 onSuccess = {
                     showCreatePrescription = false
+                    editPrescriptionId = null  // ✅ Reset edit state
                     // Optionally refresh prescription list
-                }
+                },
+                editPrescriptionId = editPrescriptionId  // ✅ Truyền prescription ID để edit
             )
         }
         // Màn hình chi tiết đơn thuốc (fullscreen, không có bottom nav)
@@ -324,7 +330,12 @@ fun MainScreen(sessionManager: SessionManager) {
             PrescriptionDetailScreen(
                 prescriptionId = selectedPrescriptionId!!,
                 accessToken = accessToken ?: "",
-                onBackClick = { selectedPrescriptionId = null }
+                onBackClick = { selectedPrescriptionId = null },
+                onEditClick = { prescriptionId ->
+                    editPrescriptionId = prescriptionId
+                    showCreatePrescription = true
+                    selectedPrescriptionId = null
+                }
             )
         }
         // Màn hình chính với bottom navigation

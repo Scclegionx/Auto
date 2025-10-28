@@ -82,6 +82,8 @@ import com.auto_fe.auto_fe.ui.screens.PrescriptionDetailScreen
 import com.auto_fe.auto_fe.ui.screens.CreatePrescriptionScreen
 import com.auto_fe.auto_fe.ui.screens.VerificationScreen
 import com.auto_fe.auto_fe.ui.screens.ProfileScreen
+import com.auto_fe.auto_fe.ui.screens.ForgotPasswordScreen
+import com.auto_fe.auto_fe.ui.screens.ChangePasswordScreen
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
 import com.auto_fe.auto_fe.utils.SessionManager
 import com.auto_fe.auto_fe.utils.PermissionManager
@@ -209,6 +211,8 @@ fun MainScreen(sessionManager: SessionManager) {
     var editPrescriptionId by remember { mutableStateOf<Long?>(null) }  // ✅ Thêm state cho edit
     var showVerification by remember { mutableStateOf(false) }
     var showProfile by remember { mutableStateOf(false) }
+    var showForgotPassword by remember { mutableStateOf(false) }  // ✅ Thêm state cho forgot password
+    var showChangePassword by remember { mutableStateOf(false) }  // ✅ Thêm state cho change password
     var verificationEmail by remember { mutableStateOf("") }
     var verificationPassword by remember { mutableStateOf("") }
     var verifiedEmail by remember { mutableStateOf<String?>(null) }
@@ -223,6 +227,8 @@ fun MainScreen(sessionManager: SessionManager) {
         showCreatePrescription = false
         showVerification = false
         showProfile = false
+        showForgotPassword = false
+        showChangePassword = false
         verificationEmail = ""
         verificationPassword = ""
         verifiedEmail = null
@@ -256,8 +262,17 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     // BackHandler để xử lý nút back
-    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile) {
+    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile || showForgotPassword || showChangePassword) {
         when {
+            // Nếu đang ở màn change password → quay về profile
+            showChangePassword -> {
+                showChangePassword = false
+                showProfile = true
+            }
+            // Nếu đang ở màn forgot password → quay về auth
+            showForgotPassword -> {
+                showForgotPassword = false
+            }
             // Nếu đang ở màn profile → quay về danh sách
             showProfile -> {
                 showProfile = false
@@ -281,11 +296,36 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     when {
+        // Màn hình change password (fullscreen)
+        showChangePassword && accessToken != null -> {
+            ChangePasswordScreen(
+                accessToken = accessToken!!,
+                onBackClick = { 
+                    showChangePassword = false
+                    showProfile = true
+                },
+                onSuccess = {
+                    showChangePassword = false
+                    showProfile = true
+                }
+            )
+        }
+        // Màn hình forgot password (fullscreen)
+        showForgotPassword -> {
+            ForgotPasswordScreen(
+                onBackClick = { showForgotPassword = false },
+                onSuccessNavigateToLogin = { showForgotPassword = false }
+            )
+        }
         // Màn hình profile (fullscreen)
         showProfile && accessToken != null -> {
             ProfileScreen(
                 accessToken = accessToken!!,
-                onBackClick = { showProfile = false }
+                onBackClick = { showProfile = false },
+                onChangePasswordClick = {
+                    showProfile = false
+                    showChangePassword = true
+                }
             )
         }
         // Màn hình verification (fullscreen)
@@ -404,6 +444,10 @@ fun MainScreen(sessionManager: SessionManager) {
                                         verificationEmail = email
                                         verificationPassword = password
                                         showVerification = true
+                                    },
+                                    onForgotPasswordClick = {
+                                        // Chuyển sang màn hình quên mật khẩu
+                                        showForgotPassword = true
                                     },
                                     verifiedEmail = verifiedEmail,
                                     verifiedPassword = verifiedPassword

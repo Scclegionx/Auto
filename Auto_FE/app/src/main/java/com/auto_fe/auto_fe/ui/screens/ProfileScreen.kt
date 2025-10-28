@@ -1,6 +1,7 @@
 package com.auto_fe.auto_fe.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +26,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     accessToken: String,
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onChangePasswordClick: () -> Unit = {}
 ) {
     val userService = remember { UserService() }
     val coroutineScope = rememberCoroutineScope()
@@ -182,6 +184,7 @@ fun ProfileScreen(
                 } else {
                     ProfileContent(
                         profileData = profileData!!,
+                        onChangePasswordClick = onChangePasswordClick,
                         modifier = Modifier.padding(paddingValues)
                     )
                 }
@@ -193,6 +196,7 @@ fun ProfileScreen(
 @Composable
 fun ProfileContent(
     profileData: UserService.ProfileData,
+    onChangePasswordClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -386,6 +390,62 @@ fun ProfileContent(
                     icon = Icons.Default.Star,
                     label = "Cân nặng",
                     value = profileData.weight?.let { "$it kg" } ?: "Chưa cập nhật"
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Bảo mật
+        Text(
+            text = "Bảo mật",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = DarkOnSurface,
+            modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+        )
+        
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = DarkSurface
+            )
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onChangePasswordClick() }
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = "Đổi mật khẩu",
+                    tint = DarkPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
+                
+                Spacer(modifier = Modifier.width(16.dp))
+                
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Đổi mật khẩu",
+                        fontSize = 16.sp,
+                        color = DarkOnSurface,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = "Thay đổi mật khẩu của bạn",
+                        fontSize = 12.sp,
+                        color = DarkOnSurface.copy(alpha = 0.6f)
+                    )
+                }
+                
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowRight,
+                    contentDescription = "Go",
+                    tint = DarkOnSurface.copy(alpha = 0.4f)
                 )
             }
         }

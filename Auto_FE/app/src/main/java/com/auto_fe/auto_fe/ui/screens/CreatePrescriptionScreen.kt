@@ -43,11 +43,14 @@ data class MedicationReminderForm(
 fun CreatePrescriptionScreen(
     accessToken: String,
     onBackClick: () -> Unit,
-    onSuccess: () -> Unit
+    onSuccess: () -> Unit,
+    editPrescriptionId: Long? = null  // ✅ Null = tạo mới, có giá trị = chỉnh sửa
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val prescriptionService = remember { PrescriptionService() }
+    
+    val isEditMode = editPrescriptionId != null
 
     // Form states
     var name by remember { mutableStateOf("") }
@@ -55,16 +58,53 @@ fun CreatePrescriptionScreen(
     var imageUrl by remember { mutableStateOf("https://via.placeholder.com/150") }
     var medications by remember { mutableStateOf(listOf(MedicationReminderForm())) }
     var isLoading by remember { mutableStateOf(false) }
+    var isLoadingData by remember { mutableStateOf(isEditMode) }
     
     // Dialog states
     var showEditDialog by remember { mutableStateOf(false) }
     var editingIndex by remember { mutableStateOf<Int?>(null) }
     var editingMedication by remember { mutableStateOf<MedicationReminderForm?>(null) }
 
+    // ✅ Load prescription data khi ở chế độ edit
+    LaunchedEffect(editPrescriptionId) {
+        if (editPrescriptionId != null) {
+            scope.launch {
+                isLoadingData = true
+                val result = prescriptionService.getPrescriptionById(editPrescriptionId, accessToken)
+                result.fold(
+                    onSuccess = { response ->
+                        response.data?.let { prescription ->
+                            name = prescription.name
+                            description = prescription.description ?: ""
+                            imageUrl = prescription.imageUrl ?: "https://via.placeholder.com/150"
+                            
+                            // Convert medications to form
+                            medications = prescription.medications?.map { med ->
+                                MedicationReminderForm(
+                                    name = med.medicationName,
+                                    description = med.notes ?: "",
+                                    type = med.type,
+                                    reminderTimes = med.reminderTimes.toMutableList(),
+                                    daysOfWeek = med.daysOfWeek
+                                )
+                            } ?: listOf(MedicationReminderForm())
+                        }
+                        isLoadingData = false
+                    },
+                    onFailure = { error ->
+                        Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                        isLoadingData = false
+                        onBackClick()
+                    }
+                )
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Tạo đơn thuốc mới", color = DarkOnSurface) },
+                title = { Text(if (isEditMode) "Sửa đơn thuốc" else "Tạo đơn thuốc mới", color = DarkOnSurface) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -93,25 +133,41 @@ fun CreatePrescriptionScreen(
                     )
                 )
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
-            ) {
-                // Thông tin đơn thuốc
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = DarkSurface.copy(alpha = 0.9f)),
-                    shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.fillMaxWidth()
+            if (isLoadingData) {
+                // ✅ Loading state khi đang tải dữ liệu edit
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator(color = DarkPrimary)
+                        Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "📋 Thông tin đơn thuốc",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = DarkPrimary
+                            text = "Đang tải dữ liệu...",
+                            color = DarkOnSurface.copy(alpha = 0.7f)
                         )
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp)
+                ) {
+                    // Thông tin đơn thuốc
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = DarkSurface.copy(alpha = 0.9f)),
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = "📋 Thông tin đơn thuốc",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = DarkPrimary
+                            )
 
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -174,7 +230,14 @@ fun CreatePrescriptionScreen(
 
                             Button(
                                 onClick = {
-                                    medications = medications + MedicationReminderForm()
+                                    val newMedication = MedicationReminderForm()
+                                    medications = medications + newMedication
+                                    // Tự động mở dialog edit cho thuốc mới
+                                    editingIndex = medications.size
+                                    editingMedication = newMedication.copy(
+                                        reminderTimes = newMedication.reminderTimes.toMutableList()
+                                    )
+                                    showEditDialog = true
                                 },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = DarkPrimary
@@ -285,13 +348,27 @@ fun CreatePrescriptionScreen(
 
                         isLoading = true
                         scope.launch {
-                            val result = prescriptionService.createPrescription(
-                                name = name,
-                                description = description,
-                                imageUrl = imageUrl,
-                                medications = medications,
-                                accessToken = accessToken
-                            )
+                            val result = if (isEditMode && editPrescriptionId != null) {
+                                // ✅ Cập nhật đơn thuốc
+                                prescriptionService.updatePrescription(
+                                    prescriptionId = editPrescriptionId,
+                                    name = name,
+                                    description = description,
+                                    imageUrl = imageUrl,
+                                    medications = medications,
+                                    accessToken = accessToken
+                                )
+                            } else {
+                                // ✅ Tạo mới đơn thuốc
+                                prescriptionService.createPrescription(
+                                    name = name,
+                                    description = description,
+                                    imageUrl = imageUrl,
+                                    medications = medications,
+                                    accessToken = accessToken
+                                )
+                            }
+                            
                             result.fold(
                                 onSuccess = { response ->
                                     Toast.makeText(context, "✅ ${response.message}", Toast.LENGTH_SHORT).show()
@@ -316,12 +393,17 @@ fun CreatePrescriptionScreen(
                             modifier = Modifier.size(24.dp)
                         )
                     } else {
-                        Text("✅ Tạo đơn thuốc", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            if (isEditMode) "Cập nhật đơn thuốc" else "Tạo đơn thuốc",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-            }
+                }  // ✅ Đóng Column scrollable
+            }  // ✅ Đóng if-else isLoadingData
         }
     }
 
@@ -531,15 +613,28 @@ fun MedicationTableRow(
             }
         }
 
-        // Giờ uống
-        Text(
-            text = medication.reminderTimes.joinToString(", "),
-            fontSize = 13.sp,
-            color = DarkPrimary,
+        // Giờ uống - Hiển thị theo chiều dọc
+        Column(
             modifier = Modifier.width(80.dp),
-            textAlign = TextAlign.Center,
-            maxLines = 1
-        )
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            medication.reminderTimes.take(3).forEach { time ->
+                Text(
+                    text = time,
+                    fontSize = 12.sp,
+                    color = DarkPrimary,
+                    textAlign = TextAlign.Center
+                )
+            }
+            if (medication.reminderTimes.size > 3) {
+                Text(
+                    text = "+${medication.reminderTimes.size - 3}",
+                    fontSize = 11.sp,
+                    color = DarkPrimary.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
 
         // Nút xóa
         IconButton(
@@ -576,7 +671,14 @@ fun DaysOfWeekSelector(
                     newDays[index] = if (isSelected) '0' else '1'
                     onDaysChange(String(newDays))
                 },
-                label = { Text(day, fontSize = 11.sp) },
+                label = { 
+                    Text(
+                        text = day, 
+                        fontSize = 11.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    ) 
+                },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = DarkPrimary,
                     selectedLabelColor = DarkOnPrimary
@@ -672,7 +774,7 @@ fun MedicationEditDialog(
                     value = editedMedication.description,
                     onValueChange = { editedMedication = editedMedication.copy(description = it) },
                     label = { Text("Ghi chú", color = DarkOnSurface.copy(alpha = 0.7f)) },
-                    placeholder = { Text("VD: Uống sau ăn") },
+                    placeholder = { Text("VD: Uống 1 viên sau ăn") },
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = DarkPrimary,
@@ -684,6 +786,21 @@ fun MedicationEditDialog(
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+
+                // Days of week selector
+                Text(
+                    text = "Ngày trong tuần",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = DarkOnSurface
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                DaysOfWeekSelector(
+                    selectedDays = editedMedication.daysOfWeek,
+                    onDaysChange = { editedMedication = editedMedication.copy(daysOfWeek = it) }
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // Reminder times section
                 Text(

@@ -17,7 +17,7 @@ import org.json.JSONObject
 class PrescriptionService {
     private val client by lazy { ApiClient.getClient() }
 
-    private val baseUrl = "http://192.168.33.102:8080/api/cron-prescriptions"
+    private val baseUrl = com.auto_fe.auto_fe.network.ApiConfig.BASE_URL + "/cron-prescriptions"
 
     /**
      * Data classes
@@ -41,7 +41,21 @@ class PrescriptionService {
         val imageUrl: String?,
         val isActive: Boolean,
         val userId: Long,
-        val medicationReminders: List<MedicationReminder>
+        val medications: List<Medication>? = null,  // ✅ New grouped format
+        val medicationReminders: List<MedicationReminder>? = null  // Legacy
+    )
+
+    // ✅ New grouped medication format
+    data class Medication(
+        val id: Long,
+        val medicationName: String,
+        val notes: String?,
+        val type: String,
+        val reminderTimes: List<String>,  // ["08:00", "12:00", "18:00"]
+        val daysOfWeek: String,
+        val isActive: Boolean,
+        val prescriptionId: Long,
+        val userId: Long
     )
 
     data class MedicationReminder(
@@ -142,12 +156,45 @@ class PrescriptionService {
      * Parse JSON thành Prescription object
      */
     private fun parsePrescription(json: JSONObject): Prescription {
-        val medications = mutableListOf<MedicationReminder>()
+        // ✅ Parse medications (grouped format)
+        val medications = mutableListOf<Medication>()
+        if (json.has("medications") && !json.isNull("medications")) {
+            val medicationsArray = json.getJSONArray("medications")
+            for (i in 0 until medicationsArray.length()) {
+                val medJson = medicationsArray.getJSONObject(i)
+                
+                // Parse reminderTimes array
+                val reminderTimes = mutableListOf<String>()
+                if (medJson.has("reminderTimes") && !medJson.isNull("reminderTimes")) {
+                    val timesArray = medJson.getJSONArray("reminderTimes")
+                    for (j in 0 until timesArray.length()) {
+                        reminderTimes.add(timesArray.getString(j))
+                    }
+                }
+                
+                medications.add(
+                    Medication(
+                        id = medJson.getLong("id"),
+                        medicationName = medJson.getString("medicationName"),
+                        notes = medJson.optString("notes"),
+                        type = medJson.optString("type", "PRESCRIPTION"),
+                        reminderTimes = reminderTimes,
+                        daysOfWeek = medJson.optString("daysOfWeek", "1111111"),
+                        isActive = medJson.optBoolean("isActive", true),
+                        prescriptionId = medJson.getLong("prescriptionId"),
+                        userId = medJson.getLong("userId")
+                    )
+                )
+            }
+        }
+        
+        // Legacy: Parse medicationReminders (for backward compatibility)
+        val medicationReminders = mutableListOf<MedicationReminder>()
         if (json.has("medicationReminders") && !json.isNull("medicationReminders")) {
             val medicationsArray = json.getJSONArray("medicationReminders")
             for (i in 0 until medicationsArray.length()) {
                 val medJson = medicationsArray.getJSONObject(i)
-                medications.add(
+                medicationReminders.add(
                     MedicationReminder(
                         id = medJson.getLong("id"),
                         name = medJson.getString("name"),
@@ -170,7 +217,8 @@ class PrescriptionService {
             imageUrl = json.optString("imageUrl"),
             isActive = json.optBoolean("isActive", true),
             userId = json.getLong("userId"),
-            medicationReminders = medications
+            medications = medications.takeIf { it.isNotEmpty() },  // ✅ New field
+            medicationReminders = medicationReminders.takeIf { it.isNotEmpty() }  // Legacy
         )
     }
 
@@ -259,6 +307,92 @@ class PrescriptionService {
             }
         } catch (e: Exception) {
             Log.e("PrescriptionService", "Exception in createPrescription", e)
+            Result.failure(Exception("Lỗi kết nối: ${e.message}"))
+        }
+    }
+
+    /**
+     * Cập nhật đơn thuốc
+     */
+    suspend fun updatePrescription(
+        prescriptionId: Long,
+        name: String,
+        description: String,
+        imageUrl: String,
+        medications: List<MedicationReminderForm>,
+        accessToken: String
+    ): Result<PrescriptionDetailResponse> = withContext(Dispatchers.IO) {
+        try {
+            Log.d("PrescriptionService", "Updating prescription ID: $prescriptionId")
+            Log.d("PrescriptionService", "Name: $name, Medications: ${medications.size}")
+
+            val jsonBody = JSONObject().apply {
+                put("name", name)
+                put("description", description)
+                put("imageUrl", imageUrl)
+
+                val medicationsArray = JSONArray()
+                medications.forEach { med ->
+                    val medJson = JSONObject().apply {
+                        put("name", med.name)
+                        put("description", med.description)
+                        put("type", med.type)
+                        val timesArray = JSONArray()
+                        med.reminderTimes.forEach { time ->
+                            timesArray.put(time)
+                        }
+                        put("reminderTimes", timesArray)
+                        put("daysOfWeek", med.daysOfWeek)
+                    }
+                    medicationsArray.put(medJson)
+                }
+                put("medicationReminders", medicationsArray)
+            }
+
+            Log.d("PrescriptionService", "Update Request Body: $jsonBody")
+
+            val requestBody = jsonBody.toString()
+                .toRequestBody("application/json; charset=utf-8".toMediaType())
+
+            val request = Request.Builder()
+                .url("$baseUrl/$prescriptionId")
+                .put(requestBody)
+                .addHeader("Authorization", "Bearer $accessToken")
+                .build()
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string()
+
+            Log.d("PrescriptionService", "Update Response Code: ${response.code}")
+            Log.d("PrescriptionService", "Update Response Body: $responseBody")
+
+            if (response.isSuccessful && responseBody != null) {
+                val json = JSONObject(responseBody)
+                val prescription = parsePrescription(json.getJSONObject("data"))
+
+                Result.success(
+                    PrescriptionDetailResponse(
+                        status = json.getString("status"),
+                        message = json.getString("message"),
+                        data = prescription
+                    )
+                )
+            } else {
+                val errorMessage = if (responseBody != null) {
+                    try {
+                        val json = JSONObject(responseBody)
+                        json.optString("message", "Không thể cập nhật đơn thuốc")
+                    } catch (e: Exception) {
+                        "Lỗi không xác định"
+                    }
+                } else {
+                    "Lỗi không xác định"
+                }
+                Log.e("PrescriptionService", "Update Error: $errorMessage")
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Log.e("PrescriptionService", "Exception in updatePrescription", e)
             Result.failure(Exception("Lỗi kết nối: ${e.message}"))
         }
     }

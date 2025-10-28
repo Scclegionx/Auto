@@ -3,6 +3,7 @@ package com.example.Auto_BE.service;
 import com.example.Auto_BE.dto.BaseResponse;
 import com.example.Auto_BE.dto.request.PrescriptionCreateRequest;
 import com.example.Auto_BE.dto.response.MedicationReminderResponse;
+import com.example.Auto_BE.dto.response.MedicationResponse;
 import com.example.Auto_BE.dto.response.PrescriptionResponse;
 import com.example.Auto_BE.entity.MedicationReminder;
 import com.example.Auto_BE.entity.Prescriptions;
@@ -181,13 +182,28 @@ public class CronPrescriptionService {
             throw new BaseException.BadRequestException(PERMISSION_ERROR);
         }
 
+        // ✅ Gộp medications (cùng name → array reminderTimes)
+        List<MedicationResponse> medications = PrescriptionMapper.groupMedicationsByName(
+                prescription.getMedicationReminders()
+        );
+
+        // Legacy field (deprecated)
         List<MedicationReminderResponse> medicationReminderResponses =
                 (prescription.getMedicationReminders() == null) ? List.of() :
                         prescription.getMedicationReminders().stream()
                                 .map(PrescriptionMapper::toResponse)
                                 .toList();
 
-        PrescriptionResponse response = PrescriptionMapper.toResponse(prescription, medicationReminderResponses);
+        PrescriptionResponse response = PrescriptionResponse.builder()
+                .id(prescription.getId())
+                .name(prescription.getName())
+                .description(prescription.getDescription())
+                .imageUrl(prescription.getImageUrl())
+                .isActive(prescription.getIsActive())
+                .userId(prescription.getUser().getId())
+                .medications(medications)  // ✅ Grouped medications
+                .medicationReminders(medicationReminderResponses)  // Legacy
+                .build();
 
         return BaseResponse.<PrescriptionResponse>builder()
                 .status(SUCCESS)
@@ -204,13 +220,28 @@ public class CronPrescriptionService {
 
         List<PrescriptionResponse> prescriptionResponses = prescriptions.stream()
                 .map(prescription -> {
+                    // ✅ Gộp medications
+                    List<MedicationResponse> medications = PrescriptionMapper.groupMedicationsByName(
+                            prescription.getMedicationReminders()
+                    );
+
+                    // Legacy field
                     List<MedicationReminderResponse> medicationReminderResponses =
                             (prescription.getMedicationReminders() == null) ? List.of() :
                                     prescription.getMedicationReminders().stream()
                                             .map(PrescriptionMapper::toResponse)
                                             .toList();
 
-                    return PrescriptionMapper.toResponse(prescription, medicationReminderResponses);
+                    return PrescriptionResponse.builder()
+                            .id(prescription.getId())
+                            .name(prescription.getName())
+                            .description(prescription.getDescription())
+                            .imageUrl(prescription.getImageUrl())
+                            .isActive(prescription.getIsActive())
+                            .userId(prescription.getUser().getId())
+                            .medications(medications)  // ✅ Grouped
+                            .medicationReminders(medicationReminderResponses)  // Legacy
+                            .build();
                 })
                 .toList();
 

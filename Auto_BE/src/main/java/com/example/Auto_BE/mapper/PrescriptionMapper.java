@@ -4,13 +4,14 @@ package com.example.Auto_BE.mapper;
 import com.example.Auto_BE.dto.request.MedicationReminderCreateRequest;
 import com.example.Auto_BE.dto.request.PrescriptionCreateRequest;
 import com.example.Auto_BE.dto.response.MedicationReminderResponse;
+import com.example.Auto_BE.dto.response.MedicationResponse;
 import com.example.Auto_BE.dto.response.PrescriptionResponse;
 import com.example.Auto_BE.entity.MedicationReminder;
 import com.example.Auto_BE.entity.Prescriptions;
 import com.example.Auto_BE.entity.User;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PrescriptionMapper {
 
@@ -82,5 +83,50 @@ public class PrescriptionMapper {
                 .prescriptionId(mr.getPrescription() != null ? mr.getPrescription().getId() : null)
                 .userId(mr.getUser() != null ? mr.getUser().getId() : null)
                 .build();
+    }
+
+    /**
+     * ✅ Gộp các MedicationReminder thành MedicationResponse
+     * - Medications có cùng name+description+type+daysOfWeek → gộp reminderTimes thành array
+     */
+    public static List<MedicationResponse> groupMedicationsByName(List<MedicationReminder> medications) {
+        if (medications == null || medications.isEmpty()) {
+            return List.of();
+        }
+
+        // Group by: name + description + type + daysOfWeek
+        Map<String, List<MedicationReminder>> grouped = medications.stream()
+                .collect(Collectors.groupingBy(med -> 
+                    med.getName() + "|" + 
+                    (med.getDescription() != null ? med.getDescription() : "") + "|" + 
+                    med.getType() + "|" + 
+                    med.getDaysOfWeek()
+                ));
+
+        return grouped.values().stream()
+                .map(group -> {
+                    MedicationReminder first = group.get(0);
+                    
+                    // Lấy tất cả reminderTimes và sắp xếp
+                    List<String> times = group.stream()
+                            .map(MedicationReminder::getReminderTime)
+                            .filter(Objects::nonNull)
+                            .sorted()
+                            .distinct()
+                            .collect(Collectors.toList());
+
+                    return MedicationResponse.builder()
+                            .id(first.getId()) // Lấy ID của bản ghi đầu tiên (có thể dùng cho edit)
+                            .medicationName(first.getName())
+                            .notes(first.getDescription())
+                            .type(first.getType())
+                            .reminderTimes(times)
+                            .daysOfWeek(first.getDaysOfWeek())
+                            .isActive(first.getIsActive())
+                            .prescriptionId(first.getPrescription() != null ? first.getPrescription().getId() : null)
+                            .userId(first.getUser() != null ? first.getUser().getId() : null)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }

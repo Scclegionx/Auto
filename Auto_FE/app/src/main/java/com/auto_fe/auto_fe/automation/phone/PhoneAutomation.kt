@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import android.speech.tts.TextToSpeech
 import androidx.core.content.ContextCompat
+import androidx.core.app.ActivityCompat
 import java.util.*
 
 class PhoneAutomation(private val context: Context) {
@@ -19,6 +20,7 @@ class PhoneAutomation(private val context: Context) {
     interface PhoneCallback {
         fun onSuccess()
         fun onError(error: String)
+        fun onPermissionRequired() // Callback khi cần permission
     }
 
     init {
@@ -27,11 +29,26 @@ class PhoneAutomation(private val context: Context) {
     }
 
     /**
+     * Kiểm tra và request permission CALL_PHONE
+     */
+    fun checkAndRequestPermission(callback: PhoneCallback) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) 
+            != PackageManager.PERMISSION_GRANTED) {
+            Log.d("PhoneAutomation", "CALL_PHONE permission not granted, requesting...")
+            callback.onPermissionRequired()
+        } else {
+            Log.d("PhoneAutomation", "CALL_PHONE permission already granted")
+            callback.onSuccess() // Gọi callback.onSuccess() khi đã có permission
+        }
+    }
+
+    /**
      * Gọi điện sử dụng Android Intents API
      * Thử nhiều phương pháp fallback để đảm bảo tương thích tối đa
      * @param receiver Tên người nhận hoặc số điện thoại
+     * @param platform Platform để gọi điện (phone, zalo, etc.)
      */
-    fun makeCall(receiver: String, callback: PhoneCallback) {
+    fun makeCall(receiver: String, platform: String = "phone", callback: PhoneCallback) {
         try {
             Log.d("PhoneAutomation", "makeCall called with receiver: $receiver")
 
@@ -57,88 +74,47 @@ class PhoneAutomation(private val context: Context) {
             Log.d("PhoneAutomation", "Attempting to call: $phoneNumber")
             var success = false
 
-            // Cách 0: ACTION_CALL - Gọi trực tiếp (nếu có permission CALL_PHONE)
+            // Gọi trực tiếp dựa trên platform (không qua chooser)
             // Gọi ngay lập tức, không cần user nhấn nút Call
             // Cần permission nguy hiểm, có thể bị từ chối
-//            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
-//                == PackageManager.PERMISSION_GRANTED) {
-//                try {
-//                    val callIntent = Intent(Intent.ACTION_CALL).apply {
-//                        data = Uri.parse("tel:$phoneNumber")
-//                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                    }
-//                    Log.d("PhoneAutomation", "Trying ACTION_CALL (direct call)...")
-//                    if (callIntent.resolveActivity(context.packageManager) != null) {
-//                        context.startActivity(callIntent)
-//                        Log.d("PhoneAutomation", "ACTION_CALL successful - calling directly")
-//                        success = true
-//                    } else {
-//                        Log.w("PhoneAutomation", "ACTION_CALL resolveActivity returned null")
-//                    }
-//                } catch (e: Exception) {
-//                    Log.e("PhoneAutomation", "ACTION_CALL failed: ${e.message}")
-//                }
-//            } else {
-//                Log.d("PhoneAutomation", "CALL_PHONE permission not granted, skipping direct call")
-//            }
-
-            // Cách 1: ACTION_DIAL với Uri.parse - Phương pháp chuẩn
-            // Không cần permission, an toàn, chuẩn theo Android docs
-            // User phải nhấn nút Call thủ công
-            if (!success) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
+                == PackageManager.PERMISSION_GRANTED) {
                 try {
-                    val dialIntent = Intent(Intent.ACTION_DIAL).apply {
+                    val callIntent = Intent(Intent.ACTION_CALL).apply {
                         data = Uri.parse("tel:$phoneNumber")
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
-                    Log.d("PhoneAutomation", "Trying ACTION_DIAL with Uri.parse...")
-                    if (dialIntent.resolveActivity(context.packageManager) != null) {
-                        context.startActivity(dialIntent)
-                        Log.d("PhoneAutomation", "ACTION_DIAL successful")
+                    
+                    // Set package dựa trên platform
+                    when (platform.lowercase()) {
+                        "phone" -> {
+                            // Gọi qua app gọi điện mặc định
+                            callIntent.setPackage("com.android.server.telecom")
+                            Log.d("PhoneAutomation", "Calling via default phone app: com.android.phone")
+                        }
+                        "zalo" -> {
+                            // Gọi qua Zalo app
+                            callIntent.setPackage("com.zing.zalo")
+                            Log.d("PhoneAutomation", "Calling via Zalo app")
+                        }
+                        else -> {
+                            Log.w("PhoneAutomation", "Unknown platform: $platform, using default")
+                        }
+                    }
+                    
+                    Log.d("PhoneAutomation", "Trying ACTION_CALL for platform: $platform...")
+                    if (callIntent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(callIntent)
+                        Log.d("PhoneAutomation", "ACTION_CALL successful - calling directly")
                         success = true
                     } else {
-                        Log.w("PhoneAutomation", "ACTION_DIAL resolveActivity returned null")
+                        Log.w("PhoneAutomation", "ACTION_CALL resolveActivity returned null for platform: $platform")
                     }
                 } catch (e: Exception) {
-                    Log.e("PhoneAutomation", "ACTION_DIAL failed: ${e.message}")
+                    Log.e("PhoneAutomation", "ACTION_CALL failed: ${e.message}")
                 }
-            }
-
-            // Cách 2: ACTION_VIEW fallback - Phương pháp generic
-            // Ưu điểm: Broad compatibility, có thể handle bởi nhiều app
-            // Sử dụng khi: ACTION_DIAL không được support hoặc bị block
-            if (!success) {
-                try {
-                    val viewIntent = Intent(Intent.ACTION_VIEW).apply {
-                        data = Uri.parse("tel:$phoneNumber")
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
-                    Log.d("PhoneAutomation", "Trying ACTION_VIEW fallback...")
-                    context.startActivity(viewIntent)
-                    Log.d("PhoneAutomation", "ACTION_VIEW successful")
-                    success = true
-                } catch (e: Exception) {
-                    Log.e("PhoneAutomation", "ACTION_VIEW failed: ${e.message}")
-                }
-            }
-
-            // Cách 3: Intent chooser cuối cùng - Nuclear option
-            // Ưu điểm: Luôn work, let user chọn app
-            // Sử dụng khi: Tất cả methods khác fail
-            if (!success) {
-                try {
-                    val dialIntent = Intent(Intent.ACTION_DIAL).apply {
-                        data = Uri.parse("tel:$phoneNumber")
-                    }
-                    val chooser = Intent.createChooser(dialIntent, "Chọn ứng dụng gọi điện")
-                    chooser.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    Log.d("PhoneAutomation", "Trying Intent chooser (last resort)...")
-                    context.startActivity(chooser)
-                    Log.d("PhoneAutomation", "Intent chooser successful")
-                    success = true
-                } catch (e: Exception) {
-                    Log.e("PhoneAutomation", "Intent chooser failed: ${e.message}")
-                }
+            } else {
+                Log.d("PhoneAutomation", "CALL_PHONE permission not granted, skipping direct call")
             }
 
             // Kết quả cuối cùng
@@ -158,6 +134,8 @@ class PhoneAutomation(private val context: Context) {
             callback.onError(errorMessage)
         }
     }
+
+
 
     /**
      * Kiểm tra xem chuỗi có phải là số điện thoại không

@@ -17,6 +17,17 @@ class AudioRecorder(private val context: Context) {
     private var tts: TextToSpeech? = null
     private var recordingFile: File? = null
     
+    companion object {
+        @Volatile
+        private var INSTANCE: AudioRecorder? = null
+        
+        fun getInstance(context: Context): AudioRecorder {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: AudioRecorder(context.applicationContext).also { INSTANCE = it }
+            }
+        }
+    }
+    
     interface AudioRecorderCallback {
         fun onRecordingComplete(audioFile: File)
         fun onError(error: String)
@@ -27,9 +38,11 @@ class AudioRecorder(private val context: Context) {
     }
     
     private fun initTTS() {
-        tts = TextToSpeech(context) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                tts?.language = Locale("vi", "VN")
+        if (tts == null) {
+            tts = TextToSpeech(context) { status ->
+                if (status == TextToSpeech.SUCCESS) {
+                    tts?.language = Locale("vi", "VN")
+                }
             }
         }
     }

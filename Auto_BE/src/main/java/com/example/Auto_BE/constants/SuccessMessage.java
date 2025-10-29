@@ -2,24 +2,24 @@ package com.example.Auto_BE.constants;
 
 public class SuccessMessage {
     public static final String SUCCESS = "success";
-    public static final String USER_REGISTERED = "Registration successful, please verify your email";
-    public static final String USER_LOGGED_IN = "User logged in successfully";
-    public static final String EMAIL_VERIFIED = "Email verified successfully";
-    public static final String VERIFICATION_EMAIL_SENT = "Verification email sent successfully";
-    public static final String PASSWORD_RESET = "Password reset successfully";
-    public static final String PASSWORD_UPDATED = "Password updated successfully";
-    public static final String PRESCRIPTION_CREATED="Prescription created successfully";
-    public static final String PRESCRIPTION_UPDATED = "Prescription updated successfully";
-    public static final String TOKEN_REGISTERED = "Device token registered successfully";
-    public static final String PROFILE_FETCHED = "Profile fetched successfully";
-    public static final String EMAIL_RESENT = "Verification email resent. Please check your inbox.";
-    public static final String PROFILE_UPDATED = "Profile updated successfully";
-    public static final String PRESCRIPTION_FETCHED = "Prescription retrieved successfully";
-    public static final String PRESCRIPTION_DELETED = "Prescription deleted successfully";
-    public static final String MEDICATION_CONFIRMED = "Medication already confirmed as taken";
+    public static final String USER_REGISTERED = "Đăng ký thành công, vui lòng xác thực email";
+    public static final String USER_LOGGED_IN = "Đăng nhập thành công";
+    public static final String EMAIL_VERIFIED = "Xác thực email thành công";
+    public static final String VERIFICATION_EMAIL_SENT = "Đã gửi email xác thực";
+    public static final String PASSWORD_RESET = "Đặt lại mật khẩu thành công";
+    public static final String PASSWORD_UPDATED = "Cập nhật mật khẩu thành công";
+    public static final String PRESCRIPTION_CREATED="Tạo đơn thuốc thành công";
+    public static final String PRESCRIPTION_UPDATED = "Cập nhật đơn thuốc thành công";
+    public static final String TOKEN_REGISTERED = "Đăng ký thiết bị thành công";
+    public static final String PROFILE_FETCHED = "Lấy thông tin cá nhân thành công";
+    public static final String EMAIL_RESENT = "Đã gửi lại email xác thực. Vui lòng kiểm tra hộp thư.";
+    public static final String PROFILE_UPDATED = "Cập nhật thông tin cá nhân thành công";
+    public static final String PRESCRIPTION_FETCHED = "Lấy thông tin đơn thuốc thành công";
+    public static final String PRESCRIPTION_DELETED = "Xóa đơn thuốc thành công";
+    public static final String MEDICATION_CONFIRMED = "Đã xác nhận uống thuốc";
 
-    public static final String LOGOUT_SUCCESS = "Logout successful";
-    public static final String DATA_FETCHED = "Data fetched successfully";
-    public static final String DATA_SAVED = "Data saved successfully";
-    public static final String DATA_DELETED = "Data deleted successfully";
+    public static final String LOGOUT_SUCCESS = "Đăng xuất thành công";
+    public static final String DATA_FETCHED = "Lấy dữ liệu thành công";
+    public static final String DATA_SAVED = "Lưu dữ liệu thành công";
+    public static final String DATA_DELETED = "Xóa dữ liệu thành công";
 }

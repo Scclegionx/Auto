@@ -2,7 +2,6 @@ package com.example.Auto_BE.dto.response;
 
 import lombok.*;
 
-import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -18,5 +17,10 @@ public class PrescriptionResponse {
     private Boolean isActive;
     private Long userId;
 
+    // ✅ Grouped medications (name + reminderTimes array)
+    private List<MedicationResponse> medications;
+    
+    // Legacy field (deprecated, kept for backward compatibility)
+    @Deprecated
     private List<MedicationReminderResponse> medicationReminders;
 }

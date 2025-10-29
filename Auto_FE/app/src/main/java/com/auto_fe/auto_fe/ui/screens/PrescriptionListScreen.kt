@@ -107,7 +107,7 @@ fun PrescriptionListScreen(
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
-                            text = "💊 Đơn thuốc của tôi",
+                            text = "Đơn thuốc của tôi",
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             color = DarkOnSurface
@@ -457,7 +457,7 @@ fun PrescriptionCard(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "${prescription.medicationReminders.size} loại thuốc",
+                        text = "${prescription.medications?.size ?: prescription.medicationReminders?.size ?: 0} loại thuốc",
                         fontSize = 14.sp,
                         color = DarkOnSurface.copy(alpha = 0.8f)
                     )

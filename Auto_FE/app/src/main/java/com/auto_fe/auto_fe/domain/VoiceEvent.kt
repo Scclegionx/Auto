@@ -131,6 +131,17 @@ sealed class VoiceEvent {
 
     // ========== ALARM EVENTS ==========
 
+    /** Bắt đầu lệnh tạo báo thức */
+    object StartAlarmCommand : VoiceEvent()
+    object StartChromeCommand : VoiceEvent()
+    object StartYouTubeCommand : VoiceEvent()
+    object StartSMSCommand : VoiceEvent()
+    object SMSConfirmed : VoiceEvent()
+    object SMSCancelled : VoiceEvent()
+    object StartPhoneCommand : VoiceEvent()
+    object PhoneConfirmed : VoiceEvent()
+    object PhoneCancelled : VoiceEvent()
+
     /** Nhận được lệnh tạo báo thức */
     data class AlarmCommandReceived(val rawCommand: String) : VoiceEvent()
 
@@ -165,32 +176,29 @@ sealed class VoiceEvent {
     data class CalendarEventCreationFailed(val error: String) : VoiceEvent()
 
     // ========== CAMERA EVENTS ==========
+    object StartCameraCapture : VoiceEvent()
     data class CameraCommandReceived(val rawCommand: String) : VoiceEvent()
     data class CameraCommandParsed(val action: String) : VoiceEvent()
     data class CameraCommandParseFailed(val reason: String) : VoiceEvent()
     object CameraCapturedSuccessfully : VoiceEvent()
     data class CameraCaptureFailed(val error: String) : VoiceEvent()
 
-    // ========== WIFI EVENTS ==========
-    data class WifiCommandReceived(val rawCommand: String) : VoiceEvent()
-    data class WifiCommandParsed(val action: String) : VoiceEvent()
-    data class WifiCommandParseFailed(val reason: String) : VoiceEvent()
-    object WifiToggledSuccessfully : VoiceEvent()
-    data class WifiToggleFailed(val error: String) : VoiceEvent()
-
-    // ========== VOLUME EVENTS ==========
-    data class VolumeCommandReceived(val rawCommand: String) : VoiceEvent()
-    data class VolumeCommandParsed(val action: String, val value: Int) : VoiceEvent()
-    data class VolumeCommandParseFailed(val reason: String) : VoiceEvent()
-    object VolumeAdjustedSuccessfully : VoiceEvent()
-    data class VolumeAdjustmentFailed(val error: String) : VoiceEvent()
-
-    // ========== FLASH EVENTS ==========
-    data class FlashCommandReceived(val rawCommand: String) : VoiceEvent()
-    data class FlashCommandParsed(val action: String) : VoiceEvent()
-    data class FlashCommandParseFailed(val reason: String) : VoiceEvent()
+    // ========== DEVICE EVENTS ==========
+    object StartFlashCommand : VoiceEvent()
+    object StartWifiCommand : VoiceEvent()
+    object StartVolumeCommand : VoiceEvent()
+    
     object FlashToggledSuccessfully : VoiceEvent()
     data class FlashToggleFailed(val error: String) : VoiceEvent()
+    
+    object WifiToggledSuccessfully : VoiceEvent()
+    data class WifiToggleFailed(val error: String) : VoiceEvent()
+    
+    object VolumeAdjustedSuccessfully : VoiceEvent()
+    data class VolumeAdjustmentFailed(val error: String) : VoiceEvent()
+    
+    // ========== UTILITY EVENTS ==========
+    object Reset : VoiceEvent()
 
 
     // ========== UTILITY METHODS ==========
@@ -232,6 +240,15 @@ sealed class VoiceEvent {
             is YouTubeCommandParseFailed -> "YouTubeCommandParseFailed($reason)"
             is YouTubeSearchSuccessfully -> "YouTubeSearchSuccessfully"
             is YouTubeSearchFailed -> "YouTubeSearchFailed($error)"
+            is StartAlarmCommand -> "StartAlarmCommand"
+            is StartChromeCommand -> "StartChromeCommand"
+            is StartYouTubeCommand -> "StartYouTubeCommand"
+            is StartSMSCommand -> "StartSMSCommand"
+        is SMSConfirmed -> "SMSConfirmed"
+        is SMSCancelled -> "SMSCancelled"
+        is StartPhoneCommand -> "StartPhoneCommand"
+        is PhoneConfirmed -> "PhoneConfirmed"
+        is PhoneCancelled -> "PhoneCancelled"
             is AlarmCommandReceived -> "AlarmCommandReceived(${rawCommand.take(50)}...)"
             is AlarmCommandParsed -> "AlarmCommandParsed($hour:$minute - $message)"
             is AlarmCommandParseFailed -> "AlarmCommandParseFailed($reason)"
@@ -243,27 +260,25 @@ sealed class VoiceEvent {
             is CalendarEventCreatedSuccessfully -> "CalendarEventCreatedSuccessfully"
             is CalendarEventCreationFailed -> "CalendarEventCreationFailed($error)"
             
+            // Device events
+            is StartFlashCommand -> "StartFlashCommand"
+            is StartWifiCommand -> "StartWifiCommand"
+            is StartVolumeCommand -> "StartVolumeCommand"
+            is FlashToggledSuccessfully -> "FlashToggledSuccessfully"
+            is FlashToggleFailed -> "FlashToggleFailed($error)"
+            is WifiToggledSuccessfully -> "WifiToggledSuccessfully"
+            is WifiToggleFailed -> "WifiToggleFailed($error)"
+            is VolumeAdjustedSuccessfully -> "VolumeAdjustedSuccessfully"
+            is VolumeAdjustmentFailed -> "VolumeAdjustmentFailed($error)"
+            
             // Device Control Events
+            is StartCameraCapture -> "StartCameraCapture"
             is CameraCommandReceived -> "CameraCommandReceived($rawCommand)"
             is CameraCommandParsed -> "CameraCommandParsed($action)"
             is CameraCommandParseFailed -> "CameraCommandParseFailed($reason)"
             is CameraCapturedSuccessfully -> "CameraCapturedSuccessfully"
             is CameraCaptureFailed -> "CameraCaptureFailed($error)"
-            is WifiCommandReceived -> "WifiCommandReceived($rawCommand)"
-            is WifiCommandParsed -> "WifiCommandParsed($action)"
-            is WifiCommandParseFailed -> "WifiCommandParseFailed($reason)"
-            is WifiToggledSuccessfully -> "WifiToggledSuccessfully"
-            is WifiToggleFailed -> "WifiToggleFailed($error)"
-            is VolumeCommandReceived -> "VolumeCommandReceived($rawCommand)"
-            is VolumeCommandParsed -> "VolumeCommandParsed($action, $value)"
-            is VolumeCommandParseFailed -> "VolumeCommandParseFailed($reason)"
-            is VolumeAdjustedSuccessfully -> "VolumeAdjustedSuccessfully"
-            is VolumeAdjustmentFailed -> "VolumeAdjustmentFailed($error)"
-            is FlashCommandReceived -> "FlashCommandReceived($rawCommand)"
-            is FlashCommandParsed -> "FlashCommandParsed($action)"
-            is FlashCommandParseFailed -> "FlashCommandParseFailed($reason)"
-            is FlashToggledSuccessfully -> "FlashToggledSuccessfully"
-            is FlashToggleFailed -> "FlashToggleFailed($error)"
+            is Reset -> "Reset"
         }
     }
 
@@ -289,11 +304,8 @@ sealed class VoiceEvent {
                 // Device Control Error Events
                 this is CameraCommandParseFailed ||
                 this is CameraCaptureFailed ||
-                this is WifiCommandParseFailed ||
                 this is WifiToggleFailed ||
-                this is VolumeCommandParseFailed ||
                 this is VolumeAdjustmentFailed ||
-                this is FlashCommandParseFailed ||
                 this is FlashToggleFailed
     }
 }

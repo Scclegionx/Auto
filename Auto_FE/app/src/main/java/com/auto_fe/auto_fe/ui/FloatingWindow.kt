@@ -43,8 +43,8 @@ class FloatingWindow(private val context: Context) {
     // State Machine thay thế cho các biến state cũ
     private var smsStateMachine: SendSMSStateMachine? = null
     
-    // Voice recording popup
-    private var voiceRecordingPopup: SimpleVoicePopup? = null
+    // Voice recording popup - Updated to use Liquid Wave version
+    private var voiceRecordingPopup: LiquidWaveRecordingPopup? = null
 
     // Drag functionality
     private var initialX = 0
@@ -60,7 +60,7 @@ class FloatingWindow(private val context: Context) {
         audioManager = VoiceManager.getInstance(context)
         smsAutomation = SMSAutomation(context)
         smsObserver = SMSObserver(context)
-        voiceRecordingPopup = SimpleVoicePopup(context)
+        voiceRecordingPopup = LiquidWaveRecordingPopup(context)
 
         // Khởi tạo State Machine
         initializeStateMachine()
@@ -107,13 +107,13 @@ class FloatingWindow(private val context: Context) {
      * Setup callbacks cho voice recording popup
      */
     private fun setupPopupCallbacks() {
-        voiceRecordingPopup?.onCancelClick = {
-            Log.d("FloatingWindow", "Popup cancel clicked")
-            smsStateMachine?.processEvent(VoiceEvent.UserCancelled)
+        voiceRecordingPopup?.onStartClick = {
+            Log.d("FloatingWindow", "Popup start recording clicked")
+            smsStateMachine?.processEvent(VoiceEvent.StartRecording)
         }
         
         voiceRecordingPopup?.onStopClick = {
-            Log.d("FloatingWindow", "Popup stop clicked")
+            Log.d("FloatingWindow", "Popup stop recording clicked")
             smsStateMachine?.processEvent(VoiceEvent.UserCancelled)
         }
         
@@ -396,7 +396,7 @@ class FloatingWindow(private val context: Context) {
 
         // Hide and cleanup popup
         voiceRecordingPopup?.hide()
-        voiceRecordingPopup?.release()
+        voiceRecordingPopup = null
 
         floatingView?.let { view ->
             windowManager?.removeView(view)

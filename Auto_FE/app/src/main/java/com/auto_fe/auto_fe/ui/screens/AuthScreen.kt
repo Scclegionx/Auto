@@ -37,7 +37,7 @@ import kotlinx.coroutines.tasks.await
 fun AuthScreen(
     onLoginSuccess: (String, String?, String?, Long?) -> Unit = { _, _, _, _ -> }, // Callback với accessToken, email, name, userId
     onVerificationClick: (String, String) -> Unit = { _, _ -> }, // Callback với email và password
-    onForgotPasswordClick: () -> Unit = {}, // Callback khi click quên mật khẩu
+    onForgotPasswordClick: () -> Unit = { }, // Callback cho quên mật khẩu
     verifiedEmail: String? = null, // Email sau khi verify thành công
     verifiedPassword: String? = null // Password sau khi verify thành công
 ) {
@@ -84,8 +84,8 @@ fun AuthScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        DarkGradientStart,
-                        DarkGradientEnd
+                        AIBackgroundDeep,
+                        AIBackgroundSoft
                     )
                 )
             )
@@ -103,7 +103,7 @@ fun AuthScreen(
                 text = if (isLoginMode) "🔐 Đăng Nhập" else "📝 Đăng Ký",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                color = DarkPrimary
+                color = AIPrimarySoft
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -111,7 +111,7 @@ fun AuthScreen(
             Text(
                 text = if (isLoginMode) "Chào mừng bạn quay trở lại!" else "Tạo tài khoản mới",
                 fontSize = 16.sp,
-                color = DarkOnSurface.copy(alpha = 0.7f),
+                color = AITextPrimary.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
 
@@ -120,7 +120,7 @@ fun AuthScreen(
             // Content Card
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = DarkSurface.copy(alpha = 0.9f)
+                    containerColor = AISurfaceGlass.copy(alpha = 0.9f)
                 ),
                 shape = MaterialTheme.shapes.large,
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
@@ -135,21 +135,21 @@ fun AuthScreen(
                         OutlinedTextField(
                             value = loginEmail,
                             onValueChange = { loginEmail = it },
-                            label = { Text("Email", color = DarkOnSurface.copy(alpha = 0.7f)) },
+                            label = { Text("Email", color = AITextPrimary.copy(alpha = 0.7f)) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Email,
                                     contentDescription = "Email Icon",
-                                    tint = DarkPrimary
+                                    tint = AIPrimarySoft
                                 )
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = DarkPrimary,
-                                unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
-                                focusedTextColor = DarkOnSurface,
-                                unfocusedTextColor = DarkOnSurface
+                                focusedBorderColor = AIPrimarySoft,
+                                unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
+                                focusedTextColor = AITextPrimary,
+                                unfocusedTextColor = AITextPrimary
                             ),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -159,12 +159,12 @@ fun AuthScreen(
                         OutlinedTextField(
                             value = loginPassword,
                             onValueChange = { loginPassword = it },
-                            label = { Text("Mật khẩu", color = DarkOnSurface.copy(alpha = 0.7f)) },
+                            label = { Text("Mật khẩu", color = AITextPrimary.copy(alpha = 0.7f)) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Lock,
                                     contentDescription = "Password Icon",
-                                    tint = DarkPrimary
+                                    tint = AIPrimarySoft
                                 )
                             },
                             trailingIcon = {
@@ -179,10 +179,10 @@ fun AuthScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = DarkPrimary,
-                                unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
-                                focusedTextColor = DarkOnSurface,
-                                unfocusedTextColor = DarkOnSurface
+                                focusedBorderColor = AIPrimarySoft,
+                                unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
+                                focusedTextColor = AITextPrimary,
+                                unfocusedTextColor = AITextPrimary
                             ),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -190,38 +190,23 @@ fun AuthScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         
                         // Checkbox Ghi nhớ đăng nhập
-                        // Remember Me và Quên mật khẩu
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Checkbox(
-                                    checked = rememberMe,
-                                    onCheckedChange = { rememberMe = it },
-                                    colors = CheckboxDefaults.colors(
-                                        checkedColor = DarkPrimary,
-                                        uncheckedColor = DarkOnSurface.copy(alpha = 0.5f)
-                                    )
+                            Checkbox(
+                                checked = rememberMe,
+                                onCheckedChange = { rememberMe = it },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = AIPrimarySoft,
+                                    uncheckedColor = AITextPrimary.copy(alpha = 0.5f)
                                 )
-                                Text(
-                                    text = "Ghi nhớ đăng nhập",
-                                    fontSize = 14.sp,
-                                    color = DarkOnSurface.copy(alpha = 0.8f),
-                                    modifier = Modifier.clickable { rememberMe = !rememberMe }
-                                )
-                            }
-                            
-                            Spacer(modifier = Modifier.weight(1f))
-                            
-                            // Nút quên mật khẩu
+                            )
                             Text(
-                                text = "Quên mật khẩu?",
+                                text = "Ghi nhớ đăng nhập",
                                 fontSize = 14.sp,
-                                color = DarkPrimary,
-                                modifier = Modifier.clickable { onForgotPasswordClick() }
+                                color = AITextPrimary.copy(alpha = 0.8f),
+                                modifier = Modifier.clickable { rememberMe = !rememberMe }
                             )
                         }
 
@@ -291,8 +276,8 @@ fun AuthScreen(
                             },
                             enabled = !isLoginLoading && loginEmail.isNotBlank() && loginPassword.isNotBlank(),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = DarkPrimary,
-                                disabledContainerColor = DarkPrimary.copy(alpha = 0.5f)
+                                containerColor = AIPrimarySoft,
+                                disabledContainerColor = AIPrimarySoft.copy(alpha = 0.5f)
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -301,14 +286,14 @@ fun AuthScreen(
                             if (isLoginLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(24.dp),
-                                    color = DarkOnPrimary
+                                    color = AITextPrimary
                                 )
                             } else {
                                 Text(
                                     text = "Đăng Nhập",
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = DarkOnPrimary
+                                    color = AITextPrimary
                                 )
                             }
                         }
@@ -317,21 +302,21 @@ fun AuthScreen(
                         OutlinedTextField(
                             value = registerEmail,
                             onValueChange = { registerEmail = it },
-                            label = { Text("Email", color = DarkOnSurface.copy(alpha = 0.7f)) },
+                            label = { Text("Email", color = AITextPrimary.copy(alpha = 0.7f)) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Email,
                                     contentDescription = "Email Icon",
-                                    tint = DarkPrimary
+                                    tint = AIPrimarySoft
                                 )
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             singleLine = true,
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = DarkPrimary,
-                                unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
-                                focusedTextColor = DarkOnSurface,
-                                unfocusedTextColor = DarkOnSurface
+                                focusedBorderColor = AIPrimarySoft,
+                                unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
+                                focusedTextColor = AITextPrimary,
+                                unfocusedTextColor = AITextPrimary
                             ),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -346,12 +331,12 @@ fun AuthScreen(
                                     "Mật khẩu không khớp"
                                 } else null
                             },
-                            label = { Text("Mật khẩu", color = DarkOnSurface.copy(alpha = 0.7f)) },
+                            label = { Text("Mật khẩu", color = AITextPrimary.copy(alpha = 0.7f)) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Lock,
                                     contentDescription = "Password Icon",
-                                    tint = DarkPrimary
+                                    tint = AIPrimarySoft
                                 )
                             },
                             trailingIcon = {
@@ -367,11 +352,11 @@ fun AuthScreen(
                             singleLine = true,
                             isError = passwordError != null,
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = DarkPrimary,
-                                unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
-                                errorBorderColor = DarkError,
-                                focusedTextColor = DarkOnSurface,
-                                unfocusedTextColor = DarkOnSurface
+                                focusedBorderColor = AIPrimarySoft,
+                                unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
+                                errorBorderColor = AIError,
+                                focusedTextColor = AITextPrimary,
+                                unfocusedTextColor = AITextPrimary
                             ),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -386,12 +371,12 @@ fun AuthScreen(
                                     "Mật khẩu không khớp"
                                 } else null
                             },
-                            label = { Text("Xác nhận mật khẩu", color = DarkOnSurface.copy(alpha = 0.7f)) },
+                            label = { Text("Xác nhận mật khẩu", color = AITextPrimary.copy(alpha = 0.7f)) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Lock,
                                     contentDescription = "Confirm Password Icon",
-                                    tint = DarkPrimary
+                                    tint = AIPrimarySoft
                                 )
                             },
                             trailingIcon = {
@@ -407,11 +392,11 @@ fun AuthScreen(
                             singleLine = true,
                             isError = passwordError != null,
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = DarkPrimary,
-                                unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
-                                errorBorderColor = DarkError,
-                                focusedTextColor = DarkOnSurface,
-                                unfocusedTextColor = DarkOnSurface
+                                focusedBorderColor = AIPrimarySoft,
+                                unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
+                                errorBorderColor = AIError,
+                                focusedTextColor = AITextPrimary,
+                                unfocusedTextColor = AITextPrimary
                             ),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -420,7 +405,7 @@ fun AuthScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = passwordError!!,
-                                color = DarkError,
+                                color = AIError,
                                 fontSize = 12.sp,
                                 modifier = Modifier.fillMaxWidth()
                             )
@@ -468,8 +453,8 @@ fun AuthScreen(
                                      registerConfirmPassword.isNotBlank() &&
                                      registerPassword == registerConfirmPassword,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = DarkPrimary,
-                                disabledContainerColor = DarkPrimary.copy(alpha = 0.5f)
+                                containerColor = AIPrimarySoft,
+                                disabledContainerColor = AIPrimarySoft.copy(alpha = 0.5f)
                             ),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -478,14 +463,14 @@ fun AuthScreen(
                             if (isRegisterLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(24.dp),
-                                    color = DarkOnPrimary
+                                    color = AITextPrimary
                                 )
                             } else {
                                 Text(
                                     text = "Đăng Ký",
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = DarkOnPrimary
+                                    color = AITextPrimary
                                 )
                             }
                         }
@@ -501,7 +486,7 @@ fun AuthScreen(
                     ) {
                         Text(
                             text = if (isLoginMode) "Chưa có tài khoản? " else "Đã có tài khoản? ",
-                            color = DarkOnSurface.copy(alpha = 0.7f),
+                            color = AITextPrimary.copy(alpha = 0.7f),
                             fontSize = 14.sp
                         )
                         TextButton(onClick = { 
@@ -511,7 +496,7 @@ fun AuthScreen(
                             Text(
                                 text = if (isLoginMode) "Đăng ký ngay" else "Đăng nhập",
                                 fontWeight = FontWeight.Bold,
-                                color = DarkPrimary,
+                                color = AIPrimarySoft,
                                 fontSize = 14.sp
                             )
                         }
@@ -525,7 +510,7 @@ fun AuthScreen(
             Text(
                 text = "🔗 Kết nối với Auto_BE API",
                 fontSize = 12.sp,
-                color = DarkOnSurface.copy(alpha = 0.5f),
+                color = AITextPrimary.copy(alpha = 0.5f),
                 textAlign = TextAlign.Center
             )
         }

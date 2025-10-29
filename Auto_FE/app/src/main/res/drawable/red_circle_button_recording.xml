@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    
+    <!-- Darker red gradient when recording -->
+    <gradient
+        android:type="radial"
+        android:gradientRadius="40dp"
+        android:centerX="0.5"
+        android:centerY="0.5"
+        android:startColor="#FF6666"
+        android:centerColor="#FF2222"
+        android:endColor="#AA0000" />
+    
+    <!-- Thicker red border when recording -->
+    <stroke
+        android:width="4dp"
+        android:color="#FF0000" />
+    
+    <!-- Shadow effect -->
+    <solid android:color="#00000000" />
+    
+</shape>

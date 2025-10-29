@@ -54,8 +54,8 @@ fun MedicineScreen() {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        DarkGradientStart,
-                        DarkGradientEnd
+                        AIBackgroundDeep,
+                        AIBackgroundSoft
                     )
                 )
             )
@@ -134,7 +134,7 @@ fun MedicineScreen() {
 @Composable
 fun MedicineCard(medicine: MedicineItem) {
     val statusColor = when (medicine.status) {
-        "Đang dùng" -> VoiceMediumColor
+        "Đang dùng" -> VoiceListening
         "Hết thuốc" -> Color.Red.copy(alpha = 0.8f)
         "Tạm dừng" -> Color(0xFFFF9800).copy(alpha = 0.8f)
         else -> DarkOnSurface.copy(alpha = 0.6f)

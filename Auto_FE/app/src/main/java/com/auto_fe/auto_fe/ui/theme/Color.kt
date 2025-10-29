@@ -2,59 +2,114 @@ package com.auto_fe.auto_fe.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ===== LIGHT THEME (Warm Minimal) =====
-val LightPrimary        = Color(0xFFB07C4A)   // amber ấm (dùng cho nút phụ)
-val LightBackground     = Color(0xFFF5F3EF)   // xám ngà ấm
-val LightSurface        = Color(0xFFFFFFFF)   // trắng mềm
-val LightOnPrimary      = Color(0xFFFFFFFF)
-val LightOnBackground   = Color(0xFF1F1B16)
-val LightOnSurface      = Color(0xFF2A2620)
+// ===== AI VISUAL IDENTITY - MINIMALIST, DEEP-SOFT =====
+// Tone chủ đạo: Minimalist, Deep-Soft, cảm giác "AI sống động"
+// Mood board: Glow layer, Glass aura, Orbit motion, Gradient soft blue–purple, Pulsating sphere
 
-// ===== DARK THEME — PURE DARK (Thuần đen, ít chói) =====
-val DarkPrimary         = Color(0xFFE0A069)   // Amber ấm chỉ cho CTA
-val DarkBackground      = Color(0xFF0A0E14)   // Đen xanh rất sâu
-val DarkSurface         = Color(0xFF1A1F2E)   // Xanh đậm
-val DarkOnPrimary       = Color(0xFF0A0E14)   // Đen trên amber
-val DarkOnBackground    = Color(0xFFE8F4FD)   // Trắng xanh nhẹ
-val DarkOnSurface       = Color(0xFFE8F4FD)   // Trắng xanh nhẹ
+// ===== PRIMARY AI COLORS (Soft Blue-Purple Gradient) =====
+val AIPrimarySoft       = Color(0xFF6B73FF)   // Soft blue-purple
+val AIPrimaryGlow       = Color(0xFF8B9AFF)   // Glow layer
+val AIPrimaryGlass      = Color(0xFF9BB5FF)   // Glass aura
+val AIPrimaryDeep       = Color(0xFF4A5BCC)   // Deep soft
 
-// ===== VOICE STATUS (Tông ấm nhất quán) =====
-val VoiceLowColor       = Color(0xFFE9C489)   // amber mềm
-val VoiceMediumColor    = Color(0xFFD4936A)   // cam ấm
-val VoiceHighColor      = Color(0xFFC26A5E)   // coral ấm
+// ===== BACKGROUND SYSTEM (Deep-Soft Minimalist) =====
+val AIBackgroundDeep    = Color(0xFF0A0B0F)   // Deep black-blue
+val AIBackgroundMid     = Color(0xFF1A1D2B)   // Mid dark (for gradients)
+val AIBackgroundSoft    = Color(0xFF1A1D2B)   // Soft dark
+val AISurfaceGlass      = Color(0xFF2A2F42)   // Glass surface
+val AISurfaceGlow       = Color(0xFF3A4155)   // Glow surface
 
-// ===== GRADIENT BACKGROUND =====
-val GradientStart       = Color(0xFFF7F5F2)   // ấm, có chiều sâu
-val GradientEnd         = Color(0xFFEDE7E1)
+// ===== LIGHT MODE BACKGROUND SYSTEM =====
+val LightBackgroundDeep = Color(0xFFF8F6F0)   // Warm white-beige
+val LightBackgroundMid  = Color(0xFFF5F2ED)   // Mid beige (for gradients)
+val LightBackgroundSoft = Color(0xFFF2EFEA)   // Soft beige
+val LightSurfaceGlass   = Color(0xFFF0EDE8)   // Glass surface
+val LightSurfaceGlow    = Color(0xFFEDEAE5)   // Glow surface
 
-val DarkGradientStart   = Color(0xFF0A0B0D)   // Đen sâu hơn
-val DarkGradientEnd     = Color(0xFF171A1F)   // Xanh đậm hơn
+// ===== TEXT SYSTEM (Minimalist, ít chữ) =====
+val AITextPrimary       = Color(0xFFE8F0FF)   // Soft white-blue
+val AITextSecondary     = Color(0xFFB8C5E8)   // Muted soft
+val AITextTertiary      = Color(0xFF8A9BC2)   // Very muted
 
-// ===== WAVE / AURA (Tông ấm cho light, giữ xanh cho dark) =====
-val WaveColor1          = Color(0xFFE5DAD0)   // xám – slate ấm
-val WaveColor2          = Color(0xFFD9C9BC)   // KHÔNG xanh lam
-val WaveColor3          = Color(0xFFC7B2A1)
-val WaveColor4          = Color(0xFFB59C8B)
-val WaveColor5          = Color(0xFFA18370)
+// ===== LIGHT MODE TEXT SYSTEM =====
+val LightTextPrimary    = Color(0xFF2C2C2C)   // Dark grey
+val LightTextSecondary  = Color(0xFF5A5A5A)   // Medium grey
+val LightTextTertiary   = Color(0xFF8A8A8A)   // Light grey
 
-val DarkWaveColor1      = Color(0xFF6A7BC4)   // Xanh tím sáng
-val DarkWaveColor2      = Color(0xFF5A6BC0)   // Xanh tím
-val DarkWaveColor3      = Color(0xFF4A5AB8)   // Xanh tím đậm
-val DarkWaveColor4      = Color(0xFF3F51B5)   // Xanh tím sâu
-val DarkWaveColor5      = Color(0xFF3949AB)   // Xanh tím rất đậm
+// ===== VOICE RESPONSIVE COLORS (Breathing with voice) =====
+val VoiceIdle           = Color(0xFF4A5BCC)   // Deep soft blue
+val VoiceListening      = Color(0xFF6B73FF)   // Soft blue-purple
+val VoiceActive         = Color(0xFF8B9AFF)   // Glow blue
+val VoiceProcessing     = Color(0xFF9BB5FF)   // Glass aura
+val VoiceError          = Color(0xFFFF6B8A)   // Soft error (minimalist)
 
-// ===== SEMANTIC (Tông xanh nhất quán) =====
-val SuccessColor        = Color(0xFF4CAF50)   // Xanh lá
-val ErrorColor          = Color(0xFFF44336)   // Đỏ (giữ nguyên cho cảnh báo)
-val DarkError           = Color(0xFFFF6B6B)   // Đỏ sáng cho dark theme
-val WarningColor        = Color(0xFFFF9800)   // Cam (giữ nguyên cho cảnh báo)
-val InfoColor           = Color(0xFF2196F3)   // Xanh dương
+// ===== GRADIENT SYSTEM (Soft Blue-Purple) =====
+val AIGradientStart     = Color(0xFF0A0B0F)   // Deep black-blue
+val AIGradientMiddle    = Color(0xFF1A1D2B)   // Soft dark
+val AIGradientEnd       = Color(0xFF2A2F42)   // Glass surface
 
-// ===== FLOATING WINDOW =====
-val FloatingButtonColor     = DarkPrimary
-val FloatingButtonPressed   = Color(0xFF29B6F6)
-val FloatingMenuBackground  = DarkSurface
+// ===== ORBIT MOTION COLORS (Glass aura effects) =====
+val OrbitColor1         = Color(0xFF4A5BCC)   // Deep soft blue
+val OrbitColor2         = Color(0xFF6B73FF)   // Soft blue-purple
+val OrbitColor3         = Color(0xFF8B9AFF)   // Glow blue
+val OrbitColor4         = Color(0xFF9BB5FF)   // Glass aura
+val OrbitColor5         = Color(0xFFB8C5FF)   // Light glass
 
-// ===== HIGH CONTRAST (khi cần) =====
-val HighContrastText    = Color(0xFFFFFFFF)
-val HighContrastBackground = Color(0xFF000000)
+// ===== PULSATING SPHERE COLORS =====
+val SphereCore          = Color(0xFF6B73FF)   // Core soft blue-purple
+val SphereGlow          = Color(0xFF8B9AFF)   // Glow layer
+val SphereAura          = Color(0xFF9BB5FF)   // Glass aura
+val SphereBreath        = Color(0xFF4A5BCC)   // Breathing deep
+
+// ===== GLASS MORPHISM EFFECTS =====
+val GlassBackground     = Color(0x1A2A2F42)   // Glass background
+val GlassBorder         = Color(0x336B73FF)   // Glass border
+val GlassGlow           = Color(0x4D8B9AFF)   // Glass glow
+
+// ===== SEMANTIC COLORS (Minimalist) =====
+val AISuccess           = Color(0xFF4DD0E1)   // Soft cyan
+val AIError             = Color(0xFFFF6B8A)   // Soft error
+val AIWarning           = Color(0xFFFFB74D)   // Soft warning
+val AIInfo              = Color(0xFF64B5F6)   // Soft info
+
+// ===== FLOATING WINDOW (AI Style) =====
+val FloatingButtonColor     = AIPrimarySoft
+val FloatingButtonPressed   = AIPrimaryGlow
+val FloatingMenuBackground  = AISurfaceGlass
+
+// ===== GOLDEN SPHERE THEME (Warm Golden-Orange) =====
+// Inspired by golden orb with warm, energetic feel
+// REVERSE GRADIENT: Vàng rực ngoài → Hồng/đào trong
+val GoldenCore          = Color(0xFFFFB6C1)   // Light pink core (tâm)
+val GoldenInner         = Color(0xFFFFA07A)   // Light salmon (trong)
+val GoldenMiddle        = Color(0xFFFF8C00)   // Dark orange (giữa)
+val GoldenOuter         = Color(0xFFFFD700)   // Bright golden (ngoài)
+val GoldenAura          = Color(0xFFFFA500)   // Orange aura
+val GoldenBreath        = Color(0xFFFF7F50)   // Coral breathing
+val GoldenBorder        = Color(0xFFFF6347)   // Tomato border glow
+val GoldenBackground    = Color(0xFFFFF8DC)   // Cream background
+val GoldenSurface       = Color(0xFFFFFACD)   // Lemon chiffon surface
+
+// ===== GOLDEN VOICE RESPONSIVE COLORS =====
+val GoldenVoiceIdle     = Color(0xFFFFD700)   // Golden idle
+val GoldenVoiceListening = Color(0xFFFFA500) // Orange listening
+val GoldenVoiceActive   = Color(0xFFFF8C00)   // Deep orange active
+val GoldenVoiceProcessing = Color(0xFFFF7F50) // Coral processing
+val GoldenVoiceError    = Color(0xFFFF4500)   // Orange red error
+
+// ===== GOLDEN ORBIT MOTION COLORS =====
+val GoldenOrbit1        = Color(0xFFFFD700)   // Bright gold
+val GoldenOrbit2        = Color(0xFFFFA500)   // Orange
+val GoldenOrbit3        = Color(0xFFFF8C00)   // Dark orange
+val GoldenOrbit4        = Color(0xFFFF7F50)   // Coral
+val GoldenOrbit5        = Color(0xFFFF6347)   // Tomato
+
+// ===== LEGACY COMPATIBILITY (for existing components) =====
+val DarkPrimary         = AIPrimarySoft
+val DarkBackground      = AIBackgroundDeep
+val DarkSurface         = AISurfaceGlass
+val DarkOnPrimary       = AITextPrimary
+val DarkOnBackground    = AITextPrimary
+val DarkOnSurface       = AITextPrimary
+val DarkError           = AIError
+val SuccessColor        = AISuccess

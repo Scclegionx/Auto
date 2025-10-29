@@ -96,7 +96,7 @@ fun PrescriptionDetailScreen(
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Xóa đơn thuốc",
-                            tint = DarkError
+                            tint = AIError
                         )
                     }
                 },
@@ -113,8 +113,8 @@ fun PrescriptionDetailScreen(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            DarkGradientStart,
-                            DarkGradientEnd
+                            AIBackgroundDeep,
+                            AIBackgroundSoft
                         )
                     )
                 )
@@ -148,7 +148,7 @@ fun PrescriptionDetailScreen(
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = errorMessage ?: "Có lỗi xảy ra",
-                                color = DarkError,
+                                color = AIError,
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -193,7 +193,7 @@ fun PrescriptionDetailScreen(
                                 )
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = DarkError),
+                        colors = ButtonDefaults.buttonColors(containerColor = AIError),
                         enabled = !isDeleting
                     ) {
                         if (isDeleting) {
@@ -267,7 +267,7 @@ fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
                         // Status badge
                         Surface(
                             color = if (prescription.isActive) 
-                                SuccessColor.copy(alpha = 0.2f) 
+                                AISuccess.copy(alpha = 0.2f) 
                             else 
                                 DarkOnSurface.copy(alpha = 0.1f),
                             shape = RoundedCornerShape(16.dp)
@@ -275,7 +275,7 @@ fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
                             Text(
                                 text = if (prescription.isActive) "✓ Đang dùng" else "⏸ Tạm ngưng",
                                 fontSize = 13.sp,
-                                color = if (prescription.isActive) SuccessColor else DarkOnSurface.copy(alpha = 0.5f),
+                                color = if (prescription.isActive) AISuccess else DarkOnSurface.copy(alpha = 0.5f),
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                                 fontWeight = FontWeight.Bold
                             )
@@ -475,7 +475,7 @@ fun MedicationCard(medication: PrescriptionService.MedicationReminder) {
                 modifier = Modifier
                     .size(12.dp)
                     .background(
-                        color = if (medication.isActive) SuccessColor else DarkOnSurface.copy(alpha = 0.3f),
+                        color = if (medication.isActive) AISuccess else DarkOnSurface.copy(alpha = 0.3f),
                         shape = CircleShape
                     )
             )
@@ -611,9 +611,9 @@ fun getTypeText(type: String): String {
 
 fun getTypeBadgeColor(type: String): androidx.compose.ui.graphics.Color {
     return when (type) {
-        "BEFORE_MEAL" -> InfoColor.copy(alpha = 0.2f)
-        "AFTER_MEAL" -> SuccessColor.copy(alpha = 0.2f)
-        "WITH_MEAL" -> WarningColor.copy(alpha = 0.2f)
+        "BEFORE_MEAL" -> AIInfo.copy(alpha = 0.2f)
+        "AFTER_MEAL" -> AISuccess.copy(alpha = 0.2f)
+        "WITH_MEAL" -> AIWarning.copy(alpha = 0.2f)
         else -> DarkOnSurface.copy(alpha = 0.1f)
     }
 }

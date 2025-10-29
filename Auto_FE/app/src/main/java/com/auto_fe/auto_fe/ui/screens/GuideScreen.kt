@@ -164,8 +164,8 @@ fun GuideScreen() {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        DarkGradientStart,
-                        DarkGradientEnd
+                        AIBackgroundDeep,
+                        AIBackgroundSoft
                     )
                 )
             )

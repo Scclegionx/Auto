@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    
+    <!-- Gradient from center to edges -->
+    <gradient
+        android:startColor="#4CAF50"
+        android:centerColor="#2196F3"
+        android:endColor="#E91E63"
+        android:angle="0" />
+    
+    <!-- Rounded corners for smooth look -->
+    <corners android:radius="2dp" />
+    
+    <!-- Soft shadow effect -->
+    <stroke
+        android:width="0.5dp"
+        android:color="#40FFFFFF" />
+        
+</shape>

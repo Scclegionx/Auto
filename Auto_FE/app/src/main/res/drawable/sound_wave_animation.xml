@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    
+    <!-- Frame 1: Low wave -->
+    <item android:duration="150">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#4CAF50"
+                android:endColor="#2E7D32"
+                android:angle="0" />
+            <size
+                android:width="8dp"
+                android:height="12dp" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    
+    <!-- Frame 2: Medium wave -->
+    <item android:duration="150">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#2196F3"
+                android:endColor="#1976D2"
+                android:angle="0" />
+            <size
+                android:width="8dp"
+                android:height="20dp" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    
+    <!-- Frame 3: High wave -->
+    <item android:duration="150">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#FF9800"
+                android:endColor="#F57C00"
+                android:angle="0" />
+            <size
+                android:width="8dp"
+                android:height="28dp" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    
+    <!-- Frame 4: Very high wave -->
+    <item android:duration="150">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#E91E63"
+                android:endColor="#C2185B"
+                android:angle="0" />
+            <size
+                android:width="8dp"
+                android:height="32dp" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    
+    <!-- Frame 5: Peak wave -->
+    <item android:duration="150">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#9C27B0"
+                android:endColor="#7B1FA2"
+                android:angle="0" />
+            <size
+                android:width="8dp"
+                android:height="36dp" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    
+    <!-- Frame 6: Back to high -->
+    <item android:duration="150">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#E91E63"
+                android:endColor="#C2185B"
+                android:angle="0" />
+            <size
+                android:width="8dp"
+                android:height="28dp" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    
+    <!-- Frame 7: Medium wave -->
+    <item android:duration="150">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#2196F3"
+                android:endColor="#1976D2"
+                android:angle="0" />
+            <size
+                android:width="8dp"
+                android:height="20dp" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    
+    <!-- Frame 8: Low wave -->
+    <item android:duration="150">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#4CAF50"
+                android:endColor="#2E7D32"
+                android:angle="0" />
+            <size
+                android:width="8dp"
+                android:height="12dp" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    
+</animation-list>

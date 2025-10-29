@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    
+    <!-- Frosted glass background -->
+    <gradient
+        android:startColor="#1AFFFFFF"
+        android:centerColor="#0DFFFFFF"
+        android:endColor="#05FFFFFF"
+        android:angle="135"
+        android:type="linear" />
+    
+    <!-- Rounded corners for modern look -->
+    <corners android:radius="16dp" />
+    
+    <!-- Subtle border with glow effect -->
+    <stroke
+        android:width="2dp"
+        android:color="#33FFFFFF" />
+        
+</shape>

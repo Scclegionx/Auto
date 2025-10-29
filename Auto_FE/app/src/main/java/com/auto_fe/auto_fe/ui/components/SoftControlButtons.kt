@@ -1,6 +1,6 @@
 @file:Suppress("UnusedImport")
 
-package com.auto_fe.auto_fe
+package com.auto_fe.auto_fe.ui.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-// Removed Material Icons imports - using Text/Emoji instead
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,11 +30,22 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.auto_fe.auto_fe.ui.theme.*
 import kotlin.math.min
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
+/**
+ * AI Breathing Control Buttons - "hơi thở" giọng nói
+ * 
+ * Tone chủ đạo: Minimalist, Deep-Soft, cảm giác "AI sống động"
+ * Features:
+ * - Voice-responsive breathing animations
+ * - Glass morphism effects
+ * - Soft blue-purple gradient
+ * - Haptic feedback với voice rhythm
+ */
 @Composable
 fun SoftControlButtons(
     isRecording: Boolean,
@@ -45,36 +55,62 @@ fun SoftControlButtons(
     onTranscriptOpen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val cc = MaterialTheme.colorScheme
     val haptic = LocalHapticFeedback.current
 
-    // Nền cụm nút: mỏng hơn, ít "nhựa"
-    Surface(
+    // AI Breathing Animation System
+    val transition = rememberInfiniteTransition(label = "ai_breathing")
+    
+    // Breathing scale - "hơi thở" giọng nói
+    val breathScale by transition.animateFloat(
+        initialValue = 0.98f,
+        targetValue = when {
+            isRecording -> 1.05f + voiceLevel * 0.02f
+            else -> 1.02f
+        },
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = when {
+                    isRecording -> 1200 + voiceLevel * 200
+                    else -> 3000
+                },
+                easing = CubicBezierEasing(0.25f, 0.1f, 0.25f, 1.0f)
+            ),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "breath"
+    )
+
+    // AI Glass morphism background
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = GlassBackground
+        ),
+        shape = RoundedCornerShape(28.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 24.dp),
-        color = cc.surface.copy(alpha = 0.45f),
-        shape = RoundedCornerShape(20.dp),
-        shadowElevation = 6.dp,
-        tonalElevation = 0.dp
+            .padding(horizontal = 24.dp, vertical = 16.dp)
+            .scale(breathScale)
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 16.dp),
+                .padding(horizontal = 24.dp, vertical = 20.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SecondaryButton(
-                label = "Lặp lại",
+            // AI Minimalist Secondary Button
+            AIBreathingButton(
                 iconText = "🔄",
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     onAgainClick()
-                }
+                },
+                isActive = false
             )
 
-            RecordButton(
+            // AI Main Record Button - "hơi thở" giọng nói
+            AIRecordButton(
                 isRecording = isRecording,
                 voiceLevel = voiceLevel,
                 onClick = {
@@ -83,142 +119,168 @@ fun SoftControlButtons(
                 }
             )
 
-            SecondaryButton(
-                label = "Bản ghi",
+            // AI Minimalist Secondary Button
+            AIBreathingButton(
                 iconText = "📋",
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     onTranscriptOpen()
-                }
+                },
+                isActive = false
             )
         }
     }
 }
 
-/* ---------- Secondary (trái/phải): phẳng, sạch, không glow ---------- */
-@Composable
-private fun SecondaryButton(
-    label: String,
-    iconText: String,
-    onClick: () -> Unit
-) {
-    val cc = MaterialTheme.colorScheme
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            Modifier
-                .size(72.dp)
-                .clip(CircleShape)
-                .border(
-                    width = 1.dp,
-                    color = cc.onSurface.copy(alpha = 0.15f),
-                    shape = CircleShape
-                )
-                .background(cc.surface.copy(alpha = 0.06f))
-                .clickable { onClick() }
-                .semantics { contentDescription = label },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = iconText,
-                style = MaterialTheme.typography.headlineMedium,
-                color = cc.onSurface.copy(alpha = 0.92f)
-            )
-        }
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelLarge,
-            color = cc.onSurface.copy(alpha = 0.9f),
-            textAlign = TextAlign.Center
-        )
-    }
-}
+// ==== AI VISUAL IDENTITY BUTTON COMPONENTS ====
 
-/* ---------- Primary (giữa): mic lớn, chỉ 1 hiệu ứng tinh tế ---------- */
 @Composable
-private fun RecordButton(
+private fun AIRecordButton(
     isRecording: Boolean,
     voiceLevel: Int,
     onClick: () -> Unit
 ) {
-    val cc = MaterialTheme.colorScheme
-    val accent = when (voiceLevel) {
-        0 -> com.auto_fe.auto_fe.ui.theme.DarkPrimary
-        1 -> com.auto_fe.auto_fe.ui.theme.VoiceLowColor
-        2 -> com.auto_fe.auto_fe.ui.theme.VoiceMediumColor
-        else -> com.auto_fe.auto_fe.ui.theme.VoiceHighColor
-    }
-
-    val pulse = rememberInfiniteTransition(label = "mic-ring")
-    // nhẫn (ring) mảnh 360° chạy nhẹ theo level – thay cho glow/blur
-    val ringPhase by pulse.animateFloat(
-        0f, 1f,
+    val transition = rememberInfiniteTransition(label = "record_breathing")
+    
+    // Breathing animation theo voice level
+    val breathScale by transition.animateFloat(
+        initialValue = 1.0f,
+        targetValue = when {
+            isRecording -> 1.1f + voiceLevel * 0.05f
+            else -> 1.05f
+        },
         animationSpec = infiniteRepeatable(
-            tween(durationMillis = if (isRecording) 1200 - voiceLevel * 120 else 2000, easing = LinearEasing)
+            animation = tween(
+                durationMillis = when {
+                    isRecording -> 800 + voiceLevel * 200
+                    else -> 2000
+                },
+                easing = CubicBezierEasing(0.25f, 0.1f, 0.25f, 1.0f)
+            ),
+            repeatMode = RepeatMode.Reverse
         ),
-        label = "phase"
+        label = "recordBreath"
+    )
+    
+    // Glow intensity theo voice level
+    val glowIntensity by transition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = when {
+            isRecording -> 0.7f + voiceLevel * 0.1f
+            else -> 0.5f
+        },
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = when {
+                    isRecording -> 1000 + voiceLevel * 300
+                    else -> 2500
+                },
+                easing = EaseInOutCubic
+            ),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "recordGlow"
     )
 
     Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(112.dp)
-            .clip(CircleShape)
-            .background(
+            .size(80.dp)
+            .scale(breathScale)
+            .clickable { onClick() }
+            .semantics { contentDescription = if (isRecording) "Stop recording" else "Start recording" }
+    ) {
+        // AI Glow layer
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val center = Offset(size.width / 2f, size.height / 2f)
+            val radius = size.minDimension / 2f
+            
+            // Voice-responsive glow
+            drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(
-                        androidx.compose.ui.graphics.lerp(accent, Color.White, 0.08f),
-                        accent
-                    )
-                )
+                        if (isRecording) VoiceActive.copy(alpha = glowIntensity) else VoiceIdle.copy(alpha = glowIntensity),
+                        Color.Transparent
+                    ),
+                    center = center,
+                    radius = radius * 1.5f
+                ),
+                radius = radius * 1.5f,
+                center = center
             )
-            .clickable { onClick() }
-            .semantics { contentDescription = if (isRecording) "Dừng ghi âm" else "Bắt đầu ghi âm" },
-        contentAlignment = Alignment.Center
-    ) {
-        // Progress ring khi đang ghi
-        if (isRecording) {
-            Canvas(Modifier.matchParentSize()) {
-                val s = min(size.width, size.height)
-                val stroke = s * 0.035f
-                // vẽ vòng nền mờ
-                drawArc(
-                    color = cc.onPrimary.copy(alpha = 0.15f),
-                    startAngle = -90f, sweepAngle = 360f,
-                    useCenter = false,
-                    topLeft = androidx.compose.ui.geometry.Offset(stroke, stroke),
-                    size = androidx.compose.ui.geometry.Size(s - 2 * stroke, s - 2 * stroke),
-                    style = androidx.compose.ui.graphics.drawscope.Stroke(stroke)
-                )
-                // sweep theo phase + level
-                val sweep = 60f + 240f * (0.25f * voiceLevel + ringPhase % 1f)
-                drawArc(
-                    color = cc.onPrimary.copy(alpha = 0.9f),
-                    startAngle = -90f, sweepAngle = sweep,
-                    useCenter = false,
-                    topLeft = androidx.compose.ui.geometry.Offset(stroke, stroke),
-                    size = androidx.compose.ui.geometry.Size(s - 2 * stroke, s - 2 * stroke),
-                    style = androidx.compose.ui.graphics.drawscope.Stroke(stroke)
-                )
-            }
-        } else {
-            // Dot pulse khi không ghi
-            Canvas(Modifier.matchParentSize()) {
-                val r = size.minDimension * 0.08f
-                val cx = size.width * 0.72f
-                val cy = size.height * 0.28f
-                val pulse = 0.85f + 0.15f * kotlin.math.sin(2f * Math.PI.toFloat() * ringPhase)
-                drawCircle(
-                    color = cc.onPrimary.copy(alpha = 0.35f),
-                    radius = r * pulse,
-                    center = androidx.compose.ui.geometry.Offset(cx, cy)
+        }
+        
+        // AI Glass morphism button
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = GlassBackground
+            ),
+            shape = CircleShape,
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            modifier = Modifier.size(64.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = if (isRecording) "⏹" else "🎤",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = if (isRecording) VoiceError else AITextPrimary
                 )
             }
         }
+    }
+}
 
-        Text(
-            text = if (isRecording) "⏹️" else "🎙️",
-            style = MaterialTheme.typography.headlineLarge,
-            color = cc.onPrimary
-        )
+@Composable
+private fun AIBreathingButton(
+    iconText: String,
+    onClick: () -> Unit,
+    isActive: Boolean = false
+) {
+    val transition = rememberInfiniteTransition(label = "secondary_breathing")
+    
+    // Subtle breathing animation
+    val breathScale by transition.animateFloat(
+        initialValue = 1.0f,
+        targetValue = if (isActive) 1.05f else 1.02f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 3000,
+                easing = CubicBezierEasing(0.25f, 0.1f, 0.25f, 1.0f)
+            ),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "secondaryBreath"
+    )
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(56.dp)
+            .scale(breathScale)
+            .clickable { onClick() }
+    ) {
+        // AI Glass morphism secondary button
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = GlassBackground
+            ),
+            shape = CircleShape,
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            modifier = Modifier.size(48.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = iconText,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = AITextSecondary
+                )
+            }
+        }
     }
 }

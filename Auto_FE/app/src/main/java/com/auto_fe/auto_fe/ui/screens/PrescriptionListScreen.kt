@@ -74,8 +74,8 @@ fun PrescriptionListScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        DarkGradientStart,
-                        DarkGradientEnd
+                        AIBackgroundDeep,
+                        AIBackgroundSoft
                     )
                 )
             )
@@ -222,10 +222,10 @@ fun PrescriptionListScreen(
                                         Icon(
                                             imageVector = Icons.Default.ExitToApp,
                                             contentDescription = null,
-                                            tint = DarkError,
+                                            tint = AIError,
                                             modifier = Modifier.size(20.dp)
                                         )
-                                        Text("Đăng xuất", color = DarkError)
+                                        Text("Đăng xuất", color = AIError)
                                     }
                                 },
                                 onClick = {
@@ -283,7 +283,7 @@ fun PrescriptionListScreen(
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = errorMessage ?: "Có lỗi xảy ra",
-                                color = DarkError,
+                                color = AIError,
                                 textAlign = TextAlign.Center
                             )
                             Spacer(modifier = Modifier.height(16.dp))
@@ -425,13 +425,13 @@ fun PrescriptionCard(
                 
                 // Status badge
                 Surface(
-                    color = if (prescription.isActive) SuccessColor.copy(alpha = 0.2f) else DarkOnSurface.copy(alpha = 0.1f),
+                    color = if (prescription.isActive) AISuccess.copy(alpha = 0.2f) else DarkOnSurface.copy(alpha = 0.1f),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
                         text = if (prescription.isActive) "✓ Đang dùng" else "⏸ Tạm ngưng",
                         fontSize = 12.sp,
-                        color = if (prescription.isActive) SuccessColor else DarkOnSurface.copy(alpha = 0.5f),
+                        color = if (prescription.isActive) AISuccess else DarkOnSurface.copy(alpha = 0.5f),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         fontWeight = FontWeight.Medium
                     )

@@ -97,7 +97,7 @@ fun ProfileScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = errorMessage ?: "Lỗi không xác định",
-                            color = DarkError,
+                            color = AIError,
                             fontSize = 14.sp
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -204,11 +204,11 @@ fun ProfileContent(
                     color = if (profileData.isActive == true) 
                         DarkPrimary.copy(alpha = 0.2f) 
                     else 
-                        DarkError.copy(alpha = 0.2f)
+                        AIError.copy(alpha = 0.2f)
                 ) {
                     Text(
                         text = if (profileData.isActive == true) "✓ Đã xác thực" else "⚠ Chưa xác thực",
-                        color = if (profileData.isActive == true) DarkPrimary else DarkError,
+                        color = if (profileData.isActive == true) AIPrimarySoft else AIError,
                         fontSize = 12.sp,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                     )

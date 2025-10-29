@@ -18,23 +18,23 @@ import androidx.core.view.WindowCompat
 import com.auto_fe.auto_fe.ui.theme.Typography as AutoFETypography
 
 private val DarkColorScheme = darkColorScheme(
-    primary = DarkPrimary,
-    onPrimary = DarkOnPrimary,
-    background = DarkBackground,
-    onBackground = DarkOnBackground,
-    surface = DarkSurface,
-    onSurface = DarkOnSurface,
-    tertiary = VoiceLowColor
+    primary = AIPrimarySoft,
+    onPrimary = AITextPrimary,
+    background = AIBackgroundDeep,
+    onBackground = AITextPrimary,
+    surface = AISurfaceGlass,
+    onSurface = AITextPrimary,
+    tertiary = VoiceIdle
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = LightPrimary,
-    onPrimary = LightOnPrimary,
-    background = LightBackground,
-    onBackground = LightOnBackground,
-    surface = LightSurface,
-    onSurface = LightOnSurface,
-    tertiary = VoiceLowColor
+    primary = AIPrimarySoft,
+    onPrimary = AITextPrimary,
+    background = AIBackgroundSoft,
+    onBackground = AITextPrimary,
+    surface = AISurfaceGlass,
+    onSurface = AITextPrimary,
+    tertiary = VoiceIdle
 )
 
 @Composable

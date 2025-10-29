@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="380dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/voice_popup_background"
+    android:padding="28dp"
+    android:elevation="12dp">
+
+    <!-- Header với microphone icon và timer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp">
+
+        <ImageView
+            android:id="@+id/iv_microphone"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:layout_marginEnd="12dp"
+            android:tint="@android:color/white" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Đang ghi âm..."
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="@drawable/sound_wave_container"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+    <!-- Liquid Wave Container -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/liquid_wave_container"
+        android:padding="20dp">
+
+        <!-- Sound Wave Bars Container -->
+        <LinearLayout
+            android:id="@+id/sound_wave_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:weightSum="20">
+
+            <!-- Wave bars will be added programmatically -->
+            <!-- Each bar will be 8dp wide with 2dp margin -->
+            
+        </LinearLayout>
+
+        <!-- Center pulse circle -->
+        <View
+            android:id="@+id/center_pulse"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:background="@drawable/sound_wave_bar"
+            android:alpha="0.8" />
+
+    </FrameLayout>
+
+    <!-- Transcript text -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/transcript_background"
+        android:padding="16dp"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/tv_transcript"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đang lắng nghe..."
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:lineSpacingExtra="4dp"
+            android:gravity="start" />
+
+    </ScrollView>
+
+    <!-- Single Toggle Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btn_toggle_record"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="REC"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="@drawable/red_circle_button"
+            android:elevation="8dp"
+            android:stateListAnimator="@null" />
+
+    </LinearLayout>
+
+</LinearLayout>

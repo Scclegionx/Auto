@@ -87,8 +87,8 @@ fun CreatePrescriptionScreen(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            DarkGradientStart,
-                            DarkGradientEnd
+                            AIBackgroundDeep,
+                            AIBackgroundSoft
                         )
                     )
                 )
@@ -370,7 +370,7 @@ fun MedicationReminderCard(
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Xóa",
-                    tint = DarkError
+                    tint = AIError
                 )
             }
         }
@@ -549,7 +549,7 @@ fun MedicationTableRow(
             Icon(
                 imageVector = Icons.Default.Delete,
                 contentDescription = "Xóa",
-                tint = DarkError,
+                tint = AIError,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -721,7 +721,7 @@ fun MedicationEditDialog(
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Xóa giờ",
-                                tint = DarkError
+                                tint = AIError
                             )
                         }
                     }

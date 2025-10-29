@@ -1,31 +1,25 @@
 package com.example.Auto_BE.service;
 
 import com.example.Auto_BE.dto.BaseResponse;
+import com.example.Auto_BE.dto.response.NotificationResponse;
 import com.example.Auto_BE.entity.Notifications;
 import com.example.Auto_BE.entity.enums.ENotificationStatus;
 import com.example.Auto_BE.exception.BaseException;
 import com.example.Auto_BE.repository.NotificationRepository;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.example.Auto_BE.constants.ErrorMessages.CONFIRM_ERROR;
-import static com.example.Auto_BE.constants.ErrorMessages.NOTIFICATION_NOT_FOUND;
-import static com.example.Auto_BE.constants.SuccessMessage.MEDICATION_CONFIRMED;
 import static com.example.Auto_BE.constants.SuccessMessage.SUCCESS;
 
 @Service
 public class NotificationService {
     private final NotificationRepository notificationRepository;
-    private final Scheduler scheduler;
 
-    public NotificationService(NotificationRepository notificationRepository, Scheduler scheduler) {
+    public NotificationService(NotificationRepository notificationRepository) {
         this.notificationRepository = notificationRepository;
-        this.scheduler = scheduler;
     }
 
     public Notifications findById(Long id) {
@@ -35,57 +29,120 @@ public class NotificationService {
     public Notifications save(Notifications log) {
         return notificationRepository.save(log);
     }
-
-    public BaseResponse<String> confirmTaken(Long notificationId) {
+    
+    /**
+     * Đánh dấu thông báo đã đọc
+     */
+    public BaseResponse<String> markAsRead(Long notificationId) {
         try {
             Notifications notification = findById(notificationId);
             if (notification == null) {
-                throw new BaseException.EntityNotFoundException(NOTIFICATION_NOT_FOUND);
+                throw new BaseException.EntityNotFoundException("Thông báo không tồn tại");
             }
-
-            if (notification.getStatus() == ENotificationStatus.TAKEN) {
-                return BaseResponse.<String>builder()
-                        .status(SUCCESS)
-                        .message(MEDICATION_CONFIRMED)
-                        .data(null)
-                        .build();
-            }
-
-            if (notification.getStatus() == ENotificationStatus.MISSED) {
-                throw new BaseException.BadRequestException(CONFIRM_ERROR);
-            }
-            notification.setStatus(ENotificationStatus.TAKEN);
+            
+            notification.setIsRead(true);
             save(notification);
-
-            // Hủy job kiểm tra missed (nếu có)
-            cancelMissedCheckJob(notificationId);
-
+            
             return BaseResponse.<String>builder()
                     .status(SUCCESS)
-                    .message(MEDICATION_CONFIRMED)
+                    .message("Đã đánh dấu đã đọc")
                     .data(null)
                     .build();
-
+                    
         } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new BaseException.BadRequestException( e.getMessage());
+            throw new BaseException.BadRequestException(e.getMessage());
         }
     }
-
-    private void cancelMissedCheckJob(Long notificationId) {
+    
+    /**
+     * Đánh dấu tất cả thông báo của user đã đọc
+     */
+    public BaseResponse<String> markAllAsRead(Long userId) {
         try {
-            // Tìm và hủy job kiểm tra missed với pattern tên job
-            String jobName = "missed-check-" + notificationId;
-            String groupName = "missed-check-group";
-
-            JobKey jobKey = new JobKey(jobName, groupName);
-            if (scheduler.checkExists(jobKey)) {
-                scheduler.deleteJob(jobKey);
+            List<Notifications> notifications = notificationRepository.findByUserIdAndIsRead(userId, false);
+            
+            for (Notifications notification : notifications) {
+                notification.setIsRead(true);
+                save(notification);
             }
-
-        } catch (SchedulerException e) {
-            System.err.println(e.getMessage());
+            
+            return BaseResponse.<String>builder()
+                    .status(SUCCESS)
+                    .message("Đã đánh dấu tất cả đã đọc")
+                    .data(null)
+                    .build();
+                    
+        } catch (Exception e) {
+            throw new BaseException.BadRequestException(e.getMessage());
         }
+    }
+    
+    /**
+     * Đếm số thông báo chưa đọc
+     */
+    public Long getUnreadCount(Long userId) {
+        return notificationRepository.countUnreadByUserId(userId);
+    }
+    
+    // ============= LỊCH SỬ THÔNG BÁO =============
+    
+    /**
+     * Lấy lịch sử thông báo với filter
+     */
+    public BaseResponse<List<NotificationResponse>> getHistory(
+            Long userId,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            ENotificationStatus status) {
+        
+        try {
+            List<Notifications> notifications;
+            
+            // Nếu có đầy đủ filters, dùng query tổng hợp
+            if (startDate != null || endDate != null || status != null) {
+                notifications = notificationRepository.findByFilters(
+                        userId, startDate, endDate, status
+                );
+            } else {
+                // Nếu không có filter nào, lấy tất cả của user
+                notifications = notificationRepository.findByUserId(userId);
+            }
+            
+            // Convert to response DTO
+            List<NotificationResponse> responses = notifications.stream()
+                    .map(this::convertToResponse)
+                    .collect(Collectors.toList());
+            
+            return BaseResponse.<List<NotificationResponse>>builder()
+                    .status(SUCCESS)
+                    .message("Lấy lịch sử thông báo thành công")
+                    .data(responses)
+                    .build();
+                    
+        } catch (Exception e) {
+            throw new BaseException.BadRequestException("Lỗi khi lấy lịch sử: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Convert Notifications entity sang NotificationResponse DTO
+     */
+    private NotificationResponse convertToResponse(Notifications notification) {
+        return NotificationResponse.builder()
+                .id(notification.getId())
+                .reminderTime(notification.getReminderTime())
+                .lastSentTime(notification.getLastSentTime())
+                .status(notification.getStatus())
+                .isRead(notification.getIsRead())
+                .title(notification.getTitle())
+                .body(notification.getBody())
+                .medicationCount(notification.getMedicationCount())
+                .medicationIds(notification.getMedicationIds())
+                .medicationNames(notification.getMedicationNames())
+                .userId(notification.getUser().getId())
+                .userEmail(notification.getUser().getEmail())
+                .build();
     }
 }

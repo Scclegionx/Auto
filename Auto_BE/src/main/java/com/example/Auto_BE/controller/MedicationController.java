@@ -31,12 +31,6 @@ public class MedicationController {
         this.medicationService = medicationService;
     }
 
-    @PostMapping("/confirm/{notificationId}")
-    public ResponseEntity<BaseResponse<String>> confirmTaken(@PathVariable Long notificationId) {
-        BaseResponse<String> response = notificationService.confirmTaken(notificationId);
-        return ResponseEntity.ok(response);
-    }
-
     // ===================== MEDICATION CRUD with TIME-BASED SCHEDULING =====================
 
     /**

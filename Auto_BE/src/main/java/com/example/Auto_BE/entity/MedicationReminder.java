@@ -41,9 +41,6 @@ public class MedicationReminder extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // Người dùng sở hữu nhắc nhở thuốc này
 
-    @OneToMany(mappedBy = "medicationReminder", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Notifications> notifications; // Danh sách thông báo liên quan đến nhắc nhở thuốc này ví dụ 8 giờ sáng, 1 giờ chiều, 8 giờ tối
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prescription_id", nullable = true)//null khi thuốc mua ngoài
     private Prescriptions prescription; // Đơn thuốc liên quan đến nhắc nhở thuốc này

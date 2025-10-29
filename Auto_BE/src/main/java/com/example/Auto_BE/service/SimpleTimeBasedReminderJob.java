@@ -2,7 +2,9 @@ package com.example.Auto_BE.service;
 
 import com.example.Auto_BE.entity.DeviceToken;
 import com.example.Auto_BE.entity.MedicationReminder;
+import com.example.Auto_BE.entity.Notifications;
 import com.example.Auto_BE.entity.User;
+import com.example.Auto_BE.entity.enums.ENotificationStatus;
 import com.example.Auto_BE.repository.MedicationReminderRepository;
 import com.example.Auto_BE.repository.UserRepository;
 import com.example.Auto_BE.repository.DeviceTokenRepository;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -29,6 +32,9 @@ public class SimpleTimeBasedReminderJob implements Job {
 
     @Autowired
     private FcmService fcmService;
+    
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     @Transactional
@@ -104,8 +110,8 @@ public class SimpleTimeBasedReminderJob implements Job {
             }
 
             System.out.println("🔍 Step 3: Sending grouped notification");
-            // Gửi thông báo gộp
-            sendGroupedNotification(medications, deviceTokens);
+            // Gửi thông báo gộp và lưu log
+            sendGroupedNotification(medications, deviceTokens, userId);
             System.out.println("✅ Notification process completed");
 
         } catch (Exception e) {
@@ -120,7 +126,7 @@ public class SimpleTimeBasedReminderJob implements Job {
         }
     }
 
-    private void sendGroupedNotification(List<MedicationReminder> medications, List<String> deviceTokens) {
+    private void sendGroupedNotification(List<MedicationReminder> medications, List<String> deviceTokens, Long userId) {
         try {
             String title = "⏰ Đến giờ uống thuốc";
             String body = buildNotificationBody(medications);
@@ -134,8 +140,45 @@ public class SimpleTimeBasedReminderJob implements Job {
             System.out.println("📊 FCM Result - Success: " + response.getSuccessCount() + 
                              ", Failed: " + response.getFailureCount());
                              
-            // TODO: Save notification log to database if needed
-            // NOTE: Avoid accessing User.deviceTokens or other lazy-loaded fields here
+            // ✅ Lưu 1 notification log duy nhất cho cả nhóm thuốc
+            try {
+                System.out.println("💾 Saving grouped notification log...");
+                
+                // Tạo User object không lazy load (chỉ set ID)
+                User user = new User();
+                user.setId(userId);
+                
+                // Thu thập thông tin từ danh sách medications
+                List<String> medicationIdList = medications.stream()
+                        .map(med -> String.valueOf(med.getId()))
+                        .toList();
+                List<String> medicationNameList = medications.stream()
+                        .map(MedicationReminder::getName)
+                        .toList();
+                
+                String medicationIds = String.join(",", medicationIdList);
+                String medicationNames = String.join(", ", medicationNameList);
+                
+                Notifications notificationLog = new Notifications();
+                notificationLog.setUser(user);
+                notificationLog.setTitle(title);
+                notificationLog.setBody(body);
+                notificationLog.setMedicationCount(medications.size());
+                notificationLog.setMedicationIds(medicationIds);
+                notificationLog.setMedicationNames(medicationNames);
+                notificationLog.setReminderTime(LocalDateTime.now());
+                notificationLog.setLastSentTime(LocalDateTime.now());
+                notificationLog.setStatus(response.getSuccessCount() > 0 ? 
+                    ENotificationStatus.SENT : ENotificationStatus.FAILED);
+                
+                notificationService.save(notificationLog);
+                System.out.println("  ✅ Saved grouped notification log (ID: " + notificationLog.getId() + 
+                                 ") for " + medications.size() + " medications: " + medicationNames);
+                
+            } catch (Exception e) {
+                System.err.println("  ⚠️ Failed to save notification log: " + e.getMessage());
+                e.printStackTrace();
+            }
 
         } catch (FirebaseMessagingException e) {
             System.err.println("🚨 FCM Error: " + e.getMessage());

@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -37,6 +38,7 @@ fun PrescriptionListScreen(
     onCreateClick: () -> Unit = {},
     onLogout: () -> Unit = {},
     onProfileClick: () -> Unit = {}, // Thêm callback profile
+    onNotificationHistoryClick: () -> Unit = {}, // Thêm callback notification history
     userName: String = "User", // Thêm tên user
     userEmail: String = "" // Thêm email user
 ) {
@@ -188,6 +190,29 @@ fun PrescriptionListScreen(
                                     onProfileClick()
                                 }
                             )
+                            
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Notifications,
+                                            contentDescription = null,
+                                            tint = DarkOnSurface,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Text("Lịch sử thông báo", color = DarkOnSurface)
+                                    }
+                                },
+                                onClick = {
+                                    showMenu = false
+                                    onNotificationHistoryClick()
+                                }
+                            )
+                            
+                            Divider(color = DarkOnSurface.copy(alpha = 0.2f))
                             
                             DropdownMenuItem(
                                 text = {

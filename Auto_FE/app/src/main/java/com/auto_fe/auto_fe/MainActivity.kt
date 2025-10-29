@@ -84,6 +84,7 @@ import com.auto_fe.auto_fe.ui.screens.VerificationScreen
 import com.auto_fe.auto_fe.ui.screens.ProfileScreen
 import com.auto_fe.auto_fe.ui.screens.ForgotPasswordScreen
 import com.auto_fe.auto_fe.ui.screens.ChangePasswordScreen
+import com.auto_fe.auto_fe.ui.screens.NotificationHistoryScreen
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
 import com.auto_fe.auto_fe.utils.SessionManager
 import com.auto_fe.auto_fe.utils.PermissionManager
@@ -213,6 +214,7 @@ fun MainScreen(sessionManager: SessionManager) {
     var showProfile by remember { mutableStateOf(false) }
     var showForgotPassword by remember { mutableStateOf(false) }  // ✅ Thêm state cho forgot password
     var showChangePassword by remember { mutableStateOf(false) }  // ✅ Thêm state cho change password
+    var showNotificationHistory by remember { mutableStateOf(false) }  // ✅ Thêm state cho notification history
     var verificationEmail by remember { mutableStateOf("") }
     var verificationPassword by remember { mutableStateOf("") }
     var verifiedEmail by remember { mutableStateOf<String?>(null) }
@@ -262,8 +264,12 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     // BackHandler để xử lý nút back
-    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile || showForgotPassword || showChangePassword) {
+    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory) {
         when {
+            // Nếu đang ở màn notification history → quay về danh sách
+            showNotificationHistory -> {
+                showNotificationHistory = false
+            }
             // Nếu đang ở màn change password → quay về profile
             showChangePassword -> {
                 showChangePassword = false
@@ -327,6 +333,16 @@ fun MainScreen(sessionManager: SessionManager) {
                     showChangePassword = true
                 }
             )
+        }
+        // Màn hình lịch sử thông báo (fullscreen)
+        showNotificationHistory && accessToken != null -> {
+            val token = accessToken // Smart cast fix
+            if (token != null) {
+                NotificationHistoryScreen(
+                    accessToken = token,
+                    onBack = { showNotificationHistory = false }
+                )
+            }
         }
         // Màn hình verification (fullscreen)
         showVerification -> {
@@ -416,6 +432,9 @@ fun MainScreen(sessionManager: SessionManager) {
                                     },
                                     onProfileClick = {
                                         showProfile = true
+                                    },
+                                    onNotificationHistoryClick = {
+                                        showNotificationHistory = true
                                     },
                                     onLogout = {
                                         onLogout()

@@ -14,7 +14,10 @@ sealed class VoiceState {
     /** Trạng thái kết thúc thành công */
     object Success : VoiceState()
 
-    /** Trạng thái lỗi hoặc hủy bỏ */
+    /** Trạng thái hủy bỏ */
+    object Cancel : VoiceState()
+
+    /** Trạng thái lỗi */
     data class Error(val errorMessage: String = "") : VoiceState()
 
 
@@ -105,6 +108,14 @@ sealed class VoiceState {
     object ParsingAlarmCommand : VoiceState()
 
     /** Đang thực hiện tạo báo thức */
+    object ExecutingAlarmCommand : VoiceState()
+    object ExecutingChromeCommand : VoiceState()
+    object ExecutingYouTubeCommand : VoiceState()
+    object ExecutingSMSCommand : VoiceState()
+    object ConfirmingPhoneCommand : VoiceState()
+    object ExecutingPhoneCommand : VoiceState()
+
+    /** Đang thực hiện tạo báo thức */
     data class CreatingAlarm(val hour: Int, val minute: Int, val message: String) : VoiceState()
 
 
@@ -122,18 +133,22 @@ sealed class VoiceState {
     // ========== CAMERA STATES ==========
     object ListeningForCameraCommand : VoiceState()
     object ParsingCameraCommand : VoiceState()
-
-    // ========== WIFI STATES ==========
-    object ListeningForWifiCommand : VoiceState()
-    object ParsingWifiCommand : VoiceState()
-
-    // ========== VOLUME STATES ==========
-    object ListeningForVolumeCommand : VoiceState()
-    object ParsingVolumeCommand : VoiceState()
+    object ExecutingCameraCommand : VoiceState()
 
     // ========== FLASH STATES ==========
     object ListeningForFlashCommand : VoiceState()
     object ParsingFlashCommand : VoiceState()
+    object ExecutingFlashCommand : VoiceState()
+
+    // ========== WIFI STATES ==========
+    object ListeningForWifiCommand : VoiceState()
+    object ParsingWifiCommand : VoiceState()
+    object ExecutingWifiCommand : VoiceState()
+
+    // ========== VOLUME STATES ==========
+    object ListeningForVolumeCommand : VoiceState()
+    object ParsingVolumeCommand : VoiceState()
+    object ExecutingVolumeCommand : VoiceState()
 
 
     // ========== UTILITY METHODS ==========
@@ -207,7 +222,8 @@ sealed class VoiceState {
 
     fun isCameraFlow(): Boolean {
         return this is ListeningForCameraCommand || 
-               this is ParsingCameraCommand
+               this is ParsingCameraCommand ||
+               this is ExecutingCameraCommand
     }
 
     fun isWifiFlow(): Boolean {
@@ -232,6 +248,7 @@ sealed class VoiceState {
         return when (this) {
             is Idle -> "Idle"
             is Success -> "Success"
+            is Cancel -> "Cancel"
             is Error -> "Error: $errorMessage"
             is ListeningForSMSCommand -> "ListeningForSMSCommand"
             is ParsingSMSCommand -> "ParsingSMSCommand"
@@ -252,6 +269,12 @@ sealed class VoiceState {
             is SearchingYouTube -> "SearchingYouTube($query)"
             is ListeningForAlarmCommand -> "ListeningForAlarmCommand"
             is ParsingAlarmCommand -> "ParsingAlarmCommand"
+            is ExecutingAlarmCommand -> "ExecutingAlarmCommand"
+            is ExecutingChromeCommand -> "ExecutingChromeCommand"
+            is ExecutingYouTubeCommand -> "ExecutingYouTubeCommand"
+        is ExecutingSMSCommand -> "ExecutingSMSCommand"
+        is ConfirmingPhoneCommand -> "ConfirmingPhoneCommand"
+        is ExecutingPhoneCommand -> "ExecutingPhoneCommand"
             is CreatingAlarm -> "CreatingAlarm($hour:$minute - $message)"
             is ListeningForCalendarCommand -> "ListeningForCalendarCommand"
             is ParsingCalendarCommand -> "ParsingCalendarCommand"
@@ -260,12 +283,16 @@ sealed class VoiceState {
             // Device Control States
             is ListeningForCameraCommand -> "ListeningForCameraCommand"
             is ParsingCameraCommand -> "ParsingCameraCommand"
+            is ExecutingCameraCommand -> "ExecutingCameraCommand"
             is ListeningForWifiCommand -> "ListeningForWifiCommand"
             is ParsingWifiCommand -> "ParsingWifiCommand"
+            is ExecutingWifiCommand -> "ExecutingWifiCommand"
             is ListeningForVolumeCommand -> "ListeningForVolumeCommand"
             is ParsingVolumeCommand -> "ParsingVolumeCommand"
+            is ExecutingVolumeCommand -> "ExecutingVolumeCommand"
             is ListeningForFlashCommand -> "ListeningForFlashCommand"
             is ParsingFlashCommand -> "ParsingFlashCommand"
+            is ExecutingFlashCommand -> "ExecutingFlashCommand"
         }
     }
 }

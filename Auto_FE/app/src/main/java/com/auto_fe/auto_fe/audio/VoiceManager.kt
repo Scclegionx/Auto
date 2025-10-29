@@ -36,7 +36,7 @@ class VoiceManager private constructor(private val context: Context) {
     }
     
     init {
-        audioRecorder = AudioRecorder(context)
+        audioRecorder = AudioRecorder.getInstance(context)
     }
     
     
@@ -145,6 +145,8 @@ class VoiceManager private constructor(private val context: Context) {
     fun resetBusyState() {
         isBusy = false
         pendingCallback = null
+        // Dừng ghi âm khi reset busy state
+        SpeechRecognizerManager.getInstance(context).stopRecognition()
         Log.d("VoiceManager", "Reset busy state")
     }
     

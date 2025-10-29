@@ -7,322 +7,135 @@ import com.auto_fe.auto_fe.automation.third_apps.YouTubeAutomation
 import com.auto_fe.auto_fe.domain.VoiceEvent
 import com.auto_fe.auto_fe.domain.VoiceState
 import com.auto_fe.auto_fe.domain.VoiceStateMachine
-import com.auto_fe.auto_fe.core.CommandProcessor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 /**
  * State Machine cho luồng tìm kiếm YouTube tự động
- * Xử lý toàn bộ flow từ nhận lệnh -> NLP parsing -> tìm kiếm YouTube
+ * Xử lý toàn bộ flow từ nhận lệnh -> tìm kiếm YouTube
  */
 class YoutubeStateMachine(
     private val context: Context,
     private val voiceManager: VoiceManager,
     private val youtubeAutomation: YouTubeAutomation
 ) : VoiceStateMachine() {
-    
-    private val commandProcessor = CommandProcessor(context)
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     companion object {
         private const val TAG = "YoutubeStateMachine"
     }
 
-    // Lưu context data trong quá trình xử lý
+    // Current search query
     private var currentQuery: String = ""
-    
-    // Callback cho transcript
-    var onTranscriptUpdated: ((String) -> Unit)? = null
 
-    /**
-     * Định nghĩa State Transitions
-     */
     override fun getNextState(currentState: VoiceState, event: VoiceEvent): VoiceState? {
         return when (currentState) {
-
-            // IDLE -> Start listening
             is VoiceState.Idle -> {
                 when (event) {
-                    is VoiceEvent.StartRecording -> VoiceState.ListeningForYouTubeCommand
-                    is VoiceEvent.UserCancelled -> VoiceState.Idle // Already idle
+                    is VoiceEvent.StartYouTubeCommand -> VoiceState.ExecutingYouTubeCommand
+                    is VoiceEvent.UserCancelled -> VoiceState.Idle
                     else -> null
                 }
             }
-
-            // LISTENING -> Parse command
-            is VoiceState.ListeningForYouTubeCommand -> {
+            is VoiceState.ExecutingYouTubeCommand -> {
                 when (event) {
-                    is VoiceEvent.YouTubeCommandReceived -> {
-                        VoiceState.ParsingYouTubeCommand
-                    }
-                    is VoiceEvent.SpeechRecognitionFailed -> {
-                        VoiceState.Error("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ.")
-                    }
-                    is VoiceEvent.Timeout -> {
-                        VoiceState.Error("Tôi không nhận được phản hồi từ bạn.")
-                    }
-                    is VoiceEvent.UserCancelled -> {
-                        VoiceState.Idle
-                    }
+                    is VoiceEvent.YouTubeSearchSuccessfully -> VoiceState.Success
+                    is VoiceEvent.YouTubeSearchFailed -> VoiceState.Error(event.error)
+                    is VoiceEvent.UserCancelled -> VoiceState.Idle
                     else -> null
                 }
             }
-
-            // PARSING -> Search YouTube
-            is VoiceState.ParsingYouTubeCommand -> {
+            is VoiceState.Success -> {
                 when (event) {
-                    is VoiceEvent.YouTubeCommandParsed -> {
-                        // Lưu data và chuyển sang tìm kiếm
-                        currentQuery = event.query
-                        VoiceState.SearchingYouTube(event.query)
-                    }
-                    is VoiceEvent.YouTubeCommandParseFailed -> {
-                        VoiceState.Error(event.reason)
-                    }
-                    is VoiceEvent.UserCancelled -> {
-                        VoiceState.Idle
-                    }
+                    is VoiceEvent.YouTubeSearchSuccessfully -> VoiceState.Idle
                     else -> null
                 }
             }
-
-            // SEARCHING YOUTUBE -> Handle result
-            is VoiceState.SearchingYouTube -> {
+            is VoiceState.Error -> {
                 when (event) {
-                    is VoiceEvent.YouTubeSearchSuccessfully -> {
-                        VoiceState.Success
-                    }
-                    is VoiceEvent.YouTubeSearchFailed -> {
-                        VoiceState.Error("Tìm kiếm YouTube thất bại: ${event.error}")
-                    }
-                    is VoiceEvent.UserCancelled -> {
-                        VoiceState.Idle
-                    }
+                    is VoiceEvent.YouTubeSearchFailed -> VoiceState.Idle
                     else -> null
                 }
             }
-
-            // Terminal states - no more transitions
-            is VoiceState.Success, is VoiceState.Error -> null
-
             else -> null
         }
     }
 
-    /**
-     * Side Effects khi enter state
-     */
     override fun onEnterState(state: VoiceState, event: VoiceEvent) {
-        Log.d(TAG, "onEnterState: ${state.getName()}")
-
         when (state) {
-            is VoiceState.ListeningForYouTubeCommand -> {
-                // Reset VoiceManager trước khi bắt đầu
-                voiceManager.resetBusyState()
-                // Phát câu hỏi và bắt đầu lắng nghe
-                speakAndListen("Bạn cần tôi trợ giúp điều gì?")
-            }
-
-            is VoiceState.ParsingYouTubeCommand -> {
-                // Parse command từ event
-                if (event is VoiceEvent.YouTubeCommandReceived) {
-                    parseCommandAsync(event.rawCommand)
-                }
-            }
-
-            is VoiceState.SearchingYouTube -> {
-                // Tìm kiếm YouTube
-                searchYouTubeAsync(state.query)
+            is VoiceState.ExecutingYouTubeCommand -> {
+                Log.d(TAG, "Executing YouTube search command: $currentQuery")
+                executeYouTubeSearch()
             }
 
             is VoiceState.Success -> {
-                speak("Đã mở YouTube tìm kiếm.")
+                speak("Đã mở YouTube tìm kiếm thành công!")
+                // Auto transition to Idle after 2 seconds
+                coroutineScope.launch {
+                    delay(2000)
+                    processEvent(VoiceEvent.YouTubeSearchSuccessfully)
+                }
             }
 
             is VoiceState.Error -> {
-                speak(state.errorMessage)
+                speak("Có lỗi xảy ra khi tìm kiếm YouTube.")
+                // Auto transition to Idle after 3 seconds
+                coroutineScope.launch {
+                    delay(3000)
+                    processEvent(VoiceEvent.YouTubeSearchFailed("Unknown error"))
+                }
             }
 
             is VoiceState.Idle -> {
-                // Reset state when cancelled
                 if (event is VoiceEvent.UserCancelled) {
-                    speak("Đã hủy ghi âm")
-                    // Reset all context data
-                    currentQuery = ""
-                    // Reset VoiceManager busy state
-                    voiceManager.resetBusyState()
+                    speak("Đã hủy lệnh tìm kiếm YouTube.")
                 }
+                voiceManager.resetBusyState()
+                resetContext()
             }
-
             else -> {
-                // Do nothing
+                // Handle other states if needed
             }
         }
     }
 
-    // ========== HELPER METHODS ==========
-
     /**
-     * Phát giọng nói và bắt đầu lắng nghe
+     * Được gọi từ CommandProcessor để thực hiện YouTube search command
      */
-    private fun speakAndListen(text: String, delaySeconds: Int = 2) {
-        // Sử dụng API mới với delay tùy chỉnh
-        voiceManager.textToSpeech(text, delaySeconds, object : VoiceManager.VoiceControllerCallback {
-            override fun onSpeechResult(spokenText: String) {
-                handleSpeechResult(spokenText)
-            }
-
-            override fun onConfirmationResult(confirmed: Boolean) {}
-
-            override fun onError(error: String) {
-                processEvent(VoiceEvent.SpeechRecognitionFailed)
-            }
-
-            override fun onAudioLevelChanged(level: Int) {
-                // No audio level visualization for YouTube search
-            }
-        })
+    fun executeYouTubeSearchCommand(query: String) {
+        Log.d(TAG, "YouTube search command received from CommandProcessor: $query")
+        currentQuery = query
+        processEvent(VoiceEvent.StartYouTubeCommand)
     }
 
-    /**
-     * Chỉ phát giọng nói
-     */
-    private fun speak(text: String) {
-        voiceManager.speak(text)
-    }
-
-    /**
-     * Xử lý kết quả speech recognition dựa vào state hiện tại
-     */
-    private fun handleSpeechResult(spokenText: String) {
-        try {
-            Log.d(TAG, "Handling speech result: $spokenText")
-            
-            // Update transcript in popup
-            onTranscriptUpdated?.invoke(spokenText)
-            
-            when (currentState) {
-                is VoiceState.ListeningForYouTubeCommand -> {
-                    processEvent(VoiceEvent.YouTubeCommandReceived(spokenText))
-                }
-
-                else -> {
-                    Log.w(TAG, "Unexpected speech result in state: ${currentState.getName()}")
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error in handleSpeechResult: ${e.message}")
-            processEvent(VoiceEvent.SpeechRecognitionFailed)
-        }
-    }
-
-    /**
-     * Parse YouTube command using NLP service - chỉ gửi raw command và nhận JSON response
-     */
-    private fun parseCommandAsync(command: String) {
-        Log.d(TAG, "Sending command to NLP: $command")
+    private fun executeYouTubeSearch() {
+        Log.d(TAG, "Executing YouTube search")
         
-        try {
-            // Add timeout protection
-            val timeoutHandler = android.os.Handler(android.os.Looper.getMainLooper())
-            var isCallbackExecuted = false
-            
-            val timeoutRunnable = Runnable {
-                if (!isCallbackExecuted) {
-                    Log.e(TAG, "NLP service timeout")
-                    isCallbackExecuted = true
-                    processEvent(VoiceEvent.YouTubeCommandParseFailed("Lỗi hệ thống: Không nhận được phản hồi từ NLP service."))
-                }
-            }
-            
-            // Set timeout of 10 seconds
-            timeoutHandler.postDelayed(timeoutRunnable, 10000)
-            
-            commandProcessor.processCommand(command, object : CommandProcessor.CommandProcessorCallback {
-                override fun onCommandExecuted(success: Boolean, message: String) {
-                    if (!isCallbackExecuted) {
-                        isCallbackExecuted = true
-                        timeoutHandler.removeCallbacks(timeoutRunnable)
-                        
-                        try {
-                            if (success) {
-                                Log.d(TAG, "NLP processed successfully: $message")
-                                // NLP đã xử lý xong và tìm kiếm YouTube, chuyển sang Success
-                                processEvent(VoiceEvent.YouTubeSearchSuccessfully)
-                            } else {
-                                Log.e(TAG, "NLP processing failed: $message")
-                                processEvent(VoiceEvent.YouTubeCommandParseFailed(message))
-                            }
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error in onCommandExecuted: ${e.message}")
-                            processEvent(VoiceEvent.YouTubeCommandParseFailed("Lỗi xử lý lệnh: ${e.message}"))
-                        }
-                    }
-                }
-
-                override fun onError(error: String) {
-                    if (!isCallbackExecuted) {
-                        isCallbackExecuted = true
-                        timeoutHandler.removeCallbacks(timeoutRunnable)
-                        
-                        try {
-                            Log.e(TAG, "NLP Error: $error")
-                            // Phân biệt lỗi hệ thống vs lỗi không hỗ trợ lệnh
-                            if (error.contains("Lỗi NLP") || error.contains("Server error") || error.contains("Connection") || 
-                                error.contains("Lỗi kết nối") || error.contains("Lỗi không xác định")) {
-                                processEvent(VoiceEvent.YouTubeCommandParseFailed("Lỗi hệ thống: $error"))
-                            } else {
-                                processEvent(VoiceEvent.YouTubeCommandParseFailed("Hiện tại tôi không hỗ trợ lệnh này. Vui lòng vào tab 'Hướng dẫn' để xem các lệnh được hỗ trợ."))
-                            }
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error in onError: ${e.message}")
-                            processEvent(VoiceEvent.YouTubeCommandParseFailed("Lỗi xử lý: ${e.message}"))
-                        }
-                    }
-                }
-
-                override fun onNeedConfirmation(command: String, receiver: String, message: String) {
-                    if (!isCallbackExecuted) {
-                        isCallbackExecuted = true
-                        timeoutHandler.removeCallbacks(timeoutRunnable)
-                        
-                        try {
-                            Log.d(TAG, "NLP needs confirmation: $command -> query: $receiver")
-                            // Lưu thông tin từ NLP response để tìm kiếm
-                            currentQuery = receiver
-                            // Parse thành công, chuyển sang tìm kiếm
-                            processEvent(VoiceEvent.YouTubeCommandParsed(receiver))
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Error in onNeedConfirmation: ${e.message}")
-                            processEvent(VoiceEvent.YouTubeCommandParseFailed("Lỗi xác nhận: ${e.message}"))
-                        }
-                    }
-                }
-            })
-        } catch (e: Exception) {
-            Log.e(TAG, "Error in parseCommandAsync: ${e.message}")
-            processEvent(VoiceEvent.YouTubeCommandParseFailed("Lỗi phân tích lệnh: ${e.message}"))
-        }
-    }
-
-    /**
-     * Tìm kiếm YouTube
-     */
-    private fun searchYouTubeAsync(query: String) {
-        youtubeAutomation.searchYouTube(query, object : YouTubeAutomation.YouTubeCallback {
+        youtubeAutomation.searchYouTube(currentQuery, object : YouTubeAutomation.YouTubeCallback {
             override fun onSuccess() {
+                Log.d(TAG, "YouTube search started successfully")
                 processEvent(VoiceEvent.YouTubeSearchSuccessfully)
             }
 
             override fun onError(error: String) {
+                Log.e(TAG, "YouTube search failed: $error")
                 processEvent(VoiceEvent.YouTubeSearchFailed(error))
             }
         })
     }
 
-    /**
-     * Cleanup resources
-     */
-    fun cleanup() {
-        reset()
+    private fun speak(text: String) {
+        voiceManager.speak(text)
+    }
+
+    private fun resetContext() {
         currentQuery = ""
-        commandProcessor.release()
+    }
+
+    fun cleanup() {
+        // Cleanup resources if needed
     }
 }

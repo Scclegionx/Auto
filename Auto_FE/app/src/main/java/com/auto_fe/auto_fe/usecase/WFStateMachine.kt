@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.auto_fe.auto_fe.automation.device.ControlDeviceAutomation
 import com.auto_fe.auto_fe.audio.VoiceManager
-import com.auto_fe.auto_fe.core.CommandProcessor
 import com.auto_fe.auto_fe.domain.VoiceEvent
 import com.auto_fe.auto_fe.domain.VoiceState
 import com.auto_fe.auto_fe.domain.VoiceStateMachine
@@ -19,31 +18,24 @@ class WFStateMachine(
     private val controlDeviceAutomation: ControlDeviceAutomation
 ) : VoiceStateMachine() {
 
-    private val commandProcessor = CommandProcessor(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     companion object {
         private const val TAG = "WFStateMachine"
-        private const val NLP_TIMEOUT_MS = 15000L
     }
-
-    // Current command data
-    private var currentCommand: String = ""
-    private var currentAction: String = "" // "enable", "disable", "toggle"
 
     override fun getNextState(currentState: VoiceState, event: VoiceEvent): VoiceState? {
         return when (currentState) {
-            is VoiceState.ListeningForWifiCommand -> {
+            is VoiceState.Idle -> {
                 when (event) {
-                    is VoiceEvent.WifiCommandReceived -> VoiceState.ParsingWifiCommand
-                    is VoiceEvent.UserCancelled -> VoiceState.Idle
+                    is VoiceEvent.StartWifiCommand -> VoiceState.ExecutingWifiCommand
                     else -> null
                 }
             }
-            is VoiceState.ParsingWifiCommand -> {
+            is VoiceState.ExecutingWifiCommand -> {
                 when (event) {
-                    is VoiceEvent.WifiCommandParsed -> VoiceState.Success
-                    is VoiceEvent.WifiCommandParseFailed -> VoiceState.Error()
+                    is VoiceEvent.WifiToggledSuccessfully -> VoiceState.Success
+                    is VoiceEvent.WifiToggleFailed -> VoiceState.Error(event.error)
                     is VoiceEvent.UserCancelled -> VoiceState.Idle
                     else -> null
                 }
@@ -66,14 +58,9 @@ class WFStateMachine(
 
     override fun onEnterState(state: VoiceState, event: VoiceEvent) {
         when (state) {
-            is VoiceState.ListeningForWifiCommand -> {
-                voiceManager.resetBusyState()
-                speakAndListen("Bạn cần tôi trợ giúp điều gì?")
-            }
-
-            is VoiceState.ParsingWifiCommand -> {
-                speak("Đang xử lý lệnh WiFi...")
-                parseCommandAsync(currentCommand)
+            is VoiceState.ExecutingWifiCommand -> {
+                Log.d(TAG, "Executing WiFi command")
+                // Logic sẽ được thực hiện trong executeWifiCommand()
             }
 
             is VoiceState.Success -> {
@@ -99,7 +86,6 @@ class WFStateMachine(
                     speak("Đã hủy lệnh WiFi.")
                 }
                 voiceManager.resetBusyState()
-                resetContext()
             }
             else -> {
                 // Handle other states if needed
@@ -107,74 +93,23 @@ class WFStateMachine(
         }
     }
 
-    fun handleSpeechResult(spokenText: String) {
-        when (currentState) {
-            is VoiceState.ListeningForWifiCommand -> {
-                Log.d(TAG, "WiFi command received: $spokenText")
-                currentCommand = spokenText
-                processEvent(VoiceEvent.WifiCommandReceived(spokenText))
+    /**
+     * Thực hiện lệnh WiFi được gọi từ CommandProcessor
+     */
+    fun executeWifiCommand(action: String) {
+        Log.d(TAG, "Executing WiFi command: $action")
+        processEvent(VoiceEvent.StartWifiCommand)
+        
+        when (action.lowercase()) {
+            "on", "bật" -> {
+                executeEnableWifi()
+            }
+            "off", "tắt" -> {
+                executeDisableWifi()
             }
             else -> {
-                // Handle other states if needed
-            }
-        }
-    }
-
-    private fun parseCommandAsync(command: String) {
-        coroutineScope.launch {
-            try {
-                // Timeout protection
-                val timeoutJob = launch {
-                    delay(NLP_TIMEOUT_MS)
-                    Log.e(TAG, "NLP timeout for WiFi command")
-                    processEvent(VoiceEvent.WifiCommandParseFailed("Timeout: Không nhận được phản hồi từ server"))
-                }
-
-                commandProcessor.processCommand(command, object : CommandProcessor.CommandProcessorCallback {
-                    override fun onCommandExecuted(success: Boolean, message: String) {
-                        timeoutJob.cancel()
-                        if (success) {
-                            Log.d(TAG, "WiFi command executed successfully: $message")
-                            processEvent(VoiceEvent.WifiToggledSuccessfully)
-                        } else {
-                            Log.e(TAG, "WiFi command execution failed: $message")
-                            processEvent(VoiceEvent.WifiCommandParseFailed(message))
-                        }
-                    }
-
-                    override fun onError(error: String) {
-                        timeoutJob.cancel()
-                        Log.e(TAG, "NLP error for WiFi command: $error")
-                        processEvent(VoiceEvent.WifiCommandParseFailed(error))
-                    }
-
-                    override fun onNeedConfirmation(command: String, receiver: String, message: String) {
-                        timeoutJob.cancel()
-                        Log.d(TAG, "WiFi command needs confirmation: $command, action: $receiver")
-                        
-                        // receiver contains the action type (enable/disable/toggle)
-                        currentAction = receiver
-                        
-                        when (command) {
-                            "wifi-enable" -> {
-                                executeEnableWifi()
-                            }
-                            "wifi-disable" -> {
-                                executeDisableWifi()
-                            }
-                            "wifi-toggle" -> {
-                                executeToggleWifi()
-                            }
-                            else -> {
-                                Log.e(TAG, "Unknown WiFi command: $command")
-                                processEvent(VoiceEvent.WifiCommandParseFailed("Lệnh WiFi không được hỗ trợ"))
-                            }
-                        }
-                    }
-                })
-            } catch (e: Exception) {
-                Log.e(TAG, "Error processing WiFi command: ${e.message}", e)
-                processEvent(VoiceEvent.WifiCommandParseFailed("Lỗi xử lý lệnh: ${e.message}"))
+                Log.e(TAG, "Unknown WiFi action: $action")
+                processEvent(VoiceEvent.WifiToggleFailed("Hành động không được hỗ trợ: $action"))
             }
         }
     }
@@ -211,58 +146,13 @@ class WFStateMachine(
         })
     }
 
-    private fun executeToggleWifi() {
-        Log.d(TAG, "Executing toggle WiFi")
-        
-        controlDeviceAutomation.toggleWifi(object : ControlDeviceAutomation.DeviceCallback {
-            override fun onSuccess() {
-                Log.d(TAG, "WiFi toggled successfully")
-                processEvent(VoiceEvent.WifiToggledSuccessfully)
-            }
-
-            override fun onError(error: String) {
-                Log.e(TAG, "WiFi toggle failed: $error")
-                processEvent(VoiceEvent.WifiToggleFailed(error))
-            }
-        })
-    }
-
-    private fun speakAndListen(text: String) {
-        voiceManager.textToSpeech(text, 0, object : VoiceManager.VoiceControllerCallback {
-            override fun onSpeechResult(spokenText: String) {
-                if (spokenText.isNotEmpty()) {
-                    handleSpeechResult(spokenText)
-                } else {
-                    Log.w(TAG, "Empty speech result")
-                    processEvent(VoiceEvent.WifiCommandParseFailed("Không nhận được lệnh"))
-                }
-            }
-
-            override fun onConfirmationResult(confirmed: Boolean) {
-                // Not used in this context
-            }
-
-            override fun onError(error: String) {
-                Log.e(TAG, "Speech recognition error: $error")
-                processEvent(VoiceEvent.WifiCommandParseFailed("Lỗi nhận dạng giọng nói: $error"))
-            }
-
-            override fun onAudioLevelChanged(level: Int) {
-                // Not used in this context
-            }
-        })
-    }
 
     private fun speak(text: String) {
         voiceManager.speak(text)
     }
 
-    private fun resetContext() {
-        currentCommand = ""
-        currentAction = ""
-    }
-
     fun cleanup() {
-        commandProcessor.release()
+        // Cleanup resources if needed
+        Log.d(TAG, "WFStateMachine cleanup completed")
     }
 }

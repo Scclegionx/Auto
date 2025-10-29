@@ -17,7 +17,6 @@ class ControlDeviceAutomation(private val context: Context) {
 
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    private val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     companion object {
@@ -243,6 +242,26 @@ class ControlDeviceAutomation(private val context: Context) {
     // ========== FLASH CONTROL ==========
 
     private var isFlashOn = false
+    private var cameraManager: CameraManager? = null
+    private var cameraId: String? = null
+
+    init {
+        initializeFlash()
+    }
+
+    private fun initializeFlash() {
+        try {
+            cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+            // Tìm camera có flash
+            cameraId = cameraManager?.cameraIdList?.find { id ->
+                val characteristics = cameraManager?.getCameraCharacteristics(id)
+                characteristics?.get(android.hardware.camera2.CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
+            }
+            Log.d(TAG, "Flash camera ID: $cameraId")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error initializing flash: ${e.message}", e)
+        }
+    }
 
     /**
      * Bật đèn flash
@@ -251,15 +270,14 @@ class ControlDeviceAutomation(private val context: Context) {
         try {
             Log.d(TAG, "Enabling flash")
             
-            if (!isFlashOn) {
-                // Note: Flash control requires camera permission and is complex
-                // This is a simplified implementation
+            if (cameraId != null) {
+                cameraManager?.setTorchMode(cameraId!!, true)
                 isFlashOn = true
-                Log.d(TAG, "Flash enabled (simulated)")
+                Log.d(TAG, "Flash enabled successfully")
                 callback.onSuccess()
             } else {
-                Log.d(TAG, "Flash is already enabled")
-                callback.onSuccess()
+                Log.e(TAG, "No camera with flash available")
+                callback.onError("Thiết bị không có đèn flash")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error enabling flash: ${e.message}", e)
@@ -274,13 +292,14 @@ class ControlDeviceAutomation(private val context: Context) {
         try {
             Log.d(TAG, "Disabling flash")
             
-            if (isFlashOn) {
+            if (cameraId != null) {
+                cameraManager?.setTorchMode(cameraId!!, false)
                 isFlashOn = false
-                Log.d(TAG, "Flash disabled (simulated)")
+                Log.d(TAG, "Flash disabled successfully")
                 callback.onSuccess()
             } else {
-                Log.d(TAG, "Flash is already disabled")
-                callback.onSuccess()
+                Log.e(TAG, "No camera with flash available")
+                callback.onError("Thiết bị không có đèn flash")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error disabling flash: ${e.message}", e)

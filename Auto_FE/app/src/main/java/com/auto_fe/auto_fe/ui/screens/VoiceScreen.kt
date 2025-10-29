@@ -33,8 +33,8 @@ import com.auto_fe.auto_fe.audio.VoiceManager
 import com.auto_fe.auto_fe.SoftControlButtons
 import com.auto_fe.auto_fe.Rotating3DSphere
 import com.auto_fe.auto_fe.ui.theme.*
-import com.auto_fe.auto_fe.usecase.SendSMSStateMachine
-import com.auto_fe.auto_fe.automation.msg.SMSAutomation
+import com.auto_fe.auto_fe.core.CommandProcessor
+import com.auto_fe.auto_fe.automation.device.CameraAutomation
 import com.auto_fe.auto_fe.domain.VoiceState
 import com.auto_fe.auto_fe.domain.VoiceEvent
 import kotlin.math.roundToInt
@@ -54,6 +54,9 @@ fun VoiceScreen() {
     var voiceLevel by remember { mutableStateOf(0) }
     var transcriptText by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
+    var isProcessing by remember { mutableStateOf(false) } // Flag để tránh vòng lặp
+    
+    // Confirmation state
     
     // Smooth level system để tránh "giật cục"
     var rawLevel by remember { mutableStateOf(0f) }     // 0f..3f thô
@@ -62,24 +65,49 @@ fun VoiceScreen() {
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
     
-    // Initialize VoiceManager và State Machine
+    // Helper function để kiểm tra phản hồi xác nhận
+    
+    // Initialize VoiceManager và CommandProcessor - chỉ tạo 1 lần
     val voiceManager = remember { VoiceManager.getInstance(context) }
-    val smsAutomation = remember { SMSAutomation(context) }
-    val smsStateMachine = remember { 
-        SendSMSStateMachine(context, voiceManager, smsAutomation)
+    val commandProcessor = remember { CommandProcessor(context) }
+    
+    // Setup StateMachine callbacks để lắng nghe state changes
+    LaunchedEffect(commandProcessor) {
+        // Lắng nghe state changes từ tất cả StateMachines
+        commandProcessor.setupStateCallbacks(
+            onSuccess = { message ->
+                Log.d("VoiceScreen", "StateMachine success: $message")
+                transcriptText = message
+                isRecording = false
+                isProcessing = false
+                voiceLevel = 0
+                rawLevel = 0f
+                
+                // Clear transcript sau delay
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(3000)
+                    transcriptText = ""
+                }
+            },
+            onError = { error ->
+                Log.e("VoiceScreen", "StateMachine error: $error")
+                errorMessage = error
+                transcriptText = ""
+                isRecording = false
+                isProcessing = false
+                voiceLevel = 0
+                rawLevel = 0f
+                
+                // Clear error sau delay
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(5000)
+                    errorMessage = ""
+                }
+            }
+        )
     }
     
-    // Setup State Machine audio level callback
-    LaunchedEffect(smsStateMachine) {
-        smsStateMachine.onAudioLevelChanged = { level ->
-            // Cập nhật voice level từ State Machine
-            if (isRecording) {
-                voiceLevel = level.coerceIn(0, 3)
-                rawLevel = level.coerceIn(0, 3).toFloat()
-                Log.d("VoiceScreen", "Voice level: $level")
-            }
-        }
-    }
+    // VoiceManager không có property onAudioLevelChanged, sẽ handle trong callback
     
     // Smooth level animation với EMA + tween
     val level01 by animateFloatAsState(
@@ -95,78 +123,92 @@ fun VoiceScreen() {
         smoothLevel = 0.75f * smoothLevel + 0.25f * target
     }
     
-    // Setup State Machine callbacks
-    LaunchedEffect(smsStateMachine) {
-        smsStateMachine.onStateChanged = { oldState, newState ->
-            Log.d("VoiceScreen", "State changed: ${oldState.getName()} -> ${newState.getName()}")
-            
-            // Update UI based on state
-            when (newState) {
-                is VoiceState.ListeningForSMSCommand -> {
-                    isRecording = true
-                }
-                is VoiceState.Success -> {
-                    transcriptText = "Đã gửi tin nhắn thành công!"
-                    errorMessage = ""
-                    // Reset về idle state sau 2 giây
-                    CoroutineScope(Dispatchers.Main).launch {
-                        delay(2000)
-                        smsStateMachine.reset()
-                        isRecording = false
-                        voiceLevel = 0
-                        rawLevel = 0f
-                        
-                        // Clear transcript sau delay
-                        delay(5000)
-                        transcriptText = ""
-                    }
-                }
-                is VoiceState.Error -> {
-                    errorMessage = newState.errorMessage
-                    transcriptText = ""
-                    // Reset về idle state sau 2 giây
-                    CoroutineScope(Dispatchers.Main).launch {
-                        delay(2000)
-                        smsStateMachine.reset()
-                        isRecording = false
-                        voiceLevel = 0
-                        rawLevel = 0f
-                        
-                        // Clear error sau delay
-                        delay(5000)
-                        errorMessage = ""
-                    }
-                }
-                else -> {
-                    // Keep recording state for other states
-                    isRecording = true
-                }
-            }
-        }
-        
-        smsStateMachine.onEventProcessed = { event ->
-            Log.d("VoiceScreen", "Event processed: ${event.getName()}")
-        }
-    }
-    
     // Cleanup resources when component is disposed
     DisposableEffect(Unit) {
         onDispose {
-            smsStateMachine.cleanup()
+            commandProcessor.release()
             voiceManager.release()
         }
     }
 
-    // VoiceManager integration - sử dụng State Machine
+    // VoiceManager integration - sử dụng CommandProcessor
     LaunchedEffect(isRecording) {
-        if (isRecording) {
-            // Reset state machine nếu cần
-            if (smsStateMachine.isTerminal()) {
-                smsStateMachine.reset()
-            }
+        if (isRecording && !isProcessing) {
+            isProcessing = true
+            // Reset voice level khi bắt đầu recording
+            voiceLevel = 0
+            rawLevel = 0f
             
-            // Trigger StartRecording event để bắt đầu State Machine flow
-            smsStateMachine.processEvent(VoiceEvent.StartRecording)
+            // Chào hỏi và bắt đầu lắng nghe
+            voiceManager.textToSpeech("Bạn cần tôi trợ giúp điều gì?", 0, object : VoiceManager.VoiceControllerCallback {
+                override fun onSpeechResult(spokenText: String) {
+                    if (spokenText.isNotEmpty()) {
+                        Log.d("VoiceScreen", "Speech result: $spokenText")
+                        transcriptText = spokenText
+                        
+                        // Gửi lệnh đến CommandProcessor
+                        // StateMachine callbacks sẽ handle UI updates
+                        commandProcessor.processCommand(spokenText, object : CommandProcessor.CommandProcessorCallback {
+                            override fun onCommandExecuted(success: Boolean, message: String) {
+                                // StateMachine callbacks sẽ handle UI updates
+                                Log.d("VoiceScreen", "Command executed: $success, $message")
+                            }
+
+                            override fun onError(error: String) {
+                                // StateMachine callbacks sẽ handle UI updates
+                                Log.e("VoiceScreen", "Command error: $error")
+                            }
+
+            override fun onNeedConfirmation(command: String, receiver: String, message: String) {
+                // Không cần xử lý confirmation ở đây nữa
+                // StateMachine sẽ tự xử lý confirmation
+                Log.d("VoiceScreen", "Confirmation handled by StateMachine: $command -> $receiver: $message")
+            }
+                        })
+                    } else {
+                        Log.w("VoiceScreen", "Empty speech result")
+                        errorMessage = "Không nhận được lệnh"
+                        isRecording = false
+                        isProcessing = false
+                        voiceLevel = 0
+                        rawLevel = 0f
+                        
+                        // Clear error sau delay
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(3000)
+                            errorMessage = ""
+                        }
+                    }
+                }
+
+                override fun onConfirmationResult(confirmed: Boolean) {
+                    // Not used in this context
+                }
+
+                override fun onError(error: String) {
+                    Log.e("VoiceScreen", "Speech recognition error: $error")
+                    errorMessage = "Lỗi nhận dạng giọng nói: $error"
+                    isRecording = false
+                    isProcessing = false
+                    voiceLevel = 0
+                    rawLevel = 0f
+                    
+                    // Clear error sau delay
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(3000)
+                        errorMessage = ""
+                    }
+                }
+
+                override fun onAudioLevelChanged(level: Int) {
+                    // Cập nhật voice level từ VoiceManager
+                    if (isRecording) {
+                        voiceLevel = level.coerceIn(0, 3)
+                        rawLevel = level.coerceIn(0, 3).toFloat()
+                        Log.d("VoiceScreen", "Voice level: $level")
+                    }
+                }
+            })
         } else {
             // Reset voice level khi dừng recording
             voiceLevel = 0
@@ -263,7 +305,7 @@ fun VoiceScreen() {
             )
 
             // Transcript display area
-            if (transcriptText.isNotEmpty()) {
+                if (transcriptText.isNotEmpty()) {
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = DarkSurface.copy(alpha = 0.8f)
@@ -339,14 +381,14 @@ fun VoiceScreen() {
                 isRecording = isRecording,
                 voiceLevel = voiceLevel,
                 onRecordingToggle = {
-                    if (!isRecording) {
+                    if (!isRecording && !isProcessing) {
                         // Bắt đầu ghi âm
                         isRecording = true
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     } else {
-                        // Dừng ghi âm - Cancel State Machine
-                        smsStateMachine.processEvent(VoiceEvent.UserCancelled)
+                        // Dừng ghi âm
                         isRecording = false
+                        isProcessing = false
                         voiceLevel = 0
                         rawLevel = 0f
                         transcriptText = ""
@@ -356,11 +398,14 @@ fun VoiceScreen() {
                 },
                 onAgainClick = { 
                     // Replay last recording
-                    isRecording = true
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    if (!isProcessing) {
+                        isRecording = true
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    }
                 },
                 onTranscriptOpen = { /* Handle transcript view */ }
             )
         }
+        
     }
 }

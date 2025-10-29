@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.auto_fe.auto_fe.automation.device.ControlDeviceAutomation
 import com.auto_fe.auto_fe.audio.VoiceManager
-import com.auto_fe.auto_fe.core.CommandProcessor
 import com.auto_fe.auto_fe.domain.VoiceEvent
 import com.auto_fe.auto_fe.domain.VoiceState
 import com.auto_fe.auto_fe.domain.VoiceStateMachine
@@ -19,31 +18,24 @@ class FlashStateMachine(
     private val controlDeviceAutomation: ControlDeviceAutomation
 ) : VoiceStateMachine() {
 
-    private val commandProcessor = CommandProcessor(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     companion object {
         private const val TAG = "FlashStateMachine"
-        private const val NLP_TIMEOUT_MS = 15000L
     }
-
-    // Current command data
-    private var currentCommand: String = ""
-    private var currentAction: String = "" // "enable", "disable", "toggle"
 
     override fun getNextState(currentState: VoiceState, event: VoiceEvent): VoiceState? {
         return when (currentState) {
-            is VoiceState.ListeningForFlashCommand -> {
+            is VoiceState.Idle -> {
                 when (event) {
-                    is VoiceEvent.FlashCommandReceived -> VoiceState.ParsingFlashCommand
-                    is VoiceEvent.UserCancelled -> VoiceState.Idle
+                    is VoiceEvent.StartFlashCommand -> VoiceState.ExecutingFlashCommand
                     else -> null
                 }
             }
-            is VoiceState.ParsingFlashCommand -> {
+            is VoiceState.ExecutingFlashCommand -> {
                 when (event) {
-                    is VoiceEvent.FlashCommandParsed -> VoiceState.Success
-                    is VoiceEvent.FlashCommandParseFailed -> VoiceState.Error()
+                    is VoiceEvent.FlashToggledSuccessfully -> VoiceState.Success
+                    is VoiceEvent.FlashToggleFailed -> VoiceState.Error(event.error)
                     is VoiceEvent.UserCancelled -> VoiceState.Idle
                     else -> null
                 }
@@ -66,14 +58,9 @@ class FlashStateMachine(
 
     override fun onEnterState(state: VoiceState, event: VoiceEvent) {
         when (state) {
-            is VoiceState.ListeningForFlashCommand -> {
-                voiceManager.resetBusyState()
-                speakAndListen("Bạn cần tôi trợ giúp điều gì?")
-            }
-
-            is VoiceState.ParsingFlashCommand -> {
-                speak("Đang xử lý lệnh đèn flash...")
-                parseCommandAsync(currentCommand)
+            is VoiceState.ExecutingFlashCommand -> {
+                Log.d(TAG, "Executing flash command")
+                // Logic sẽ được thực hiện trong executeFlashCommand()
             }
 
             is VoiceState.Success -> {
@@ -99,7 +86,6 @@ class FlashStateMachine(
                     speak("Đã hủy lệnh đèn flash.")
                 }
                 voiceManager.resetBusyState()
-                resetContext()
             }
             else -> {
                 // Handle other states if needed
@@ -107,74 +93,23 @@ class FlashStateMachine(
         }
     }
 
-    fun handleSpeechResult(spokenText: String) {
-        when (currentState) {
-            is VoiceState.ListeningForFlashCommand -> {
-                Log.d(TAG, "Flash command received: $spokenText")
-                currentCommand = spokenText
-                processEvent(VoiceEvent.FlashCommandReceived(spokenText))
+    /**
+     * Thực hiện lệnh flash được gọi từ CommandProcessor
+     */
+    fun executeFlashCommand(action: String) {
+        Log.d(TAG, "Executing flash command: $action")
+        processEvent(VoiceEvent.StartFlashCommand)
+        
+        when (action.lowercase()) {
+            "on", "bật" -> {
+                executeEnableFlash()
+            }
+            "off", "tắt" -> {
+                executeDisableFlash()
             }
             else -> {
-                // Handle other states if needed
-            }
-        }
-    }
-
-    private fun parseCommandAsync(command: String) {
-        coroutineScope.launch {
-            try {
-                // Timeout protection
-                val timeoutJob = launch {
-                    delay(NLP_TIMEOUT_MS)
-                    Log.e(TAG, "NLP timeout for flash command")
-                    processEvent(VoiceEvent.FlashCommandParseFailed("Timeout: Không nhận được phản hồi từ server"))
-                }
-
-                commandProcessor.processCommand(command, object : CommandProcessor.CommandProcessorCallback {
-                    override fun onCommandExecuted(success: Boolean, message: String) {
-                        timeoutJob.cancel()
-                        if (success) {
-                            Log.d(TAG, "Flash command executed successfully: $message")
-                            processEvent(VoiceEvent.FlashToggledSuccessfully)
-                        } else {
-                            Log.e(TAG, "Flash command execution failed: $message")
-                            processEvent(VoiceEvent.FlashCommandParseFailed(message))
-                        }
-                    }
-
-                    override fun onError(error: String) {
-                        timeoutJob.cancel()
-                        Log.e(TAG, "NLP error for flash command: $error")
-                        processEvent(VoiceEvent.FlashCommandParseFailed(error))
-                    }
-
-                    override fun onNeedConfirmation(command: String, receiver: String, message: String) {
-                        timeoutJob.cancel()
-                        Log.d(TAG, "Flash command needs confirmation: $command, action: $receiver")
-                        
-                        // receiver contains the action type (enable/disable/toggle)
-                        currentAction = receiver
-                        
-                        when (command) {
-                            "flash-enable" -> {
-                                executeEnableFlash()
-                            }
-                            "flash-disable" -> {
-                                executeDisableFlash()
-                            }
-                            "flash-toggle" -> {
-                                executeToggleFlash()
-                            }
-                            else -> {
-                                Log.e(TAG, "Unknown flash command: $command")
-                                processEvent(VoiceEvent.FlashCommandParseFailed("Lệnh đèn flash không được hỗ trợ"))
-                            }
-                        }
-                    }
-                })
-            } catch (e: Exception) {
-                Log.e(TAG, "Error processing flash command: ${e.message}", e)
-                processEvent(VoiceEvent.FlashCommandParseFailed("Lỗi xử lý lệnh: ${e.message}"))
+                Log.e(TAG, "Unknown flash action: $action")
+                processEvent(VoiceEvent.FlashToggleFailed("Hành động không được hỗ trợ: $action"))
             }
         }
     }
@@ -211,58 +146,13 @@ class FlashStateMachine(
         })
     }
 
-    private fun executeToggleFlash() {
-        Log.d(TAG, "Executing toggle flash")
-        
-        controlDeviceAutomation.toggleFlash(object : ControlDeviceAutomation.DeviceCallback {
-            override fun onSuccess() {
-                Log.d(TAG, "Flash toggled successfully")
-                processEvent(VoiceEvent.FlashToggledSuccessfully)
-            }
-
-            override fun onError(error: String) {
-                Log.e(TAG, "Flash toggle failed: $error")
-                processEvent(VoiceEvent.FlashToggleFailed(error))
-            }
-        })
-    }
-
-    private fun speakAndListen(text: String) {
-        voiceManager.textToSpeech(text, 0, object : VoiceManager.VoiceControllerCallback {
-            override fun onSpeechResult(spokenText: String) {
-                if (spokenText.isNotEmpty()) {
-                    handleSpeechResult(spokenText)
-                } else {
-                    Log.w(TAG, "Empty speech result")
-                    processEvent(VoiceEvent.FlashCommandParseFailed("Không nhận được lệnh"))
-                }
-            }
-
-            override fun onConfirmationResult(confirmed: Boolean) {
-                // Not used in this context
-            }
-
-            override fun onError(error: String) {
-                Log.e(TAG, "Speech recognition error: $error")
-                processEvent(VoiceEvent.FlashCommandParseFailed("Lỗi nhận dạng giọng nói: $error"))
-            }
-
-            override fun onAudioLevelChanged(level: Int) {
-                // Not used in this context
-            }
-        })
-    }
 
     private fun speak(text: String) {
         voiceManager.speak(text)
     }
 
-    private fun resetContext() {
-        currentCommand = ""
-        currentAction = ""
-    }
-
     fun cleanup() {
-        commandProcessor.release()
+        // Cleanup resources if needed
+        Log.d(TAG, "FlashStateMachine cleanup completed")
     }
 }

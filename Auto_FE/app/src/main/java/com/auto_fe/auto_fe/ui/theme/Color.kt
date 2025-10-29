@@ -111,3 +111,5 @@ val DarkSurface         = AISurfaceGlass
 val DarkOnPrimary       = AITextPrimary
 val DarkOnBackground    = AITextPrimary
 val DarkOnSurface       = AITextPrimary
+val DarkError           = AIError
+val SuccessColor        = AISuccess

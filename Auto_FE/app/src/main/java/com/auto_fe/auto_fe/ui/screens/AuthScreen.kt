@@ -37,6 +37,7 @@ import kotlinx.coroutines.tasks.await
 fun AuthScreen(
     onLoginSuccess: (String, String?, String?, Long?) -> Unit = { _, _, _, _ -> }, // Callback với accessToken, email, name, userId
     onVerificationClick: (String, String) -> Unit = { _, _ -> }, // Callback với email và password
+    onForgotPasswordClick: () -> Unit = { }, // Callback cho quên mật khẩu
     verifiedEmail: String? = null, // Email sau khi verify thành công
     verifiedPassword: String? = null // Password sau khi verify thành công
 ) {

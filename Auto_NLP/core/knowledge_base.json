@@ -91,13 +91,11 @@
     ],
     "set-alarm": [
       "đặt báo thức",
-      "nhắc nhở",
       "hẹn giờ",
       "đánh thức",
       "chuông báo",
-      "ghi nhớ",
-      "alarm",
-      "reminder"
+      "bật chuông",
+      "alarm"
     ],
     "set-event-calendar": [
       "đặt nhắc nhở",
@@ -105,8 +103,9 @@
       "lời nhắc",
       "nhắc tôi",
       "tạo lời nhắc",
-      "reminder",
       "tạo sự kiện",
+      "đặt lịch",
+      "sắp lịch",
       "lịch"
     ],
     "open-cam": [
@@ -297,23 +296,20 @@
     ],
     "set-alarm": [
       "báo thức",
-      "nhắc",
-      "hẹn",
+      "hẹn giờ",
+      "đánh thức",
       "alarm",
-      "reminder",
-      "giờ",
       "chuông"
     ],
     "set-event-calendar": [
       "nhắc",
-      "nhớ",
-      "reminder",
-      "ghi",
       "lời nhắc",
+      "ghi nhớ",
       "uống thuốc",
       "thuốc",
       "viên thuốc",
       "tạo sự kiện",
+      "đặt lịch",
       "lịch",
       "sự kiện"
     ],

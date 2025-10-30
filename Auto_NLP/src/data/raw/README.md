@@ -1,43 +1,24 @@
 # Raw Data
 
-This folder contains the essential raw data files for the Vietnamese NLP system.
+Thư mục này lưu trữ các bộ dữ liệu gốc phục vụ huấn luyện và suy luận cho hệ thống NLP tiếng Việt dành cho người cao tuổi.
 
-## Current Files:
+## Dataset chính
 
-### Essential Datasets:
-- **elderly_command_dataset_clean_bio.json**: Final clean dataset with BIO labels
-  - 2,575 samples
-  - Clean BIO format
-  - Ready for training
-- **entity_vocab_clean.json**: Clean entity vocabulary
-  - 21 entity labels
-  - Mapped to IDs
-  - Used for training
+- `elderly_command_dataset_MERGED_13C_VITEXT.json`
+  - 10.186 câu lệnh đã chuẩn hóa theo chuẩn IOB2
+  - 13 intent chính: `add-contacts`, `call`, `control-device`, `get-info`, `make-video-call`, `open-cam`, `play-media`, `search-internet`, `search-youtube`, `send-mess`, `set-alarm`, `set-event-calendar`, `view-content`
+  - 13 nhóm entity: `ACTION`, `CONTACT_NAME`, `CONTENT_TYPE`, `DATE`, `DEVICE`, `LEVEL`, `LOCATION`, `MEDIA_TYPE`, `PHONE`, `PLATFORM`, `QUERY`, `TIME`, `TITLE`
+  - Là nguồn đầu vào cho pipeline xử lý và sinh bộ processed (`train.json`, `val.json`, `test.json`)
 
-### Dataset Statistics:
-- Total samples: 2,575
-- Intent distribution: call, send-mess, search-internet
-- Entity types: CONTACT_NAME, MESSAGE, QUERY, TIME, etc.
-- BIO format: Clean and validated
+## Các tệp hỗ trợ
 
-## Usage:
+- `entity_vocab_clean.json`: từ vựng entity gốc dùng tham chiếu đối chiếu.
+- `normalize_numbers_vi_dataset.py`: script chuẩn hóa số trong dữ liệu thô.
+- Thư mục `archive/`: lưu các snapshot dữ liệu lịch sử phục vụ đối chiếu.
 
-### For Training:
-```bash
-# The clean dataset is automatically used by training scripts
-python src/training/scripts/train_gpu.py
-```
+## Sử dụng
 
-### For Data Processing:
-```bash
-# Use management scripts to process data
-python scripts/management/dataset_splitter.py
-python scripts/management/smart_augmentation.py
-python scripts/management/fix_bio_labels.py
-```
+- Quá trình tiền xử lý & tách tập đã được tự động hóa trong pipeline, không cần chỉnh sửa thủ công.
+- Khi cần tái sinh bộ processed, chạy các script tương ứng tại `src/data/processed/`.
 
-## Archive:
-- See `archive/` folder for processed intermediate files
-- All essential data has been preserved
-
-Last updated: 2025-10-20 17:39:08
+_Last updated: 2025-10-30_

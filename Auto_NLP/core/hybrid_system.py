@@ -6,8 +6,10 @@ from pathlib import Path
 from typing import Dict, Any, Optional, List, Tuple
 from transformers import AutoTokenizer, AutoModel
 import logging
+import re
 import sys
 import time
+import unicodedata
 
 # Add project root to path
 current_dir = Path(__file__).parent
@@ -82,6 +84,168 @@ class ModelFirstHybridSystem:
         print(f"   Trained model: {'OK' if self.model_loaded else 'FAILED'}")
         print(f"   Reasoning engine: {'OK' if self.reasoning_loaded else 'FAILED'}")
     
+    @staticmethod
+    def _resolve_alarm_datetime(text: str) -> Dict[str, str]:
+        try:
+            import datetime as _dt
+            import re as _re
+            from zoneinfo import ZoneInfo
+
+            TZ = ZoneInfo("Asia/Bangkok")
+            now = _dt.datetime.now(tz=TZ)
+            text_l = (text or "").lower()
+            text_norm = ModelFirstHybridSystem._normalize_text(text_l)
+
+            def _iter_sources(raw: str) -> List[str]:
+                sources = [raw]
+                if text_norm and text_norm not in sources:
+                    sources.append(text_norm)
+                return sources
+
+            def _parse_vi_time(raw: str):
+                if not raw:
+                    return (None, None)
+                s = raw.strip().lower()
+                m = _re.search(r"\b(\d{1,2})\s*(giờ|gio|h)?\s*rưỡi\b", s)
+                if m:
+                    return (int(m.group(1)), 30)
+                m = _re.search(r"\b(\d{1,2})\s*(giờ|gio|h)?\s*kém\s*(\d{1,2})\b", s)
+                if m:
+                    h = int(m.group(1))
+                    k = int(m.group(3))
+                    h = (h - 1) if k > 0 else h
+                    return (h, (60 - k) % 60)
+                m = _re.search(r"\b(\d{1,2})\s*(?:giờ|gio|h)\s*(\d{1,2})\b", s)
+                if m:
+                    return (int(m.group(1)), int(m.group(2)))
+                m = _re.search(r"\b(\d{1,2}):(\d{1,2})\b", s)
+                if m:
+                    return (int(m.group(1)), int(m.group(2)))
+                m = _re.search(r"\b(\d{1,2})\s*(giờ|gio|h)\b", s)
+                if m:
+                    return (int(m.group(1)), 0)
+                m = _re.fullmatch(r"\s*(\d{1,2})\s*", s)
+                if m:
+                    return (int(m.group(1)), 0)
+                return (None, None)
+
+            def _apply_period(h: int, mi: int):
+                if h is None:
+                    return (None, None)
+                if h >= 13:
+                    return (h, mi)
+                has_sang = any(k in source for source in _iter_sources(text_l) for k in ["sáng", "sang"])
+                has_trua = any(k in source for source in _iter_sources(text_l) for k in ["trưa", "giua trua", "nua trua"])
+                has_chieu = any(k in source for source in _iter_sources(text_l) for k in ["chiều", "chieu"])
+                has_toi = any(k in source for source in _iter_sources(text_l) for k in ["tối", "toi"])
+                has_dem = any(k in source for source in _iter_sources(text_l) for k in ["đêm", "dem", "khuya", "nửa đêm", "nua dem"])
+
+                if h == 12:
+                    if has_trua:
+                        return (12, mi)
+                    if has_dem:
+                        return (0, mi)
+                    return (12, mi)
+
+                if has_sang:
+                    return (h, mi)
+                if has_trua:
+                    if 1 <= h <= 5:
+                        return (h + 12, mi)
+                    return (12 if h == 0 else h, mi)
+                if has_chieu:
+                    return (h + 12, mi)
+                if has_toi:
+                    hh = h + 12
+                    if hh < 18:
+                        hh = 18
+                    return (hh, mi)
+                if has_dem:
+                    if 1 <= h <= 4:
+                        return (h, mi)
+                    if 10 <= h <= 11:
+                        return (h + 12, mi)
+                    if h == 9:
+                        return (21, mi)
+                    if h == 8:
+                        return (20, mi)
+                    return (h, mi)
+                return (h, mi)
+
+            h = mi = None
+            for src in _iter_sources(text_l):
+                h_candidate, mi_candidate = _parse_vi_time(src)
+                if h_candidate is not None:
+                    h, mi = h_candidate, mi_candidate
+                    break
+            if h is not None:
+                h, mi = _apply_period(h, 0 if mi is None else mi)
+
+            if h is not None:
+                mi = 0 if mi is None else max(0, min(59, mi))
+                h = max(0, min(23, h))
+                time_str = f"{h:02d}:{mi:02d}"
+            else:
+                time_str = None
+
+            date_obj = None
+            sources = _iter_sources(text_l)
+            if any("hôm nay" in src or "hom nay" in src for src in sources):
+                date_obj = now.date()
+            elif any(k in src for src in sources for k in ["ngày mai", "mai", "ngay mai"]):
+                date_obj = (now + _dt.timedelta(days=1)).date()
+            elif any(k in src for src in sources for k in ["ngày mốt", "mốt", "ngày kia", "ngay mot", "ngay kia"]):
+                date_obj = (now + _dt.timedelta(days=2)).date()
+            elif any("tuần sau" in src or "tuan sau" in src for src in sources):
+                date_obj = (now + _dt.timedelta(days=7)).date()
+
+            weekday_map = {
+                "thứ hai": 0,
+                "thứ ba": 1,
+                "thứ tư": 2,
+                "thứ năm": 3,
+                "thứ sáu": 4,
+                "thứ bảy": 5,
+                "chủ nhật": 6,
+            }
+            for vn, wd in weekday_map.items():
+                if any(vn in src or ModelFirstHybridSystem._normalize_text(vn) in src for src in sources):
+                    delta = (wd - now.weekday()) % 7
+                    if delta == 0:
+                        delta = 7
+                    if any("tuần sau" in src or "tuan sau" in src for src in sources):
+                        delta += 7
+                    date_obj = (now + _dt.timedelta(days=delta)).date()
+                    break
+
+            result = {}
+            if time_str:
+                result["TIME"] = time_str
+            if time_str and date_obj is None:
+                candidate_dt = _dt.datetime.combine(now.date(), _dt.time.fromisoformat(time_str), tzinfo=TZ)
+                if candidate_dt <= now:
+                    date_obj = now.date() + _dt.timedelta(days=1)
+                else:
+                    date_obj = now.date()
+            if date_obj is not None:
+                result["DATE"] = date_obj.isoformat()
+            if result.get("TIME") and result.get("DATE"):
+                hh, mm = [int(x) for x in result["TIME"].split(":")]
+                d = _dt.date.fromisoformat(result["DATE"])
+                ts = _dt.datetime(d.year, d.month, d.day, hh, mm, tzinfo=TZ)
+                result["TIMESTAMP"] = ts.isoformat()
+
+            return result
+        except Exception:
+            return {}
+
+    @staticmethod
+    def _normalize_text(text: Optional[str]) -> str:
+        if not text:
+            return ""
+        normalized = unicodedata.normalize("NFD", text)
+        return "".join(ch for ch in normalized if unicodedata.category(ch) != "Mn")
+
     def _initialize_components(self):
         """Initialize all system components"""
         print("Initializing model-first hybrid system...")
@@ -183,6 +347,13 @@ class ModelFirstHybridSystem:
         self.stats['total_predictions'] += 1
         
         try:
+            # Reset conversation context per request to tránh rò rỉ ngữ cảnh giữa các call
+            try:
+                if self.reasoning_engine and hasattr(self.reasoning_engine, 'conversation_context'):
+                    self.reasoning_engine.conversation_context.reset()
+            except Exception:
+                pass
+
             # Step 1: Trained model prediction (PRIMARY)
             model_result = self._model_predict(text)
             
@@ -253,15 +424,218 @@ class ModelFirstHybridSystem:
                     entities["ACTION"] = "tắt"
                     entities["MODE"] = "off"
                 elif has_increase:
-                    entities["ACTION"] = "tăng"
+                    entities["ACTION"] = "+"
                     entities["MODE"] = "up"
                 elif has_decrease:
-                    entities["ACTION"] = "giảm"
+                    entities["ACTION"] = "-"
                     entities["MODE"] = "down"
+
+                # LEVEL inference for small adjustments
+                if any(w in text_l for w in ["chút", "nhẹ", "một chút", "chút nữa"]):
+                    entities["LEVEL"] = "small"
 
                 # control-device should not include PLATFORM
                 entities.pop("PLATFORM", None)
 
+                result["entities"] = entities
+
+            if command == "set-alarm":
+                # Remove PLATFORM leakage
+                entities.pop("PLATFORM", None)
+                alarm_resolved = self._resolve_alarm_datetime(text)
+                if alarm_resolved:
+                    self.logger.info(f"Alarm resolved entities: {alarm_resolved}")
+
+                from zoneinfo import ZoneInfo
+                import datetime as _dt
+
+                TZ = ZoneInfo("Asia/Bangkok")
+                now = _dt.datetime.now(tz=TZ)
+                text_lower = (text or "").lower()
+                normalized = self._normalize_text(text_lower)
+
+                time_candidate = alarm_resolved.get("TIME") or entities.get("TIME")
+                if time_candidate:
+                    if re.match(r"^\d{1,2}$", str(time_candidate)):
+                        time_candidate = f"{int(time_candidate):02d}:00"
+                    elif re.match(r"^\d{1,2}:\d{1,2}$", str(time_candidate)):
+                        hh, mm = str(time_candidate).split(":")
+                        time_candidate = f"{int(hh):02d}:{int(mm):02d}"
+
+                date_candidate = alarm_resolved.get("DATE")
+                if not date_candidate:
+                    if "hôm nay" in text_lower or "hom nay" in normalized:
+                        date_candidate = now.date()
+                    elif any(k in text_lower for k in ["ngày mai", "mai"]) or any(k in normalized for k in ["ngay mai", "mai"]):
+                        date_candidate = (now + _dt.timedelta(days=1)).date()
+                    elif any(k in text_lower for k in ["ngày mốt", "mốt", "ngày kia"]) or any(k in normalized for k in ["ngay mot", "mot", "ngay kia"]):
+                        date_candidate = (now + _dt.timedelta(days=2)).date()
+                    else:
+                        weekday_map = {
+                            "thứ hai": 0,
+                            "thứ ba": 1,
+                            "thứ tư": 2,
+                            "thứ năm": 3,
+                            "thứ sáu": 4,
+                            "thứ bảy": 5,
+                            "chủ nhật": 6,
+                        }
+                        for vn, wd in weekday_map.items():
+                            if vn in text_lower or self._normalize_text(vn) in normalized:
+                                delta = (wd - now.weekday()) % 7
+                                if delta == 0:
+                                    delta = 7
+                                if "tuần sau" in text_lower or "tuan sau" in normalized:
+                                    delta += 7
+                                date_candidate = (now + _dt.timedelta(days=delta)).date()
+                                break
+                    if date_candidate is None and time_candidate:
+                        try:
+                            hh, mm = [int(x) for x in time_candidate.split(":")]
+                            base_dt = _dt.datetime.combine(now.date(), _dt.time(hour=hh, minute=mm), tzinfo=TZ)
+                            if base_dt <= now:
+                                date_candidate = (now + _dt.timedelta(days=1)).date()
+                            else:
+                                date_candidate = now.date()
+                        except Exception:
+                            date_candidate = now.date()
+
+                timestamp_candidate = alarm_resolved.get("TIMESTAMP")
+                if not timestamp_candidate and time_candidate and date_candidate:
+                    try:
+                        hh, mm = [int(x) for x in time_candidate.split(":")]
+                        date_obj = date_candidate if isinstance(date_candidate, _dt.date) else _dt.date.fromisoformat(date_candidate)
+                        ts = _dt.datetime(date_obj.year, date_obj.month, date_obj.day, hh, mm, tzinfo=TZ)
+                        timestamp_candidate = ts.isoformat()
+                    except Exception:
+                        timestamp_candidate = None
+
+                alarm_entities = {}
+                if time_candidate:
+                    alarm_entities["TIME"] = time_candidate
+                if date_candidate:
+                    alarm_entities["DATE"] = date_candidate.isoformat() if isinstance(date_candidate, _dt.date) else date_candidate
+                if timestamp_candidate:
+                    alarm_entities["TIMESTAMP"] = timestamp_candidate
+                result["entities"] = alarm_entities
+                entities = alarm_entities
+
+            if command == "add-contacts":
+                # Remove unrelated fields if leaked
+                for k in ["DEVICE", "ACTION", "MODE", "PLATFORM"]:
+                    entities.pop(k, None)
+                contacts_enriched = {}
+                if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
+                    try:
+                        contacts_enriched = self.specialized_entity_extractor._extract_contact_entities(text)  # noqa: SLF001
+                    except Exception:
+                        contacts_enriched = {}
+                if contacts_enriched:
+                    if contacts_enriched.get("CONTACT_NAME"):
+                        entities["CONTACT_NAME"] = contacts_enriched["CONTACT_NAME"]
+                    phone_candidate = contacts_enriched.get("PHONE") or contacts_enriched.get("PHONE_NUMBER")
+                    if phone_candidate:
+                        entities["PHONE"] = phone_candidate
+                if not entities.get("PHONE") and entities.get("PHONE_NUMBER"):
+                    entities["PHONE"] = entities["PHONE_NUMBER"]
+                result["entities"] = entities
+
+            if command == "call":
+                entities.pop("PLATFORM", None)
+                if entities.get("RECEIVER") and not entities.get("CONTACT_NAME") and not entities["RECEIVER"].isdigit():
+                    entities["CONTACT_NAME"] = entities["RECEIVER"]
+                if entities.get("CONTACT_NAME") and not entities.get("RECEIVER"):
+                    entities["RECEIVER"] = entities["CONTACT_NAME"]
+                result["entities"] = entities
+
+            if command == "make-video-call":
+                platform_value = entities.get("PLATFORM")
+                if not platform_value:
+                    platform_guess = ""
+                    if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
+                        try:
+                            platform_guess = self.specialized_entity_extractor.extract_platform(text)  # type: ignore[attr-defined]
+                        except Exception:
+                            platform_guess = ""
+                    entities["PLATFORM"] = platform_guess or "zalo"
+                if entities.get("RECEIVER") and not entities.get("CONTACT_NAME") and not entities["RECEIVER"].isdigit():
+                    entities["CONTACT_NAME"] = entities["RECEIVER"]
+                result["entities"] = entities
+
+            if command == "search-internet":
+                # Remove control-device leakage
+                for k in ["DEVICE", "ACTION", "MODE"]:
+                    entities.pop(k, None)
+                if any(w in text_l for w in ["youtube", "yt"]):
+                    entities.pop("PLATFORM", None)
+                if not entities.get("PLATFORM"):
+                    entities["PLATFORM"] = "google"
+                result["entities"] = entities
+
+            if command == "search-youtube":
+                entities["PLATFORM"] = "youtube"
+                result["entities"] = entities
+
+            if command == "send-mess":
+                if not entities.get("PLATFORM"):
+                    platform_guess = ""
+                    if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
+                        try:
+                            platform_guess = self.specialized_entity_extractor.extract_platform(text)  # type: ignore[attr-defined]
+                        except Exception:
+                            platform_guess = ""
+                    entities["PLATFORM"] = platform_guess or "zalo"
+                result["entities"] = entities
+
+            if command == "set-event-calendar":
+                if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
+                    try:
+                        calendar_entities = self.specialized_entity_extractor._extract_calendar_entities(text)  # noqa: SLF001
+                        for key in ["TITLE", "DATE", "TIME"]:
+                            if not entities.get(key) and calendar_entities.get(key):
+                                entities[key] = calendar_entities[key]
+                    except Exception:
+                        pass
+                result["entities"] = entities
+
+            # Enforce required entity set per command: filter out unrelated keys
+            required_entities_map = {
+                "add-contacts": ["CONTACT_NAME", "PHONE"],
+                "call": ["CONTACT_NAME", "PHONE", "RECEIVER"],
+                "make-video-call": ["CONTACT_NAME", "RECEIVER", "PLATFORM"],
+                "send-mess": ["RECEIVER", "MESSAGE", "PLATFORM"],
+                "set-alarm": ["TIME", "DATE", "TIMESTAMP"],
+                "set-event-calendar": ["TITLE", "DATE"],
+                "play-media": ["MEDIA_TYPE"],
+                "view-content": ["CONTENT_TYPE", "TITLE"],
+                "search-internet": ["QUERY", "PLATFORM"],
+                "search-youtube": ["QUERY", "PLATFORM"],
+                "get-info": ["CONTENT_TYPE", "QUERY"],
+                "control-device": ["ACTION", "DEVICE", "MODE"],
+                "open-cam": ["ACTION", "MODE", "CAMERA_TYPE"],
+            }
+
+            if command in required_entities_map:
+                keep = set(required_entities_map[command])
+                entities = {k: v for k, v in entities.items() if k in keep}
+
+                missing = [k for k in keep if not entities.get(k)]
+                if missing and hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
+                    try:
+                        if command == "search-internet":
+                            enriched = self.specialized_entity_extractor.extract_search_entities(text)  # type: ignore[attr-defined]
+                        elif command == "search-youtube":
+                            enriched = self.specialized_entity_extractor._extract_youtube_search_entities(text)  # noqa: SLF001
+                        elif command == "make-video-call":
+                            enriched = self.specialized_entity_extractor.extract_all_entities(text, command)
+                        else:
+                            enriched = {}
+                        if enriched:
+                            for key in missing:
+                                if not entities.get(key) and enriched.get(key):
+                                    entities[key] = enriched[key]
+                    except Exception:
+                        pass
                 result["entities"] = entities
 
             return result
@@ -331,7 +705,9 @@ class ModelFirstHybridSystem:
             'call': ['gọi', 'call', 'phone', 'điện thoại', 'facetime', 'video call'],
             'control-device': ['bật', 'tắt', 'điều chỉnh', 'turn', 'on', 'off', 'đèn', 'quạt', 'điều hòa'],
             'play-media': ['phát', 'chơi', 'play', 'nhạc', 'video', 'music', 'bài hát'],
-            'search-internet': ['tìm', 'search', 'kiếm', 'google', 'youtube', 'internet'],
+            # tách youtube khỏi search-internet để giảm nhập nhằng
+            'search-internet': ['tìm', 'search', 'kiếm', 'google', 'internet'],
+            'search-youtube': ['youtube', 'yt', 'trên youtube', 'tìm youtube', 'tìm trên youtube', 'xem trên youtube'],
             'set-alarm': ['báo thức', 'alarm', 'nhắc', 'đặt', 'set'],
             'send-mess': ['gửi', 'nhắn', 'tin', 'message', 'sms', 'messenger'],
             'open-cam': ['camera', 'chụp', 'quay', 'ảnh', 'video'],
@@ -424,6 +800,40 @@ class ModelFirstHybridSystem:
                 entities['RECEIVER'] = 'bố'
             elif 'bạn' in text_lower:
                 entities['RECEIVER'] = 'bạn'
+
+        elif intent == 'open-cam':
+            # Chuẩn hoá entity cho open-cam
+            # CAMERA_TYPE
+            if any(k in text_lower for k in ['chụp', 'ảnh', 'hình']):
+                entities['CAMERA_TYPE'] = 'image'
+            elif 'quay' in text_lower or 'video' in text_lower:
+                entities['CAMERA_TYPE'] = 'video'
+            # ACTION
+            if any(k in text_lower for k in ['mở', 'bật']):
+                entities['ACTION'] = 'mở'
+            elif any(k in text_lower for k in ['tắt', 'đóng']):
+                entities['ACTION'] = 'tắt'
+            # MODE
+            if 'trước' in text_lower:
+                entities['MODE'] = 'trước'
+            elif 'sau' in text_lower:
+                entities['MODE'] = 'sau'
+            # Không để PLATFORM rò rỉ sang
+            entities.pop('PLATFORM', None)
+
+        elif intent == 'search-youtube':
+            # PLATFORM cứng là youtube, trích QUERY heuristic
+            entities['PLATFORM'] = 'youtube'
+            try:
+                import re
+                m = re.search(r'(?:tìm|search)\s+(?:trên\s+youtube\s+)?(.+)', text_lower)
+                if m:
+                    q = m.group(1).strip()
+                    q = re.sub(r'\b(trên|youtube)\b', '', q).strip()
+                    if q:
+                        entities['QUERY'] = q
+            except Exception:
+                pass
         
         return entities
     
@@ -534,6 +944,159 @@ class ModelFirstHybridSystem:
                     final_entities = model_entities.copy()
                     decision_reason = "model_fallback"
             
+            # Always enhance with specialized entities if available (final merge)
+            if specialized_entities:
+                final_entities.update(specialized_entities)
+
+            # Heuristic override: explicit video call keywords → make-video-call
+            try:
+                text_l = (text or "").lower()
+                video_keywords = ["gọi video", "goi video", "video call", "facetime", "videochat", "video chat"]
+                if any(k in text_l for k in video_keywords):
+                    final_intent = "make-video-call"
+                    decision_reason = "video_call_override"
+            except Exception:
+                pass
+
+            # Heuristic override: if TIME present or strong time keywords → prefer set-alarm
+            try:
+                text_l = (text or "").lower()
+                text_norm = self._normalize_text(text_l)
+                has_time_entity = "TIME" in final_entities or (specialized_entities and "TIME" in specialized_entities)
+                time_regex = r"\b(\d{1,2})(?:[:h]\s*(\d{1,2}))?\b"
+                has_time_pattern = bool(re.search(time_regex, text_l))
+                alarm_keywords_vn = ["báo thức", "hẹn giờ", "đặt báo"]
+                alarm_keywords_ascii = ["bao thuc", "hen gio", "dat bao"]
+                period_keywords_vn = ["sáng", "trưa", "chiều", "tối", "đêm", "mai", "mốt", "ngày mai"]
+                period_keywords_ascii = ["sang", "trua", "chieu", "toi", "dem", "mai", "mot", "ngay mai"]
+                has_alarm_kw = any(w in text_l for w in alarm_keywords_vn) or any(w in text_norm for w in alarm_keywords_ascii)
+                has_period_kw = any(w in text_l for w in period_keywords_vn) or any(w in text_norm for w in period_keywords_ascii)
+                comm_keywords = ["gọi", "goi", "video", "call", "nhắn", "nhan", "gửi", "gui", "liên lạc", "lien lac"]
+                is_communication = any(w in text_l for w in comm_keywords)
+                if final_intent != "set-alarm" and not is_communication and (has_time_entity or (has_time_pattern and (has_alarm_kw or has_period_kw))):
+                    final_intent = "set-alarm"
+                    decision_reason = "time_override_set_alarm"
+            except Exception:
+                pass
+
+            # Heuristic override for contacts first (to avoid conflicts)
+            try:
+                text_l = (text or "").lower()
+                text_norm = self._normalize_text(text_l)
+                # add-contacts: keywords + presence of phone hint
+                contact_keywords_vn = ["liên hệ", "liên lạc", "danh bạ", "thêm số", "lưu số", "thêm liên hệ", "tạo liên hệ"]
+                contact_keywords_ascii = ["lien he", "lien lac", "danh ba", "them so", "luu so", "them lien he", "tao lien he", "add contact"]
+                has_contact_kw = any(k in text_l for k in contact_keywords_vn) or any(k in text_norm for k in contact_keywords_ascii)
+                # phone hints: explicit digits or number words
+                has_digits_phone = bool(re.search(r"\b\d{9,11}\b", text_l))
+                has_word_phone = bool(re.search(r"\b(không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)\b", text_l)) or bool(re.search(r"\b(khong|mot|hai|ba|bon|nam|sau|bay|tam|chin)\b", text_norm))
+                if has_contact_kw and (has_digits_phone or has_word_phone):
+                    final_intent = "add-contacts"
+            except Exception:
+                pass
+
+            # Heuristic override for search-youtube (must run before media/view)
+            try:
+                text_l = (text or "").lower()
+                if any(w in text_l for w in ["youtube", "yt"]):
+                    final_intent = "search-youtube"
+                    # pull entities via extractor
+                    if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
+                        try:
+                            se = self.specialized_entity_extractor._extract_youtube_search_entities(text)  # noqa: SLF001
+                            if se and isinstance(se, dict):
+                                final_entities.update(se)
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+
+            # Heuristic override for search-internet (guard before control-device)
+            try:
+                text_l = (text or "").lower()
+                text_norm = self._normalize_text(text_l)
+                search_keywords_vn = ["tra cứu", "tìm", "bảng giá", "giá", "thông tin", "đánh giá", "tìm kiếm", "tìm hiểu", "tra", "tra cứu", "sớt"]
+                search_keywords_ascii = ["tra cuu", "tim", "bang gia", "gia", "thong tin", "danh gia", "search", "spec"]
+                device_keywords_vn = ["độ sáng", "ánh sáng", "âm lượng", "âm thanh", "loa", "đèn", "điều hòa"]
+                device_keywords_ascii = ["do sang", "anh sang", "am luong", "am thanh", "loa", "den", "dieu hoa", "wifi", "wi fi", "wi-fi", "brightness", "volume"]
+                has_search_kw = any(k in text_l for k in search_keywords_vn) or any(k in text_norm for k in search_keywords_ascii)
+                has_device_kw = any(k in text_l for k in device_keywords_vn) or any(k in text_norm for k in device_keywords_ascii)
+                if has_search_kw and not has_device_kw and final_intent not in ["search-youtube", "add-contacts", "call", "make-video-call", "send-mess"] and not any(tok in text_l for tok in ["youtube", "yt"]):
+                    final_intent = "search-internet"
+                    # Try to enrich query from extractor
+                    try:
+                        if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
+                            se = self.specialized_entity_extractor.extract_search_entities(text)  # type: ignore[attr-defined]
+                            if se and isinstance(se, dict):
+                                final_entities.update(se)
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+
+            # Heuristic override for control-device (wifi/brightness/volume)
+            try:
+                text_l = (text or "").lower()
+                if any(w in text_l for w in ["wifi", "wi fi", "wi-fi", "wiai phai", "wai phai"]):
+                    final_intent = "control-device"
+                    final_entities["DEVICE"] = "wifi"
+                    if any(w in text_l for w in ["bật", "mở", "on"]):
+                        final_entities["ACTION"] = "mở"
+                        final_entities["MODE"] = "on"
+                    elif any(w in text_l for w in ["tắt", "đóng", "off"]):
+                        final_entities["ACTION"] = "tắt"
+                        final_entities["MODE"] = "off"
+                elif any(w in text_l for w in ["độ sáng", "brightness", "ánh sáng"]):
+                    final_intent = "control-device"
+                    final_entities["DEVICE"] = "độ sáng"
+                    if any(w in text_l for w in ["tăng", "+", "lên", "up"]):
+                        final_entities["ACTION"] = "+"
+                        final_entities["MODE"] = "up"
+                    elif any(w in text_l for w in ["giảm", "-", "xuống", "down"]):
+                        final_entities["ACTION"] = "-"
+                        final_entities["MODE"] = "down"
+                elif any(w in text_l for w in ["âm lượng", "volume", "âm thanh", "loa"]):
+                    final_intent = "control-device"
+                    final_entities["DEVICE"] = "âm lượng"
+                    if any(w in text_l for w in ["tăng", "+", "lên", "up", "thêm", "chút", "chút nữa"]):
+                        final_entities["ACTION"] = "+"
+                        final_entities["MODE"] = "up"
+                        # tinh chỉnh mức độ nếu có từ chỉ mức nhỏ
+                        if any(w in text_l for w in ["chút", "nhẹ", "một chút", "chút nữa"]):
+                            final_entities["LEVEL"] = "small"
+                    elif any(w in text_l for w in ["giảm", "-", "xuống", "down"]):
+                        final_entities["ACTION"] = "-"
+                        final_entities["MODE"] = "down"
+            except Exception:
+                pass
+
+            # Second-pass entity extraction using final_intent (to ensure correct entities like DATE/TIMESTAMP for set-alarm)
+            try:
+                if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
+                    refined_entities = self.specialized_entity_extractor.extract_all_entities(text, final_intent)
+                    if refined_entities:
+                        final_entities.update(refined_entities)
+                    # Ensure set-alarm resolver (TIME/DATE/TIMESTAMP) is fully applied
+                    if final_intent == "set-alarm":
+                        try:
+                            alarm_entities = self.specialized_entity_extractor._extract_alarm_entities(text)  # noqa: SLF001
+                            if alarm_entities:
+                                final_entities.update(alarm_entities)
+                        except Exception:
+                            pass
+            except Exception as e:
+                self.logger.warning(f"Refined entity extraction failed: {e}")
+
+            # Ensure RECEIVER is preserved for communication intents from reasoning
+            try:
+                if final_intent in ["call", "make-video-call"]:
+                    if "RECEIVER" not in final_entities and "RECEIVER" in reasoning_entities:
+                        final_entities["RECEIVER"] = reasoning_entities["RECEIVER"]
+                    if "CONTACT_NAME" not in final_entities and "CONTACT_NAME" in reasoning_entities:
+                        final_entities["CONTACT_NAME"] = reasoning_entities["CONTACT_NAME"]
+            except Exception:
+                pass
+
             # Determine command
             final_command = final_intent  # For now, command = intent
             

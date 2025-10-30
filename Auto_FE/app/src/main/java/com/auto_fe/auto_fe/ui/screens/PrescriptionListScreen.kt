@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.auto_fe.auto_fe.ui.service.PrescriptionService
 import com.auto_fe.auto_fe.ui.theme.*
+import com.auto_fe.auto_fe.ui.theme.AppTextSize
 import kotlinx.coroutines.launch
 
 @Composable
@@ -110,14 +111,14 @@ fun PrescriptionListScreen(
                     ) {
                         Text(
                             text = "Đơn thuốc của tôi",
-                            fontSize = 24.sp,
+                            fontSize = AppTextSize.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = DarkOnSurface
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "Xin chào, ${userName.takeIf { it.isNotBlank() } ?: "Người dùng"}",
-                            fontSize = 14.sp,
+                            fontSize = AppTextSize.bodyMedium,
                             color = DarkOnSurface.copy(alpha = 0.7f)
                         )
                     }
@@ -154,14 +155,14 @@ fun PrescriptionListScreen(
                             ) {
                                 Text(
                                     text = userName.takeIf { it.isNotBlank() } ?: "Người dùng",
-                                    fontSize = 16.sp,
+                                    fontSize = AppTextSize.bodyMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = DarkOnSurface
                                 )
                                 if (userEmail.isNotEmpty()) {
                                     Text(
                                         text = userEmail,
-                                        fontSize = 12.sp,
+                                        fontSize = AppTextSize.bodySmall,
                                         color = DarkOnSurface.copy(alpha = 0.6f)
                                     )
                                 }
@@ -268,7 +269,7 @@ fun PrescriptionListScreen(
             // Subtitle
             Text(
                 text = "Quản lý lịch nhắc uống thuốc",
-                fontSize = 14.sp,
+                fontSize = AppTextSize.bodyMedium,
                 color = DarkOnSurface.copy(alpha = 0.7f),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -353,14 +354,14 @@ fun PrescriptionListScreen(
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = "Chưa có đơn thuốc nào",
-                                fontSize = 18.sp,
+                                fontSize = AppTextSize.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = DarkOnSurface
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "Thêm đơn thuốc đầu tiên để bắt đầu",
-                                fontSize = 14.sp,
+                                fontSize = AppTextSize.bodyMedium,
                                 color = DarkOnSurface.copy(alpha = 0.7f),
                                 textAlign = TextAlign.Center
                             )
@@ -431,7 +432,7 @@ fun PrescriptionCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = prescription.name,
-                        fontSize = 18.sp,
+                        fontSize = AppTextSize.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = DarkOnSurface
                     )
@@ -440,7 +441,7 @@ fun PrescriptionCard(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = prescription.description,
-                            fontSize = 14.sp,
+                            fontSize = AppTextSize.bodyMedium,
                             color = DarkOnSurface.copy(alpha = 0.7f),
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
@@ -455,7 +456,7 @@ fun PrescriptionCard(
                 ) {
                     Text(
                         text = if (prescription.isActive) "✓ Đang dùng" else "⏸ Tạm ngưng",
-                        fontSize = 12.sp,
+                        fontSize = AppTextSize.bodySmall,
                         color = if (prescription.isActive) AISuccess else DarkOnSurface.copy(alpha = 0.5f),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         fontWeight = FontWeight.Medium
@@ -478,19 +479,19 @@ fun PrescriptionCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "💊",
-                        fontSize = 16.sp
+                        fontSize = AppTextSize.bodyMedium
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "${prescription.medications?.size ?: prescription.medicationReminders?.size ?: 0} loại thuốc",
-                        fontSize = 14.sp,
+                        fontSize = AppTextSize.bodyMedium,
                         color = DarkOnSurface.copy(alpha = 0.8f)
                     )
                 }
 
                 Text(
                     text = "Xem chi tiết →",
-                    fontSize = 13.sp,
+                    fontSize = AppTextSize.bodySmall,
                     color = DarkPrimary,
                     fontWeight = FontWeight.Medium
                 )

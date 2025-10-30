@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
 import com.auto_fe.auto_fe.ui.service.UserService
 import com.auto_fe.auto_fe.ui.theme.*
+import com.auto_fe.auto_fe.ui.theme.AppTextSize
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -197,7 +198,7 @@ fun ProfileContent(
                 // Tên
                 Text(
                     text = profileData.fullName?.takeIf { it.isNotBlank() } ?: "Người dùng",
-                    fontSize = 24.sp,
+                    fontSize = AppTextSize.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = DarkOnSurface
                 )
@@ -207,7 +208,7 @@ fun ProfileContent(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = profileData.email,
-                        fontSize = 14.sp,
+                        fontSize = AppTextSize.bodyMedium,
                         color = DarkOnSurface.copy(alpha = 0.7f)
                     )
                 }
@@ -224,7 +225,7 @@ fun ProfileContent(
                     Text(
                         text = if (profileData.isActive == true) "✓ Đã xác thực" else "⚠ Chưa xác thực",
                         color = if (profileData.isActive == true) AIPrimarySoft else AIError,
-                        fontSize = 12.sp,
+                        fontSize = AppTextSize.bodySmall,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                     )
                 }
@@ -236,7 +237,7 @@ fun ProfileContent(
         // Thông tin cá nhân
         Text(
             text = "Thông tin cá nhân",
-            fontSize = 18.sp,
+            fontSize = AppTextSize.titleSmall,
             fontWeight = FontWeight.Bold,
             color = DarkOnSurface,
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
@@ -388,13 +389,13 @@ fun ProfileContent(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Đổi mật khẩu",
-                        fontSize = 16.sp,
+                        fontSize = AppTextSize.bodyMedium,
                         color = DarkOnSurface,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
                         text = "Thay đổi mật khẩu của bạn",
-                        fontSize = 12.sp,
+                        fontSize = AppTextSize.bodySmall,
                         color = DarkOnSurface.copy(alpha = 0.6f)
                     )
                 }
@@ -433,13 +434,13 @@ fun ProfileInfoRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = label,
-                fontSize = 12.sp,
+                fontSize = AppTextSize.bodySmall,
                 color = DarkOnSurface.copy(alpha = 0.6f)
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = value,
-                fontSize = 16.sp,
+                fontSize = AppTextSize.bodyMedium,
                 color = DarkOnSurface,
                 fontWeight = FontWeight.Medium
             )
@@ -498,7 +499,7 @@ fun EditProfileContent(
         // Thông tin cá nhân
         Text(
             text = "Thông tin cá nhân",
-            fontSize = 18.sp,
+            fontSize = AppTextSize.titleSmall,
             fontWeight = FontWeight.Bold,
             color = DarkOnSurface,
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
@@ -664,7 +665,7 @@ fun EditProfileContent(
         // Thông tin sức khỏe
         Text(
             text = "Thông tin sức khỏe",
-            fontSize = 18.sp,
+            fontSize = AppTextSize.titleSmall,
             fontWeight = FontWeight.Bold,
             color = DarkOnSurface,
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
@@ -855,7 +856,7 @@ fun EditProfileContent(
             } else {
                 Text(
                     "Cập nhật thông tin",
-                    fontSize = 16.sp,
+                    fontSize = AppTextSize.labelMedium,
                     fontWeight = FontWeight.Bold
                 )
             }

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.auto_fe.auto_fe.ui.service.PrescriptionService
 import com.auto_fe.auto_fe.ui.theme.*
+import com.auto_fe.auto_fe.ui.theme.AppTextSize
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -248,7 +249,7 @@ fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = prescription.name,
-                                fontSize = 24.sp,
+                                fontSize = AppTextSize.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = DarkPrimary
                             )
@@ -257,7 +258,7 @@ fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
                                     text = prescription.description,
-                                    fontSize = 15.sp,
+                                    fontSize = AppTextSize.bodyMedium,
                                     color = DarkOnSurface.copy(alpha = 0.8f),
                                     lineHeight = 22.sp
                                 )
@@ -274,7 +275,7 @@ fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
                         ) {
                             Text(
                                 text = if (prescription.isActive) "✓ Đang dùng" else "⏸ Tạm ngưng",
-                                fontSize = 13.sp,
+                                fontSize = AppTextSize.bodySmall,
                                 color = if (prescription.isActive) AISuccess else DarkOnSurface.copy(alpha = 0.5f),
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                                 fontWeight = FontWeight.Bold
@@ -322,7 +323,7 @@ fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
             ) {
                 Text(
                     text = "🕐 Lịch nhắc uống thuốc",
-                    fontSize = 20.sp,
+                    fontSize = AppTextSize.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = DarkOnSurface
                 )
@@ -380,13 +381,13 @@ fun StatItem(icon: String, value: String, label: String) {
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
-            fontSize = 20.sp,
+            fontSize = AppTextSize.titleSmall,
             fontWeight = FontWeight.Bold,
             color = DarkPrimary
         )
         Text(
             text = label,
-            fontSize = 12.sp,
+            fontSize = AppTextSize.bodySmall,
             color = DarkOnSurface.copy(alpha = 0.6f)
         )
     }
@@ -430,7 +431,7 @@ fun MedicationCard(medication: PrescriptionService.MedicationReminder) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = medication.name,
-                    fontSize = 16.sp,
+                    fontSize = AppTextSize.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = DarkOnSurface
                 )

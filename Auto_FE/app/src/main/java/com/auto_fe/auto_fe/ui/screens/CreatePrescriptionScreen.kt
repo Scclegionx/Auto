@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.auto_fe.auto_fe.ui.service.PrescriptionService
 import com.auto_fe.auto_fe.ui.theme.*
+import com.auto_fe.auto_fe.ui.theme.AppTextSize
 import kotlinx.coroutines.launch
 
 data class MedicationReminderForm(
@@ -164,7 +165,7 @@ fun CreatePrescriptionScreen(
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
                                 text = "📋 Thông tin đơn thuốc",
-                                fontSize = 18.sp,
+                                fontSize = AppTextSize.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = DarkPrimary
                             )
@@ -222,8 +223,8 @@ fun CreatePrescriptionScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "💊 Danh sách thuốc (${medications.size})",
-                                fontSize = 18.sp,
+                                text = "Danh sách thuốc (${medications.size})",
+                                fontSize = AppTextSize.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = DarkPrimary
                             )
@@ -247,10 +248,10 @@ fun CreatePrescriptionScreen(
                                 Icon(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = "Thêm",
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(16.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Thêm", fontSize = 14.sp)
+                                Text("Thêm", fontSize = 16.sp)
                             }
                         }
 
@@ -270,21 +271,21 @@ fun CreatePrescriptionScreen(
                         ) {
                             Text(
                                 text = "STT",
-                                fontSize = 13.sp,
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = DarkOnSurface,
                                 modifier = Modifier.width(35.dp)
                             )
                             Text(
                                 text = "Tên thuốc",
-                                fontSize = 13.sp,
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = DarkOnSurface,
                                 modifier = Modifier.weight(1f)
                             )
                             Text(
                                 text = "Giờ uống",
-                                fontSize = 13.sp,
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = DarkOnSurface,
                                 modifier = Modifier.width(80.dp),
@@ -395,7 +396,7 @@ fun CreatePrescriptionScreen(
                     } else {
                         Text(
                             if (isEditMode) "Cập nhật đơn thuốc" else "Tạo đơn thuốc",
-                            fontSize = 18.sp,
+                            fontSize = AppTextSize.labelLarge,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -443,7 +444,7 @@ fun MedicationReminderCard(
         ) {
             Text(
                 text = "Thuốc ${index + 1}",
-                fontSize = 16.sp,
+                fontSize = AppTextSize.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = DarkOnSurface
             )
@@ -496,7 +497,7 @@ fun MedicationReminderCard(
         // Reminder times
         Text(
             text = "⏰ Giờ nhắc nhở:",
-            fontSize = 14.sp,
+            fontSize = AppTextSize.bodyMedium,
             color = DarkOnSurface.copy(alpha = 0.7f)
         )
         Spacer(modifier = Modifier.height(8.dp))

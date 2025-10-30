@@ -523,7 +523,7 @@ fun AuthScreen(
 
             // API Info
             Text(
-                text = "🔗 Kết nối với Auto_BE API",
+                text = "",
                 fontSize = 16.sp,
                 color = AITextPrimary.copy(alpha = 0.5f),
                 textAlign = TextAlign.Center

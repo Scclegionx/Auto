@@ -125,83 +125,55 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
     private fun handleNewSMS(address: String, body: String) {
         Log.d("SMSObserver", "New SMS from: $address, body: $body")
         
-        // Lấy tên contact từ số điện thoại
+        // Lấy tên contact từ số điện thoại; nếu không có, xưng 'số lạ' thay vì đọc dãy số
         val contactName = getContactName(address)
-        val displayName = if (contactName.isNotEmpty()) contactName else address
-        
-        // Lưu thông tin SMS đang chờ
+        val displayName = if (contactName.isNotEmpty()) contactName else "số lạ"
+
+        // Gửi sang foreground service để đọc ổn định, tránh bị cắt ngang
+        try {
+            val intent = Intent(context, SmsAlertService::class.java).apply {
+                action = SmsAlertService.ACTION_ALERT_SMS
+                putExtra(SmsAlertService.EXTRA_DISPLAY_NAME, displayName)
+                putExtra(SmsAlertService.EXTRA_BODY, body)
+            }
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
+        } catch (e: Exception) {
+            Log.e("SMSObserver", "Failed to start SmsAlertService: ${e.message}")
+        }
+
+        // Reset state để tránh chồng xử lý
         pendingSmsId = lastSmsId
         pendingSmsBody = body
         pendingSmsAddress = address
-        isWaitingForResponse = true
-        
-        // Kiểm tra màn hình có đang mở không
-        Log.d("SMSObserver", "Current screen state: isScreenOn = $isScreenOn")
-        if (isScreenOn) {
-            Log.d("SMSObserver", "Screen is on, showing notification immediately")
-            showSMSNotification(displayName)
-        } else {
-            Log.d("SMSObserver", "Screen is off, pending notification until user unlocks device")
-            pendingSMSNotification = true
-        }
+        isProcessingSMS = false
+        isWaitingForResponse = false
     }
     
     private fun showSMSNotification(displayName: String) {
-        // Thông báo và đợi user phản hồi
-        val notificationMessage = "Bạn có tin nhắn mới từ $displayName. Bạn có muốn tôi đọc nội dung tin nhắn không?"
-        
-        // Nói thông báo trước
-        audioManager?.speak(notificationMessage)
-        
-        // Đợi nói xong rồi mới bắt đầu voice recognition
-        responseHandler.postDelayed({
-            startVoiceRecognitionWithVoiceManager()
-        }, 3000) // Đợi 3 giây để nói xong
+        // Giữ lại cho tương thích nhưng không còn dùng interactive voice ở đây
+        // Hành vi đọc tin nhắn đã được chuyển sang SmsAlertService để ổn định
+        val intent = Intent(context, SmsAlertService::class.java).apply {
+            action = SmsAlertService.ACTION_ALERT_SMS
+            putExtra(SmsAlertService.EXTRA_DISPLAY_NAME, displayName)
+            putExtra(SmsAlertService.EXTRA_BODY, pendingSmsBody)
+        }
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
+        } catch (e: Exception) {
+            Log.e("SMSObserver", "Failed to start SmsAlertService (showSMSNotification): ${e.message}")
+        }
     }
     
     private fun startVoiceRecognitionWithVoiceManager() {
-        if (!isWaitingForResponse) return
-        
-        Log.d("SMSObserver", "Starting voice recognition with VoiceManager...")
-        
-        // Kiểm tra xem AudioManager có đang busy không
-        if (audioManager == null) {
-            Log.e("SMSObserver", "AudioManager is null")
-            handleVoiceRecognitionError()
-            return
-        }
-        
-        try {
-            // Sử dụng AudioManager với nhận diện im lặng (không nói gì)
-            audioManager?.textToSpeech("", 0, object : com.auto_fe.auto_fe.audio.VoiceManager.VoiceControllerCallback {
-                override fun onSpeechResult(spokenText: String) {
-                    Log.d("SMSObserver", "Voice recognition result: $spokenText")
-                    handleUserResponse(spokenText)
-                }
-                override fun onConfirmationResult(confirmed: Boolean) {}
-                override fun onError(error: String) {
-                    Log.e("SMSObserver", "Voice recognition error: $error")
-                    handleVoiceRecognitionError()
-                }
-                override fun onAudioLevelChanged(level: Int) {
-                    // Audio level callback - có thể dùng để hiển thị visual feedback
-                    // Hiện tại không cần xử lý gì đặc biệt
-                }
-            })
-            
-            // Timeout 8 giây
-            responseRunnable = Runnable {
-                if (isWaitingForResponse) {
-                    Log.d("SMSObserver", "Voice recognition timeout")
-                    handleVoiceRecognitionError()
-                }
-            }
-            responseHandler.postDelayed(responseRunnable!!, 8000)
-            
-        } catch (e: Exception) {
-            Log.e("SMSObserver", "Exception in voice recognition: ${e.message}")
-            handleVoiceRecognitionError()
-        }
+        // Không dùng voice recognition cho luồng đọc SMS tự động để tránh cắt TTS
     }
     
     private fun startListeningForResponse(message: String) {
@@ -258,18 +230,7 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
         isProcessingSMS = false // Reset processing flag
     }
     
-    private fun startTimeoutTimer() {
-        // Timeout sau 5 giây (đợi nói xong mới bắt đầu đếm)
-        responseRunnable = Runnable {
-            if (isWaitingForResponse) {
-                Log.d("SMSObserver", "Timeout waiting for user response - treating as 'no'")
-                isWaitingForResponse = false
-                isProcessingSMS = false // Reset processing flag
-                audioManager?.speak("Đã hủy đọc tin nhắn")
-            }
-        }
-        responseHandler.postDelayed(responseRunnable!!, 5000)
-    }
+    private fun startTimeoutTimer() { /* no-op: flow moved to service */ }
     
     fun handleUserResponse(response: String) {
         Log.d("SMSObserver", "handleUserResponse called with: '$response', isWaitingForResponse: $isWaitingForResponse")
@@ -310,10 +271,7 @@ class SMSObserver(private val context: Context) : ContentObserver(Handler(Looper
     }
     
     private fun readSMSContent() {
-        val contactName = getContactName(pendingSmsAddress)
-        val displayName = if (contactName.isNotEmpty()) contactName else pendingSmsAddress
-        
-        audioManager?.speak("Tin nhắn từ $displayName: $pendingSmsBody")
+        // Không dùng nữa; giữ stub để tránh ảnh hưởng nơi khác
     }
     
     private fun markSMSAsRead() {

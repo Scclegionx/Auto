@@ -79,6 +79,21 @@ class AudioRecorder(private val context: Context) {
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
     
+    fun speakNoFlush(text: String) {
+        if (tts == null) {
+            pendingSpeakText = text
+            pendingSpeakCallback = null
+            initTTS()
+            return
+        }
+        if (!ttsReady) {
+            pendingSpeakText = text
+            pendingSpeakCallback = null
+            return
+        }
+        tts?.speak(text, TextToSpeech.QUEUE_ADD, null, null)
+    }
+
     fun speak(text: String, callback: () -> Unit) {
         if (tts == null) {
             pendingSpeakText = text
@@ -97,6 +112,24 @@ class AudioRecorder(private val context: Context) {
             callback()
         }, 2000)
     }
+
+    fun speakNoFlush(text: String, callback: () -> Unit) {
+        if (tts == null) {
+            pendingSpeakText = text
+            pendingSpeakCallback = callback
+            initTTS()
+            return
+        }
+        if (!ttsReady) {
+            pendingSpeakText = text
+            pendingSpeakCallback = callback
+            return
+        }
+        tts?.speak(text, TextToSpeech.QUEUE_ADD, null, null)
+        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+            callback()
+        }, 2000)
+    }
     
     
     fun release() {
@@ -106,5 +139,11 @@ class AudioRecorder(private val context: Context) {
         ttsReady = false
         pendingSpeakText = null
         pendingSpeakCallback = null
+    }
+
+    fun stopSpeaking() {
+        try {
+            tts?.stop()
+        } catch (_: Exception) {}
     }
 }

@@ -32,6 +32,9 @@ class AlarmStateMachine(
     private var currentHour: Int = 0
     private var currentMinute: Int = 0
     private var currentMessage: String = ""
+    private var currentYear: Int? = null
+    private var currentMonth: Int? = null // 1-12
+    private var currentDay: Int? = null
 
     override fun getNextState(currentState: VoiceState, event: VoiceEvent): VoiceState? {
         return when (currentState) {
@@ -115,9 +118,40 @@ class AlarmStateMachine(
         processEvent(VoiceEvent.StartAlarmCommand)
     }
 
+    /**
+     * Được gọi từ CommandProcessor để thực hiện alarm command với NGÀY cụ thể
+     */
+    fun executeAlarmCommandOnDate(year: Int, month: Int, day: Int, hour: Int, minute: Int, message: String) {
+        Log.d(TAG, "Alarm command (with date) received: $day/$month/$year $hour:$minute - $message")
+        currentYear = year
+        currentMonth = month
+        currentDay = day
+        currentHour = hour
+        currentMinute = minute
+        currentMessage = message
+        processEvent(VoiceEvent.StartAlarmCommand)
+    }
+
     private fun executeAlarmCreation() {
         Log.d(TAG, "Executing alarm creation")
-        
+        val y = currentYear
+        val m = currentMonth
+        val d = currentDay
+        if (y != null && m != null && d != null) {
+            alarmAutomation.createAlarmOnDate(y, m, d, currentHour, currentMinute, currentMessage, object : AlarmAutomation.AlarmCallback {
+                override fun onSuccess() {
+                    Log.d(TAG, "Alarm created successfully (with date)")
+                    processEvent(VoiceEvent.AlarmCreatedSuccessfully)
+                }
+
+                override fun onError(error: String) {
+                    Log.e(TAG, "Alarm creation failed: $error")
+                    processEvent(VoiceEvent.AlarmCreationFailed(error))
+                }
+            })
+            return
+        }
+
         alarmAutomation.createAlarm(currentHour, currentMinute, emptyList(), currentMessage, object : AlarmAutomation.AlarmCallback {
             override fun onSuccess() {
                 Log.d(TAG, "Alarm created successfully")
@@ -139,6 +173,9 @@ class AlarmStateMachine(
         currentHour = 0
         currentMinute = 0
         currentMessage = ""
+        currentYear = null
+        currentMonth = null
+        currentDay = null
     }
 
     fun cleanup() {

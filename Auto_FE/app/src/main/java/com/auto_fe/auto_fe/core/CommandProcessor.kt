@@ -369,18 +369,31 @@ class CommandProcessor(private val context: Context) {
                     youtubeStateMachine.executeYouTubeSearchCommand(query)
                 }
                 "set-alarm" -> {
-                    // Parse time từ value (ví dụ: "9:00")
                     val timeData = parseTimeFromString(time)
-                    if (timeData != null) {
-                        val hour = timeData.first
-                        val minute = timeData.second
-                        val message = "Báo thức"
-                        Log.d("CommandProcessor", "Routing to AlarmStateMachine for alarm: $hour:$minute")
-                        alarmStateMachine.executeAlarmCommand(hour, minute, message)
-                    } else {
+                    if (timeData == null) {
                         Log.e("CommandProcessor", "Cannot parse time from: $time")
                         callback.onError("Tôi không hiểu thời gian báo thức. Vui lòng nói rõ hơn, ví dụ: 'Đặt báo thức 9 giờ 30'.")
+                        return
                     }
+
+                    val (hour, minute) = timeData
+                    val message = "Báo thức"
+
+                    // Nếu có DATE (YYYY-MM-DD), parse và chuyển sang StateMachine với ngày cụ thể
+                    if (date.isNotEmpty()) {
+                        val dateData = parseDateIso(date)
+                        if (dateData != null) {
+                            val (year, month, day) = dateData
+                            Log.d("CommandProcessor", "Routing to AlarmStateMachine with date: $day/$month/$year $hour:$minute")
+                            alarmStateMachine.executeAlarmCommandOnDate(year, month, day, hour, minute, message)
+                            return
+                        } else {
+                            Log.w("CommandProcessor", "DATE provided but invalid: $date. Falling back to time-only alarm.")
+                        }
+                    }
+
+                    Log.d("CommandProcessor", "Routing to AlarmStateMachine for time-only alarm: $hour:$minute")
+                    alarmStateMachine.executeAlarmCommand(hour, minute, message)
                 }
                 "add-calendar" -> {
                     // Parse thành công, trả về data cho FE xử lý
@@ -472,6 +485,26 @@ class CommandProcessor(private val context: Context) {
         } catch (e: Exception) {
             Log.e("CommandProcessor", "Error parsing time: ${e.message}")
             return null
+        }
+    }
+    
+    /**
+     * Parse DATE theo định dạng ISO "YYYY-MM-DD" và trả về (year, month, day)
+     * month là 1..12
+     */
+    private fun parseDateIso(dateString: String): Triple<Int, Int, Int>? {
+        return try {
+            val parts = dateString.trim().split("-")
+            if (parts.size != 3) return null
+            val year = parts[0].toInt()
+            val month = parts[1].toInt()
+            val day = parts[2].toInt()
+            if (year in 1970..3000 && month in 1..12 && day in 1..31) {
+                Triple(year, month, day)
+            } else null
+        } catch (e: Exception) {
+            Log.e("CommandProcessor", "Error parsing date: ${e.message}")
+            null
         }
     }
 }

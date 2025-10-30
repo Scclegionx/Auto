@@ -165,18 +165,18 @@ fun VoiceScreen() {
         )
     }
     
-    // Smooth level animation với EMA + tween
+    // Smooth level animation với EMA + tween - CẢI THIỆN RESPONSIVENESS
     val level01 by animateFloatAsState(
         targetValue = (smoothLevel / 3f).coerceIn(0f, 1f),
-        animationSpec = tween(180, easing = FastOutSlowInEasing),
+        animationSpec = tween(120, easing = FastOutSlowInEasing), // Nhanh hơn: 120ms thay vì 180ms
         label = "level01"
     )
     
-    // EMA filter cho smooth level
+    // EMA filter cho smooth level - CẢI THIỆN RESPONSIVENESS
     LaunchedEffect(rawLevel, isRecording) {
         val target = if (isRecording) rawLevel else 0f
-        // EMA — alpha nhỏ = mượt hơn (0.25 = mượt vừa phải)
-        smoothLevel = 0.75f * smoothLevel + 0.25f * target
+        // EMA — alpha lớn hơn = phản ứng nhanh hơn (0.4 thay vì 0.25)
+        smoothLevel = 0.6f * smoothLevel + 0.4f * target
     }
     
     // Cleanup resources when component is disposed
@@ -255,11 +255,16 @@ fun VoiceScreen() {
                     }
                 }
                 override fun onAudioLevelChanged(level: Int) {
-                    // Cập nhật voice level từ VoiceManager
+                    // Cập nhật voice level từ VoiceManager - CẢI THIỆN RESPONSIVENESS
                     if (isRecording) {
-                        voiceLevel = level.coerceIn(0, 3)
-                        rawLevel = level.coerceIn(0, 3).toFloat()
-                        Log.d("VoiceScreen", "Voice level: $level")
+                        val newLevel = level.coerceIn(0, 3)
+                        voiceLevel = newLevel
+                        rawLevel = newLevel.toFloat()
+                        Log.d("VoiceScreen", "Voice level updated: $newLevel (raw: $level)")
+                    } else {
+                        // Reset ngay lập tức khi không recording
+                        voiceLevel = 0
+                        rawLevel = 0f
                     }
                 }
             })
@@ -290,7 +295,7 @@ fun VoiceScreen() {
     ) {
         // Layer 1: Background - Orb Sphere + Dynamic Glow
         BackgroundLayer(
-            voiceLevel = (level01 * 3f).roundToInt(),
+            voiceLevel = voiceLevel, // Sử dụng trực tiếp voiceLevel thay vì level01
             isListening = isRecording,
             isDarkMode = isDarkMode,
             performancePreset = "lite", // Ép lite để xác nhận hết crash

@@ -297,7 +297,6 @@ class CommandProcessor(private val context: Context) {
             val json = JSONObject(jsonResponse)
             val command = json.optString("command", "")
             val entities = json.optJSONObject("entities")
-            val value = json.optString("value", "")
 
             if (entities == null) {
                 callback.onError("Thiếu thông tin entities")
@@ -306,87 +305,64 @@ class CommandProcessor(private val context: Context) {
 
             val receiver = entities.optString("RECEIVER", "")
             val platform = entities.optString("PLATFORM", "")
+            val message = entities.optString("MESSAGE", "")
+            val query = entities.optString("QUERY", "")
+            val time = entities.optString("TIME", "")
+            val date = entities.optString("DATE", "")
+            val device = entities.optString("DEVICE", "")
+            val action = entities.optString("ACTION", "")
+            val mode = entities.optString("MODE", "")
 
             when (command) {
-                "Gửi tin nhắn" -> {
-                    // Parse thành công, gọi trực tiếp SendSMSStateMachine
-                    Log.d("CommandProcessor", "Routing to SendSMSStateMachine: $receiver -> $value")
-                    smsStateMachine.executeSMSCommand(receiver, value)
-                }
                 "send-msg" -> {
                     // Parse thành công, gọi trực tiếp SendSMSStateMachine
-                    Log.d("CommandProcessor", "Routing to SendSMSStateMachine: $receiver -> $value")
-                    smsStateMachine.executeSMSCommand(receiver, value)
+                    Log.d("CommandProcessor", "Routing to SendSMSStateMachine: $receiver -> $message")
+                    smsStateMachine.executeSMSCommand(receiver, message)
                 }
                 "call" -> {
                     // Parse thành công, gọi trực tiếp PhoneStateMachine
                     Log.d("CommandProcessor", "Routing to PhoneStateMachine: $receiver, platform: $platform")
                     phoneStateMachine.executePhoneCommand(receiver, platform)
                 }
-                "search" -> {
-                    // Xử lý lệnh search dựa vào platform
-                    when (platform.lowercase()) {
-                        "chrome" -> {
-                            Log.d("CommandProcessor", "Routing to SearchChromeStateMachine for query: $value")
-                            searchChromeStateMachine.executeChromeSearchCommand(value)
-                        }
-                        "youtube" -> {
-                            // Parse thành công, gọi trực tiếp YoutubeStateMachine
-                            Log.d("CommandProcessor", "Routing to YoutubeStateMachine for query: $value")
-                            youtubeStateMachine.executeYouTubeSearchCommand(value)
-                        }
-                        else -> {
-                            Log.e("CommandProcessor", "Unsupported search platform: $platform")
-                            callback.onError("Tôi không hỗ trợ nền tảng tìm kiếm: $platform")
-                        }
-                    }
-                }
-                "search-chrome" -> {
-                    // Parse thành công, gọi trực tiếp SearchChromeStateMachine
-                    Log.d("CommandProcessor", "Routing to SearchChromeStateMachine for query: $receiver")
-                    searchChromeStateMachine.executeChromeSearchCommand(receiver)
-                    // StateMachine sẽ tự xử lý, không cần callback
+                "search-internet" -> {
+                    Log.d("CommandProcessor", "Routing to SearchChromeStateMachine for query: $query")
+                    searchChromeStateMachine.executeChromeSearchCommand(query)
                 }
                 "search-youtube" -> {
-                    // Parse thành công, gọi trực tiếp YoutubeStateMachine
-                    Log.d("CommandProcessor", "Routing to YoutubeStateMachine for query: $receiver")
-                    youtubeStateMachine.executeYouTubeSearchCommand(receiver)
-                    // StateMachine sẽ tự xử lý, không cần callback
+                    Log.d("CommandProcessor", "Routing to YoutubeStateMachine for query: $query")
+                    youtubeStateMachine.executeYouTubeSearchCommand(query)
                 }
                 "set-alarm" -> {
                     // Parse time từ value (ví dụ: "9:00")
-                    val timeData = parseTimeFromString(value)
+                    val timeData = parseTimeFromString(time)
                     if (timeData != null) {
                         val hour = timeData.first
                         val minute = timeData.second
                         val message = "Báo thức"
                         Log.d("CommandProcessor", "Routing to AlarmStateMachine for alarm: $hour:$minute")
                         alarmStateMachine.executeAlarmCommand(hour, minute, message)
-                        // StateMachine sẽ tự xử lý, không cần callback
                     } else {
-                        Log.e("CommandProcessor", "Cannot parse time from: $value")
+                        Log.e("CommandProcessor", "Cannot parse time from: $time")
                         callback.onError("Tôi không hiểu thời gian báo thức. Vui lòng nói rõ hơn, ví dụ: 'Đặt báo thức 9 giờ 30'.")
                     }
                 }
                 "add-calendar" -> {
                     // Parse thành công, trả về data cho FE xử lý
-                    callback.onNeedConfirmation("add-calendar", receiver, value)
+                    callback.onNeedConfirmation("add-calendar", receiver, message)
                 }
                 
                 // ========== DEVICE CONTROL COMMANDS ==========
                 
                 // Camera commands
                 "open-cam" -> {
-                    val cameraType = value.lowercase()
+                    val cameraType = mode.lowercase()
                     Log.d("CommandProcessor", "Routing to CameraStateMachine for camera: $cameraType")
                     when (cameraType) {
                         "image" -> {
                             cameraStateMachine.executeCameraCommand("photo")
-                            // StateMachine sẽ tự xử lý, không cần callback
                         }
                         "video" -> {
                             cameraStateMachine.executeCameraCommand("video")
-                            // StateMachine sẽ tự xử lý, không cần callback
                         }
                         else -> {
                             Log.e("CommandProcessor", "Unknown camera type: $cameraType")
@@ -397,8 +373,6 @@ class CommandProcessor(private val context: Context) {
                 
                 // Control device commands (wifi, volume, flash)
                 "control-device" -> {
-                    val device = entities.optString("DEVICE", "").lowercase()
-                    val action = value.lowercase()
                     Log.d("CommandProcessor", "Routing control-device: device=$device, action=$action")
                     
                     when (device) {
@@ -463,25 +437,5 @@ class CommandProcessor(private val context: Context) {
             Log.e("CommandProcessor", "Error parsing time: ${e.message}")
             return null
         }
-    }
-
-
-    /**
-     * Xử lý khi user nói lại tên người nhận
-     */
-    fun processSMSWithNewReceiver(newReceiver: String, message: String, callback: CommandProcessorCallback) {
-        smsAutomation.sendSMSWithSmartHandling(newReceiver, message, object : SMSAutomation.SMSConversationCallback {
-            override fun onSuccess() {
-                callback.onCommandExecuted(true, "Đã gửi tin nhắn thành công")
-            }
-            override fun onError(error: String) {
-                callback.onError(error)
-            }
-            override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
-                val contactList = similarContacts.joinToString(" và ")
-                val message = "Không tìm thấy danh bạ $originalName nhưng tìm được ${similarContacts.size} danh bạ có tên gần giống là $contactList. Liệu bạn có nhầm lẫn tên người gửi không? Nếu nhầm lẫn bạn hãy nói lại tên"
-                callback.onError(message)
-            }
-        })
     }
 }

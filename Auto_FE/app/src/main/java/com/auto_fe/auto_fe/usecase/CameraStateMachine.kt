@@ -117,7 +117,7 @@ class CameraStateMachine(
     private fun executePhotoCapture() {
         Log.d(TAG, "Executing photo capture")
         
-        cameraAutomation.capturePhoto(object : CameraAutomation.CameraCallback {
+        cameraAutomation.capturePhotoWithStillImageIntent(object : CameraAutomation.CameraCallback {
             override fun onSuccess() {
                 Log.d(TAG, "Photo capture started successfully")
                 processEvent(VoiceEvent.CameraCapturedSuccessfully)
@@ -133,7 +133,7 @@ class CameraStateMachine(
     private fun executeVideoCapture() {
         Log.d(TAG, "Executing video capture")
         
-        cameraAutomation.captureVideo(object : CameraAutomation.CameraCallback {
+        cameraAutomation.captureVideoWithVideoCameraIntent(object : CameraAutomation.CameraCallback {
             override fun onSuccess() {
                 Log.d(TAG, "Video capture started successfully")
                 processEvent(VoiceEvent.CameraCapturedSuccessfully)

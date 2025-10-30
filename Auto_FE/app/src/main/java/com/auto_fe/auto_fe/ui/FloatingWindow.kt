@@ -20,18 +20,8 @@ import com.auto_fe.auto_fe.R
 import com.auto_fe.auto_fe.audio.VoiceManager
 import com.auto_fe.auto_fe.automation.msg.SMSAutomation
 import com.auto_fe.auto_fe.automation.msg.SMSObserver
-import com.auto_fe.auto_fe.usecase.SendSMSStateMachine
-import com.auto_fe.auto_fe.domain.VoiceState
-import com.auto_fe.auto_fe.domain.VoiceEvent
+import com.auto_fe.auto_fe.core.CommandProcessor
 
-/**
- * FloatingWindow - Refactored với State Machine
- *
- * THAY ĐỔI CHÍNH:
- * - Loại bỏ các biến state thủ công (isWaitingForUserResponse, pendingSMSMessage, etc.)
- * - Sử dụng SendSMSStateMachine để quản lý state
- * - Logic đơn giản hóa, dễ maintain hơn
- */
 class FloatingWindow(private val context: Context) {
     private var windowManager: WindowManager? = null
     private var floatingView: View? = null
@@ -40,8 +30,7 @@ class FloatingWindow(private val context: Context) {
     private var smsAutomation: SMSAutomation? = null
     private var smsObserver: SMSObserver? = null
 
-    // State Machine thay thế cho các biến state cũ
-    private var smsStateMachine: SendSMSStateMachine? = null
+    private var commandProcessor: CommandProcessor? = null
     
     // Voice recording popup - Updated to use Liquid Wave version
     private var voiceRecordingPopup: LiquidWaveRecordingPopup? = null
@@ -62,42 +51,35 @@ class FloatingWindow(private val context: Context) {
         smsObserver = SMSObserver(context)
         voiceRecordingPopup = LiquidWaveRecordingPopup(context)
 
-        // Khởi tạo State Machine
-        initializeStateMachine()
+        // Khởi tạo CommandProcessor
+        initializeCommandProcessor()
     }
 
     /**
-     * Khởi tạo State Machine cho SMS flow
+     * Khởi tạo CommandProcessor cho voice processing
      */
-    private fun initializeStateMachine() {
-        smsStateMachine = SendSMSStateMachine(
-            context = context,
-            voiceManager = audioManager!!,
-            smsAutomation = smsAutomation!!
-        )
+    private fun initializeCommandProcessor() {
+        commandProcessor = CommandProcessor(context)
 
-        // Lắng nghe state changes
-        smsStateMachine?.onStateChanged = { oldState, newState ->
-            Log.d("FloatingWindow", "State changed: ${oldState.getName()} -> ${newState.getName()}")
-
-            // Update UI based on state
-            handleStateChange(newState)
-
-            // Show toast for debugging (có thể bỏ ở production)
-            if (newState is VoiceState.Error || newState is VoiceState.Success) {
-                val message = when (newState) {
-                    is VoiceState.Success -> "Thành công!"
-                    is VoiceState.Error -> newState.errorMessage
-                    else -> ""
-                }
+        // Setup callbacks cho CommandProcessor
+        commandProcessor?.setupStateCallbacks(
+            onSuccess = { message ->
+                Log.d("FloatingWindow", "Command success: $message")
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                // Hide popup và reset UI
+                voiceRecordingPopup?.hide()
+                isRecording = false
+                updateFloatingButtonIcon()
+            },
+            onError = { error ->
+                Log.d("FloatingWindow", "Command error: $error")
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                // Hide popup và reset UI
+                voiceRecordingPopup?.hide()
+                isRecording = false
+                updateFloatingButtonIcon()
             }
-        }
-
-        // Lắng nghe events (for debugging)
-        smsStateMachine?.onEventProcessed = { event ->
-            Log.d("FloatingWindow", "Event processed: ${event.getName()}")
-        }
+        )
         
         // Setup popup callbacks
         setupPopupCallbacks()
@@ -109,64 +91,86 @@ class FloatingWindow(private val context: Context) {
     private fun setupPopupCallbacks() {
         voiceRecordingPopup?.onStartClick = {
             Log.d("FloatingWindow", "Popup start recording clicked")
-            smsStateMachine?.processEvent(VoiceEvent.StartRecording)
+            // Bắt đầu ghi âm - tương tự như VoiceScreen
+            startVoiceRecording()
         }
         
         voiceRecordingPopup?.onStopClick = {
             Log.d("FloatingWindow", "Popup stop recording clicked")
-            smsStateMachine?.processEvent(VoiceEvent.UserCancelled)
-        }
-        
-        // SimpleVoicePopup doesn't have onAudioLevelChanged callback
-        
-        // Setup State Machine audio level callback
-        smsStateMachine?.onAudioLevelChanged = { level ->
-            voiceRecordingPopup?.updateAudioLevel(level)
-        }
-        
-        // Setup State Machine transcript callback
-        smsStateMachine?.onTranscriptUpdated = { transcript ->
-            voiceRecordingPopup?.updateTranscript(transcript)
+            // Dừng ghi âm
+            stopVoiceRecording()
         }
     }
 
     /**
-     * Xử lý UI changes khi state thay đổi
+     * Bắt đầu ghi âm voice - GIỐNG HỆT VoiceScreen
      */
-    private fun handleStateChange(newState: VoiceState) {
-        when (newState) {
-            is VoiceState.ListeningForSMSCommand -> {
-                // Show popup and update button
-                isRecording = true
-                voiceRecordingPopup?.show()
-                updateFloatingButtonIcon()
+    private fun startVoiceRecording() {
+        Log.d("FloatingWindow", "Starting voice recording")
+        isRecording = true
+        updateFloatingButtonIcon()
+        
+        // Hiển thị popup khi bắt đầu ghi âm
+        voiceRecordingPopup?.show()
+        
+        // Chào hỏi và bắt đầu lắng nghe - GIỐNG HỆT VoiceScreen
+        audioManager?.textToSpeech("Bạn cần tôi trợ giúp điều gì?", 0, object : VoiceManager.VoiceControllerCallback {
+            override fun onSpeechResult(spokenText: String) {
+                if (spokenText.isNotEmpty()) {
+                    Log.d("FloatingWindow", "Speech result: $spokenText")
+                    
+                    // Gửi lệnh đến CommandProcessor - GIỐNG HỆT VoiceScreen
+                    commandProcessor?.processCommand(spokenText, object : CommandProcessor.CommandProcessorCallback {
+                        override fun onCommandExecuted(success: Boolean, message: String) {
+                            Log.d("FloatingWindow", "Command executed: $success, $message")
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onError(error: String) {
+                            Log.e("FloatingWindow", "Command error: $error")
+                            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onNeedConfirmation(command: String, receiver: String, message: String) {
+                            Log.d("FloatingWindow", "Confirmation handled by StateMachine: $command -> $receiver: $message")
+                        }
+                    })
+                } else {
+                    Log.w("FloatingWindow", "Empty speech result")
+                    Toast.makeText(context, "Không nhận được lệnh", Toast.LENGTH_SHORT).show()
+                    stopVoiceRecording()
+                }
+            }
+            
+            override fun onConfirmationResult(confirmed: Boolean) {
+                // Not used in this context
             }
 
-            is VoiceState.Success, is VoiceState.Error -> {
-                // Hide popup and reset
-                voiceRecordingPopup?.hide()
-                isRecording = false
-                updateFloatingButtonIcon()
-                
-                // Reset về idle state sau 2 giây
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    smsStateMachine?.reset()
-                }, 2000)
+            override fun onError(error: String) {
+                Log.e("FloatingWindow", "Speech recognition error: $error")
+                Toast.makeText(context, "Lỗi nhận dạng giọng nói: $error", Toast.LENGTH_SHORT).show()
+                stopVoiceRecording()
             }
-
-            is VoiceState.Idle -> {
-                // Hide popup when idle
-                voiceRecordingPopup?.hide()
-                isRecording = false
-                updateFloatingButtonIcon()
+            
+            override fun onAudioLevelChanged(level: Int) {
+                // Cập nhật voice level cho popup
+                Log.d("FloatingWindow", "Audio level changed: $level")
+                voiceRecordingPopup?.updateAudioLevel(level)
             }
-
-            else -> {
-                // Keep recording state for other states
-                isRecording = true
-                updateFloatingButtonIcon()
-            }
-        }
+        })
+    }
+    
+    /**
+     * Dừng ghi âm voice
+     */
+    private fun stopVoiceRecording() {
+        Log.d("FloatingWindow", "Stopping voice recording")
+        audioManager?.resetBusyState()
+        isRecording = false
+        updateFloatingButtonIcon()
+        
+        // Ẩn popup khi dừng ghi âm
+        voiceRecordingPopup?.hide()
     }
 
     fun showFloatingWindow() {
@@ -221,20 +225,16 @@ class FloatingWindow(private val context: Context) {
         val size = (60 * context.resources.displayMetrics.density).toInt()
         imageView.layoutParams = ViewGroup.LayoutParams(size, size)
 
-        // Click listener - Disable khi đang xử lý
+        // Click listener - Tương tự như VoiceScreen
         imageView.setOnClickListener {
-            Log.d("FloatingWindow", "Click listener triggered - current state: ${smsStateMachine?.getCurrentStateName()}")
+            Log.d("FloatingWindow", "Click listener triggered - isRecording: $isRecording")
 
-            // Chỉ cho phép bấm khi ở Idle hoặc Terminal state
-            if (smsStateMachine?.isTerminal() == true ||
-                smsStateMachine?.currentState is VoiceState.Idle) {
-                // Bắt đầu SMS flow mới
-                startSMSFlow()
+            if (!isRecording) {
+                // Bắt đầu ghi âm
+                startVoiceRecording()
             } else {
-                // Đang trong flow - Hủy flow hiện tại
-                Log.d("FloatingWindow", "Cancelling current flow")
-                smsStateMachine?.processEvent(VoiceEvent.UserCancelled)
-                Toast.makeText(context, "Đã hủy ghi âm", Toast.LENGTH_SHORT).show()
+                // Dừng ghi âm
+                stopVoiceRecording()
             }
         }
 
@@ -280,34 +280,6 @@ class FloatingWindow(private val context: Context) {
         return imageView
     }
 
-    /**
-     * Bắt đầu SMS flow - GỌI STATE MACHINE
-     */
-    private fun startSMSFlow() {
-        Log.d("FloatingWindow", "Starting SMS flow")
-
-        // Reset state machine nếu cần
-        if (smsStateMachine?.isTerminal() == true) {
-            smsStateMachine?.reset()
-        }
-
-        // Trigger StartRecording event
-        smsStateMachine?.processEvent(VoiceEvent.StartRecording)
-    }
-
-    /**
-     * Dừng flow hiện tại
-     */
-    private fun stopCurrentFlow() {
-        Log.d("FloatingWindow", "Stopping current flow")
-
-        // Cancel current flow
-        smsStateMachine?.processEvent(VoiceEvent.UserCancelled)
-
-        // Reset UI
-        isRecording = false
-        updateFloatingButtonIcon()
-    }
 
     private fun updateFloatingButtonIcon() {
         val imageView = floatingView as? ImageView
@@ -349,7 +321,7 @@ class FloatingWindow(private val context: Context) {
 
         recordButton.setOnClickListener {
             hideCommandMenu()
-            startSMSFlow() // Sử dụng State Machine
+            startVoiceRecording() // Sử dụng CommandProcessor
         }
 
         closeButton.setOnClickListener {
@@ -391,7 +363,7 @@ class FloatingWindow(private val context: Context) {
         smsObserver?.stopObserving()
 
         if (isRecording) {
-            stopCurrentFlow()
+            stopVoiceRecording()
         }
 
         // Hide and cleanup popup
@@ -411,9 +383,9 @@ class FloatingWindow(private val context: Context) {
      */
     fun release() {
         try {
-            // Cleanup State Machine
-            smsStateMachine?.cleanup()
-            smsStateMachine = null
+            // Cleanup CommandProcessor
+            commandProcessor?.release()
+            commandProcessor = null
 
             // Cleanup AudioManager
             audioManager?.release()

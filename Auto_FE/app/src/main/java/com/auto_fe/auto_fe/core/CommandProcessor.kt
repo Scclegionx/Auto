@@ -230,6 +230,23 @@ class CommandProcessor(private val context: Context) {
             }
         }
 
+        // Setup AddContact StateMachine callbacks
+        addContactStateMachine.onStateChanged = { oldState, newState ->
+            when (newState) {
+                is com.auto_fe.auto_fe.domain.VoiceState.Success -> {
+                    onStateSuccess?.invoke("Đã thêm liên hệ thành công!")
+                }
+                is com.auto_fe.auto_fe.domain.VoiceState.Cancel -> {
+                    onStateSuccess?.invoke("Đã hủy thêm liên hệ.")
+                }
+                is com.auto_fe.auto_fe.domain.VoiceState.Error -> {
+                    onStateError?.invoke(newState.errorMessage)
+                }
+                else -> {
+                    // No-op
+                }
+            }
+        }
         // Setup YouTube StateMachine callbacks
         youtubeStateMachine.onStateChanged = { oldState, newState ->
             when (newState) {

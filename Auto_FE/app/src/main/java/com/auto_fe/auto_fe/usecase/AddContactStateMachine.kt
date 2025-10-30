@@ -7,6 +7,7 @@ import com.auto_fe.auto_fe.automation.phone.ContactAutomation
 import com.auto_fe.auto_fe.domain.VoiceEvent
 import com.auto_fe.auto_fe.domain.VoiceState
 import com.auto_fe.auto_fe.domain.VoiceStateMachine
+import com.auto_fe.auto_fe.utils.SettingsManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -44,7 +45,7 @@ class AddContactStateMachine(
                 when (event) {
                     is VoiceEvent.ContactNameProvided -> VoiceState.AskingContactPhone(event.contactName)
                     is VoiceEvent.ContactAddFailed -> VoiceState.Error(event.error)
-                    is VoiceEvent.UserCancelled -> VoiceState.Idle
+                    is VoiceEvent.UserCancelled -> VoiceState.Cancel
                     else -> null
                 }
             }
@@ -52,7 +53,7 @@ class AddContactStateMachine(
                 when (event) {
                     is VoiceEvent.ContactPhoneProvided -> VoiceState.ExecutingAddContactCommand
                     is VoiceEvent.ContactAddFailed -> VoiceState.Error(event.error)
-                    is VoiceEvent.UserCancelled -> VoiceState.Idle
+                    is VoiceEvent.UserCancelled -> VoiceState.Cancel
                     else -> null
                 }
             }
@@ -60,7 +61,7 @@ class AddContactStateMachine(
                 when (event) {
                     is VoiceEvent.ContactAddedSuccessfully -> VoiceState.Success
                     is VoiceEvent.ContactAddFailed -> VoiceState.Error(event.error)
-                    is VoiceEvent.UserCancelled -> VoiceState.Idle
+                    is VoiceEvent.UserCancelled -> VoiceState.Cancel
                     else -> null
                 }
             }
@@ -108,6 +109,14 @@ class AddContactStateMachine(
                 coroutineScope.launch {
                     delay(2000)
                     processEvent(VoiceEvent.ContactAddedSuccessfully)
+                }
+            }
+            is VoiceState.Cancel -> {
+                speak("Đã hủy thêm liên hệ.")
+                voiceManager.resetBusyState()
+                coroutineScope.launch {
+                    delay(1500)
+                    processEvent(VoiceEvent.UserCancelled)
                 }
             }
             is VoiceState.Error -> {
@@ -167,7 +176,15 @@ class AddContactStateMachine(
                 val phone = normalizePhoneDigits(rawPhone)
                 if (phone.isNotEmpty()) {
                     currentPhone = phone
-                    processEvent(VoiceEvent.ContactPhoneProvided(phone))
+                    // Nếu bật setting hỗ trợ nói, hỏi xác nhận trước khi thực thi
+                    val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+                    if (isSupportSpeakEnabled) {
+                        // Tránh trạng thái bận khi vừa kết thúc STT ở bước trước
+                        voiceManager.resetBusyState()
+                        askForConfirmation(name, phone)
+                    } else {
+                        processEvent(VoiceEvent.ContactPhoneProvided(phone))
+                    }
                 } else {
                     speak("Tôi chưa nghe rõ số điện thoại. Vui lòng nói lại số.")
                     // Reset busy và hỏi lại sau một nhịp ngắn
@@ -197,27 +214,73 @@ class AddContactStateMachine(
         })
     }
 
+    private fun askForConfirmation(name: String, phone: String) {
+        val confirmText = "Có phải bạn muốn tôi thêm liên hệ $name với số điện thoại $phone không?"
+        voiceManager.textToSpeech(confirmText, 1, object : VoiceManager.VoiceControllerCallback {
+            override fun onSpeechResult(spokenText: String) {
+                val confirmed = isConfirmationPositive(spokenText)
+                if (confirmed) {
+                    processEvent(VoiceEvent.ContactPhoneProvided(phone))
+                } else {
+                    // Hủy và dừng luôn
+                    processEvent(VoiceEvent.UserCancelled)
+                }
+            }
+            override fun onConfirmationResult(confirmed: Boolean) {}
+            override fun onError(error: String) {
+                processEvent(VoiceEvent.ContactAddFailed(error))
+            }
+            override fun onAudioLevelChanged(level: Int) {
+                onAudioLevelChanged?.invoke(level)
+            }
+        })
+    }
+
+    private fun isConfirmationPositive(input: String): Boolean {
+        val text = input.lowercase()
+        val positives = listOf("đúng", "phải", "đồng ý", "ok", "oke", "okê", "chính xác", "ừ", "uh", "yes")
+        val negatives = listOf("không", "ko", "hủy", "huỷ", "cancel", "sai", "no", "không phải")
+        if (negatives.any { text.contains(it) }) return false
+        if (positives.any { text.contains(it) }) return true
+        // Mặc định coi là không xác nhận nếu mơ hồ
+        return false
+    }
+
     private fun executeAddContact() {
         val name = currentName
         val phone = currentPhone
         Log.d(TAG, "Creating contact: $name - $phone")
-        // Ưu tiên chèn trực tiếp (không cần UI). Nếu lỗi (thiếu quyền...), fallback về Intent INSERT.
-        contactAutomation.insertContactDirect(name, phone, null, object : ContactAutomation.ContactCallback {
-            override fun onSuccess() {
-                processEvent(VoiceEvent.ContactAddedSuccessfully)
-            }
-            override fun onError(error: String) {
-                Log.w(TAG, "insertContactDirect failed: $error, falling back to Intent INSERT if possible")
-                contactAutomation.insertContact(name, phone, null, object : ContactAutomation.ContactCallback {
-                    override fun onSuccess() {
-                        processEvent(VoiceEvent.ContactAddedSuccessfully)
-                    }
-                    override fun onError(error2: String) {
-                        processEvent(VoiceEvent.ContactAddFailed(error2))
-                    }
-                })
-            }
-        })
+        val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+
+        if (isSupportSpeakEnabled) {
+            // Dùng direct, lỗi thì fallback sang Intent INSERT
+            contactAutomation.insertContactDirect(name, phone, null, object : ContactAutomation.ContactCallback {
+                override fun onSuccess() {
+                    processEvent(VoiceEvent.ContactAddedSuccessfully)
+                }
+                override fun onError(error: String) {
+                    Log.w(TAG, "insertContactDirect failed: $error, falling back to Intent INSERT if possible")
+                    contactAutomation.insertContact(name, phone, null, object : ContactAutomation.ContactCallback {
+                        override fun onSuccess() {
+                            processEvent(VoiceEvent.ContactAddedSuccessfully)
+                        }
+                        override fun onError(error2: String) {
+                            processEvent(VoiceEvent.ContactAddFailed(error2))
+                        }
+                    })
+                }
+            })
+        } else {
+            // Tắt hỗ trợ nói: chỉ dùng Intent INSERT
+            contactAutomation.insertContact(name, phone, null, object : ContactAutomation.ContactCallback {
+                override fun onSuccess() {
+                    processEvent(VoiceEvent.ContactAddedSuccessfully)
+                }
+                override fun onError(error: String) {
+                    processEvent(VoiceEvent.ContactAddFailed(error))
+                }
+            })
+        }
     }
 
     private fun normalizePhoneDigits(input: String): String {

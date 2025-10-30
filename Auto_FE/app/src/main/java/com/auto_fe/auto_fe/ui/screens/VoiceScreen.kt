@@ -196,6 +196,8 @@ fun VoiceScreen() {
             rawLevel = 0f
             
             // Chào hỏi và bắt đầu lắng nghe
+            // Đảm bảo trạng thái không bị "bận" khi quay lại tab
+            voiceManager.resetBusyState()
             voiceManager.textToSpeech("Bạn cần tôi trợ giúp điều gì?", 0, object : VoiceManager.VoiceControllerCallback {
                 override fun onSpeechResult(spokenText: String) {
                     if (spokenText.isNotEmpty()) {

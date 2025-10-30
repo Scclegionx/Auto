@@ -475,7 +475,7 @@ fun MainScreen(sessionManager: SessionManager) {
                         }
                         1 -> VoiceScreen() // Màn hình ghi âm là mặc định
                         2 -> GuideScreen() // Màn hình hướng dẫn
-                        // 3 -> SettingsScreen()
+                        3 -> SettingsScreen()
                     }
                 }
             }

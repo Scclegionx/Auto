@@ -77,13 +77,13 @@ fun CustomBottomNavigation(
             )
             
             // Nút Cài đặt (phải)
-//            BottomNavItem(
-//                icon = "⚙️",
-//                label = "Cài đặt",
-//                isSelected = selectedTab == 3,
-//                onClick = { onTabSelected(3) },
-//                modifier = Modifier.weight(1f)
-//            )
+           BottomNavItem(
+               icon = "⚙️",
+               label = "Cài đặt",
+               isSelected = selectedTab == 3,
+               onClick = { onTabSelected(3) },
+               modifier = Modifier.weight(1f)
+           )
         }
     }
 }

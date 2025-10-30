@@ -12,6 +12,7 @@ import android.speech.tts.TextToSpeech
 import androidx.core.content.ContextCompat
 import androidx.core.app.ActivityCompat
 import java.util.*
+import com.auto_fe.auto_fe.utils.SettingsManager
 
 class PhoneAutomation(private val context: Context) {
 
@@ -73,6 +74,31 @@ class PhoneAutomation(private val context: Context) {
 
             Log.d("PhoneAutomation", "Attempting to call: $phoneNumber")
             var success = false
+
+            // Nhánh theo setting: nếu tắt hỗ trợ nói -> dùng ACTION_DIAL (mở UI, không cần quyền)
+            val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+            if (!isSupportSpeakEnabled) {
+                try {
+                    val dialIntent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse("tel:$phoneNumber")
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    if (dialIntent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(dialIntent)
+                        Log.d("PhoneAutomation", "ACTION_DIAL started (support speak off)")
+                        callback.onSuccess()
+                        return
+                    } else {
+                        Log.e("PhoneAutomation", "No app available to handle ACTION_DIAL")
+                        callback.onError("Không tìm thấy ứng dụng gọi điện (DIAL)")
+                        return
+                    }
+                } catch (e: Exception) {
+                    Log.e("PhoneAutomation", "ACTION_DIAL failed: ${e.message}", e)
+                    callback.onError("Lỗi mở quay số: ${e.message}")
+                    return
+                }
+            }
 
             // Gọi trực tiếp dựa trên platform (không qua chooser)
             // Gọi ngay lập tức, không cần user nhấn nút Call

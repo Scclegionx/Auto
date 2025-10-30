@@ -7,6 +7,7 @@ import com.auto_fe.auto_fe.automation.phone.PhoneAutomation
 import com.auto_fe.auto_fe.domain.VoiceEvent
 import com.auto_fe.auto_fe.domain.VoiceState
 import com.auto_fe.auto_fe.domain.VoiceStateMachine
+import com.auto_fe.auto_fe.utils.SettingsManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -83,8 +84,14 @@ class PhoneStateMachine(
     override fun onEnterState(state: VoiceState, event: VoiceEvent) {
         when (state) {
             is VoiceState.ConfirmingPhoneCommand -> {
-                Log.d(TAG, "Asking for phone confirmation: $currentContact")
-                askForConfirmation()
+                val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+                if (isSupportSpeakEnabled) {
+                    Log.d(TAG, "Asking for phone confirmation: $currentContact")
+                    askForConfirmation()
+                } else {
+                    Log.d(TAG, "Support speak OFF - skip confirmation and proceed calling: $currentContact")
+                    processEvent(VoiceEvent.PhoneConfirmed)
+                }
             }
             is VoiceState.ExecutingPhoneCommand -> {
                 Log.d(TAG, "Executing phone command: $currentContact")

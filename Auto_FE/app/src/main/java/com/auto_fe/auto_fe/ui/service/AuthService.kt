@@ -207,21 +207,35 @@ class AuthService {
     ): Result<DeviceTokenResponse> {
         return withContext(Dispatchers.IO) {
             try {
+                Log.d("AuthService", "=== STARTING registerDeviceToken ===")
+                Log.d("AuthService", "fcmToken: ${fcmToken.take(20)}...")
+                Log.d("AuthService", "deviceId: $deviceId")
+                Log.d("AuthService", "deviceType: $deviceType")
+                Log.d("AuthService", "deviceName: $deviceName")
+                Log.d("AuthService", "accessToken: ${accessToken.take(20)}...")
+                
                 val json = JSONObject().apply {
                     put("fcmToken", fcmToken)
                     put("deviceId", deviceId)
                     put("deviceType", deviceType)
                     put("deviceName", deviceName)
                 }
+                
+                Log.d("AuthService", "Request JSON: ${json.toString()}")
 
                 val requestBody = json.toString()
                     .toRequestBody("application/json".toMediaType())
 
+                val url = "${baseUrl.replace("/auth", "")}/device-token/register"
+                Log.d("AuthService", "Request URL: $url")
+                
                 val request = Request.Builder()
-                    .url("${baseUrl.replace("/auth", "")}/device-token/register")
+                    .url(url)
                     .post(requestBody)
                     .addHeader("Authorization", "Bearer $accessToken")
                     .build()
+                
+                Log.d("AuthService", "Sending HTTP POST request...")
 
                 val response = client.newCall(request).execute()
                 val responseBody = response.body?.string()

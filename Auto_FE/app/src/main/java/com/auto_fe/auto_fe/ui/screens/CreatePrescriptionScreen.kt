@@ -233,7 +233,7 @@ fun CreatePrescriptionScreen(
                                     val newMedication = MedicationReminderForm()
                                     medications = medications + newMedication
                                     // Tự động mở dialog edit cho thuốc mới
-                                    editingIndex = medications.size
+                                    editingIndex = medications.size - 1  // Fix: index cuối cùng là size - 1
                                     editingMedication = newMedication.copy(
                                         reminderTimes = newMedication.reminderTimes.toMutableList()
                                     )

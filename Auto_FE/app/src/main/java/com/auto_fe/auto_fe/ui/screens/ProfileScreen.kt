@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
 import com.auto_fe.auto_fe.ui.service.UserService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
@@ -29,12 +31,12 @@ fun ProfileScreen(
     onBackClick: () -> Unit = {},
     onChangePasswordClick: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     val userService = remember { UserService() }
     val coroutineScope = rememberCoroutineScope()
     
     var profileData by remember { mutableStateOf<UserService.ProfileData?>(null) }
     var isLoading by remember { mutableStateOf(true) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
     var isEditMode by remember { mutableStateOf(false) }
     var showSuccessMessage by remember { mutableStateOf(false) }
 
@@ -46,9 +48,11 @@ fun ProfileScreen(
             isLoading = false
             
             result.onSuccess { response ->
+                android.util.Log.d("ProfileScreen", "✅ Load profile success: ${response.message}")
                 profileData = response.data
             }.onFailure { error ->
-                errorMessage = error.message
+                android.util.Log.e("ProfileScreen", "❌ Load profile failed: ${error.message}")
+                Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -118,53 +122,6 @@ fun ProfileScreen(
                 }
             }
             
-            errorMessage != null -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "❌",
-                            fontSize = 48.sp
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = errorMessage ?: "Lỗi không xác định",
-                            color = AIError,
-                            fontSize = 14.sp
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = {
-                                coroutineScope.launch {
-                                    isLoading = true
-                                    errorMessage = null
-                                    val result = userService.getUserProfile(accessToken)
-                                    isLoading = false
-                                    
-                                    result.onSuccess { response ->
-                                        profileData = response.data
-                                    }.onFailure { error ->
-                                        errorMessage = error.message
-                                    }
-                                }
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = DarkPrimary
-                            )
-                        ) {
-                            Text("Thử lại")
-                        }
-                    }
-                }
-            }
-            
             profileData != null -> {
                 if (isEditMode) {
                     EditProfileContent(
@@ -178,7 +135,7 @@ fun ProfileScreen(
                             showSuccessMessage = true
                         },
                         onUpdateError = { error ->
-                            errorMessage = error
+                            Toast.makeText(context, "❌ $error", Toast.LENGTH_LONG).show()
                         }
                     )
                 } else {
@@ -833,14 +790,38 @@ fun EditProfileContent(
                 coroutineScope.launch {
                     isUpdating = true
                     
+                    // Convert date format từ dd/MM/yyyy sang yyyy-MM-dd nếu cần
+                    val formattedDate = if (dateOfBirth.isNotBlank() && dateOfBirth != "null") {
+                        try {
+                            // Kiểm tra nếu là format dd/MM/yyyy thì convert
+                            if (dateOfBirth.contains("/")) {
+                                val parts = dateOfBirth.split("/")
+                                if (parts.size == 3) {
+                                    val day = parts[0].padStart(2, '0')
+                                    val month = parts[1].padStart(2, '0')
+                                    val year = parts[2]
+                                    "$year-$month-$day" // yyyy-MM-dd
+                                } else {
+                                    dateOfBirth
+                                }
+                            } else {
+                                dateOfBirth
+                            }
+                        } catch (e: Exception) {
+                            dateOfBirth
+                        }
+                    } else {
+                        null
+                    }
+                    
                     val result = userService.updateUserProfile(
                         accessToken = accessToken,
                         fullName = fullName.takeIf { it.isNotBlank() },
-                        dateOfBirth = dateOfBirth.takeIf { it.isNotBlank() },
-                        gender = gender,
+                        dateOfBirth = formattedDate,
+                        gender = gender.takeIf { it.isNotBlank() && it != "null" },
                         phoneNumber = phoneNumber.takeIf { it.isNotBlank() },
                         address = address.takeIf { it.isNotBlank() },
-                        bloodType = bloodType,
+                        bloodType = bloodType.takeIf { it.isNotBlank() && it != "null" },
                         height = height.toDoubleOrNull(),
                         weight = weight.toDoubleOrNull()
                     )
@@ -848,8 +829,10 @@ fun EditProfileContent(
                     isUpdating = false
                     
                     result.onSuccess { response ->
+                        android.util.Log.d("ProfileScreen", "✅ Update success: ${response.message}")
                         response.data?.let { onUpdateSuccess(it) }
                     }.onFailure { error ->
+                        android.util.Log.e("ProfileScreen", "❌ Update failed: ${error.message}")
                         onUpdateError(error.message ?: "Không thể cập nhật")
                     }
                 }

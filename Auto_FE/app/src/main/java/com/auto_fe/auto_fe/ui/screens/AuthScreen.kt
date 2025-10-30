@@ -101,7 +101,7 @@ fun AuthScreen(
             // Header
             Text(
                 text = if (isLoginMode) "🔐 Đăng Nhập" else "📝 Đăng Ký",
-                fontSize = 32.sp,
+                fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 color = AIPrimarySoft
             )
@@ -110,7 +110,7 @@ fun AuthScreen(
 
             Text(
                 text = if (isLoginMode) "Chào mừng bạn quay trở lại!" else "Tạo tài khoản mới",
-                fontSize = 16.sp,
+                fontSize = 20.sp,
                 color = AITextPrimary.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
@@ -135,7 +135,7 @@ fun AuthScreen(
                         OutlinedTextField(
                             value = loginEmail,
                             onValueChange = { loginEmail = it },
-                            label = { Text("Email", color = AITextPrimary.copy(alpha = 0.7f)) },
+                            label = { Text("Email", color = AITextPrimary.copy(alpha = 0.7f), fontSize = 18.sp) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Email,
@@ -145,6 +145,7 @@ fun AuthScreen(
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             singleLine = true,
+                            textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = AIPrimarySoft,
                                 unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
@@ -159,7 +160,7 @@ fun AuthScreen(
                         OutlinedTextField(
                             value = loginPassword,
                             onValueChange = { loginPassword = it },
-                            label = { Text("Mật khẩu", color = AITextPrimary.copy(alpha = 0.7f)) },
+                            label = { Text("Mật khẩu", color = AITextPrimary.copy(alpha = 0.7f), fontSize = 18.sp) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Lock,
@@ -178,6 +179,7 @@ fun AuthScreen(
                             visualTransformation = if (loginPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             singleLine = true,
+                            textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = AIPrimarySoft,
                                 unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
@@ -204,7 +206,7 @@ fun AuthScreen(
                             )
                             Text(
                                 text = "Ghi nhớ đăng nhập",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
                                 color = AITextPrimary.copy(alpha = 0.8f),
                                 modifier = Modifier.clickable { rememberMe = !rememberMe }
                             )
@@ -301,7 +303,7 @@ fun AuthScreen(
                             } else {
                                 Text(
                                     text = "Đăng Nhập",
-                                    fontSize = 16.sp,
+                                    fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = AITextPrimary
                                 )
@@ -312,7 +314,7 @@ fun AuthScreen(
                         OutlinedTextField(
                             value = registerEmail,
                             onValueChange = { registerEmail = it },
-                            label = { Text("Email", color = AITextPrimary.copy(alpha = 0.7f)) },
+                            label = { Text("Email", color = AITextPrimary.copy(alpha = 0.7f), fontSize = 18.sp) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Email,
@@ -322,6 +324,7 @@ fun AuthScreen(
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             singleLine = true,
+                            textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = AIPrimarySoft,
                                 unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
@@ -341,7 +344,7 @@ fun AuthScreen(
                                     "Mật khẩu không khớp"
                                 } else null
                             },
-                            label = { Text("Mật khẩu", color = AITextPrimary.copy(alpha = 0.7f)) },
+                            label = { Text("Mật khẩu", color = AITextPrimary.copy(alpha = 0.7f), fontSize = 18.sp) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Lock,
@@ -361,6 +364,7 @@ fun AuthScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             singleLine = true,
                             isError = passwordError != null,
+                            textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = AIPrimarySoft,
                                 unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
@@ -381,7 +385,7 @@ fun AuthScreen(
                                     "Mật khẩu không khớp"
                                 } else null
                             },
-                            label = { Text("Xác nhận mật khẩu", color = AITextPrimary.copy(alpha = 0.7f)) },
+                            label = { Text("Xác nhận mật khẩu", color = AITextPrimary.copy(alpha = 0.7f), fontSize = 18.sp) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Lock,
@@ -401,6 +405,7 @@ fun AuthScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             singleLine = true,
                             isError = passwordError != null,
+                            textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = AIPrimarySoft,
                                 unfocusedBorderColor = AITextPrimary.copy(alpha = 0.3f),
@@ -413,10 +418,10 @@ fun AuthScreen(
 
                         if (passwordError != null) {
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = passwordError!!,
-                                color = AIError,
-                                fontSize = 12.sp,
+                                Text(
+                                    text = passwordError!!,
+                                    color = AIError,
+                                    fontSize = 16.sp,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -478,7 +483,7 @@ fun AuthScreen(
                             } else {
                                 Text(
                                     text = "Đăng Ký",
-                                    fontSize = 16.sp,
+                                    fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = AITextPrimary
                                 )
@@ -497,7 +502,7 @@ fun AuthScreen(
                         Text(
                             text = if (isLoginMode) "Chưa có tài khoản? " else "Đã có tài khoản? ",
                             color = AITextPrimary.copy(alpha = 0.7f),
-                            fontSize = 14.sp
+                            fontSize = 18.sp
                         )
                         TextButton(onClick = { 
                             isLoginMode = !isLoginMode
@@ -507,7 +512,7 @@ fun AuthScreen(
                                 text = if (isLoginMode) "Đăng ký ngay" else "Đăng nhập",
                                 fontWeight = FontWeight.Bold,
                                 color = AIPrimarySoft,
-                                fontSize = 14.sp
+                                fontSize = 18.sp
                             )
                         }
                     }
@@ -519,7 +524,7 @@ fun AuthScreen(
             // API Info
             Text(
                 text = "🔗 Kết nối với Auto_BE API",
-                fontSize = 12.sp,
+                fontSize = 16.sp,
                 color = AITextPrimary.copy(alpha = 0.5f),
                 textAlign = TextAlign.Center
             )

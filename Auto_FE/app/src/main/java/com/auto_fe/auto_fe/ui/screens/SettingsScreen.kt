@@ -18,6 +18,7 @@ import androidx.compose.foundation.clickable
 import com.auto_fe.auto_fe.ui.theme.*
 import androidx.compose.ui.platform.LocalContext
 import com.auto_fe.auto_fe.utils.SettingsManager
+import androidx.compose.ui.unit.sp
 
 /**
  * Màn hình cài đặt
@@ -65,7 +66,7 @@ fun SettingsScreen() {
                 ) {
                     Text(
                         text = "⚙️ Cài đặt",
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.headlineMedium.copy(fontSize = 34.sp),
                         color = DarkOnSurface,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
@@ -75,7 +76,7 @@ fun SettingsScreen() {
                     
                     Text(
                         text = "Tùy chỉnh ứng dụng theo nhu cầu",
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 22.sp),
                         color = DarkOnSurface.copy(alpha = 0.8f),
                         textAlign = TextAlign.Center
                     )
@@ -86,7 +87,7 @@ fun SettingsScreen() {
 
             // Settings List
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
                     SettingsSection(title = "Âm thanh & Giọng nói")
@@ -200,10 +201,10 @@ fun SettingsScreen() {
 fun SettingsSection(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.titleSmall,
+        style = MaterialTheme.typography.titleSmall.copy(fontSize = 24.sp),
         color = DarkOnSurface.copy(alpha = 0.7f),
         fontWeight = FontWeight.Medium,
-        modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
+        modifier = Modifier.padding(horizontal = 4.dp, vertical = 12.dp)
     )
 }
 
@@ -225,7 +226,7 @@ fun SettingsItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -234,14 +235,14 @@ fun SettingsItem(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 26.sp, lineHeight = 32.sp),
                     color = DarkOnSurface,
                     fontWeight = FontWeight.Medium
                 )
-                
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 20.sp, lineHeight = 26.sp),
                     color = DarkOnSurface.copy(alpha = 0.7f)
                 )
             }
@@ -284,18 +285,18 @@ fun SettingsDropdown(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(fontSize = 26.sp, lineHeight = 32.sp),
                 color = DarkOnSurface,
                 fontWeight = FontWeight.Medium
             )
             
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 20.sp, lineHeight = 26.sp),
                 color = DarkOnSurface.copy(alpha = 0.7f)
             )
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -309,6 +310,7 @@ fun SettingsDropdown(
                     modifier = Modifier
                         .fillMaxWidth()
                         .menuAnchor(),
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = DarkPrimary,
                         unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f)
@@ -321,7 +323,7 @@ fun SettingsDropdown(
                 ) {
                     options.forEach { option ->
                         DropdownMenuItem(
-                            text = { Text(option) },
+                            text = { Text(option, style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp)) },
                             onClick = {
                                 onValueChange(option)
                                 expanded = false
@@ -350,20 +352,20 @@ fun SettingsInfoItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(fontSize = 26.sp, lineHeight = 32.sp),
                 color = DarkOnSurface,
                 fontWeight = FontWeight.Medium
             )
             
             Text(
                 text = value,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 22.sp, lineHeight = 28.sp),
                 color = DarkOnSurface.copy(alpha = 0.8f)
             )
         }
@@ -389,7 +391,7 @@ fun SettingsActionItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -398,21 +400,21 @@ fun SettingsActionItem(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 26.sp, lineHeight = 32.sp),
                     color = DarkOnSurface,
                     fontWeight = FontWeight.Medium
                 )
-                
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 20.sp, lineHeight = 26.sp),
                     color = DarkOnSurface.copy(alpha = 0.7f)
                 )
             }
             
             Text(
                 text = "→",
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge.copy(fontSize = 36.sp),
                 color = DarkPrimary
             )
         }

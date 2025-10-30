@@ -223,7 +223,8 @@ fun GuideScreen() {
                     Text(
                         text = "📚 Hướng dẫn sử dụng",
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 28.sp,
+                            fontSize = 34.sp,
+                            lineHeight = 40.sp,
                             fontWeight = FontWeight.Bold
                         ),
                         color = DarkOnSurface,
@@ -235,7 +236,8 @@ fun GuideScreen() {
                     Text(
                         text = "Học cách sử dụng ứng dụng một cách dễ dàng",
                         style = MaterialTheme.typography.bodyLarge.copy(
-                            fontSize = 18.sp
+                            fontSize = 22.sp,
+                            lineHeight = 28.sp
                         ),
                         color = DarkOnSurface.copy(alpha = 0.8f),
                         textAlign = TextAlign.Center
@@ -246,7 +248,7 @@ fun GuideScreen() {
             // Category tabs với animation
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(guideCategories.size) { index ->
                     val category = guideCategories[index]
@@ -308,7 +310,8 @@ fun GuideScreen() {
                             Text(
                                 text = category.title,
                                 style = MaterialTheme.typography.titleLarge.copy(
-                                    fontSize = 20.sp,
+                                    fontSize = 26.sp,
+                                    lineHeight = 32.sp,
                                     fontWeight = FontWeight.Bold
                                 ),
                                 color = DarkOnSurface,
@@ -414,22 +417,24 @@ private fun VideoCard(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(
-                        text = video.title,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        ),
+                        Text(
+                            text = video.title,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontSize = 22.sp,
+                                lineHeight = 28.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
                         color = DarkOnSurface
                     )
                     
                     Spacer(modifier = Modifier.height(4.dp))
                     
-                    Text(
-                        text = video.duration,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontSize = 14.sp
-                        ),
+                        Text(
+                            text = video.duration,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 18.sp,
+                                lineHeight = 24.sp
+                            ),
                         color = DarkOnSurface.copy(alpha = 0.7f)
                     )
                 }
@@ -459,13 +464,14 @@ private fun VideoCard(
                         .fillMaxWidth()
                         .padding(top = 12.dp)
                 ) {
-                    Text(
-                        text = video.description,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 15.sp
-                        ),
+                        Text(
+                            text = video.description,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 20.sp,
+                                lineHeight = 26.sp
+                            ),
                         color = DarkOnSurface.copy(alpha = 0.8f),
-                        lineHeight = 20.sp
+                            lineHeight = 26.sp
                     )
                     
                     Spacer(modifier = Modifier.height(12.dp))
@@ -487,7 +493,7 @@ private fun VideoCard(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Xem video hướng dẫn",
-                            fontSize = 16.sp,
+                            fontSize = 22.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }

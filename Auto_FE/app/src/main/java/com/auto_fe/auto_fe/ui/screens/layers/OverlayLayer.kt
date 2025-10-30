@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlin.math.*
+import androidx.compose.ui.unit.sp
 
 /**
  * OverlayLayer - Smooth Text & Status Display
@@ -131,7 +132,7 @@ private fun SmoothStatusCard(
             // Status text
             Text(
                 text = if (isRecording) "Đang nghe..." else "Sẵn sàng",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp, lineHeight = 28.sp),
                 color = AITextPrimary,
                 fontWeight = FontWeight.Medium
             )
@@ -155,10 +156,9 @@ private fun SmoothTranscriptCard(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp, lineHeight = 28.sp),
             color = AITextPrimary,
             textAlign = TextAlign.Center,
-            lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.4f,
             modifier = Modifier.padding(horizontal = 28.dp, vertical = 20.dp)
         )
     }
@@ -206,9 +206,8 @@ private fun SmoothErrorCard(
             )
             Text(
                 text = message,
-                style = MaterialTheme.typography.bodyLarge,
-                color = AIError,
-                lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.4f
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp, lineHeight = 28.sp),
+                color = AIError
             )
         }
     }

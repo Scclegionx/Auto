@@ -176,15 +176,14 @@ class UserService {
 
                     Result.success(ProfileResponse(status, message, data))
                 } else {
-                    val errorMessage = if (responseBody != null) {
-                        try {
-                            val errorJson = JSONObject(responseBody)
-                            errorJson.optString("message", "Không thể cập nhật profile")
-                        } catch (e: Exception) {
-                            "Không thể cập nhật profile"
-                        }
-                    } else {
-                        "Không thể cập nhật profile"
+                    // Xử lý error message ngắn gọn
+                    val errorMessage = when (response.code) {
+                        400 -> "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin."
+                        401 -> "Phiên đăng nhập hết hạn"
+                        403 -> "Không có quyền truy cập"
+                        404 -> "Không tìm thấy tài nguyên"
+                        500 -> "Lỗi máy chủ. Vui lòng thử lại sau."
+                        else -> "Không thể cập nhật profile"
                     }
                     Result.failure(Exception(errorMessage))
                 }

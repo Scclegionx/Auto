@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.auto_fe.auto_fe.service.NotificationHistoryResponse
 import com.auto_fe.auto_fe.service.NotificationHistoryService
 import com.auto_fe.auto_fe.ui.theme.*
+import com.auto_fe.auto_fe.ui.theme.AppTextSize
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -84,7 +85,7 @@ fun NotificationHistoryScreen(
                         if (unreadCount > 0) {
                             Text(
                                 "$unreadCount chưa đọc",
-                                fontSize = 12.sp,
+                                fontSize = AppTextSize.bodySmall,
                                 color = Color.Gray
                             )
                         }
@@ -286,7 +287,7 @@ fun NotificationHistoryItem(
                 // Title
                 Text(
                     text = notification.title ?: "Thông báo uống thuốc",
-                    fontSize = 16.sp,
+                    fontSize = AppTextSize.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = DarkOnSurface
                 )
@@ -296,7 +297,7 @@ fun NotificationHistoryItem(
                 // Medication names
                 Text(
                     text = notification.medicationNames ?: "",
-                    fontSize = 14.sp,
+                    fontSize = AppTextSize.bodyMedium,
                     color = DarkOnSurface.copy(alpha = 0.8f)
                 )
                 
@@ -311,13 +312,13 @@ fun NotificationHistoryItem(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "🕐",
-                            fontSize = 16.sp,
+                            fontSize = AppTextSize.bodyMedium,
                             color = Color.Gray
                         )
                         Spacer(Modifier.width(4.dp))
                         Text(
                             text = formatDateTime(notification.reminderTime),
-                            fontSize = 12.sp,
+                            fontSize = AppTextSize.bodySmall,
                             color = Color.Gray
                         )
                     }
@@ -344,7 +345,7 @@ fun NotificationHistoryItem(
                         Spacer(Modifier.width(4.dp))
                         Text(
                             text = statusText,
-                            fontSize = 12.sp,
+                            fontSize = AppTextSize.bodySmall,
                             color = statusColor
                         )
                     }

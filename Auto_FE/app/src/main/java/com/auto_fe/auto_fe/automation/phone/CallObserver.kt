@@ -30,6 +30,18 @@ class CallObserver : BroadcastReceiver() {
                 val isUnknown = isUnknownNumber(context, incomingNumber)
                  if (isUnknown) {
                      Log.d(TAG, "Unknown number detected → lowering ring volume and starting alert service")
+                     // Ngắt đọc SMS nếu đang chạy để ưu tiên cảnh báo cuộc gọi
+                     try {
+                         val stopSms = Intent(context, com.auto_fe.auto_fe.automation.msg.SmsAlertService::class.java).apply {
+                             action = com.auto_fe.auto_fe.automation.msg.SmsAlertService.ACTION_STOP
+                         }
+                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                             context.startForegroundService(stopSms)
+                         } else {
+                             context.startService(stopSms)
+                         }
+                     } catch (_: Exception) {}
+
                      val prev = lowerRingVolumeTemporarily(context)
                      startAlertService(context, prev)
                 } else {

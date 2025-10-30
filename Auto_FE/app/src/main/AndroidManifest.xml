@@ -205,6 +205,12 @@
             android:name=".automation.phone.CallAlertService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
+
+        <!-- Foreground service for SMS reading -->
+        <service
+            android:name=".automation.msg.SmsAlertService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
     </application>
 
 </manifest>

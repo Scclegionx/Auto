@@ -98,7 +98,12 @@ class SendSMSStateMachine(
             }
 
             is VoiceState.Success -> {
-                speak("Đã gửi tin nhắn thành công!")
+                val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+                if (isSupportSpeakEnabled) {
+                    speak("Đã gửi tin nhắn thành công!")
+                } else {
+                    speak("Đã tạo tin nhắn thành công! Hãy bấm nút gửi.")
+                }
                 // Auto transition to Idle after 2 seconds
                 coroutineScope.launch {
                     delay(2000)

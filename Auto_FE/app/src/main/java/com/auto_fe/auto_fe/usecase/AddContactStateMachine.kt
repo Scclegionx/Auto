@@ -104,7 +104,12 @@ class AddContactStateMachine(
                 executeAddContact()
             }
             is VoiceState.Success -> {
-                speak("Đã thêm liên hệ thành công!")
+                val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+                if (isSupportSpeakEnabled) {
+                    speak("Đã thêm liên hệ thành công!")
+                } else {
+                    speak("Hãy kiểm tra lại các thông tin và bấm Lưu.")
+                }
                 voiceManager.resetBusyState()
                 coroutineScope.launch {
                     delay(2000)

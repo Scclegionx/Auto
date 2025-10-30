@@ -99,7 +99,12 @@ class PhoneStateMachine(
             }
 
             is VoiceState.Success -> {
-                speak("Đã gọi điện thành công!")
+                val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+                if (isSupportSpeakEnabled) {
+                    speak("Đã gọi điện thành công!")
+                } else {
+                    speak("Đã tìm thấy liên hệ! Hãy bấm gọi.")
+                }
                 voiceManager.resetBusyState()
                 // Auto transition to Idle after 2 seconds
                 coroutineScope.launch {

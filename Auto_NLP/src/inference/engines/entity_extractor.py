@@ -151,9 +151,11 @@ class EntityExtractor:
         sorted_words = sorted(self.number_words.items(), key=lambda x: len(x[0]), reverse=True)
         
         for word, number in sorted_words:
-            # Chỉ thay thế nếu không phải cụm từ đã xử lý
-            if not re.search(r'\d+', word):  # Tránh thay thế cụm từ đã có số
-                result = result.replace(word, number)
+            if re.search(r'\d+', word):
+                continue
+            pattern = r'\b{}\b'.format(re.escape(word))
+            if re.search(pattern, result):
+                result = re.sub(pattern, number, result)
         
         return result
     
@@ -1728,52 +1730,56 @@ class EntityExtractor:
         return "sms"
     
     def _clean_receiver(self, receiver: str) -> str:
-        """Làm sạch receiver entity - Tối ưu cho người già và "Bố Dũng" """
-        # Danh sách từ cần loại bỏ (mở rộng)
-        unwanted_words = [
-            "rằng", "là", "nói", "nhắn", "gửi", "lúc", "vào", "nhé", "nha", "ạ", "nhá", 
-            "ngay", "bây giờ", "qua", "messenger", "zalo", "facebook", "telegram", 
-            "instagram", "tiktok", "sms", "tin", "nhắn", "gửi", "cho", "tới", "đến",
-            "chiều", "sáng", "trưa", "tối", "đêm", "nay", "mai", "hôm", "ngày", "tuần", "tháng",
-            "của", "ở", "tại", "với", "và", "hoặc", "hay", "nếu", "khi", "sau", "trước",
-            "khẩn cấp", "con", "sẽ", "đã", "có", "vì", "bị", "đau", "bụng",
-            "sẽ", "đón", "ở", "bệnh", "viện", "tối", "nay", "chiều", "sáng", "trưa",
-            "nhớ", "thương", "yêu", "quý", "mến", "kính", "trọng", "quý", "mến"
-        ]
-        
+        """Làm sạch receiver entity - giảm nhiễu từ hư từ nhưng giữ nguyên cụm tên."""
+        if not receiver:
+            return ""
+
+        receiver = receiver.strip()
+        receiver = re.sub(r'^[\s,.;:]+|[\s,.;:]+$', '', receiver)
+
+        # Loại bỏ các hư từ ở đầu
+        receiver = re.sub(
+            r'^(?:video\s+call|gọi\s+video|video|call|cho|tới|đến|toi|den|gọi|goi|nhắn|nhan|gửi|gui|soạn|soan|nói|noi|trò|tro|liên|lien)\s+',
+            '',
+            receiver,
+            flags=re.IGNORECASE
+        )
+
+        # Cắt bỏ phần đuôi bắt đầu bằng các hư từ/thời gian/giới từ
+        receiver = re.sub(
+            r'\b(?:rằng|là|nhé|nha|ạ|nhá|vào|lúc|qua|trên|bằng|vì|do|để|giúp|hộ|cùng|sáng|chiều|tối|đêm|nay|mai|ngày|tuần|tháng)\b.*$',
+            '',
+            receiver,
+            flags=re.IGNORECASE
+        )
+
+        receiver = re.sub(r'[\.,;:]+$', '', receiver)
+        receiver = re.sub(r'\s+', ' ', receiver).strip()
+
+        if not receiver:
+            return ""
+
         words = receiver.split()
-        cleaned_words = []
-        
-        # Logic cải thiện: dừng khi gặp từ chỉ thời gian hoặc động từ - Bao gồm cả có dấu và không dấu
-        stop_words = ["là", "la", "rằng", "rằng", "nói", "noi", "sẽ", "se", "đã", "da", "có", "co", "vì", "vi", "bị", "bi", "đau", "dau", "bụng", "bung", 
-                      "đón", "don", "ở", "o", "tại", "tai", "với", "voi", "và", "va", "hoặc", "hoac", "hay", "nếu", "neu", "khi", "sau", "trước", "truoc",
-                      "nhớ", "nho", "thương", "thuong", "yêu", "yeu", "quý", "quy", "mến", "men", "kính", "kinh", "trọng", "trong", "quý", "quy", "mến", "men",
-                      # Thêm các từ có dấu tiếng Việt
-                      "dép", "dep", "lào", "lao", "dờ", "do", "lờ", "lo", "qua", "tới", "toi", "đến", "den"]
-        
-        for word in words:
-            word_lower = word.lower()
-            
-            # Dừng khi gặp từ chỉ thời gian hoặc động từ
-            if word_lower in stop_words:
-                break
-                
-            # Chỉ thêm từ không có trong danh sách unwanted
-            if word_lower not in unwanted_words:
-                cleaned_words.append(word)
-        
-        # Xử lý đặc biệt cho trường hợp "Bố Dũng" - giữ nguyên nếu là tên riêng
-        if len(cleaned_words) == 2 and cleaned_words[0].lower() in ["bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu"]:
-            # Chuẩn hóa viết hoa: viết hoa chữ cái đầu mỗi từ
-            return " ".join(word.capitalize() for word in cleaned_words)
-        
-        # Giới hạn 4-5 từ để tránh extract quá dài nhưng vẫn đủ cho tên phức tạp
-        if len(cleaned_words) > 5:
-            cleaned_words = cleaned_words[:5]
-        
-        # Chuẩn hóa viết hoa: viết hoa chữ cái đầu mỗi từ để match danh bạ
-        normalized = " ".join(word.capitalize() for word in cleaned_words)
-        return normalized.strip()
+        # Giới hạn tối đa 5 từ để tránh kéo dài
+        if len(words) > 5:
+            words = words[:5]
+
+        # Duy trì mối quan hệ gia đình nếu có
+        relations = {"bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu", "cô", "chú", "bác", "dì"}
+        noise_tokens = {"video", "call", "video-call", "videocall"}
+        normalized_words = []
+        for idx, word in enumerate(words):
+            if idx == 0 and word.lower() in relations:
+                normalized_words.append(word.capitalize())
+            else:
+                if word.lower() in noise_tokens:
+                    continue
+                normalized_words.append(word.capitalize())
+
+        while normalized_words and normalized_words[0].lower() in {"cho", "toi", "tới", "đến"}:
+            normalized_words.pop(0)
+
+        return " ".join(normalized_words).strip()
     
     def _clean_message(self, message: str) -> str:
         """Làm sạch message entity"""
@@ -1939,44 +1945,37 @@ class EntityExtractor:
             r"(?:hãy\s+)?bật\s+camera\s+(trước|sau|front|back)",
             r"(?:hãy\s+)?khởi\s+động\s+camera\s+(trước|sau|front|back)"
         ]
-        
-        for pattern in camera_patterns:
-            match = re.search(pattern, text_lower)
-            if match:
-                camera_type = match.group(1)
-                # Normalize camera type - Giữ nguyên tiếng Việt
-                if camera_type in ["trước", "front"]:
-                    entities["CAMERA_TYPE"] = "trước"
-                elif camera_type in ["sau", "back"]:
-                    entities["CAMERA_TYPE"] = "sau"
-                else:
-                    entities["CAMERA_TYPE"] = camera_type
-                    break
-            
-        # Extract action (mở/bật/khởi động) - Patterns cải thiện để match câu đơn giản
-        action_patterns = [
-            r"(mở|bật|khởi\s+động|start|open|turn\s+on)\s+camera",
-            r"camera\s+(mở|bật|khởi\s+động|start|open|turn\s+on)",
-            # Patterns cho câu đơn giản với từ bổ trợ
-            r"(?:giúp\s+tôi\s+)?(mở|bật|khởi\s+động)\s+camera",
-            r"(?:hãy\s+)?(mở|bật|khởi\s+động)\s+camera",
-            r"(?:giúp\s+tôi\s+)?camera\s+(mở|bật|khởi\s+động)",
-            r"(?:hãy\s+)?camera\s+(mở|bật|khởi\s+động)"
-        ]
-        
-        for pattern in action_patterns:
-            match = re.search(pattern, text_lower)
-            if match:
-                action = match.group(1)
-                entities["ACTION"] = action
-                break
-        
-        # Extract platform (camera/device)
-        if "camera" in text_lower:
-            entities["PLATFORM"] = "camera"
-        else:
-            entities["PLATFORM"] = "device"
-        
+        # Mở/rút gọn hành động (ACTION)
+        if re.search(r"\b(mở|bật|khởi động|kích hoạt)\b", text_lower):
+            entities["ACTION"] = "mở"
+        elif re.search(r"\b(tắt|đóng|ngừng|dừng)\b", text_lower):
+            entities["ACTION"] = "tắt"
+        img_hit = re.search(r"\b(chụp|ảnh|hình|máy ảnh|chụp ảnh|chụp hình)\b", text_lower)
+        video_hit = re.search(r"\b(quay|ghi hình|quay phim|quay video|máy quay)\b", text_lower)
+
+        if video_hit:
+            entities["CAMERA_TYPE"] = "video"
+        elif img_hit:
+            entities["CAMERA_TYPE"] = "image"
+
+        # Nếu câu có cả "chụp" lẫn nhóm "quay/ghi hình", ưu tiên video
+        if re.search(r"\b(chụp)\b", text_lower) and re.search(r"\b(quay|ghi hình|quay phim|quay video)\b", text_lower):
+            entities["CAMERA_TYPE"] = "video"
+
+        if re.search(r"\b(trước|cam trước|camera trước|máy ảnh trước)\b", text_lower):
+            entities["MODE"] = "trước"
+        elif re.search(r"\b(sau|cam sau|camera sau|máy ảnh sau)\b", text_lower):
+            entities["MODE"] = "sau"
+
+        # Loại entity dư (giữ đúng phạm vi open-cam)
+        for k in ["PLATFORM", "DEVICE", "CONTENT", "LOCATION"]:
+            entities.pop(k, None)
+        if not entities.get("CAMERA_TYPE") and re.search(r"\b(camera|máy ảnh|máy quay)\b", text_lower):
+            if re.search(r"\b(quay|ghi hình|quay phim|quay video)\b", text_lower):
+                entities["CAMERA_TYPE"] = "video"
+            else:
+                entities["CAMERA_TYPE"] = "image"
+
         return entities
     
     def _extract_device_control_entities(self, text: str) -> Dict[str, str]:
@@ -2251,6 +2250,10 @@ class EntityExtractor:
         if platform_result:
             entities["PLATFORM"] = platform_result
         
+        # Nếu có số điện thoại nhưng chưa có RECEIVER, gán RECEIVER = PHONE_NUMBER
+        if entities.get("PHONE_NUMBER") and not entities.get("RECEIVER"):
+            entities["RECEIVER"] = entities["PHONE_NUMBER"]
+
         return entities
     
     def _extract_messaging_entities(self, text: str) -> Dict[str, str]:
@@ -2271,6 +2274,41 @@ class EntityExtractor:
         platform_result = self.extract_platform(text)
         if platform_result:
             entities["PLATFORM"] = platform_result
+
+        # Post-clean: chuẩn hoá RECEIVER và MESSAGE cho gửi tin nhắn
+        try:
+            import re as _re
+            # 1) Clean RECEIVER: loại bớt từ "tôi" dư nếu có lẫn vào tên
+            if entities.get("RECEIVER"):
+                rec = entities["RECEIVER"]
+                rec = _re.sub(r"\b(tôi)\b", "", rec, flags=_re.IGNORECASE)
+                rec = _re.sub(r"\s+", " ", rec).strip()
+                entities["RECEIVER"] = rec
+
+            # 2) Clean MESSAGE: bỏ từ nền tảng (zalo/messenger/...), bỏ lặp receiver
+            if entities.get("MESSAGE"):
+                msg = entities["MESSAGE"]
+                # Remove platform tokens
+                msg = _re.sub(r"\b(zalo|messenger|sms|whatsapp|telegram|skype)\b", "", msg, flags=_re.IGNORECASE)
+                # Nếu có cụm 'nội dung', ưu tiên phần sau 'nội dung'
+                m_nd = _re.search(r"nội\s+dung\s+(.+)$", msg, flags=_re.IGNORECASE)
+                if m_nd:
+                    msg = m_nd.group(1)
+                # Remove receiver mention pattern 'cho/tới/đến <receiver>'
+                if entities.get("RECEIVER"):
+                    rec = _re.escape(entities["RECEIVER"])
+                    msg = _re.sub(rf"\b(cho|tới|đến)\s+{rec}\b", "", msg, flags=_re.IGNORECASE)
+                # Remove patterns 'cho số <digits/words>'
+                num_words = r"(?:không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)(?:\s+(?:không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)){5,}"
+                msg = _re.sub(r"\b(cho|tới|đến)\s+số\s+[0-9\s]{9,}\b", "", msg, flags=_re.IGNORECASE)
+                msg = _re.sub(rf"\b(cho|tới|đến)\s+số\s+{num_words}\b", "", msg, flags=_re.IGNORECASE)
+                # Remove raw receiver digits if any
+                if entities.get("RECEIVER") and entities["RECEIVER"].isdigit():
+                    msg = msg.replace(entities["RECEIVER"], "")
+                msg = _re.sub(r"\s+", " ", msg).strip(" ,.")
+                entities["MESSAGE"] = msg
+        except Exception:
+            pass
         
         # Extract using messaging patterns
         for pattern, entity_type in self.messaging_patterns:
@@ -2562,95 +2600,52 @@ class EntityExtractor:
         return entities
     
     def _extract_youtube_search_entities(self, text: str) -> Dict[str, str]:
-        """Extract entities cho search-youtube - Tìm kiếm YouTube"""
+
         entities = {}
-        
-        # Mặc định PLATFORM = youtube cho search-youtube
-        entities["PLATFORM"] = "youtube"
-        
-        # ƯU TIÊN: Extract YT_QUERY trước (quan trọng nhất)
-        query_extracted = False
-        
-        # Sử dụng fallback patterns trước (chính xác hơn)
-        fallback_patterns = [
-            r"(tìm\s+kiếm|search|tìm|tim\s+kiem)\s+trên\s+(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s*:?\s*(.+)",
-            r"(tìm\s+kiếm|search|tìm|tim\s+kiem)\s+trên\s+(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s+(.+)",
-            r"(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s*:?\s*(.+)",
-            r"(tìm\s+video|tim\s+video)\s+(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s+(.+)",
-            r"(search|tìm|tim)\s+(youtube|yt|du\s+tup|diu\s+tup|du\s+túp|diu\s+túp)\s+(.+)"
+        tl = text.lower().strip()
+
+        # 0) Nếu có "trên google" => không phải search-youtube
+        if "trên google" in tl:
+            return entities
+
+        # 1) Chỉ bắt khi có youtube/yt, tránh lẫn với search-internet
+        if not re.search(r"(youtube|yt)\b", tl, flags=re.IGNORECASE):
+            return entities
+
+        # 2) Các patterns phổ biến để lấy QUERY
+        patterns = [
+            r"(xem|phát|mở|play|tìm|search)\s+(.+?)\s+trên\s+(youtube|yt)",          # xem <q> trên youtube
+            r"(xem|phát|mở|play|tìm|search)\s+(?:trên\s+)?(youtube|yt)\s+(.+)",      # xem (trên) youtube <q>
+            r"(youtube|yt)\s*[:\-–]?\s+(.+)",                                       # youtube: <q>
+            r"(tìm|search)\s+(.+?)\s+trên\s+(youtube|yt)",                           # tìm <q> trên youtube
         ]
-        for pattern in fallback_patterns:
-            match = re.search(pattern, text, re.IGNORECASE)
-            if match and match.groups() and len(match.groups()) >= 2:
-                query = match.group(len(match.groups())).strip()  # Lấy group cuối cùng - nội dung tìm kiếm
-                if query and len(query) > 2:
-                    entities["YT_QUERY"] = query
-                    query_extracted = True
+
+        query = None
+        for pat in patterns:
+            m = re.search(pat, tl, flags=re.IGNORECASE)
+            if m:
+                groups = [g for g in m.groups() if g and g.lower() not in ("youtube", "yt",
+                                                                            "xem", "phát", "mở", "play", "tìm", "search")]
+                if groups:
+                    query = groups[-1].strip()
                     break
-        
-        # Nếu fallback không thành công, thử patterns từ youtube_search_patterns
-        if not query_extracted:
-            for pattern, entity_type in self.youtube_search_patterns:
-                if entity_type == "query":
-                    match = re.search(pattern, text, re.IGNORECASE)
-                    if match and match.groups():
-                        query = match.group(1).strip()
-                        if query and len(query) > 2:  # Đảm bảo query có ý nghĩa
-                            entities["YT_QUERY"] = query
-                            query_extracted = True
-                            break
-        
-        # Extract các entities khác
-        for pattern, entity_type in self.youtube_search_patterns:
-            if entity_type == "query":  # Skip query patterns đã xử lý
-                continue
-                
-            match = re.search(pattern, text, re.IGNORECASE)
-            if match:
-                # Safe group access
-                if match.groups():
-                    value = match.group(1).strip() if match.group(1) else ""
-                else:
-                    value = match.group(0).strip()
-                
-                # Process based on entity type
-                if entity_type == "channel_name":
-                    entities["CHANNEL_NAME"] = value
-                
-                elif entity_type == "live_only":
-                    # Map Vietnamese live indicators to boolean
-                    live_map = {
-                        "trực tiếp": "true", "live": "true", "có": "true", "yes": "true",
-                        "không": "false", "no": "false", "off": "false"
-                    }
-                    entities["LIVE_ONLY"] = live_map.get(value.lower(), "false")
-                
-                elif entity_type == "playlist_id":
-                    entities["PLAYLIST_ID"] = value
-                
-                elif entity_type == "playlist_name":
-                    entities["PLAYLIST_NAME"] = value
-                
-                elif entity_type == "kind":
-                    # Map Vietnamese content types to YouTube kinds
-                    kind_map = {
-                        "nhạc": "music", "music": "music", "bài hát": "music",
-                        "hướng dẫn": "tutorial", "tutorial": "tutorial", "tut": "tutorial",
-                        "tin tức": "news", "news": "news", "thời sự": "news",
-                        "giải trí": "entertainment", "entertainment": "entertainment",
-                        "thể thao": "sports", "sports": "sports", "bóng đá": "sports"
-                    }
-                    entities["YT_KIND"] = kind_map.get(value.lower(), "video")
-                
-                elif entity_type == "duration":
-                    entities["DURATION"] = value
-                
-                elif entity_type == "quality":
-                    entities["QUALITY"] = value
-                
-                elif entity_type == "upload_date":
-                    entities["UPLOAD_DATE"] = value
-        
+
+        # 3) Nếu chỉ mở app youtube, không set QUERY
+        if not query:
+            if re.search(r"(mở|vào|truy cập)\s+(youtube|yt)\b", tl):
+                return entities
+            if re.fullmatch(r"\s*(youtube|yt)\s*", tl):
+                return entities
+            return entities
+
+        # 4) Làm sạch query (loại hư từ lịch sự, khoảng trắng/ punctuation dư)
+        query = re.sub(r"\b(giúp tôi|giúp|giùm|dùm|nha|nhé|ạ|với|đi)\b", "", query)
+        query = query.strip(" ,.;:!?\t\n\r")
+        if len(query) < 2:
+            return {}
+
+        # 5) Trả về đúng một trường QUERY
+        entities["QUERY"] = query
         return entities
     
     def _extract_information_entities(self, text: str) -> Dict[str, str]:
@@ -2828,7 +2823,157 @@ class EntityExtractor:
                 
                 elif entity_type == "backup":
                     entities["BACKUP"] = value
-        
+
+        # Post-process alarm: chuẩn hoá TIME/DATE/TIMESTAMP
+        try:
+            import datetime as _dt
+            import re as _re
+            from zoneinfo import ZoneInfo
+
+            TZ = ZoneInfo("Asia/Bangkok")
+            now = _dt.datetime.now(tz=TZ)
+            text_l = text.lower()
+
+            def _parse_vi_time(raw: str):
+                if not raw:
+                    return (None, None)
+                s = raw.strip().lower()
+                m = _re.search(r"\b(\d{1,2})\s*(giờ|h)?\s*rưỡi\b", s)
+                if m:
+                    return (int(m.group(1)), 30)
+                m = _re.search(r"\b(\d{1,2})\s*(giờ|h)?\s*kém\s*(\d{1,2})\b", s)
+                if m:
+                    h = int(m.group(1))
+                    k = int(m.group(3))
+                    h = (h - 1) if k > 0 else h
+                    return (h, (60 - k) % 60)
+                m = _re.search(r"\b(\d{1,2})\s*(?:giờ|h)\s*(\d{1,2})\b", s)
+                if m:
+                    return (int(m.group(1)), int(m.group(2)))
+                m = _re.search(r"\b(\d{1,2}):(\d{1,2})\b", s)
+                if m:
+                    return (int(m.group(1)), int(m.group(2)))
+                m = _re.search(r"\b(\d{1,2})\s*(giờ|h)\b", s)
+                if m:
+                    return (int(m.group(1)), 0)
+                m = _re.fullmatch(r"\s*(\d{1,2})\s*", s)
+                if m:
+                    return (int(m.group(1)), 0)
+                return (None, None)
+
+            def _apply_buoi_24h(h: int, mi: int):
+                if h is None:
+                    return (None, None)
+                if h >= 13:
+                    return (h, mi)
+
+                has_sang = _re.search(r"\b(sáng|rạng sáng)\b", text_l)
+                has_trua = _re.search(r"\b(trưa|giữa trưa|nửa trưa)\b", text_l)
+                has_chieu = _re.search(r"\b(chiều)\b", text_l)
+                has_toi = _re.search(r"\b(tối)\b", text_l)
+                has_dem = _re.search(r"\b(đêm|khuya|nửa đêm)\b", text_l)
+
+                if h == 12:
+                    if has_trua:
+                        return (12, mi)
+                    if has_dem:
+                        return (0, mi)
+                    return (12, mi)
+
+                if has_sang:
+                    return (h, mi)
+                if has_trua:
+                    return (h + 12 if 1 <= h <= 5 else 12 if h == 0 else h, mi)
+                if has_chieu:
+                    return (h + 12, mi)
+                if has_toi:
+                    hh = h + 12
+                    if hh < 18:
+                        hh = 18
+                    return (hh, mi)
+                if has_dem:
+                    if 1 <= h <= 4:
+                        return (h, mi)
+                    if 10 <= h <= 11:
+                        return (h + 12, mi)
+                    if h == 9:
+                        return (21, mi)
+                    if h == 8:
+                        return (20, mi)
+                    return (h, mi)
+                return (h, mi)
+
+            h = mi = None
+            if entities.get("TIME"):
+                h, mi = _parse_vi_time(entities["TIME"])
+                if (mi is None or mi == 0) and _re.search(r"\b(rưỡi|kém|hơn|:\d{1,2}|\d{1,2}\s*(phút|min))\b", text_l):
+                    h2, mi2 = _parse_vi_time(text_l)
+                    if h2 is not None:
+                        h, mi = h2, mi2
+            else:
+                h, mi = _parse_vi_time(text_l)
+
+            if h is not None:
+                h, mi = _apply_buoi_24h(h, mi if mi is not None else 0)
+                mi = 0 if mi is None else max(0, min(59, mi))
+                if 0 <= h <= 23:
+                    entities["TIME"] = f"{h:02d}:{mi:02d}"
+
+            date_obj = None
+            if _re.search(r"\b(hôm nay)\b", text_l):
+                date_obj = now.date()
+            elif _re.search(r"\b(ngày mai|mai)\b", text_l):
+                date_obj = (now + _dt.timedelta(days=1)).date()
+            elif _re.search(r"\b(ngày mốt|mốt|ngày kia)\b", text_l):
+                date_obj = (now + _dt.timedelta(days=2)).date()
+            elif _re.search(r"\b(tuần sau)\b", text_l):
+                date_obj = (now + _dt.timedelta(days=7)).date()
+
+            weekday_map = {
+                "thứ hai": 0,
+                "thứ ba": 1,
+                "thứ tư": 2,
+                "thứ năm": 3,
+                "thứ sáu": 4,
+                "thứ bảy": 5,
+                "chủ nhật": 6,
+            }
+            has_week_next = _re.search(r"\b(tuần sau)\b", text_l) is not None
+            for vn, wd in weekday_map.items():
+                if vn in text_l:
+                    delta = (wd - now.weekday()) % 7
+                    if delta == 0:
+                        delta = 7
+                    if has_week_next:
+                        delta += 7
+                    date_obj = (now + _dt.timedelta(days=delta)).date()
+                    break
+
+            if entities.get("TIME") and not entities.get("DATE") and date_obj is None:
+                date_obj = now.date()
+                try:
+                    hh, mm = [int(x) for x in entities["TIME"].split(":")]
+                    candidate_dt = _dt.datetime.combine(
+                        date_obj,
+                        _dt.time(hour=hh, minute=mm, tzinfo=TZ),
+                    )
+                    if candidate_dt <= now:
+                        date_obj = (now + _dt.timedelta(days=1)).date()
+                except Exception:
+                    pass
+
+            if date_obj is not None:
+                entities["DATE"] = date_obj.isoformat()
+
+            if entities.get("TIME") and (entities.get("DATE") or date_obj is not None):
+                target_date = _dt.date.fromisoformat(entities.get("DATE") or date_obj.isoformat())
+                hh, mm = [int(x) for x in entities["TIME"].split(":")]
+                ts = _dt.datetime(target_date.year, target_date.month, target_date.day, hh, mm, tzinfo=TZ)
+                entities["TIMESTAMP"] = ts.isoformat()
+
+        except Exception:
+            pass
+
         return entities
     
     def _extract_calendar_entities(self, text: str) -> Dict[str, str]:
@@ -3032,6 +3177,14 @@ class EntityExtractor:
                 name = match.group(1).strip()
                 # Clean up name - loại bỏ stop words
                 name = self._clean_contact_name(name)
+                # Loại chuỗi số điện thoại (số/dọc chữ) ra khỏi tên nếu vô tình dính
+                if phone_number:
+                    # loại số digits
+                    name = re.sub(re.escape(phone_number), "", name)
+                    # loại số đọc bằng chữ dài
+                    num_words = r"(?:không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)(?:\s+(?:không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)){5,}"
+                    name = re.sub(num_words, "", name, flags=re.IGNORECASE)
+                    name = re.sub(r"\s+", " ", name).strip()
                 if name and len(name) > 1:
                     entities["CONTACT_NAME"] = name
                     break
@@ -3064,6 +3217,9 @@ class EntityExtractor:
                 if not last_word.isdigit() and last_word not in ["số", "điện", "thoại", "phone", "so", "dien", "thoai"]:
                     entities["TITLE"] = last_word
         
+        # Chuẩn hoá: nếu có PHONE_NUMBER thì set PHONE và đảm bảo CONTACT_NAME không rỗng
+        if entities.get("PHONE_NUMBER"):
+            entities["PHONE"] = entities["PHONE_NUMBER"]
         return entities
     
     def _clean_contact_name(self, name: str) -> str:
@@ -3494,6 +3650,23 @@ class EntityExtractor:
                 
                 entities[entity_type.upper()] = value
         
+        # Post-clean: nếu có QUERY và PLATFORM, loại cụm nền tảng khỏi QUERY
+        try:
+            if entities.get("QUERY"):
+                q = entities["QUERY"]
+                plat = (entities.get("PLATFORM") or "").lower()
+                platforms = ["google", "internet", "youtube", "yt", "web"]
+                # loại 'trên <platform>' và tên platform đơn
+                import re as _re
+                if plat:
+                    q = _re.sub(rf"\btrên\s+{_re.escape(plat)}\b", "", q, flags=_re.IGNORECASE)
+                for p in platforms:
+                    q = _re.sub(rf"\b{p}\b", "", q, flags=_re.IGNORECASE)
+                q = _re.sub(r"\s+", " ", q).strip(" ,.")
+                entities["QUERY"] = q
+        except Exception:
+            pass
+
         return entities
     
     def extract_youtube_entities(self, text: str) -> Dict[str, str]:

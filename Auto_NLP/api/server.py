@@ -51,15 +51,11 @@ class IntentResponse(BaseModel):
     input_text: str
     intent: str
     confidence: float
-    entities: Dict[str, Any]  # Changed to Any to handle lists
     command: str
+    entities: Dict[str, Any]
     method: str
-    decision_reason: Optional[str] = None
-    primary_source: Optional[str] = None
     processing_time: float
     timestamp: str
-    model_result: Optional[Dict[str, Any]] = None
-    reasoning_result: Optional[Dict[str, Any]] = None
 
 class HealthResponse(BaseModel):
     status: str
@@ -188,18 +184,17 @@ async def predict_intent_simple(request: IntentRequest):
             else:
                 cleaned_entities[key] = str(value) if value is not None else ""
         
-        # Create simplified response
-        simplified_response = {
+        # Create simplified response with only required fields
+        return {
             "input_text": request.text,
             "intent": result.get("intent", "unknown"),
             "confidence": result.get("confidence", 0.0),
-            "entities": cleaned_entities,
             "command": result.get("command", "unknown"),
+            "entities": cleaned_entities,
             "method": result.get("method", "unknown"),
-            "suggestions": result.get("reasoning_result", {}).get("reasoning_details", {}).get("suggestions", [])
+            "processing_time": processing_time,
+            "timestamp": datetime.now().isoformat(),
         }
-        
-        return simplified_response
         
     except Exception as e:
         logger.error(f"Prediction failed: {e}")
@@ -237,15 +232,11 @@ async def predict_intent(request: IntentRequest):
             input_text=request.text,
             intent=result.get("intent", "unknown"),
             confidence=result.get("confidence", 0.0),
-            entities=cleaned_entities,
             command=result.get("command", "unknown"),
             method=result.get("method", "unknown"),
-            decision_reason=result.get("decision_reason"),
-            primary_source=result.get("primary_source"),
+            entities=cleaned_entities,
             processing_time=processing_time,
             timestamp=datetime.now().isoformat(),
-            model_result=result.get("model_result"),
-            reasoning_result=result.get("reasoning_result")
         )
         
     except Exception as e:

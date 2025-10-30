@@ -10,10 +10,11 @@
     "gọi điện.*(?:cho|tới|đến)"
   ],
   "alarm_patterns": [
-    "đặt.*(?:báo thức|nhắc nhở)",
-    "hẹn.*(?:giờ|thời gian)",
-    "nhắc.*(?:tôi|lúc|khi)",
-    "báo thức.*(?:lúc|giờ)"
+    "đặt.*báo thức",
+    "báo thức.*(?:lúc|giờ|sáng|chiều|tối|đêm)",
+    "chuông.*(?:báo|thức)",
+    "đánh thức.*(?:lúc|giờ)?",
+    "alarm"
   ],
   "message_patterns": [
     "gửi.*(?:tin nhắn|tin)",
@@ -55,5 +56,19 @@
     "giúp.*(?:tôi|đỡ|với)",
     "hướng dẫn.*(?:tôi|cách)",
     "hỗ trợ.*(?:tôi|với)"
+  ],
+  "search_internet_patterns": [
+    "tìm.*(?:trên\\s+(?:google|internet|web|mạng))",
+    "tra cứu.*",
+    "search.*(?:online|web|google)",
+    "hỏi\\s+google"
+  ],
+  "search_youtube_patterns": [
+    "tìm.*youtube",
+    "tìm.*yt",
+    "xem.*youtube",
+    "mở.*youtube",
+    "play.*youtube",
+    "youtube.*(?:video|nhạc|bài)"
   ]
 }

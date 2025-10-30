@@ -6,31 +6,24 @@
         "phút"
       ],
       "intent": "set-alarm",
-      "confidence_boost": 0.1,
-      "required_keywords": [
-        "báo thức",
-        "đánh thức"
-      ]
+      "confidence_boost": 0.1
     },
     {
       "keywords": [
         "sáng",
         "chiều",
-        "tối"
+        "tối",
+        "đêm"
       ],
       "intent": "set-alarm",
-      "confidence_boost": 0.1,
-      "required_keywords": [
-        "báo thức",
-        "đánh thức"
-      ]
+      "confidence_boost": 0.1
     },
     {
       "keywords": [
         "mai",
         "hôm nay"
       ],
-      "intent": "set-reminder",
+      "intent": "set-event-calendar",
       "confidence_boost": 0.1,
       "required_keywords": [
         "nhắc",
@@ -74,7 +67,7 @@
         "cảm",
         "đau đầu"
       ],
-      "intent": "set-reminder",
+      "intent": "set-event-calendar",
       "confidence_boost": 0.3
     },
     {
@@ -82,7 +75,7 @@
         "uống",
         "ăn"
       ],
-      "intent": "set-reminder",
+      "intent": "set-event-calendar",
       "confidence_boost": 0.2
     },
     {
@@ -154,7 +147,7 @@
     {
       "ambiguous_intents": [
         "set-alarm",
-        "set-reminder"
+        "set-event-calendar"
       ],
       "keywords": [
         "báo thức",

@@ -751,17 +751,17 @@ class ReasoningEngine:
         """Load context rules từ file hoặc sử dụng mặc định"""
         default_rules = {
             "time_context": [
-                {"keywords": ["giờ", "phút"], "intent": "set-alarm", "confidence_boost": 0.1, "required_keywords": ["báo thức", "đánh thức"]},
-                {"keywords": ["sáng", "chiều", "tối"], "intent": "set-alarm", "confidence_boost": 0.1, "required_keywords": ["báo thức", "đánh thức"]},
-                {"keywords": ["mai", "hôm nay"], "intent": "set-reminder", "confidence_boost": 0.1, "required_keywords": ["nhắc", "nhớ"]}
+                {"keywords": ["giờ", "phút"], "intent": "set-alarm", "confidence_boost": 0.1},
+                {"keywords": ["sáng", "chiều", "tối", "đêm"], "intent": "set-alarm", "confidence_boost": 0.1},
+                {"keywords": ["mai", "hôm nay"], "intent": "set-event-calendar", "confidence_boost": 0.1, "required_keywords": ["nhắc", "nhớ"]}
             ],
             "person_context": [
                 {"keywords": ["mẹ", "bố", "con", "cháu"], "intent": "call", "confidence_boost": 0.2},
                 {"keywords": ["bạn", "anh", "chị"], "intent": "general-conversation", "confidence_boost": 0.1}
             ],
             "action_context": [
-                {"keywords": ["uống thuốc", "thuốc", "viên thuốc", "kháng sinh", "tiểu đường", "huyết áp", "tim", "vitamin", "sắt", "cảm", "đau đầu"], "intent": "set-reminder", "confidence_boost": 0.3},
-                {"keywords": ["uống", "ăn"], "intent": "set-reminder", "confidence_boost": 0.2},
+                {"keywords": ["uống thuốc", "thuốc", "viên thuốc", "kháng sinh", "tiểu đường", "huyết áp", "tim", "vitamin", "sắt", "cảm", "đau đầu"], "intent": "set-event-calendar", "confidence_boost": 0.3},
+                {"keywords": ["uống", "ăn"], "intent": "set-event-calendar", "confidence_boost": 0.2},
                 {"keywords": ["ngủ", "đi"], "intent": "set-alarm", "confidence_boost": 0.15}
             ],
             "multi_turn_context": [
@@ -772,7 +772,7 @@ class ReasoningEngine:
             "intent_disambiguation": [
                 {"ambiguous_intents": ["call", "send-mess"], "keywords": ["gọi", "điện"], "intent": "call", "confidence_boost": 0.25},
                 {"ambiguous_intents": ["call", "send-mess"], "keywords": ["nhắn", "tin"], "intent": "send-mess", "confidence_boost": 0.25},
-                {"ambiguous_intents": ["set-alarm", "set-reminder"], "keywords": ["báo thức", "chuông"], "intent": "set-alarm", "confidence_boost": 0.25}
+                {"ambiguous_intents": ["set-alarm", "set-event-calendar"], "keywords": ["báo thức", "chuông"], "intent": "set-alarm", "confidence_boost": 0.25}
             ]
         }
         
@@ -824,7 +824,7 @@ class ReasoningEngine:
                 "call": ["Bạn muốn gọi cho ai?", "Bạn cần gọi điện thoại phải không?"],
                 "set-alarm": ["Bạn muốn đặt báo thức lúc mấy giờ?", "Bạn cần đặt báo thức phải không?"],
                 "send-mess": ["Bạn muốn nhắn tin cho ai?", "Bạn cần gửi tin nhắn phải không?"],
-                "set-reminder": ["Bạn muốn đặt nhắc nhở gì?", "Bạn cần đặt lời nhắc phải không?"],
+                "set-event-calendar": ["Bạn muốn đặt nhắc nhở gì?", "Bạn cần tạo sự kiện/lời nhắc phải không?"],
                 "check-weather": ["Bạn muốn xem thời tiết ở đâu?", "Bạn cần biết thời tiết phải không?"],
                 "play-media": ["Bạn muốn nghe bài hát gì?", "Bạn cần phát nhạc phải không?"],
                 "read-news": ["Bạn muốn đọc tin tức về chủ đề gì?", "Bạn cần đọc tin tức phải không?"],
@@ -1160,7 +1160,7 @@ class ReasoningEngine:
                                 adjusted_confidence += confidence_boost
                                 logger.debug(f"Boosted confidence for {base_intent} by {confidence_boost}")
         
-        if context_features.get("has_time") and adjusted_intent in ["set-alarm", "set-reminder"]:
+        if context_features.get("has_time") and adjusted_intent in ["set-alarm", "set-event-calendar"]:
             adjusted_confidence += 0.1
             logger.debug(f"Boosted confidence for {adjusted_intent} due to time entity")
         

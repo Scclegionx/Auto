@@ -3,6 +3,7 @@ package com.auto_fe.auto_fe.core
 import android.content.Context
 import android.util.Log
 import com.auto_fe.auto_fe.automation.msg.SMSAutomation
+import com.auto_fe.auto_fe.automation.msg.WAAutomation
 import com.auto_fe.auto_fe.automation.phone.PhoneAutomation
 import com.auto_fe.auto_fe.automation.device.CameraAutomation
 import com.auto_fe.auto_fe.automation.device.ControlDeviceAutomation
@@ -12,6 +13,7 @@ import com.auto_fe.auto_fe.automation.third_apps.YouTubeAutomation
 import com.auto_fe.auto_fe.audio.VoiceManager
 import com.auto_fe.auto_fe.service.NLPService
 import com.auto_fe.auto_fe.usecase.SendSMSStateMachine
+import com.auto_fe.auto_fe.usecase.SendWAStateMachine
 import com.auto_fe.auto_fe.usecase.PhoneStateMachine
 import com.auto_fe.auto_fe.usecase.CameraStateMachine
 import com.auto_fe.auto_fe.usecase.FlashStateMachine
@@ -27,6 +29,7 @@ import org.json.JSONObject
 
 class CommandProcessor(private val context: Context) {
     private val smsAutomation = SMSAutomation(context)
+    private val waAutomation = WAAutomation(context)
     private val phoneAutomation = PhoneAutomation(context)
     private val cameraAutomation = CameraAutomation(context)
     private val controlDeviceAutomation = ControlDeviceAutomation(context)
@@ -38,6 +41,7 @@ class CommandProcessor(private val context: Context) {
     
     // State Machines - lazy initialization để tránh tạo nhiều instance
     private val smsStateMachine by lazy { SendSMSStateMachine(context, voiceManager, smsAutomation) }
+    private val waStateMachine by lazy { SendWAStateMachine(context, voiceManager, waAutomation) }
     private val phoneStateMachine by lazy { PhoneStateMachine(context, voiceManager, phoneAutomation) }
     private val cameraStateMachine by lazy { CameraStateMachine(context, voiceManager, cameraAutomation) }
     private val flashStateMachine by lazy { FlashStateMachine(context, voiceManager, controlDeviceAutomation) }
@@ -81,6 +85,25 @@ class CommandProcessor(private val context: Context) {
                 is com.auto_fe.auto_fe.domain.VoiceState.Cancel -> {
                     // Cancel state cũng cần dừng ghi âm
                     onStateSuccess?.invoke("Đã hủy lệnh gọi điện.")
+                }
+                is com.auto_fe.auto_fe.domain.VoiceState.Error -> {
+                    onStateError?.invoke(newState.errorMessage)
+                }
+                else -> {
+                    // Không cần xử lý các state khác
+                }
+            }
+        }
+        
+        // Setup WA StateMachine callbacks
+        waStateMachine.onStateChanged = { oldState, newState ->
+            when (newState) {
+                is com.auto_fe.auto_fe.domain.VoiceState.Success -> {
+                    onStateSuccess?.invoke("Đã gửi tin nhắn WhatsApp thành công!")
+                }
+                is com.auto_fe.auto_fe.domain.VoiceState.Cancel -> {
+                    // Cancel state cũng cần dừng ghi âm
+                    onStateSuccess?.invoke("Đã hủy lệnh gửi WhatsApp.")
                 }
                 is com.auto_fe.auto_fe.domain.VoiceState.Error -> {
                     onStateError?.invoke(newState.errorMessage)
@@ -241,6 +264,7 @@ class CommandProcessor(private val context: Context) {
         try {
             phoneAutomation.release()
             smsStateMachine.cleanup()
+            waStateMachine.cleanup()
             phoneStateMachine.cleanup()
             cameraStateMachine.cleanup()
             flashStateMachine.cleanup()
@@ -315,9 +339,21 @@ class CommandProcessor(private val context: Context) {
 
             when (command) {
                 "send-msg" -> {
-                    // Parse thành công, gọi trực tiếp SendSMSStateMachine
-                    Log.d("CommandProcessor", "Routing to SendSMSStateMachine: $receiver -> $message")
-                    smsStateMachine.executeSMSCommand(receiver, message)
+                    // Dựa vào platform để quyết định gọi SMS hay WhatsApp
+                    when (platform.lowercase()) {
+                        "sms" -> {
+                            Log.d("CommandProcessor", "Routing to SendSMSStateMachine: $receiver -> $message")
+                            smsStateMachine.executeSMSCommand(receiver, message)
+                        }
+                        "whatsapp", "wa" -> {
+                            Log.d("CommandProcessor", "Routing to SendWAStateMachine: $receiver -> $message")
+                            waStateMachine.executeWACommand(receiver, message)
+                        }
+                        else -> {
+                            Log.d("CommandProcessor", "Unknown platform: $platform, defaulting to SMS")
+                            smsStateMachine.executeSMSCommand(receiver, message)
+                        }
+                    }
                 }
                 "call" -> {
                     // Parse thành công, gọi trực tiếp PhoneStateMachine

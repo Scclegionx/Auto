@@ -63,6 +63,51 @@ sealed class VoiceState {
     ) : VoiceState()
 
 
+    // ========== WHATSAPP FLOW STATES ==========
+
+    /** Đang lắng nghe lệnh gửi WhatsApp từ người dùng */
+    object ListeningForWACommand : VoiceState()
+
+    /** Đang phân tích lệnh WhatsApp (parsing command) */
+    object ParsingWACommand : VoiceState()
+
+    /** Đang xác nhận lệnh với người dùng */
+    data class ConfirmingWACommand(
+        val receiver: String,
+        val message: String
+    ) : VoiceState()
+
+    /** Đang chờ người dùng xác nhận WhatsApp (có/không) */
+    object WaitingForWAUserConfirmation : VoiceState()
+
+    /** Đang tìm kiếm liên hệ trong danh bạ cho WhatsApp */
+    data class SearchingWAContact(
+        val contactName: String,
+        val message: String
+    ) : VoiceState()
+
+    /** Tìm thấy nhiều liên hệ tương tự cho WhatsApp - cần xác nhận */
+    data class SuggestingWASimilarContacts(
+        val originalName: String,
+        val similarContacts: List<String>,
+        val message: String,
+        val retryCount: Int = 0
+    ) : VoiceState()
+
+    /** Đang chờ người dùng cung cấp tên mới cho WhatsApp */
+    object WaitingForWANewContactName : VoiceState()
+
+    /** Đang gửi tin nhắn WhatsApp */
+    data class SendingWA(
+        val phoneNumber: String,
+        val message: String,
+        val contactName: String
+    ) : VoiceState()
+
+    /** Đang thực hiện lệnh WhatsApp */
+    object ExecutingWACommand : VoiceState()
+
+
     // ========== PHONE CALL STATES ==========
 
     /** Đang lắng nghe lệnh gọi điện */
@@ -258,6 +303,15 @@ sealed class VoiceState {
             is SuggestingSimilarContacts -> "SuggestingSimilarContacts(${similarContacts.size} contacts, retry=$retryCount)"
             is WaitingForNewContactName -> "WaitingForNewContactName"
             is SendingSMS -> "SendingSMS($contactName)"
+            is ListeningForWACommand -> "ListeningForWACommand"
+            is ParsingWACommand -> "ParsingWACommand"
+            is ConfirmingWACommand -> "ConfirmingWACommand($receiver, $message)"
+            is WaitingForWAUserConfirmation -> "WaitingForWAUserConfirmation"
+            is SearchingWAContact -> "SearchingWAContact($contactName)"
+            is SuggestingWASimilarContacts -> "SuggestingWASimilarContacts(${similarContacts.size} contacts, retry=$retryCount)"
+            is WaitingForWANewContactName -> "WaitingForWANewContactName"
+            is SendingWA -> "SendingWA($contactName)"
+            is ExecutingWACommand -> "ExecutingWACommand"
             is ListeningForCallCommand -> "ListeningForCallCommand"
             is ParsingCallCommand -> "ParsingCallCommand"
             is MakingCall -> "MakingCall($phoneNumber)"

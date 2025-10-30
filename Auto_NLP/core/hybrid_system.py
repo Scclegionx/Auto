@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Model-First Hybrid System
-Trained model làm chính + Reasoning engine làm phụ
-"""
-
 import torch
 import torch.nn as nn
 import json
@@ -18,7 +11,7 @@ import time
 
 # Add project root to path
 current_dir = Path(__file__).parent
-project_root = current_dir.parent.parent.parent
+project_root = current_dir.parent
 sys.path.insert(0, str(project_root))
 
 # Fix torchvision issue
@@ -198,6 +191,9 @@ class ModelFirstHybridSystem:
             
             # Step 3: Hybrid decision making
             final_result = self._hybrid_decision(model_result, reasoning_result, text, context)
+
+            # Step 3.1: Post-process for command->entity compliance (quick rules)
+            final_result = self._postprocess_command_entities(text, final_result)
             
             # Step 4: Add metadata
             processing_time = time.time() - start_time
@@ -218,6 +214,59 @@ class ModelFirstHybridSystem:
         except Exception as e:
             self.logger.error(f"❌ Error in prediction: {e}")
             return self._fallback_prediction(text, context)
+
+    def _postprocess_command_entities(self, text: str, result: Dict[str, Any]) -> Dict[str, Any]:
+        """Lightweight post-processing to enforce command->entity mapping for common cases.
+        - control-device:
+          * ON/OFF: bật/mở/on → ACTION=mở, MODE=on; tắt/đóng/off → ACTION=tắt, MODE=off
+          * Volume/Brightness: +/tăng/lên → ACTION=tăng, MODE=up; -/giảm/xuống → ACTION=giảm, MODE=down
+          * DEVICE normalization: âm lượng/loa/âm thanh → "âm lượng"; độ sáng/sáng/brightness/ánh sáng → "độ sáng"
+          * Remove unrelated PLATFORM
+        """
+        try:
+            text_l = (text or "").lower()
+            command = result.get("command") or result.get("intent") or "unknown"
+            entities = dict(result.get("entities") or {})
+
+            if command == "control-device":
+                # Normalize device keywords
+                has_volume = any(w in text_l for w in ["âm lượng", "loa", "âm thanh", "volume"])
+                has_brightness = any(w in text_l for w in ["độ sáng", "sáng", "brightness", "ánh sáng"]) 
+
+                # Normalize action keywords
+                has_on = any(w in text_l for w in ["bật", "mở", "on"]) 
+                has_off = any(w in text_l for w in ["tắt", "đóng", "off"]) 
+                has_increase = any(w in text_l for w in ["tăng", "lên", "+", "up"]) 
+                has_decrease = any(w in text_l for w in ["giảm", "xuống", "-", "down"]) 
+
+                # DEVICE normalization
+                if has_volume:
+                    entities["DEVICE"] = "âm lượng"
+                elif has_brightness:
+                    entities["DEVICE"] = "độ sáng"
+
+                # ACTION/MODE mapping
+                if has_on:
+                    entities["ACTION"] = "mở"
+                    entities["MODE"] = "on"
+                elif has_off:
+                    entities["ACTION"] = "tắt"
+                    entities["MODE"] = "off"
+                elif has_increase:
+                    entities["ACTION"] = "tăng"
+                    entities["MODE"] = "up"
+                elif has_decrease:
+                    entities["ACTION"] = "giảm"
+                    entities["MODE"] = "down"
+
+                # control-device should not include PLATFORM
+                entities.pop("PLATFORM", None)
+
+                result["entities"] = entities
+
+            return result
+        except Exception:
+            return result
     
     def _model_predict(self, text: str) -> Dict[str, Any]:
         """Primary prediction using trained model"""

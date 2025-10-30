@@ -15,10 +15,11 @@ from datetime import datetime
 import time
 import logging
 
-# Add project root to path
+# Add project root to path (api/ -> project root)
 current_dir = Path(__file__).parent
-project_root = current_dir.parent.parent.parent
-sys.path.insert(0, str(project_root))
+project_root = current_dir.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
 
 # Import hybrid system
 try:

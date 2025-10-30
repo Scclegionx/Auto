@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Trained Model Loader và Inference
-Sử dụng trained model làm chính với API đơn giản
-"""
-
 import torch
 import torch.nn as nn
 import json

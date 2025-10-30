@@ -91,14 +91,20 @@ class IntentConfig:
     ]
 
 class EntityConfig:
-    """Entity recognition configuration - UPDATED for VITEXT dataset"""
-    num_entity_labels = 30  # Updated to match actual dataset
+    """Entity recognition configuration - UPDATED for main dataset"""
+    num_entity_labels = 35  # Updated for main dataset with all entities
     entity_labels = [
-        "O", "B-ACTION", "B-CONTACT_NAME", "B-CONTENT_TYPE", "B-DATE", "B-DEVICE", 
-        "B-LEVEL", "B-LOCATION", "B-MEDIA_TYPE", "B-MESSAGE", "B-PHONE", "B-PLATFORM", 
-        "B-QUERY", "B-RECEIVER", "B-TIME", "B-TITLE", "I-CONTACT_NAME", "I-CONTENT_TYPE", 
-        "I-DATE", "I-DEVICE", "I-LEVEL", "I-LOCATION", "I-MEDIA_TYPE", "I-MESSAGE", 
-        "I-PHONE", "I-PLATFORM", "I-QUERY", "I-RECEIVER", "I-TIME", "I-TITLE"
+        "O",  # Outside
+        # B- labels (Begin)
+        "B-ACTION", "B-CAMERA_TYPE", "B-CONTACT_NAME", "B-CONTENT_TYPE", 
+        "B-DATE", "B-DEVICE", "B-LEVEL", "B-LOCATION", "B-MEDIA_TYPE", 
+        "B-MESSAGE", "B-MODE", "B-PHONE", "B-PLATFORM", "B-QUERY", 
+        "B-RECEIVER", "B-TIME", "B-TITLE",
+        # I- labels (Inside)
+        "I-ACTION", "I-CAMERA_TYPE", "I-CONTACT_NAME", "I-CONTENT_TYPE", 
+        "I-DATE", "I-DEVICE", "I-LEVEL", "I-LOCATION", "I-MEDIA_TYPE", 
+        "I-MESSAGE", "I-MODE", "I-PHONE", "I-PLATFORM", "I-QUERY", 
+        "I-RECEIVER", "I-TIME", "I-TITLE"
     ]
 
 class ValueConfig:

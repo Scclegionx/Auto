@@ -65,7 +65,7 @@ fun InteractionLayer(
             verticalAlignment = Alignment.CenterVertically
         ) {
             SmoothSecondaryButton(
-                label = if (isDarkMode) "Light" else "Dark",
+                label = if (isDarkMode) "Sáng" else "Tối",
                 icon = if (isDarkMode) "☀️" else "🌙",
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -73,16 +73,16 @@ fun InteractionLayer(
                 }
             )
             
-            Spacer(Modifier.width(20.dp))
+            // Spacer(Modifier.width(20.dp))
             
-            SmoothSecondaryButton(
-                label = "",
-                icon = "📝",
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onTranscriptOpen()
-                }
-            )
+            // SmoothSecondaryButton(
+            //     label = "",
+            //     icon = "📝",
+            //     onClick = {
+            //         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            //         onTranscriptOpen()
+            //     }
+            // )
         }
     }
 }
@@ -247,12 +247,12 @@ private fun SmoothSecondaryButton(
         ) {
             Text(
                 text = icon,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleLarge
             )
             Text(
                 text = label,
                 color = AITextPrimary,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium
             )
         }

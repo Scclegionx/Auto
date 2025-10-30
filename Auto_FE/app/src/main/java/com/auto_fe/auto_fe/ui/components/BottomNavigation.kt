@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.text.style.TextOverflow
 import com.auto_fe.auto_fe.ui.theme.*
 
 /**
@@ -45,7 +46,7 @@ fun CustomBottomNavigation(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 12.dp),
+                .padding(horizontal = 16.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -127,9 +128,15 @@ fun BottomNavItem(
         
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.titleMedium,
             color = if (isSelected) DarkPrimary else DarkOnSurface.copy(alpha = 0.7f),
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            maxLines = 2,
+            overflow = TextOverflow.Clip,
+            softWrap = true,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            lineHeight = 24.sp,
+            modifier = Modifier.widthIn(min = 0.dp, max = 90.dp)
         )
     }
 }
@@ -194,7 +201,7 @@ fun BottomNavItemSpecial(
         ) {
             Text(
                 text = icon,
-                fontSize = 28.sp,
+                fontSize = 32.sp,
                 color = if (isSelected) Color.White else DarkOnSurface.copy(alpha = 0.8f)
             )
         }
@@ -203,9 +210,15 @@ fun BottomNavItemSpecial(
         
         Text(
             text = label,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.titleMedium,
             color = if (isSelected) DarkPrimary else DarkOnSurface.copy(alpha = 0.7f),
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            maxLines = 2,
+            overflow = TextOverflow.Clip,
+            softWrap = true,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            lineHeight = 18.sp,
+            modifier = Modifier.widthIn(min = 0.dp, max = 90.dp)
         )
     }
 }

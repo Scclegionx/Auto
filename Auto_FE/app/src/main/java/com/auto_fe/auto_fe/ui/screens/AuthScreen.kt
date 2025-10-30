@@ -221,10 +221,13 @@ fun AuthScreen(
                                             val result = authService.login(loginEmail, loginPassword)
                                             result.fold(
                                                 onSuccess = { response ->
+                                                    Log.d("AuthScreen", "Login onSuccess callback - response.data=${response.data}")
                                                     val token = response.data?.accessToken
                                                     val userInfo = response.data?.user
+                                                    Log.d("AuthScreen", "Extracted token=${token?.take(20)}..., userInfo=$userInfo")
                                                     
                                                     if (token != null) {
+                                                        Log.d("AuthScreen", "✓ Token is not null, proceeding...")
                                                         // Lưu credentials nếu checkbox được check
                                                         if (rememberMe) {
                                                             sessionManager.saveRememberedCredentials(
@@ -237,12 +240,17 @@ fun AuthScreen(
                                                         }
                                                         
                                                         // Đăng ký device token sau khi login thành công
-                                                        registerDeviceToken(
-                                                            authService = authService,
-                                                            token = token,
-                                                            context = context,
-                                                            scope = scope
-                                                        )
+                                                        // Dùng GlobalScope để tránh bị cancel khi screen unmount
+                                                        Log.d("AuthScreen", "🚀 About to call registerDeviceToken with token: ${token.take(20)}...")
+                                                        kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                                                            registerDeviceToken(
+                                                                authService = authService,
+                                                                token = token,
+                                                                context = context,
+                                                                scope = this
+                                                            )
+                                                        }
+                                                        Log.d("AuthScreen", "✅ registerDeviceToken launched in GlobalScope")
                                                         
                                                         Toast.makeText(
                                                             context,
@@ -258,6 +266,8 @@ fun AuthScreen(
                                                             userInfo?.name, // name từ response
                                                             userInfo?.id // userId từ response
                                                         )
+                                                    } else {
+                                                        Log.e("AuthScreen", "❌ Token is NULL! Cannot register device token")
                                                     }
                                                 },
                                                 onFailure = { error ->

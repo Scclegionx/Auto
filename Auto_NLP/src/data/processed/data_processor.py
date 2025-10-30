@@ -5,7 +5,14 @@ from transformers import AutoTokenizer
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent))
-from training.configs.config import model_config, intent_config, entity_config, value_config, command_config
+from training.configs.config import ModelConfig, IntentConfig, EntityConfig, ValueConfig, CommandConfig
+
+# Instantiate config classes
+model_config = ModelConfig()
+intent_config = IntentConfig()
+entity_config = EntityConfig()
+value_config = ValueConfig()
+command_config = CommandConfig()
 # Removed Enhanced Dynamic BIO Generator - use entities directly
 
 class DataProcessor:

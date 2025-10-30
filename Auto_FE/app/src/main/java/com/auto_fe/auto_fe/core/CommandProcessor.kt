@@ -3,6 +3,7 @@ package com.auto_fe.auto_fe.core
 import android.content.Context
 import android.util.Log
 import com.auto_fe.auto_fe.automation.msg.SMSAutomation
+import com.auto_fe.auto_fe.automation.msg.WAAutomation
 import com.auto_fe.auto_fe.automation.phone.PhoneAutomation
 import com.auto_fe.auto_fe.automation.device.CameraAutomation
 import com.auto_fe.auto_fe.automation.device.ControlDeviceAutomation
@@ -12,6 +13,7 @@ import com.auto_fe.auto_fe.automation.third_apps.YouTubeAutomation
 import com.auto_fe.auto_fe.audio.VoiceManager
 import com.auto_fe.auto_fe.service.NLPService
 import com.auto_fe.auto_fe.usecase.SendSMSStateMachine
+import com.auto_fe.auto_fe.usecase.SendWAStateMachine
 import com.auto_fe.auto_fe.usecase.PhoneStateMachine
 import com.auto_fe.auto_fe.usecase.CameraStateMachine
 import com.auto_fe.auto_fe.usecase.FlashStateMachine
@@ -19,6 +21,8 @@ import com.auto_fe.auto_fe.usecase.WFStateMachine
 import com.auto_fe.auto_fe.usecase.VolumnStateMachine
 import com.auto_fe.auto_fe.usecase.AlarmStateMachine
 import com.auto_fe.auto_fe.usecase.SearchChromeStateMachine
+import com.auto_fe.auto_fe.usecase.AddContactStateMachine
+import com.auto_fe.auto_fe.automation.phone.ContactAutomation
 import com.auto_fe.auto_fe.usecase.YoutubeStateMachine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,17 +31,20 @@ import org.json.JSONObject
 
 class CommandProcessor(private val context: Context) {
     private val smsAutomation = SMSAutomation(context)
+    private val waAutomation = WAAutomation(context)
     private val phoneAutomation = PhoneAutomation(context)
     private val cameraAutomation = CameraAutomation(context)
     private val controlDeviceAutomation = ControlDeviceAutomation(context)
     private val alarmAutomation = AlarmAutomation(context)
     private val chromeAutomation = ChromeAutomation(context)
     private val youtubeAutomation = YouTubeAutomation(context)
+    private val contactAutomation = ContactAutomation(context)
     private val voiceManager = VoiceManager.getInstance(context)
     private val nlpService = NLPService(context)
     
     // State Machines - lazy initialization để tránh tạo nhiều instance
     private val smsStateMachine by lazy { SendSMSStateMachine(context, voiceManager, smsAutomation) }
+    private val waStateMachine by lazy { SendWAStateMachine(context, voiceManager, waAutomation) }
     private val phoneStateMachine by lazy { PhoneStateMachine(context, voiceManager, phoneAutomation) }
     private val cameraStateMachine by lazy { CameraStateMachine(context, voiceManager, cameraAutomation) }
     private val flashStateMachine by lazy { FlashStateMachine(context, voiceManager, controlDeviceAutomation) }
@@ -46,6 +53,7 @@ class CommandProcessor(private val context: Context) {
     private val alarmStateMachine by lazy { AlarmStateMachine(context, voiceManager, alarmAutomation) }
     private val searchChromeStateMachine by lazy { SearchChromeStateMachine(context, voiceManager, chromeAutomation) }
     private val youtubeStateMachine by lazy { YoutubeStateMachine(context, voiceManager, youtubeAutomation) }
+    private val addContactStateMachine by lazy { AddContactStateMachine(context, voiceManager, contactAutomation) }
 
     interface CommandProcessorCallback {
         fun onCommandExecuted(success: Boolean, message: String)
@@ -81,6 +89,25 @@ class CommandProcessor(private val context: Context) {
                 is com.auto_fe.auto_fe.domain.VoiceState.Cancel -> {
                     // Cancel state cũng cần dừng ghi âm
                     onStateSuccess?.invoke("Đã hủy lệnh gọi điện.")
+                }
+                is com.auto_fe.auto_fe.domain.VoiceState.Error -> {
+                    onStateError?.invoke(newState.errorMessage)
+                }
+                else -> {
+                    // Không cần xử lý các state khác
+                }
+            }
+        }
+        
+        // Setup WA StateMachine callbacks
+        waStateMachine.onStateChanged = { oldState, newState ->
+            when (newState) {
+                is com.auto_fe.auto_fe.domain.VoiceState.Success -> {
+                    onStateSuccess?.invoke("Đã gửi tin nhắn WhatsApp thành công!")
+                }
+                is com.auto_fe.auto_fe.domain.VoiceState.Cancel -> {
+                    // Cancel state cũng cần dừng ghi âm
+                    onStateSuccess?.invoke("Đã hủy lệnh gửi WhatsApp.")
                 }
                 is com.auto_fe.auto_fe.domain.VoiceState.Error -> {
                     onStateError?.invoke(newState.errorMessage)
@@ -203,6 +230,23 @@ class CommandProcessor(private val context: Context) {
             }
         }
 
+        // Setup AddContact StateMachine callbacks
+        addContactStateMachine.onStateChanged = { oldState, newState ->
+            when (newState) {
+                is com.auto_fe.auto_fe.domain.VoiceState.Success -> {
+                    onStateSuccess?.invoke("Đã thêm liên hệ thành công!")
+                }
+                is com.auto_fe.auto_fe.domain.VoiceState.Cancel -> {
+                    onStateSuccess?.invoke("Đã hủy thêm liên hệ.")
+                }
+                is com.auto_fe.auto_fe.domain.VoiceState.Error -> {
+                    onStateError?.invoke(newState.errorMessage)
+                }
+                else -> {
+                    // No-op
+                }
+            }
+        }
         // Setup YouTube StateMachine callbacks
         youtubeStateMachine.onStateChanged = { oldState, newState ->
             when (newState) {
@@ -241,6 +285,7 @@ class CommandProcessor(private val context: Context) {
         try {
             phoneAutomation.release()
             smsStateMachine.cleanup()
+            waStateMachine.cleanup()
             phoneStateMachine.cleanup()
             cameraStateMachine.cleanup()
             flashStateMachine.cleanup()
@@ -297,7 +342,6 @@ class CommandProcessor(private val context: Context) {
             val json = JSONObject(jsonResponse)
             val command = json.optString("command", "")
             val entities = json.optJSONObject("entities")
-            val value = json.optString("value", "")
 
             if (entities == null) {
                 callback.onError("Thiếu thông tin entities")
@@ -306,87 +350,93 @@ class CommandProcessor(private val context: Context) {
 
             val receiver = entities.optString("RECEIVER", "")
             val platform = entities.optString("PLATFORM", "")
+            val message = entities.optString("MESSAGE", "")
+            val query = entities.optString("QUERY", "")
+            val time = entities.optString("TIME", "")
+            val date = entities.optString("DATE", "")
+            val device = entities.optString("DEVICE", "")
+            val action = entities.optString("ACTION", "")
+            val mode = entities.optString("MODE", "")
 
             when (command) {
-                "Gửi tin nhắn" -> {
-                    // Parse thành công, gọi trực tiếp SendSMSStateMachine
-                    Log.d("CommandProcessor", "Routing to SendSMSStateMachine: $receiver -> $value")
-                    smsStateMachine.executeSMSCommand(receiver, value)
-                }
                 "send-msg" -> {
-                    // Parse thành công, gọi trực tiếp SendSMSStateMachine
-                    Log.d("CommandProcessor", "Routing to SendSMSStateMachine: $receiver -> $value")
-                    smsStateMachine.executeSMSCommand(receiver, value)
+                    // Dựa vào platform để quyết định gọi SMS hay WhatsApp
+                    when (platform.lowercase()) {
+                        "sms" -> {
+                            Log.d("CommandProcessor", "Routing to SendSMSStateMachine: $receiver -> $message")
+                            smsStateMachine.executeSMSCommand(receiver, message)
+                        }
+                        "whatsapp", "wa" -> {
+                            Log.d("CommandProcessor", "Routing to SendWAStateMachine: $receiver -> $message")
+                            waStateMachine.executeWACommand(receiver, message)
+                        }
+                        else -> {
+                            Log.d("CommandProcessor", "Unknown platform: $platform, defaulting to SMS")
+                            smsStateMachine.executeSMSCommand(receiver, message)
+                        }
+                    }
                 }
                 "call" -> {
                     // Parse thành công, gọi trực tiếp PhoneStateMachine
                     Log.d("CommandProcessor", "Routing to PhoneStateMachine: $receiver, platform: $platform")
                     phoneStateMachine.executePhoneCommand(receiver, platform)
                 }
-                "search" -> {
-                    // Xử lý lệnh search dựa vào platform
-                    when (platform.lowercase()) {
-                        "chrome" -> {
-                            Log.d("CommandProcessor", "Routing to SearchChromeStateMachine for query: $value")
-                            searchChromeStateMachine.executeChromeSearchCommand(value)
-                        }
-                        "youtube" -> {
-                            // Parse thành công, gọi trực tiếp YoutubeStateMachine
-                            Log.d("CommandProcessor", "Routing to YoutubeStateMachine for query: $value")
-                            youtubeStateMachine.executeYouTubeSearchCommand(value)
-                        }
-                        else -> {
-                            Log.e("CommandProcessor", "Unsupported search platform: $platform")
-                            callback.onError("Tôi không hỗ trợ nền tảng tìm kiếm: $platform")
-                        }
-                    }
-                }
-                "search-chrome" -> {
-                    // Parse thành công, gọi trực tiếp SearchChromeStateMachine
-                    Log.d("CommandProcessor", "Routing to SearchChromeStateMachine for query: $receiver")
-                    searchChromeStateMachine.executeChromeSearchCommand(receiver)
-                    // StateMachine sẽ tự xử lý, không cần callback
+                "search-internet" -> {
+                    Log.d("CommandProcessor", "Routing to SearchChromeStateMachine for query: $query")
+                    searchChromeStateMachine.executeChromeSearchCommand(query)
                 }
                 "search-youtube" -> {
-                    // Parse thành công, gọi trực tiếp YoutubeStateMachine
-                    Log.d("CommandProcessor", "Routing to YoutubeStateMachine for query: $receiver")
-                    youtubeStateMachine.executeYouTubeSearchCommand(receiver)
-                    // StateMachine sẽ tự xử lý, không cần callback
+                    Log.d("CommandProcessor", "Routing to YoutubeStateMachine for query: $query")
+                    youtubeStateMachine.executeYouTubeSearchCommand(query)
                 }
                 "set-alarm" -> {
-                    // Parse time từ value (ví dụ: "9:00")
-                    val timeData = parseTimeFromString(value)
-                    if (timeData != null) {
-                        val hour = timeData.first
-                        val minute = timeData.second
-                        val message = "Báo thức"
-                        Log.d("CommandProcessor", "Routing to AlarmStateMachine for alarm: $hour:$minute")
-                        alarmStateMachine.executeAlarmCommand(hour, minute, message)
-                        // StateMachine sẽ tự xử lý, không cần callback
-                    } else {
-                        Log.e("CommandProcessor", "Cannot parse time from: $value")
+                    val timeData = parseTimeFromString(time)
+                    if (timeData == null) {
+                        Log.e("CommandProcessor", "Cannot parse time from: $time")
                         callback.onError("Tôi không hiểu thời gian báo thức. Vui lòng nói rõ hơn, ví dụ: 'Đặt báo thức 9 giờ 30'.")
+                        return
                     }
+
+                    val (hour, minute) = timeData
+                    val message = "Báo thức"
+
+                    // Nếu có DATE (YYYY-MM-DD), parse và chuyển sang StateMachine với ngày cụ thể
+                    if (date.isNotEmpty()) {
+                        val dateData = parseDateIso(date)
+                        if (dateData != null) {
+                            val (year, month, day) = dateData
+                            Log.d("CommandProcessor", "Routing to AlarmStateMachine with date: $day/$month/$year $hour:$minute")
+                            alarmStateMachine.executeAlarmCommandOnDate(year, month, day, hour, minute, message)
+                            return
+                        } else {
+                            Log.w("CommandProcessor", "DATE provided but invalid: $date. Falling back to time-only alarm.")
+                        }
+                    }
+
+                    Log.d("CommandProcessor", "Routing to AlarmStateMachine for time-only alarm: $hour:$minute")
+                    alarmStateMachine.executeAlarmCommand(hour, minute, message)
                 }
                 "add-calendar" -> {
                     // Parse thành công, trả về data cho FE xử lý
-                    callback.onNeedConfirmation("add-calendar", receiver, value)
+                    callback.onNeedConfirmation("add-calendar", receiver, message)
+                }
+                "add-contacts" -> {
+                    Log.d("CommandProcessor", "Routing to AddContactStateMachine")
+                    addContactStateMachine.startAddContactFlow()
                 }
                 
                 // ========== DEVICE CONTROL COMMANDS ==========
                 
                 // Camera commands
                 "open-cam" -> {
-                    val cameraType = value.lowercase()
+                    val cameraType = mode.lowercase()
                     Log.d("CommandProcessor", "Routing to CameraStateMachine for camera: $cameraType")
                     when (cameraType) {
                         "image" -> {
                             cameraStateMachine.executeCameraCommand("photo")
-                            // StateMachine sẽ tự xử lý, không cần callback
                         }
                         "video" -> {
                             cameraStateMachine.executeCameraCommand("video")
-                            // StateMachine sẽ tự xử lý, không cần callback
                         }
                         else -> {
                             Log.e("CommandProcessor", "Unknown camera type: $cameraType")
@@ -397,8 +447,6 @@ class CommandProcessor(private val context: Context) {
                 
                 // Control device commands (wifi, volume, flash)
                 "control-device" -> {
-                    val device = entities.optString("DEVICE", "").lowercase()
-                    val action = value.lowercase()
                     Log.d("CommandProcessor", "Routing control-device: device=$device, action=$action")
                     
                     when (device) {
@@ -464,24 +512,24 @@ class CommandProcessor(private val context: Context) {
             return null
         }
     }
-
-
+    
     /**
-     * Xử lý khi user nói lại tên người nhận
+     * Parse DATE theo định dạng ISO "YYYY-MM-DD" và trả về (year, month, day)
+     * month là 1..12
      */
-    fun processSMSWithNewReceiver(newReceiver: String, message: String, callback: CommandProcessorCallback) {
-        smsAutomation.sendSMSWithSmartHandling(newReceiver, message, object : SMSAutomation.SMSConversationCallback {
-            override fun onSuccess() {
-                callback.onCommandExecuted(true, "Đã gửi tin nhắn thành công")
-            }
-            override fun onError(error: String) {
-                callback.onError(error)
-            }
-            override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
-                val contactList = similarContacts.joinToString(" và ")
-                val message = "Không tìm thấy danh bạ $originalName nhưng tìm được ${similarContacts.size} danh bạ có tên gần giống là $contactList. Liệu bạn có nhầm lẫn tên người gửi không? Nếu nhầm lẫn bạn hãy nói lại tên"
-                callback.onError(message)
-            }
-        })
+    private fun parseDateIso(dateString: String): Triple<Int, Int, Int>? {
+        return try {
+            val parts = dateString.trim().split("-")
+            if (parts.size != 3) return null
+            val year = parts[0].toInt()
+            val month = parts[1].toInt()
+            val day = parts[2].toInt()
+            if (year in 1970..3000 && month in 1..12 && day in 1..31) {
+                Triple(year, month, day)
+            } else null
+        } catch (e: Exception) {
+            Log.e("CommandProcessor", "Error parsing date: ${e.message}")
+            null
+        }
     }
 }

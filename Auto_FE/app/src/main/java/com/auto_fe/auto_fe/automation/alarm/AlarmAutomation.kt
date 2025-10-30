@@ -43,6 +43,17 @@ class AlarmAutomation(private val context: Context) {
         }
     }
 
+    /**
+     * Tạo báo thức kèm thông tin ngày (best-effort qua app Đồng hồ)
+     * Lưu ý: Nhiều ứng dụng Đồng hồ không hỗ trợ chọn NGÀY cụ thể qua Intent,
+     * nên chúng tôi sẽ chèn ngày vào message để người dùng xác nhận.
+     */
+    fun createAlarmOnDate(year: Int, month: Int, day: Int, hour: Int, minute: Int, message: String, callback: AlarmCallback) {
+        val dateSuffix = String.format("%02d/%02d/%04d", day, month, year)
+        val enhancedMessage = if (message.isNotEmpty()) "$message - $dateSuffix" else dateSuffix
+        createAlarm(hour, minute, emptyList(), enhancedMessage, callback)
+    }
+
     fun createDefaultAlarm(callback: AlarmCallback) {
         // Tạo alarm mặc định: 9h sáng thứ 2 hàng tuần
         val hour = 9

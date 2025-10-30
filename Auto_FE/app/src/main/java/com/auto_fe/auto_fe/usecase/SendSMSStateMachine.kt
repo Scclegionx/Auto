@@ -7,6 +7,7 @@ import com.auto_fe.auto_fe.automation.msg.SMSAutomation
 import com.auto_fe.auto_fe.domain.VoiceEvent
 import com.auto_fe.auto_fe.domain.VoiceState
 import com.auto_fe.auto_fe.domain.VoiceStateMachine
+import com.auto_fe.auto_fe.utils.SettingsManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -82,8 +83,14 @@ class SendSMSStateMachine(
     override fun onEnterState(state: VoiceState, event: VoiceEvent) {
         when (state) {
             is VoiceState.ConfirmingSMSCommand -> {
-                Log.d(TAG, "Asking for SMS confirmation: $currentReceiver -> $currentMessage")
-                askForConfirmation()
+                val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+                if (isSupportSpeakEnabled) {
+                    Log.d(TAG, "Asking for SMS confirmation: $currentReceiver -> $currentMessage")
+                    askForConfirmation()
+                } else {
+                    Log.d(TAG, "Support speak OFF - skip SMS confirmation")
+                    processEvent(VoiceEvent.SMSConfirmed)
+                }
             }
             is VoiceState.ExecutingSMSCommand -> {
                 Log.d(TAG, "Executing SMS command: $currentReceiver -> $currentMessage")
@@ -91,7 +98,12 @@ class SendSMSStateMachine(
             }
 
             is VoiceState.Success -> {
-                speak("Đã gửi tin nhắn thành công!")
+                val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+                if (isSupportSpeakEnabled) {
+                    speak("Đã gửi tin nhắn thành công!")
+                } else {
+                    speak("Đã tạo tin nhắn thành công! Hãy bấm nút gửi.")
+                }
                 // Auto transition to Idle after 2 seconds
                 coroutineScope.launch {
                     delay(2000)
@@ -182,39 +194,47 @@ class SendSMSStateMachine(
 
     private fun executeSMS() {
         Log.d(TAG, "Executing SMS")
-        
-        smsAutomation.sendSMSWithSmartHandling(currentReceiver, currentMessage, object : SMSAutomation.SMSConversationCallback {
-            override fun onSuccess() {
-                Log.d(TAG, "SMS sent successfully")
-                processEvent(VoiceEvent.SMSSentSuccessfully)
-            }
-
-            override fun onError(error: String) {
-                Log.e(TAG, "SMS send failed: $error")
-                processEvent(VoiceEvent.SMSSendFailed(error))
-            }
-
-            override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
-                // Simplified: just try to send with first similar contact or fail
-                if (similarContacts.isNotEmpty()) {
-                    val phoneNumber = smsAutomation.findPhoneNumberByName(similarContacts[0])
-                    if (phoneNumber.isNotEmpty()) {
-                        smsAutomation.sendSMS(phoneNumber, currentMessage, object : SMSAutomation.SMSCallback {
-                            override fun onSuccess() {
-                                processEvent(VoiceEvent.SMSSentSuccessfully)
-                            }
-                            override fun onError(error: String) {
-                                processEvent(VoiceEvent.SMSSendFailed(error))
-                            }
-                        })
-                    } else {
-                        processEvent(VoiceEvent.SMSSendFailed("Không tìm thấy số điện thoại"))
-                    }
-                } else {
-                    processEvent(VoiceEvent.SMSSendFailed("Không tìm thấy liên hệ"))
+        val isSupportSpeakEnabled = SettingsManager(context).isSupportSpeakEnabled()
+        if (isSupportSpeakEnabled) {
+            smsAutomation.sendSMSWithSmartHandling(currentReceiver, currentMessage, object : SMSAutomation.SMSConversationCallback {
+                override fun onSuccess() {
+                    Log.d(TAG, "SMS sent successfully")
+                    processEvent(VoiceEvent.SMSSentSuccessfully)
                 }
-            }
-        })
+
+                override fun onError(error: String) {
+                    Log.e(TAG, "SMS send failed: $error")
+                    processEvent(VoiceEvent.SMSSendFailed(error))
+                }
+
+                override fun onNeedConfirmation(similarContacts: List<String>, originalName: String) {
+                    // Simplified fallback
+                    if (similarContacts.isNotEmpty()) {
+                        val phoneNumber = smsAutomation.findPhoneNumberByName(similarContacts[0])
+                        if (phoneNumber.isNotEmpty()) {
+                            smsAutomation.sendSMS(phoneNumber, currentMessage, object : SMSAutomation.SMSCallback {
+                                override fun onSuccess() { processEvent(VoiceEvent.SMSSentSuccessfully) }
+                                override fun onError(error: String) { processEvent(VoiceEvent.SMSSendFailed(error)) }
+                            })
+                        } else {
+                            processEvent(VoiceEvent.SMSSendFailed("Không tìm thấy số điện thoại"))
+                        }
+                    } else {
+                        processEvent(VoiceEvent.SMSSendFailed("Không tìm thấy liên hệ"))
+                    }
+                }
+            })
+        } else {
+            // Support speak OFF: mở UI soạn tin, không gửi tự động
+            smsAutomation.openSmsCompose(currentReceiver, currentMessage, object : SMSAutomation.SMSCallback {
+                override fun onSuccess() {
+                    processEvent(VoiceEvent.SMSSentSuccessfully)
+                }
+                override fun onError(error: String) {
+                    processEvent(VoiceEvent.SMSSendFailed(error))
+                }
+            })
+        }
     }
 
     private fun speak(text: String) {

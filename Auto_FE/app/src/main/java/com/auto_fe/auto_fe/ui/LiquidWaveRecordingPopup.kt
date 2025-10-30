@@ -59,6 +59,7 @@ class LiquidWaveRecordingPopup(private val context: Context) {
     // Voice responsiveness
     private var currentVoiceLevel = 0
     private var voiceIntensity = 0f
+    private var smoothVoiceIntensity = 0f  // EMA filtered intensity
     private var isLoudVoice = false
     private var isSoftVoice = false
     
@@ -164,15 +165,11 @@ class LiquidWaveRecordingPopup(private val context: Context) {
             isShowing = true
             startTime = System.currentTimeMillis()
             
-            // Start animations with delay
-            Handler(Looper.getMainLooper()).postDelayed({
-                if (isShowing) {
-                    startTimer()
-                    startLiquidWaveAnimation()
-                    startCenterPulseAnimation()
-                    startMicrophoneBreathing()
-                }
-            }, 200)
+            // Start animations immediately
+            startTimer()
+            startLiquidWaveAnimation()
+            startCenterPulseAnimation()
+            startMicrophoneBreathing()
             
             Log.d("LiquidWaveRecordingPopup", "Liquid wave popup shown")
         } catch (e: Exception) {
@@ -186,6 +183,14 @@ class LiquidWaveRecordingPopup(private val context: Context) {
         
         try {
             stopAllAnimations()
+            
+            // Reset voice state
+            currentVoiceLevel = 0
+            voiceIntensity = 0f
+            smoothVoiceIntensity = 0f
+            isLoudVoice = false
+            isSoftVoice = false
+            
             windowManager?.removeView(popupView)
             isShowing = false
             Log.d("LiquidWaveRecordingPopup", "Liquid wave popup hidden")
@@ -337,12 +342,21 @@ class LiquidWaveRecordingPopup(private val context: Context) {
     }
     
     fun updateAudioLevel(level: Int) {
+        Log.d("LiquidWaveRecordingPopup", "updateAudioLevel called with level: $level")
         currentVoiceLevel = level
-        voiceIntensity = (level / 100f).coerceIn(0f, 1f)
         
-        // Determine voice characteristics
-        isLoudVoice = level > 70
-        isSoftVoice = level < 30
+        // Level từ VoiceManager là 0-3, chuyển thành 0-1
+        val rawIntensity = (level / 3f).coerceIn(0f, 1f)
+        
+        // EMA filter để smooth animation - giống VoiceScreen
+        smoothVoiceIntensity = 0.6f * smoothVoiceIntensity + 0.4f * rawIntensity
+        voiceIntensity = smoothVoiceIntensity
+        
+        // Determine voice characteristics dựa trên smoothed intensity
+        isLoudVoice = voiceIntensity >= 0.6f  // 60% intensity trở lên là loud
+        isSoftVoice = voiceIntensity <= 0.3f  // 30% intensity trở xuống là soft
+        
+        Log.d("LiquidWaveRecordingPopup", "Voice characteristics - isLoud: $isLoudVoice, isSoft: $isSoftVoice, rawIntensity: $rawIntensity, smoothIntensity: $voiceIntensity")
         
         // Update liquid wave bars based on voice level
         updateLiquidWaveBars()
@@ -356,31 +370,32 @@ class LiquidWaveRecordingPopup(private val context: Context) {
     
     private fun updateLiquidWaveBars() {
         waveBars.forEachIndexed { index, bar ->
-            val randomFactor = 0.7f + (Random.nextFloat() * 0.6f)
-            val voiceScale = 1f + (voiceIntensity * 0.8f) // Stronger voice response
+            // Giảm random factor để animation mượt hơn
+            val randomFactor = 0.8f + (Random.nextFloat() * 0.4f)
+            val voiceScale = 1f + (voiceIntensity * 0.6f) // Giảm voice response để mượt hơn
             
             // Loud voice: stronger waves, brighter peaks
             if (isLoudVoice) {
-                val loudScale = 1.5f + (voiceIntensity * 0.5f)
-                bar.scaleX = loudScale
-                bar.alpha = (0.8f + voiceIntensity * 0.4f).coerceIn(0.4f, 1.0f)
+                val loudScale = 1.3f + (voiceIntensity * 0.4f)
+                bar.scaleX = loudScale * randomFactor
+                bar.alpha = (0.7f + voiceIntensity * 0.3f).coerceIn(0.5f, 1.0f)
                 
-                // Add "splash" effect for loud voice
-                bar.rotation = (Random.nextFloat() - 0.5f) * 10f
+                // Giảm splash effect để mượt hơn
+                bar.rotation = (Random.nextFloat() - 0.5f) * 5f
             }
             // Soft voice: gentle oscillations, soft light
             else if (isSoftVoice) {
-                val softScale = 0.8f + (voiceIntensity * 0.4f)
-                bar.scaleX = softScale
-                bar.alpha = (0.4f + voiceIntensity * 0.3f).coerceIn(0.3f, 0.7f)
+                val softScale = 0.9f + (voiceIntensity * 0.3f)
+                bar.scaleX = softScale * randomFactor
+                bar.alpha = (0.5f + voiceIntensity * 0.2f).coerceIn(0.4f, 0.8f)
                 
                 // Gentle rotation for soft voice
-                bar.rotation = (Random.nextFloat() - 0.5f) * 3f
+                bar.rotation = (Random.nextFloat() - 0.5f) * 2f
             }
             // Normal voice: balanced response
             else {
-                val normalScale = 1f + (voiceIntensity * 0.3f)
-                bar.scaleX = normalScale
+                val normalScale = 1f + (voiceIntensity * 0.2f)
+                bar.scaleX = normalScale * randomFactor
                 bar.alpha = (0.6f + voiceIntensity * 0.4f).coerceIn(0.4f, 1.0f)
                 
                 // Subtle rotation

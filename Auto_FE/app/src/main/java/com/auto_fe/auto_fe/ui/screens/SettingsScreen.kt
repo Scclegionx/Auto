@@ -16,17 +16,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.clickable
 import com.auto_fe.auto_fe.ui.theme.*
+import androidx.compose.ui.platform.LocalContext
+import com.auto_fe.auto_fe.utils.SettingsManager
 
 /**
  * Màn hình cài đặt
  */
 @Composable
 fun SettingsScreen() {
+    val context = LocalContext.current
+    val settingsManager = remember { SettingsManager(context) }
     var isVoiceEnabled by remember { mutableStateOf(true) }
     var isNotificationEnabled by remember { mutableStateOf(true) }
     var isAutoStartEnabled by remember { mutableStateOf(false) }
     var selectedLanguage by remember { mutableStateOf("Tiếng Việt") }
     var selectedTheme by remember { mutableStateOf("Tối") }
+    var isSupportSpeakEnabled by remember { mutableStateOf(settingsManager.isSupportSpeakEnabled()) }
 
     Box(
         modifier = Modifier
@@ -93,6 +98,19 @@ fun SettingsScreen() {
                         subtitle = "Sử dụng giọng nói để điều khiển",
                         isChecked = isVoiceEnabled,
                         onCheckedChange = { isVoiceEnabled = it }
+                    )
+                }
+
+                // Toggle Hỗ trợ nói (không ảnh hưởng luồng ghi âm mở đầu)
+                item {
+                    SettingsItem(
+                        title = "Hỗ trợ nói",
+                        subtitle = "Chọn cách thực thi khi thêm liên hệ",
+                        isChecked = isSupportSpeakEnabled,
+                        onCheckedChange = {
+                            isSupportSpeakEnabled = it
+                            settingsManager.setSupportSpeakEnabled(it)
+                        }
                     )
                 }
                 

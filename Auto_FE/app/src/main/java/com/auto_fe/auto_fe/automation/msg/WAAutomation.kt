@@ -41,12 +41,12 @@ class WAAutomation(private val context: Context) {
             
             Log.d("WAAutomation", "Using phone number: $phoneNumber")
             
-            // Làm sạch số điện thoại (bỏ khoảng cách, dấu gạch ngang, dấu ngoặc)
-            val cleanPhoneNumber = phoneNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
-            Log.d("WAAutomation", "Clean phone number: $cleanPhoneNumber")
+            // Format số điện thoại cho WhatsApp deeplink
+            val formattedPhoneNumber = formatPhoneNumberForWhatsApp(phoneNumber)
+            Log.d("WAAutomation", "Formatted phone number for WhatsApp: $formattedPhoneNumber")
             
             // Tạo deeplink WhatsApp
-            val whatsappUrl = "https://wa.me/+84978545568?text=${Uri.encode(message)}"
+            val whatsappUrl = "https://wa.me/$formattedPhoneNumber?text=${Uri.encode(message)}"
             Log.d("WAAutomation", "WhatsApp URL: $whatsappUrl")
             
             try {
@@ -90,5 +90,28 @@ class WAAutomation(private val context: Context) {
         // Sử dụng SMSAutomation để tìm số điện thoại
         val smsAutomation = SMSAutomation(context)
         return smsAutomation.findPhoneNumberByName(contactName)
+    }
+    
+    /**
+     * Format số điện thoại cho WhatsApp deeplink
+     * Chuyển từ "098 538 35 69" thành "+84985383569"
+     */
+    private fun formatPhoneNumberForWhatsApp(phoneNumber: String): String {
+        // Bỏ tất cả khoảng cách, dấu gạch ngang, dấu ngoặc
+        val cleanNumber = phoneNumber.replace(Regex("[\\s\\-\\(\\)]"), "")
+        
+        return when {
+            // Nếu bắt đầu bằng +84, giữ nguyên
+            cleanNumber.startsWith("+84") -> cleanNumber
+            
+            // Nếu bắt đầu bằng 84, thêm dấu +
+            cleanNumber.startsWith("84") -> "+$cleanNumber"
+            
+            // Nếu bắt đầu bằng 0, thay thế bằng +84
+            cleanNumber.startsWith("0") -> "+84${cleanNumber.substring(1)}"
+            
+            // Các trường hợp khác, thêm +84
+            else -> "+84$cleanNumber"
+        }
     }
 }

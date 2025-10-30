@@ -441,12 +441,12 @@ fun OrbAISphere(
         label = "waveTimeline"
     )
     
-    // Voice intensity - More responsive spring animation
+    // Voice intensity - CẢI THIỆN RESPONSIVENESS cho real voice
     val voiceIntensity by animateFloatAsState(
         targetValue = (voiceLevel / 3f).coerceIn(0f, 1f),
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMediumLow
+            dampingRatio = Spring.DampingRatioLowBouncy, // Bouncy hơn
+            stiffness = Spring.StiffnessHigh // Phản ứng nhanh hơn
         ),
         label = "voiceIntensity"
     )
@@ -640,39 +640,39 @@ fun OrbAISphere(
         OrbPhase.RESPONDING -> (waveTimeline - 0.47f) / 0.2f
     }.coerceIn(0f, 1f)
     
-    // ==== ENHANCED WAVE PARAMETERS ====
+    // ==== ENHANCED WAVE PARAMETERS - CẢI THIỆN VOICE RESPONSIVENESS ====
     val waveAmplitude = when (phase) {
-        OrbPhase.IDLE -> 0.02f
-        OrbPhase.LISTENING -> 0.04f + voiceIntensity * 0.04f + phaseProgress * 0.02f
-        OrbPhase.THINKING -> 0.07f + voiceIntensity * 0.05f + sin(phaseProgress * PI.toFloat()) * 0.03f
-        OrbPhase.RESPONDING -> 0.09f + voiceIntensity * 0.06f + (1f - phaseProgress) * 0.04f
+        OrbPhase.IDLE -> 0.02f + voiceIntensity * 0.02f // Thêm voice response ngay cả khi idle
+        OrbPhase.LISTENING -> 0.06f + voiceIntensity * 0.08f + phaseProgress * 0.03f // Tăng amplitude
+        OrbPhase.THINKING -> 0.10f + voiceIntensity * 0.08f + sin(phaseProgress * PI.toFloat()) * 0.04f // Tăng amplitude
+        OrbPhase.RESPONDING -> 0.12f + voiceIntensity * 0.10f + (1f - phaseProgress) * 0.05f // Tăng amplitude
     }
     
-    val waveFrequency = 0.8f + voiceIntensity * 0.6f
+    val waveFrequency = 1.2f + voiceIntensity * 1.0f // Tăng frequency cho responsive hơn
     val surfaceRoughness = when (phase) {
-        OrbPhase.IDLE -> 0.15f
-        OrbPhase.LISTENING -> 0.18f + phaseProgress * 0.07f
-        OrbPhase.THINKING -> 0.25f + voiceIntensity * 0.15f
-        OrbPhase.RESPONDING -> 0.25f + (1f - phaseProgress) * 0.15f
+        OrbPhase.IDLE -> 0.15f + voiceIntensity * 0.05f // Thêm voice response
+        OrbPhase.LISTENING -> 0.20f + phaseProgress * 0.08f + voiceIntensity * 0.10f // Tăng roughness
+        OrbPhase.THINKING -> 0.30f + voiceIntensity * 0.20f // Tăng roughness
+        OrbPhase.RESPONDING -> 0.30f + (1f - phaseProgress) * 0.18f + voiceIntensity * 0.15f // Tăng roughness
     }
     
-    // ==== ENHANCED BRIGHTNESS SYSTEM ====
-    val baseBrightness = 0.65f + voiceIntensity * 0.25f
+    // ==== ENHANCED BRIGHTNESS SYSTEM - CẢI THIỆN VOICE RESPONSIVENESS ====
+    val baseBrightness = 0.70f + voiceIntensity * 0.35f // Tăng base brightness và voice response
     val phaseBrightness = when (phase) {
-        OrbPhase.IDLE -> 0.7f
-        OrbPhase.LISTENING -> 0.8f + phaseProgress * 0.2f
-        OrbPhase.THINKING -> 1.0f + sin(phaseProgress * PI.toFloat() * 2) * 0.1f
-        OrbPhase.RESPONDING -> 1.0f + (1f - phaseProgress) * 0.1f
+        OrbPhase.IDLE -> 0.7f + voiceIntensity * 0.2f // Thêm voice response ngay cả khi idle
+        OrbPhase.LISTENING -> 0.85f + phaseProgress * 0.25f + voiceIntensity * 0.15f // Tăng brightness
+        OrbPhase.THINKING -> 1.1f + sin(phaseProgress * PI.toFloat() * 2) * 0.15f + voiceIntensity * 0.2f // Tăng brightness
+        OrbPhase.RESPONDING -> 1.1f + (1f - phaseProgress) * 0.15f + voiceIntensity * 0.25f // Tăng brightness
     }
     val currentBrightness = baseBrightness * phaseBrightness
     
-    // ==== ENHANCED HALO SYSTEM ====
-    val baseHaloRadius = 1.3f + voiceIntensity * 0.2f
+    // ==== ENHANCED HALO SYSTEM - CẢI THIỆN VOICE RESPONSIVENESS ====
+    val baseHaloRadius = 1.4f + voiceIntensity * 0.3f // Tăng base radius và voice response
     val phaseHaloRadius = when (phase) {
-        OrbPhase.IDLE -> 1.0f
-        OrbPhase.LISTENING -> 1.0f + phaseProgress * 0.2f
-        OrbPhase.THINKING -> 1.2f + sin(phaseProgress * PI.toFloat()) * 0.1f
-        OrbPhase.RESPONDING -> 1.2f + (1f - phaseProgress) * 0.3f
+        OrbPhase.IDLE -> 1.0f + voiceIntensity * 0.1f // Thêm voice response ngay cả khi idle
+        OrbPhase.LISTENING -> 1.1f + phaseProgress * 0.25f + voiceIntensity * 0.15f // Tăng radius
+        OrbPhase.THINKING -> 1.3f + sin(phaseProgress * PI.toFloat()) * 0.15f + voiceIntensity * 0.2f // Tăng radius
+        OrbPhase.RESPONDING -> 1.3f + (1f - phaseProgress) * 0.35f + voiceIntensity * 0.25f // Tăng radius
     }
     val currentHaloRadius = baseHaloRadius * phaseHaloRadius
     
@@ -741,12 +741,12 @@ fun OrbAISphere(
             }
         }
         
-        // Layer 5: Liquid 3D Sphere with Rotation
+        // Layer 5: Liquid 3D Sphere with Rotation - CẢI THIỆN VOICE RESPONSIVENESS
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .alpha(0.95f)
-                .scale(1f + sin(breathCycle) * 0.03f)
+                .scale(1f + sin(breathCycle) * (0.03f + voiceIntensity * 0.02f)) // Thêm voice response vào breathing
         ) {
             val sphereRadius = (size.minDimension * 0.35f * 0.9f).safeDrawRadius()
             
@@ -1804,9 +1804,9 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLiquid3DSphere(
     val highlightAngleY = rotationY + PI.toFloat() / 6f
     val highlightAngleZ = rotationZ + PI.toFloat() / 8f
     
-    // 1. Draw Ultra-Soft Liquid Core - BEAUTIFUL & FLUID
-    val coreRadius = sphereRadius * 0.8f
-    val coreIntensity = intensity * (1.6f + voiceIntensity * 0.4f) // +80% STRONGER
+    // 1. Draw Ultra-Soft Liquid Core - BEAUTIFUL & FLUID - CẢI THIỆN VOICE RESPONSIVENESS
+    val coreRadius = sphereRadius * (0.8f + voiceIntensity * 0.05f) // Thêm voice response vào radius
+    val coreIntensity = intensity * (1.8f + voiceIntensity * 0.6f) // Tăng voice response
     
     // Ultra-soft gradient based on combined rotation
     val gradientOffset = combinedRotation * 0.3f
@@ -1885,8 +1885,8 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLiquid3DSphere(
         }
     }
     
-    // 2.5. Draw Surface Particles - DARK COLORED DOTS COVERING ENTIRE SURFACE
-    val particleCount = 160 + (voiceIntensity * 60).toInt() // 2X MORE PARTICLES for better coverage
+    // 2.5. Draw Surface Particles - DARK COLORED DOTS COVERING ENTIRE SURFACE - CẢI THIỆN VOICE RESPONSIVENESS
+    val particleCount = 200 + (voiceIntensity * 80).toInt() // Tăng particles và voice response
     for (i in 0 until particleCount) {
         // 3D particle position on sphere surface using Fibonacci spiral
         val particleAngleX = (i * 137.5f) % 360f * PI.toFloat() / 180f // Golden angle distribution
@@ -1945,8 +1945,8 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLiquid3DSphere(
         )
     }
     
-    // 2.6. Draw Additional Small Particles for Density
-    val smallParticleCount = 240 + (voiceIntensity * 80).toInt() // 2X MORE SMALL PARTICLES
+    // 2.6. Draw Additional Small Particles for Density - CẢI THIỆN VOICE RESPONSIVENESS
+    val smallParticleCount = 300 + (voiceIntensity * 100).toInt() // Tăng small particles và voice response
     for (i in 0 until smallParticleCount) {
         // Different distribution pattern for small particles
         val particleAngleX = (i * 222.5f) % 360f * PI.toFloat() / 180f
@@ -1998,8 +1998,8 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLiquid3DSphere(
         )
     }
     
-    // 2.7. Draw Extra Dense Particles for Complete Coverage
-    val extraParticleCount = 200 + (voiceIntensity * 50).toInt() // EXTRA DENSE PARTICLES
+    // 2.7. Draw Extra Dense Particles for Complete Coverage - CẢI THIỆN VOICE RESPONSIVENESS
+    val extraParticleCount = 250 + (voiceIntensity * 70).toInt() // Tăng extra particles và voice response
     for (i in 0 until extraParticleCount) {
         // Third distribution pattern for maximum coverage
         val particleAngleX = (i * 99.7f) % 360f * PI.toFloat() / 180f
@@ -2058,9 +2058,9 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLiquid3DSphere(
         )
     }
     
-    // 3. Draw Soft Liquid Border - ULTRA SOFT & BEAUTIFUL
-    val borderIntensity = intensity * (1.44f + voiceIntensity * 0.54f) // +80% STRONGER
-    val clickEffect = if (isListening) 1.5f else 1.0f
+    // 3. Draw Soft Liquid Border - ULTRA SOFT & BEAUTIFUL - CẢI THIỆN VOICE RESPONSIVENESS
+    val borderIntensity = intensity * (1.6f + voiceIntensity * 0.8f) // Tăng voice response
+    val clickEffect = if (isListening) (1.5f + voiceIntensity * 0.3f) else (1.0f + voiceIntensity * 0.1f) // Thêm voice response
     
     // Ultra-soft outer glow (no hard border)
     val outerGlowRadius = sphereRadius * (1.15f + clickEffect * 0.1f)
@@ -2096,8 +2096,8 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLiquid3DSphere(
         center = center
     )
     
-    // 4. Draw Liquid Highlights for 3D Effect - +80% STRONGER - TRUE 3D FLOATING
-    val highlightIntensity = intensity * 1.08f // +80% STRONGER
+    // 4. Draw Liquid Highlights for 3D Effect - CẢI THIỆN VOICE RESPONSIVENESS - TRUE 3D FLOATING
+    val highlightIntensity = intensity * (1.2f + voiceIntensity * 0.4f) // Tăng voice response
     
     // TRUE 3D highlights: combine all 3 rotation axes
     val highlightAngle = highlightAngleX + highlightAngleY * 0.6f + highlightAngleZ * 0.4f
@@ -2150,9 +2150,9 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLiquid3DSphere(
         )
     }
     
-    // 5. Draw Liquid Ripples - +80% STRONGER - TRUE 3D FLOATING
+    // 5. Draw Liquid Ripples - CẢI THIỆN VOICE RESPONSIVENESS - TRUE 3D FLOATING
     if (phase != OrbPhase.IDLE) {
-        val rippleCount = 4 + (voiceIntensity * 2).toInt()
+        val rippleCount = 6 + (voiceIntensity * 3).toInt() // Tăng ripple count và voice response
         for (i in 0 until rippleCount) {
             // TRUE 3D ripples: combine all rotation axes for realistic 3D sphere
             val rippleAngle = i * (2f * PI.toFloat() / rippleCount) + combinedRotation + liquidTurbulence * 0.2f
@@ -2178,9 +2178,9 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawLiquid3DSphere(
         }
     }
     
-    // 6. Draw Ultra-Soft Liquid Breathing Pulse
-    val breathingIntensity = (1.08f + 0.72f * (sin(breathPhase) + 1f) / 2f).safeAlpha() // +80% STRONGER
-    val pulseRadius = sphereRadius * (1f + breathingIntensity * 0.08f)
+    // 6. Draw Ultra-Soft Liquid Breathing Pulse - CẢI THIỆN VOICE RESPONSIVENESS
+    val breathingIntensity = (1.2f + 0.8f * (sin(breathPhase) + 1f) / 2f + voiceIntensity * 0.3f).safeAlpha() // Tăng voice response
+    val pulseRadius = sphereRadius * (1f + breathingIntensity * (0.08f + voiceIntensity * 0.04f)) // Thêm voice response vào pulse radius
     
     // Ultra-soft breathing pulse (no stroke, just fill)
     drawCircle(

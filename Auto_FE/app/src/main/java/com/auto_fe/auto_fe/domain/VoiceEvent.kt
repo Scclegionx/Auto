@@ -66,6 +66,51 @@ sealed class VoiceEvent {
     data class SMSSendFailed(val error: String) : VoiceEvent()
 
 
+    // ========== WHATSAPP FLOW EVENTS ==========
+
+    /** Nhận được lệnh WhatsApp từ Speech Recognition */
+    data class WACommandReceived(val rawCommand: String) : VoiceEvent()
+
+    /** Lệnh WhatsApp được phân tích thành công */
+    data class WACommandParsed(
+        val receiver: String,
+        val message: String
+    ) : VoiceEvent()
+
+    /** Lệnh WhatsApp không thể phân tích (parsing failed) */
+    data class WACommandParseFailed(val reason: String) : VoiceEvent()
+
+    /** Người dùng xác nhận lệnh WhatsApp (có/không) */
+    data class WAUserConfirmed(val confirmed: Boolean) : VoiceEvent()
+
+    /** Tìm thấy liên hệ chính xác 100% cho WhatsApp */
+    data class WAExactContactFound(
+        val contactName: String,
+        val phoneNumber: String
+    ) : VoiceEvent()
+
+    /** Tìm thấy nhiều liên hệ tương tự cho WhatsApp */
+    data class WASimilarContactsFound(
+        val originalName: String,
+        val similarContacts: List<String>
+    ) : VoiceEvent()
+
+    /** Không tìm thấy liên hệ nào cho WhatsApp */
+    data class WANoContactFound(val searchName: String) : VoiceEvent()
+
+    /** Người dùng cung cấp tên liên hệ mới cho WhatsApp */
+    data class WANewContactNameProvided(val newName: String) : VoiceEvent()
+
+    /** Người dùng từ chối thử lại WhatsApp (phủ định) */
+    object WAUserDeclinedRetry : VoiceEvent()
+
+    /** WhatsApp được gửi thành công */
+    object WASentSuccessfully : VoiceEvent()
+
+    /** Gửi WhatsApp thất bại */
+    data class WASendFailed(val error: String) : VoiceEvent()
+
+
     // ========== SPEECH RECOGNITION EVENTS ==========
 
     /** Speech Recognition không nhận dạng được giọng nói */
@@ -138,6 +183,9 @@ sealed class VoiceEvent {
     object StartSMSCommand : VoiceEvent()
     object SMSConfirmed : VoiceEvent()
     object SMSCancelled : VoiceEvent()
+    object StartWACommand : VoiceEvent()
+    object WAConfirmed : VoiceEvent()
+    object WACancelled : VoiceEvent()
     object StartPhoneCommand : VoiceEvent()
     object PhoneConfirmed : VoiceEvent()
     object PhoneCancelled : VoiceEvent()
@@ -200,6 +248,13 @@ sealed class VoiceEvent {
     // ========== UTILITY EVENTS ==========
     object Reset : VoiceEvent()
 
+    // ========== CONTACT (ADD) EVENTS ==========
+    object StartAddContactCommand : VoiceEvent()
+    data class ContactNameProvided(val contactName: String) : VoiceEvent()
+    data class ContactPhoneProvided(val phone: String) : VoiceEvent()
+    object ContactAddedSuccessfully : VoiceEvent()
+    data class ContactAddFailed(val error: String) : VoiceEvent()
+
 
     // ========== UTILITY METHODS ==========
 
@@ -223,6 +278,17 @@ sealed class VoiceEvent {
             is UserDeclinedRetry -> "UserDeclinedRetry"
             is SMSSentSuccessfully -> "SMSSentSuccessfully"
             is SMSSendFailed -> "SMSSendFailed($error)"
+            is WACommandReceived -> "WACommandReceived(${rawCommand.take(50)}...)"
+            is WACommandParsed -> "WACommandParsed($receiver, ${message.take(20)}...)"
+            is WACommandParseFailed -> "WACommandParseFailed($reason)"
+            is WAUserConfirmed -> "WAUserConfirmed($confirmed)"
+            is WAExactContactFound -> "WAExactContactFound($contactName, $phoneNumber)"
+            is WASimilarContactsFound -> "WASimilarContactsFound(${similarContacts.size} contacts)"
+            is WANoContactFound -> "WANoContactFound($searchName)"
+            is WANewContactNameProvided -> "WANewContactNameProvided($newName)"
+            is WAUserDeclinedRetry -> "WAUserDeclinedRetry"
+            is WASentSuccessfully -> "WASentSuccessfully"
+            is WASendFailed -> "WASendFailed($error)"
             is SpeechRecognitionFailed -> "SpeechRecognitionFailed"
             is UnclearSpeechResult -> "UnclearSpeechResult(${possibleResults.size} results)"
             is CallCommandReceived -> "CallCommandReceived(${rawCommand.take(50)}...)"
@@ -246,6 +312,9 @@ sealed class VoiceEvent {
             is StartSMSCommand -> "StartSMSCommand"
         is SMSConfirmed -> "SMSConfirmed"
         is SMSCancelled -> "SMSCancelled"
+        is StartWACommand -> "StartWACommand"
+        is WAConfirmed -> "WAConfirmed"
+        is WACancelled -> "WACancelled"
         is StartPhoneCommand -> "StartPhoneCommand"
         is PhoneConfirmed -> "PhoneConfirmed"
         is PhoneCancelled -> "PhoneCancelled"
@@ -279,6 +348,11 @@ sealed class VoiceEvent {
             is CameraCapturedSuccessfully -> "CameraCapturedSuccessfully"
             is CameraCaptureFailed -> "CameraCaptureFailed($error)"
             is Reset -> "Reset"
+            is StartAddContactCommand -> "StartAddContactCommand"
+            is ContactNameProvided -> "ContactNameProvided($contactName)"
+            is ContactPhoneProvided -> "ContactPhoneProvided($phone)"
+            is ContactAddedSuccessfully -> "ContactAddedSuccessfully"
+            is ContactAddFailed -> "ContactAddFailed($error)"
         }
     }
 
@@ -290,6 +364,9 @@ sealed class VoiceEvent {
                 this is SMSCommandParseFailed ||
                 this is NoContactFound ||
                 this is SMSSendFailed ||
+                this is WACommandParseFailed ||
+                this is WANoContactFound ||
+                this is WASendFailed ||
                 this is SpeechRecognitionFailed ||
                 this is CallCommandParseFailed ||
                 this is CallFailed ||

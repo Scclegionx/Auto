@@ -58,28 +58,50 @@ class CameraAutomation(private val context: Context) {
     }
 
     /**
-     * Chụp ảnh với Intent ACTION_STILL_IMAGE_CAMERA
+     * Chụp ảnh với Intent ACTION_STILL_IMAGE_CAMERA - Mặc định chọn com.transsion.camera
      */
     fun capturePhotoWithStillImageIntent(callback: CameraCallback) {
         try {
-            Log.d(TAG, "Starting photo capture with STILL_IMAGE_CAMERA intent")
+            Log.d(TAG, "Starting photo capture with STILL_IMAGE_CAMERA intent - targeting com.transsion.camera")
             
             val stillImageIntent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
             
+            // Chỉ định package cụ thể để tránh chooser dialog
+            stillImageIntent.setPackage("com.transsion.camera")
+            
+            // Kiểm tra xem package có tồn tại và có thể xử lý intent không
             if (stillImageIntent.resolveActivity(context.packageManager) != null) {
                 if (context is Activity) {
                     context.startActivityForResult(stillImageIntent, REQUEST_IMAGE_CAPTURE)
-                    Log.d(TAG, "Still image camera intent started successfully")
+                    Log.d(TAG, "Transsion camera app started successfully")
                     callback.onSuccess()
                 } else {
                     stillImageIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(stillImageIntent)
-                    Log.d(TAG, "Still image camera intent started from background")
+                    Log.d(TAG, "Transsion camera app started from background")
                     callback.onSuccess()
                 }
             } else {
-                Log.e(TAG, "No still image camera app available")
-                callback.onError("Không tìm thấy ứng dụng camera chụp ảnh")
+                // Fallback: thử với ACTION_IMAGE_CAPTURE nếu STILL_IMAGE_CAMERA không khả dụng
+                Log.w(TAG, "com.transsion.camera not available for STILL_IMAGE_CAMERA, trying ACTION_IMAGE_CAPTURE")
+                val fallbackIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                fallbackIntent.setPackage("com.transsion.camera")
+                
+                if (fallbackIntent.resolveActivity(context.packageManager) != null) {
+                    if (context is Activity) {
+                        context.startActivityForResult(fallbackIntent, REQUEST_IMAGE_CAPTURE)
+                        Log.d(TAG, "Transsion camera app started with fallback intent")
+                        callback.onSuccess()
+                    } else {
+                        fallbackIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(fallbackIntent)
+                        Log.d(TAG, "Transsion camera app started with fallback intent from background")
+                        callback.onSuccess()
+                    }
+                } else {
+                    Log.e(TAG, "com.transsion.camera not available for any camera intent")
+                    callback.onError("Không tìm thấy ứng dụng camera Transsion")
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error capturing photo with still image intent: ${e.message}", e)
@@ -120,28 +142,50 @@ class CameraAutomation(private val context: Context) {
     }
 
     /**
-     * Quay video với Intent ACTION_VIDEO_CAMERA
+     * Quay video với Intent ACTION_VIDEO_CAMERA - Mặc định chọn com.transsion.camera
      */
     fun captureVideoWithVideoCameraIntent(callback: CameraCallback) {
         try {
-            Log.d(TAG, "Starting video capture with VIDEO_CAMERA intent")
+            Log.d(TAG, "Starting video capture with VIDEO_CAMERA intent - targeting com.transsion.camera")
             
             val videoCameraIntent = Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA)
             
+            // Chỉ định package cụ thể để tránh chooser dialog
+            videoCameraIntent.setPackage("com.transsion.camera")
+            
+            // Kiểm tra xem package có tồn tại và có thể xử lý intent không
             if (videoCameraIntent.resolveActivity(context.packageManager) != null) {
                 if (context is Activity) {
                     context.startActivityForResult(videoCameraIntent, REQUEST_VIDEO_CAPTURE)
-                    Log.d(TAG, "Video camera intent started successfully")
+                    Log.d(TAG, "Transsion video camera app started successfully")
                     callback.onSuccess()
                 } else {
                     videoCameraIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(videoCameraIntent)
-                    Log.d(TAG, "Video camera intent started from background")
+                    Log.d(TAG, "Transsion video camera app started from background")
                     callback.onSuccess()
                 }
             } else {
-                Log.e(TAG, "No video camera app available")
-                callback.onError("Không tìm thấy ứng dụng camera quay video")
+                // Fallback: thử với ACTION_VIDEO_CAPTURE nếu INTENT_ACTION_VIDEO_CAMERA không khả dụng
+                Log.w(TAG, "com.transsion.camera not available for INTENT_ACTION_VIDEO_CAMERA, trying ACTION_VIDEO_CAPTURE")
+                val fallbackIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+                fallbackIntent.setPackage("com.transsion.camera")
+                
+                if (fallbackIntent.resolveActivity(context.packageManager) != null) {
+                    if (context is Activity) {
+                        context.startActivityForResult(fallbackIntent, REQUEST_VIDEO_CAPTURE)
+                        Log.d(TAG, "Transsion video camera app started with fallback intent")
+                        callback.onSuccess()
+                    } else {
+                        fallbackIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(fallbackIntent)
+                        Log.d(TAG, "Transsion video camera app started with fallback intent from background")
+                        callback.onSuccess()
+                    }
+                } else {
+                    Log.e(TAG, "com.transsion.camera not available for any video camera intent")
+                    callback.onError("Không tìm thấy ứng dụng camera quay video Transsion")
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error capturing video with video camera intent: ${e.message}", e)

@@ -78,6 +78,39 @@ class SMSAutomation(private val context: Context) {
     }
 
     /**
+     * Mở màn hình soạn SMS (không gửi tự động), điền sẵn số và nội dung
+     */
+    fun openSmsCompose(receiver: String, message: String, callback: SMSCallback) {
+        try {
+            Log.d(TAG, "openSmsCompose called with receiver: $receiver, message: $message")
+
+            val phoneNumber = if (isPhoneNumber(receiver)) receiver else findPhoneNumberByName(receiver)
+            if (phoneNumber.isEmpty()) {
+                callback.onError("Không tìm thấy số điện thoại cho: $receiver")
+                return
+            }
+
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("smsto:$phoneNumber")
+                putExtra("sms_body", message)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            if (intent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(intent)
+                Log.d(TAG, "Opened SMS compose UI successfully")
+                callback.onSuccess()
+            } else {
+                Log.e(TAG, "No app available to handle SMS compose")
+                callback.onError("Không tìm thấy ứng dụng nhắn tin")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Exception in openSmsCompose: ${e.message}", e)
+            callback.onError("Lỗi mở hộp thoại SMS: ${e.message}")
+        }
+    }
+
+    /**
      * Kiểm tra xem chuỗi có phải là số điện thoại không
      */
     private fun isPhoneNumber(input: String): Boolean {

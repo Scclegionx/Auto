@@ -39,6 +39,13 @@ class VoiceManager private constructor(private val context: Context) {
         audioRecorder = AudioRecorder.getInstance(context)
     }
     
+    private fun ensureAudioRecorder(): AudioRecorder {
+        if (audioRecorder == null) {
+            audioRecorder = AudioRecorder.getInstance(context)
+        }
+        return audioRecorder as AudioRecorder
+    }
+
     
     /**
      * API duy nhất: Text-to-Speech với delay tùy chỉnh
@@ -57,7 +64,7 @@ class VoiceManager private constructor(private val context: Context) {
         Log.d("VoiceManager", "Speaking: $text")
         
         // Bước 1: Nói text
-        audioRecorder?.speak(text)
+        ensureAudioRecorder().speak(text)
         
         // Bước 2: Đợi delaySeconds rồi bắt đầu STT
         android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
@@ -133,7 +140,7 @@ class VoiceManager private constructor(private val context: Context) {
     
     
     fun speak(text: String) {
-        audioRecorder?.speak(text)
+        ensureAudioRecorder().speak(text)
     }
     
     private fun releaseBusyState() {

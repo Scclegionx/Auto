@@ -5,6 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
 import android.util.Log
+import android.Manifest
+import android.content.ContentProviderOperation
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 
 class ContactAutomation(private val context: Context) {
 
@@ -179,5 +183,72 @@ class ContactAutomation(private val context: Context) {
             "can_edit_contact" to isContactsAppAvailable(),
             "can_pick_contact" to isContactsAppAvailable()
         )
+    }
+
+    /**
+     * Thêm liên hệ trực tiếp không cần UI (yêu cầu quyền WRITE_CONTACTS)
+     */
+    fun insertContactDirect(name: String, phone: String?, email: String?, callback: ContactCallback) {
+        try {
+            Log.d(TAG, "insertContactDirect called with name: $name, phone: $phone, email: $email")
+
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+                Log.e(TAG, "WRITE_CONTACTS permission not granted")
+                callback.onError("Cần cấp quyền WRITE_CONTACTS để thêm liên hệ tự động")
+                return
+            }
+
+            val operations = ArrayList<ContentProviderOperation>()
+
+            // 1) Tạo RawContact
+            operations.add(
+                ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                    .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                    .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                    .build()
+            )
+
+            // 2) Thêm tên
+            operations.add(
+                ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, name)
+                    .build()
+            )
+
+            // 3) Thêm số điện thoại nếu có
+            if (!phone.isNullOrEmpty()) {
+                operations.add(
+                    ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                        .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
+                        .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+                        .build()
+                )
+            }
+
+            // 4) Thêm email nếu có
+            if (!email.isNullOrEmpty()) {
+                operations.add(
+                    ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
+                        .withValue(ContactsContract.CommonDataKinds.Email.ADDRESS, email)
+                        .withValue(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
+                        .build()
+                )
+            }
+
+            // Apply batch
+            context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
+            Log.d(TAG, "Contact inserted successfully via ContentProvider")
+            callback.onSuccess()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error inserting contact directly: ${e.message}", e)
+            callback.onError("Lỗi thêm liên hệ: ${e.message}")
+        }
     }
 }

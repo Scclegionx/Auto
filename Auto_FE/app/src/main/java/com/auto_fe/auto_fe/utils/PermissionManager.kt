@@ -25,6 +25,7 @@ class PermissionManager(private val context: Context) {
         Manifest.permission.CALL_PHONE,
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.READ_CONTACTS,
+        Manifest.permission.WRITE_CONTACTS,
         Manifest.permission.WRITE_CALENDAR
     )
     

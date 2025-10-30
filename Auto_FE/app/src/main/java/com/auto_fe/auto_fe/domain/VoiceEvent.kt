@@ -248,6 +248,13 @@ sealed class VoiceEvent {
     // ========== UTILITY EVENTS ==========
     object Reset : VoiceEvent()
 
+    // ========== CONTACT (ADD) EVENTS ==========
+    object StartAddContactCommand : VoiceEvent()
+    data class ContactNameProvided(val contactName: String) : VoiceEvent()
+    data class ContactPhoneProvided(val phone: String) : VoiceEvent()
+    object ContactAddedSuccessfully : VoiceEvent()
+    data class ContactAddFailed(val error: String) : VoiceEvent()
+
 
     // ========== UTILITY METHODS ==========
 
@@ -341,6 +348,11 @@ sealed class VoiceEvent {
             is CameraCapturedSuccessfully -> "CameraCapturedSuccessfully"
             is CameraCaptureFailed -> "CameraCaptureFailed($error)"
             is Reset -> "Reset"
+            is StartAddContactCommand -> "StartAddContactCommand"
+            is ContactNameProvided -> "ContactNameProvided($contactName)"
+            is ContactPhoneProvided -> "ContactPhoneProvided($phone)"
+            is ContactAddedSuccessfully -> "ContactAddedSuccessfully"
+            is ContactAddFailed -> "ContactAddFailed($error)"
         }
     }
 

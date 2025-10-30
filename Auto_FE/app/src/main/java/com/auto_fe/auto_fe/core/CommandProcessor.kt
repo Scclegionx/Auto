@@ -21,6 +21,8 @@ import com.auto_fe.auto_fe.usecase.WFStateMachine
 import com.auto_fe.auto_fe.usecase.VolumnStateMachine
 import com.auto_fe.auto_fe.usecase.AlarmStateMachine
 import com.auto_fe.auto_fe.usecase.SearchChromeStateMachine
+import com.auto_fe.auto_fe.usecase.AddContactStateMachine
+import com.auto_fe.auto_fe.automation.phone.ContactAutomation
 import com.auto_fe.auto_fe.usecase.YoutubeStateMachine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,7 @@ class CommandProcessor(private val context: Context) {
     private val alarmAutomation = AlarmAutomation(context)
     private val chromeAutomation = ChromeAutomation(context)
     private val youtubeAutomation = YouTubeAutomation(context)
+    private val contactAutomation = ContactAutomation(context)
     private val voiceManager = VoiceManager.getInstance(context)
     private val nlpService = NLPService(context)
     
@@ -50,6 +53,7 @@ class CommandProcessor(private val context: Context) {
     private val alarmStateMachine by lazy { AlarmStateMachine(context, voiceManager, alarmAutomation) }
     private val searchChromeStateMachine by lazy { SearchChromeStateMachine(context, voiceManager, chromeAutomation) }
     private val youtubeStateMachine by lazy { YoutubeStateMachine(context, voiceManager, youtubeAutomation) }
+    private val addContactStateMachine by lazy { AddContactStateMachine(context, voiceManager, contactAutomation) }
 
     interface CommandProcessorCallback {
         fun onCommandExecuted(success: Boolean, message: String)
@@ -398,6 +402,10 @@ class CommandProcessor(private val context: Context) {
                 "add-calendar" -> {
                     // Parse thành công, trả về data cho FE xử lý
                     callback.onNeedConfirmation("add-calendar", receiver, message)
+                }
+                "add-contacts" -> {
+                    Log.d("CommandProcessor", "Routing to AddContactStateMachine")
+                    addContactStateMachine.startAddContactFlow()
                 }
                 
                 // ========== DEVICE CONTROL COMMANDS ==========

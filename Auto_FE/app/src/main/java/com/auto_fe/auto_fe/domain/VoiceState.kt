@@ -196,6 +196,15 @@ sealed class VoiceState {
     object ExecutingVolumeCommand : VoiceState()
 
 
+    // ========== ADD CONTACT STATES ==========
+    /** Bắt đầu luồng thêm liên hệ: hỏi tên */
+    object AskingContactName : VoiceState()
+    /** Hỏi số điện thoại sau khi có tên */
+    data class AskingContactPhone(val contactName: String) : VoiceState()
+    /** Đang thực thi tạo liên hệ */
+    object ExecutingAddContactCommand : VoiceState()
+
+
     // ========== UTILITY METHODS ==========
 
     /**
@@ -347,6 +356,9 @@ sealed class VoiceState {
             is ListeningForFlashCommand -> "ListeningForFlashCommand"
             is ParsingFlashCommand -> "ParsingFlashCommand"
             is ExecutingFlashCommand -> "ExecutingFlashCommand"
+            is AskingContactName -> "AskingContactName"
+            is AskingContactPhone -> "AskingContactPhone($contactName)"
+            is ExecutingAddContactCommand -> "ExecutingAddContactCommand"
         }
     }
 }

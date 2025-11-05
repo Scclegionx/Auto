@@ -4,7 +4,6 @@ import com.example.Auto_BE.dto.BaseResponse;
 import com.example.Auto_BE.dto.request.ForgotPasswordRequest;
 import com.example.Auto_BE.dto.request.LoginRequest;
 import com.example.Auto_BE.dto.request.RegisterRequest;
-import com.example.Auto_BE.dto.request.ResendVerificationRequest;
 import com.example.Auto_BE.dto.request.SendVerificationRequest;
 import com.example.Auto_BE.dto.request.VerifyOtpRequest;
 import com.example.Auto_BE.dto.response.LoginResponse;
@@ -55,12 +54,6 @@ public class AuthController {
     @GetMapping("/verify")
     public ResponseEntity<BaseResponse<Void>> verifyEmail(@RequestParam String token) {
         BaseResponse<Void> response = authService.verifyEmail(token);
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/resend-verification")
-    public ResponseEntity<BaseResponse<Void>> resendVerificationEmail(@RequestBody @Valid ResendVerificationRequest resendVerificationRequest) {
-        BaseResponse<Void> response = authService.resendVerificationEmail(resendVerificationRequest);
         return ResponseEntity.ok(response);
     }
 

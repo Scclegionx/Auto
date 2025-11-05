@@ -5,9 +5,11 @@ import com.example.Auto_BE.dto.request.ChangePasswordRequest;
 import com.example.Auto_BE.dto.request.UpdateProfileRequest;
 import com.example.Auto_BE.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
@@ -35,6 +37,14 @@ public class UserController {
     public ResponseEntity<BaseResponse<String>> changePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest,
                                                                Authentication authentication) {
         BaseResponse<String> response = userService.changePassword(changePasswordRequest, authentication);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BaseResponse<String>> uploadAvatar(
+            @RequestParam("avatar") MultipartFile avatar,
+            Authentication authentication) {
+        BaseResponse<String> response = userService.uploadAvatar(avatar, authentication);
         return ResponseEntity.ok(response);
     }
 }

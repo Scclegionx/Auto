@@ -10,23 +10,38 @@ import com.example.Auto_BE.exception.BaseException;
 import com.example.Auto_BE.mapper.UserMapper;
 import com.example.Auto_BE.repository.UserRepository;
 import com.google.firebase.remoteconfig.internal.TemplateResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.example.Auto_BE.constants.ErrorMessages.*;
 import static com.example.Auto_BE.constants.SuccessMessage.*;
 
 @Service
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CloudinaryService cloudinaryService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private static final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList(
+            "image/jpeg", "image/jpg", "image/png", "image/webp",
+            "image/gif", "image/apng"  // Hỗ trợ ảnh động
+    );
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB (ảnh động nặng hơn)
+
+    public UserService(UserRepository userRepository, 
+                      PasswordEncoder passwordEncoder,
+                      CloudinaryService cloudinaryService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public BaseResponse<?> getUserProfile(Authentication authentication) {
@@ -117,5 +132,58 @@ public class UserService {
         }
     }
 
+    public BaseResponse<String> uploadAvatar(MultipartFile avatar, Authentication authentication) {
+        try {
+            User user = userRepository.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
+
+            // Validate file không rỗng
+            if (avatar.isEmpty()) {
+                throw new BaseException.BadRequestException("File ảnh không được để trống");
+            }
+
+            // Validate kích thước file
+            if (avatar.getSize() > MAX_FILE_SIZE) {
+                throw new BaseException.BadRequestException("Kích thước file không được vượt quá 10MB");
+            }
+
+            // Validate loại file
+            String contentType = avatar.getContentType();
+            if (contentType == null || !ALLOWED_IMAGE_TYPES.contains(contentType.toLowerCase())) {
+                throw new BaseException.BadRequestException("Chỉ chấp nhận file ảnh định dạng JPG, PNG, WEBP, GIF");
+            }
+
+            // Xóa avatar cũ nếu có
+            if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
+                try {
+                    cloudinaryService.deleteImage(user.getAvatar());
+                    log.info("Deleted old avatar for user: {}", user.getEmail());
+                } catch (Exception e) {
+                    log.warn("Failed to delete old avatar: {}", e.getMessage());
+                    // Tiếp tục upload ảnh mới
+                }
+            }
+
+            // Upload ảnh mới lên Cloudinary
+            String avatarUrl = cloudinaryService.uploadImage(avatar);
+            log.info("Uploaded new avatar for user: {} - URL: {}", user.getEmail(), avatarUrl);
+
+            // Cập nhật avatar vào database
+            user.setAvatar(avatarUrl);
+            userRepository.save(user);
+
+            return BaseResponse.<String>builder()
+                    .status(SUCCESS)
+                    .message("Cập nhật ảnh đại diện thành công")
+                    .data(avatarUrl)
+                    .build();
+
+        } catch (BaseException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Error uploading avatar", e);
+            throw new BaseException.BadRequestException("Lỗi khi tải lên ảnh đại diện: " + e.getMessage());
+        }
+    }
 
 }

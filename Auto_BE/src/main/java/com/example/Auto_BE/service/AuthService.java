@@ -4,7 +4,6 @@ import com.example.Auto_BE.dto.BaseResponse;
 import com.example.Auto_BE.dto.request.ForgotPasswordRequest;
 import com.example.Auto_BE.dto.request.LoginRequest;
 import com.example.Auto_BE.dto.request.RegisterRequest;
-import com.example.Auto_BE.dto.request.ResendVerificationRequest;
 import com.example.Auto_BE.dto.request.SendVerificationRequest;
 import com.example.Auto_BE.dto.request.VerifyOtpRequest;
 import com.example.Auto_BE.dto.response.LoginResponse;
@@ -26,7 +25,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -238,30 +236,6 @@ public class AuthService {
         return BaseResponse.<Void>builder()
                 .status(SUCCESS)
                 .message(EMAIL_VERIFIED)
-                .build();
-    }
-
-    public BaseResponse<Void> resendVerificationEmail(ResendVerificationRequest resendVerificationRequest) {
-        User user = userRepository.findByEmail(resendVerificationRequest.getEmail())
-                .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
-
-        if (user.getIsActive()) {
-            throw new BaseException.BadRequestException(USER_ALREADY_VERIFIED);
-        }
-
-        String verificationToken = jwtUtils.generateVerificationToken(user.getEmail());
-
-        Verification verification = new Verification();
-        verification.setUser(user)
-                .setToken(verificationToken)
-                .setExpiredAt(jwtUtils.getVerificationTokenExpirationTime(verificationToken));
-        verificationRepository.save(verification);
-
-        applicationEventPublisher.publishEvent(new UserRegistrationEvent(this, verification));
-
-        return BaseResponse.<Void>builder()
-                .status(SUCCESS)
-                .message(VERIFICATION_EMAIL_SENT)
                 .build();
     }
 

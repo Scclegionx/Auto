@@ -1,2 +1,7 @@
 .idea/
 .vscode/
+
+# Environment variables - DO NOT COMMIT
+.env
+Auto_BE/src/main/resources/.env
+

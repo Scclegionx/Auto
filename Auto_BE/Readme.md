@@ -1,0 +1,7 @@
+tạo file .env trong resources thêm config
+
+CLOUDINARY_CLOUD_NAME=doah3bdw6
+CLOUDINARY_API_KEY=371563576533324
+CLOUDINARY_API_SECRET=ig1jYd0unQn0j_colCM3dDEMVj4
+
+GEMINI_API_KEY=AIzaSyDFe2BcQL-mPFyvAmduVkt9iWtxlqqXDNA

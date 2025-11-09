@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.Auto_BE.constants.ErrorMessages.ERROR;
-import static com.example.Auto_BE.constants.ErrorMessages.INVALID_INPUT;
 import static com.example.Auto_BE.constants.ErrorMessages.UNAUTHORIZED;
 
 @RestControllerAdvice
@@ -65,16 +64,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<Map<String, String>>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
+        StringBuilder errorMessage = new StringBuilder("Dữ liệu không hợp lệ: ");
+        
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+            String errorMsg = error.getDefaultMessage();
+            errors.put(fieldName, errorMsg);
+            errorMessage.append(fieldName).append(" - ").append(errorMsg).append("; ");
         });
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(BaseResponse.<Map<String, String>>builder()
                         .status(ERROR)
-                        .message(INVALID_INPUT)
+                        .message(errorMessage.toString())
                         .data(errors)
                         .build());
     }

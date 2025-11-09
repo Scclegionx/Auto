@@ -456,7 +456,7 @@ fun PrescriptionCard(
                 ) {
                     Text(
                         text = if (prescription.isActive) "✓ Đang dùng" else "⏸ Tạm ngưng",
-                        fontSize = AppTextSize.bodySmall,
+                        fontSize = 11.sp,
                         color = if (prescription.isActive) AISuccess else DarkOnSurface.copy(alpha = 0.5f),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         fontWeight = FontWeight.Medium
@@ -495,6 +495,40 @@ fun PrescriptionCard(
                     color = DarkPrimary,
                     fontWeight = FontWeight.Medium
                 )
+            }
+            
+            // Nút xem ảnh (nếu có)
+            if (!prescription.imageUrl.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                var showImageDialog by remember { mutableStateOf(false) }
+                
+                OutlinedButton(
+                    onClick = { 
+                        showImageDialog = true
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = DarkPrimary
+                    ),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, DarkPrimary.copy(alpha = 0.5f)),
+                    contentPadding = PaddingValues(vertical = 8.dp)
+                ) {
+                    Text(text = "📷", fontSize = 16.sp)
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Xem ảnh đơn thuốc",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                
+                if (showImageDialog) {
+                    ZoomableImageDialog(
+                        imageUrl = prescription.imageUrl,
+                        onDismiss = { showImageDialog = false }
+                    )
+                }
             }
         }
     }

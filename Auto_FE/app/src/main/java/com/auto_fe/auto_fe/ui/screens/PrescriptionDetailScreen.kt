@@ -3,6 +3,7 @@ package com.auto_fe.auto_fe.ui.screens
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -271,13 +274,13 @@ fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
                                 AISuccess.copy(alpha = 0.2f) 
                             else 
                                 DarkOnSurface.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(12.dp)
                         ) {
                             Text(
                                 text = if (prescription.isActive) "✓ Đang dùng" else "⏸ Tạm ngưng",
-                                fontSize = AppTextSize.bodySmall,
+                                fontSize = 11.sp,
                                 color = if (prescription.isActive) AISuccess else DarkOnSurface.copy(alpha = 0.5f),
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -309,6 +312,37 @@ fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
                             value = getDaysText(prescription),
                             label = "Lịch uống"
                         )
+                    }
+                    
+                    // Nút xem ảnh (nếu có)
+                    if (!prescription.imageUrl.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        var showImageDialog by remember { mutableStateOf(false) }
+                        
+                        OutlinedButton(
+                            onClick = { showImageDialog = true },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = DarkPrimary
+                            ),
+                            border = BorderStroke(1.dp, DarkPrimary.copy(alpha = 0.5f))
+                        ) {
+                            Text(text = "📷", fontSize = 18.sp)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Xem ảnh đơn thuốc",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        
+                        if (showImageDialog) {
+                            ZoomableImageDialog(
+                                imageUrl = prescription.imageUrl,
+                                onDismiss = { showImageDialog = false }
+                            )
+                        }
                     }
                 }
             }
@@ -644,4 +678,101 @@ fun getDaysText(prescription: PrescriptionService.Prescription): String {
         prescription.medicationReminders?.all { it.daysOfWeek == "1111111" } ?: false
     }
     return if (allDaily) "Hàng ngày" else "Theo lịch"
+}
+
+@Composable
+fun ZoomableImageDialog(
+    imageUrl: String?,
+    onDismiss: () -> Unit
+) {
+    if (imageUrl.isNullOrBlank()) {
+        onDismiss()
+        return
+    }
+    
+    var scale by remember { mutableStateOf(1f) }
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
+    
+    androidx.compose.ui.window.Dialog(
+        onDismissRequest = onDismiss,
+        properties = androidx.compose.ui.window.DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(androidx.compose.ui.graphics.Color.Black)
+        ) {
+            // Image với zoom
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTransformGestures { _, pan, zoom, _ ->
+                            scale = (scale * zoom).coerceIn(1f, 5f)
+                            if (scale > 1f) {
+                                offsetX += pan.x
+                                offsetY += pan.y
+                            } else {
+                                offsetX = 0f
+                                offsetY = 0f
+                            }
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                coil.compose.AsyncImage(
+                    model = imageUrl,
+                    contentDescription = "Ảnh đơn thuốc",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer(
+                            scaleX = scale,
+                            scaleY = scale,
+                            translationX = offsetX,
+                            translationY = offsetY
+                        ),
+                    contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                )
+            }
+            
+            // Nút đóng
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+                    .background(
+                        DarkSurface.copy(alpha = 0.7f),
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Đóng",
+                    tint = DarkOnSurface
+                )
+            }
+            
+            // Indicator zoom level
+            if (scale > 1f) {
+                Surface(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp),
+                    color = DarkSurface.copy(alpha = 0.7f),
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Text(
+                        text = "Zoom: ${String.format("%.1f", scale)}x",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        color = DarkOnSurface,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
+    }
 }

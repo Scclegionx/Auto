@@ -67,6 +67,9 @@ dependencies {
     // JSON
     implementation("org.json:json:20240303")
 
+    // Image Loading - Coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-messaging-ktx")

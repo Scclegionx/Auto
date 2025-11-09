@@ -7,7 +7,10 @@ import kotlinx.coroutines.withContext
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONObject
+import java.io.File
 
 /**
  * Service để xử lý user profile với Auto_BE API
@@ -189,6 +192,98 @@ class UserService {
                 }
             } catch (e: Exception) {
                 Log.e("UserService", "Update profile error", e)
+                Result.failure(Exception("Lỗi kết nối: ${e.message}"))
+            }
+        }
+    }
+
+    /**
+     * Upload avatar mới
+     * @param accessToken JWT token
+     * @param imageFile File ảnh cần upload
+     * @return URL của avatar mới
+     */
+    suspend fun uploadAvatar(
+        accessToken: String,
+        imageFile: File
+    ): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d("UserService", "Uploading avatar: ${imageFile.name}, size: ${imageFile.length()} bytes")
+
+                // Validate file size (10MB max)
+                val maxSize = 10 * 1024 * 1024 // 10MB
+                if (imageFile.length() > maxSize) {
+                    return@withContext Result.failure(Exception("Kích thước file không được vượt quá 10MB"))
+                }
+
+                // Validate file type
+                val allowedExtensions = listOf("jpg", "jpeg", "png", "webp", "gif")
+                val fileExtension = imageFile.extension.lowercase()
+                if (!allowedExtensions.contains(fileExtension)) {
+                    return@withContext Result.failure(Exception("Chỉ chấp nhận file ảnh định dạng JPG, PNG, WEBP, GIF"))
+                }
+
+                // Determine MIME type
+                val mimeType = when (fileExtension) {
+                    "jpg", "jpeg" -> "image/jpeg"
+                    "png" -> "image/png"
+                    "webp" -> "image/webp"
+                    "gif" -> "image/gif"
+                    else -> "image/jpeg"
+                }
+
+                // Create multipart request body
+                val requestBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart(
+                        "avatar",
+                        imageFile.name,
+                        imageFile.asRequestBody(mimeType.toMediaTypeOrNull())
+                    )
+                    .build()
+
+                val request = Request.Builder()
+                    .url("$baseUrl/avatar")
+                    .post(requestBody)
+                    .addHeader("Authorization", "Bearer $accessToken")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string()
+
+                Log.d("UserService", "Upload Avatar Response Code: ${response.code}")
+                Log.d("UserService", "Upload Avatar Response Body: $responseBody")
+
+                if (response.isSuccessful && responseBody != null) {
+                    val jsonResponse = JSONObject(responseBody)
+                    val avatarUrl = jsonResponse.getString("data")
+                    
+                    Log.d("UserService", "Avatar uploaded successfully: $avatarUrl")
+                    Result.success(avatarUrl)
+                } else {
+                    val errorMessage = if (responseBody != null) {
+                        try {
+                            val errorJson = JSONObject(responseBody)
+                            errorJson.optString("message", "Không thể tải ảnh lên")
+                        } catch (e: Exception) {
+                            when (response.code) {
+                                400 -> "File ảnh không hợp lệ"
+                                401 -> "Phiên đăng nhập hết hạn"
+                                413 -> "File quá lớn (tối đa 10MB)"
+                                415 -> "Định dạng file không được hỗ trợ"
+                                500 -> "Lỗi máy chủ. Vui lòng thử lại sau"
+                                else -> "Không thể tải ảnh lên"
+                            }
+                        }
+                    } else {
+                        "Không thể tải ảnh lên"
+                    }
+                    Log.e("UserService", "Upload avatar failed: $errorMessage")
+                    Result.failure(Exception(errorMessage))
+                }
+            } catch (e: Exception) {
+                Log.e("UserService", "Upload avatar error", e)
                 Result.failure(Exception("Lỗi kết nối: ${e.message}"))
             }
         }

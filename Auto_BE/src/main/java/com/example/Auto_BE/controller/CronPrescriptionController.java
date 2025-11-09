@@ -171,4 +171,16 @@ public class CronPrescriptionController {
 
         return ResponseEntity.ok(cronPrescriptionService.delete(prescriptionId, authentication));
     }
+
+    /**
+     * Toggle trạng thái đơn thuốc (active/inactive)
+     * Tự động cập nhật trạng thái tất cả medications và reschedule jobs
+     */
+    @PatchMapping("/{prescriptionId}/toggle-status")
+    public ResponseEntity<BaseResponse<PrescriptionResponse>> togglePrescriptionStatus(
+            @PathVariable Long prescriptionId,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(cronPrescriptionService.toggleStatus(prescriptionId, authentication));
+    }
 }

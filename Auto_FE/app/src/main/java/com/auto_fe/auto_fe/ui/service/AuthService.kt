@@ -35,7 +35,8 @@ class AuthService {
     data class UserInfo(
         val id: Long?,
         val email: String?,
-        val name: String?
+        val name: String?,
+        val avatar: String?
     )
 
     data class RegisterResponse(
@@ -104,7 +105,8 @@ class AuthService {
                             UserInfo(
                                 id = if (userJson.has("id")) userJson.getLong("id") else null,
                                 email = userJson.optString("email", null),
-                                name = userJson.optString("name", null)
+                                name = userJson.optString("name", null),
+                                avatar = userJson.optString("avatar", null)
                             )
                         } else null
                         

@@ -29,29 +29,31 @@ class NotificationHistoryService {
     private val baseUrl = com.auto_fe.auto_fe.network.ApiConfig.BASE_URL + "/notifications"
 
     /**
-     * Lấy lịch sử thông báo với filter
+     * Lấy lịch sử thông báo với filter và phân trang
      * @param accessToken JWT token
      * @param startDate Ngày bắt đầu (optional, format: yyyy-MM-dd'T'HH:mm:ss)
      * @param endDate Ngày kết thúc (optional)
      * @param status Trạng thái: SENT, FAILED (optional)
-     * @param limit Giới hạn số lượng kết quả (default: 50)
+     * @param page Số trang (default: 0)
+     * @param size Số item mỗi trang (default: 20)
      */
     suspend fun getHistory(
         accessToken: String,
         startDate: String? = null,
         endDate: String? = null,
         status: String? = null,
-        limit: Int = 50
+        page: Int = 0,
+        size: Int = 20
     ): Result<List<NotificationHistoryResponse>> = withContext(Dispatchers.IO) {
         try {
             // Build URL with query params
-            val urlBuilder = StringBuilder("$baseUrl/history?")
+            val urlBuilder = StringBuilder("$baseUrl/history?page=$page&size=$size")
             
-            startDate?.let { urlBuilder.append("startDate=$it&") }
-            endDate?.let { urlBuilder.append("endDate=$it&") }
-            status?.let { urlBuilder.append("status=$it&") }
+            startDate?.let { urlBuilder.append("&startDate=$it") }
+            endDate?.let { urlBuilder.append("&endDate=$it") }
+            status?.let { urlBuilder.append("&status=$it") }
             
-            val url = urlBuilder.toString().trimEnd('&', '?')
+            val url = urlBuilder.toString()
             
             val request = Request.Builder()
                 .url(url)
@@ -71,30 +73,7 @@ class NotificationHistoryService {
                 val jsonResponse = JSONObject(responseBody)
                 val dataArray = jsonResponse.getJSONArray("data")
                 
-                val notifications = mutableListOf<NotificationHistoryResponse>()
-                
-                // Giới hạn số lượng kết quả
-                val maxItems = minOf(dataArray.length(), limit)
-                
-                for (i in 0 until maxItems) {
-                    val item = dataArray.getJSONObject(i)
-                    notifications.add(
-                        NotificationHistoryResponse(
-                            id = item.getLong("id"),
-                            reminderTime = item.getString("reminderTime"),
-                            lastSentTime = item.optString("lastSentTime", null),
-                            status = item.getString("status"),
-                            isRead = item.getBoolean("isRead"),
-                            title = item.optString("title", null),
-                            body = item.optString("body", null),
-                            medicationCount = item.getInt("medicationCount"),
-                            medicationIds = item.optString("medicationIds", null),
-                            medicationNames = item.optString("medicationNames", null),
-                            userId = item.getLong("userId"),
-                            userEmail = item.getString("userEmail")
-                        )
-                    )
-                }
+                val notifications = parseNotificationArray(dataArray)
                 
                 Result.success(notifications)
             }
@@ -104,13 +83,17 @@ class NotificationHistoryService {
     }
 
     /**
-     * Lấy lịch sử hôm nay
+     * Lấy lịch sử hôm nay với phân trang
      */
-    suspend fun getTodayHistory(accessToken: String): Result<List<NotificationHistoryResponse>> = 
+    suspend fun getTodayHistory(
+        accessToken: String,
+        page: Int = 0,
+        size: Int = 20
+    ): Result<List<NotificationHistoryResponse>> = 
         withContext(Dispatchers.IO) {
             try {
                 val request = Request.Builder()
-                    .url("$baseUrl/history/today")
+                    .url("$baseUrl/history/today?page=$page&size=$size")
                     .addHeader("Authorization", "Bearer $accessToken")
                     .get()
                     .build()
@@ -136,13 +119,17 @@ class NotificationHistoryService {
         }
 
     /**
-     * Lấy lịch sử 7 ngày gần nhất
+     * Lấy lịch sử 7 ngày gần nhất với phân trang
      */
-    suspend fun getWeekHistory(accessToken: String): Result<List<NotificationHistoryResponse>> = 
+    suspend fun getWeekHistory(
+        accessToken: String,
+        page: Int = 0,
+        size: Int = 20
+    ): Result<List<NotificationHistoryResponse>> = 
         withContext(Dispatchers.IO) {
             try {
                 val request = Request.Builder()
-                    .url("$baseUrl/history/week")
+                    .url("$baseUrl/history/week?page=$page&size=$size")
                     .addHeader("Authorization", "Bearer $accessToken")
                     .get()
                     .build()

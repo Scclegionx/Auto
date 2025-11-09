@@ -554,4 +554,58 @@ class PrescriptionService {
             Result.failure(Exception("Lỗi kết nối: ${e.message}"))
         }
     }
+
+    /**
+     * Toggle trạng thái đơn thuốc (active/inactive)
+     */
+    suspend fun togglePrescriptionStatus(
+        prescriptionId: Long,
+        accessToken: String
+    ): Result<PrescriptionDetailResponse> = withContext(Dispatchers.IO) {
+        try {
+            Log.d("PrescriptionService", "Toggling prescription status: $prescriptionId")
+
+            val emptyBody = ByteArray(0)
+            val request = Request.Builder()
+                .url("$baseUrl/$prescriptionId/toggle-status")
+                .patch(emptyBody.toRequestBody(null))
+                .addHeader("Authorization", "Bearer $accessToken")
+                .addHeader("Content-Type", "application/json")
+                .build()
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string()
+
+            Log.d("PrescriptionService", "Toggle Status Response Code: ${response.code}")
+            Log.d("PrescriptionService", "Toggle Status Response Body: $responseBody")
+
+            if (response.isSuccessful && responseBody != null) {
+                val json = JSONObject(responseBody)
+                val dataJson = json.getJSONObject("data")
+                
+                val prescription = parsePrescription(dataJson)
+                Result.success(PrescriptionDetailResponse(
+                    status = "success",
+                    message = json.optString("message", "Đã cập nhật trạng thái"),
+                    data = prescription
+                ))
+            } else {
+                val errorMessage = if (responseBody != null) {
+                    try {
+                        val json = JSONObject(responseBody)
+                        json.optString("message", "Không thể cập nhật trạng thái")
+                    } catch (e: Exception) {
+                        "Lỗi không xác định"
+                    }
+                } else {
+                    "Lỗi không xác định"
+                }
+                Log.e("PrescriptionService", "Toggle Status Error: $errorMessage")
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Log.e("PrescriptionService", "Exception in togglePrescriptionStatus", e)
+            Result.failure(Exception("Lỗi kết nối: ${e.message}"))
+        }
+    }
 }

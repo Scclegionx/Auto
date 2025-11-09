@@ -73,13 +73,15 @@ public class NotificationController {
     }
 
     /**
-     * Lấy lịch sử thông báo với filter
-     * GET /api/notifications/history?startDate=...&endDate=...&status=...
+     * Lấy lịch sử thông báo với filter và phân trang
+     * GET /api/notifications/history?startDate=...&endDate=...&status=...&page=0&size=20
      * 
      * @param authentication - User hiện tại (từ JWT)
      * @param startDate - Ngày bắt đầu (optional, format: yyyy-MM-dd'T'HH:mm:ss)
      * @param endDate - Ngày kết thúc (optional)
      * @param status - Trạng thái: PENDING, SENT, FAILED (optional)
+     * @param page - Số trang (default: 0)
+     * @param size - Số item mỗi trang (default: 20)
      * @return Danh sách lịch sử thông báo
      */
     @GetMapping("/history")
@@ -89,25 +91,29 @@ public class NotificationController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) 
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-            @RequestParam(required = false) ENotificationStatus status
+            @RequestParam(required = false) ENotificationStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
         // Lấy userId từ authentication
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));
         
         BaseResponse<List<NotificationResponse>> response = 
-                notificationService.getHistory(user.getId(), startDate, endDate, status);
+                notificationService.getHistory(user.getId(), startDate, endDate, status, page, size);
         
         return ResponseEntity.ok(response);
     }
     
     /**
-     * Lấy lịch sử theo ngày cụ thể
-     * GET /api/notifications/history/today
+     * Lấy lịch sử theo ngày cụ thể với phân trang
+     * GET /api/notifications/history/today?page=0&size=20
      */
     @GetMapping("/history/today")
     public ResponseEntity<BaseResponse<List<NotificationResponse>>> getTodayHistory(
-            Authentication authentication
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));
@@ -116,18 +122,20 @@ public class NotificationController {
         LocalDateTime endOfDay = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
         
         BaseResponse<List<NotificationResponse>> response = 
-                notificationService.getHistory(user.getId(), startOfDay, endOfDay, null);
+                notificationService.getHistory(user.getId(), startOfDay, endOfDay, null, page, size);
         
         return ResponseEntity.ok(response);
     }
     
     /**
-     * Lấy lịch sử 7 ngày gần nhất
-     * GET /api/notifications/history/week
+     * Lấy lịch sử 7 ngày gần nhất với phân trang
+     * GET /api/notifications/history/week?page=0&size=20
      */
     @GetMapping("/history/week")
     public ResponseEntity<BaseResponse<List<NotificationResponse>>> getWeekHistory(
-            Authentication authentication
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));
@@ -136,25 +144,27 @@ public class NotificationController {
         LocalDateTime now = LocalDateTime.now();
         
         BaseResponse<List<NotificationResponse>> response = 
-                notificationService.getHistory(user.getId(), weekAgo, now, null);
+                notificationService.getHistory(user.getId(), weekAgo, now, null, page, size);
         
         return ResponseEntity.ok(response);
     }
     
     /**
-     * Lấy lịch sử theo trạng thái
-     * GET /api/notifications/history/status/{status}
+     * Lấy lịch sử theo trạng thái với phân trang
+     * GET /api/notifications/history/status/{status}?page=0&size=20
      */
     @GetMapping("/history/status/{status}")
     public ResponseEntity<BaseResponse<List<NotificationResponse>>> getHistoryByStatus(
             Authentication authentication,
-            @PathVariable ENotificationStatus status
+            @PathVariable ENotificationStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));
         
         BaseResponse<List<NotificationResponse>> response = 
-                notificationService.getHistory(user.getId(), null, null, status);
+                notificationService.getHistory(user.getId(), null, null, status, page, size);
         
         return ResponseEntity.ok(response);
     }

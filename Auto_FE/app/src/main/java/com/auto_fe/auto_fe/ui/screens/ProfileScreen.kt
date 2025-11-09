@@ -20,10 +20,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
+import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import coil.compose.AsyncImage
 import com.auto_fe.auto_fe.ui.service.UserService
 import com.auto_fe.auto_fe.ui.theme.*
 import com.auto_fe.auto_fe.ui.theme.AppTextSize
+import com.auto_fe.auto_fe.utils.SessionManager
 import kotlinx.coroutines.launch
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,28 +41,77 @@ fun ProfileScreen(
 ) {
     val context = LocalContext.current
     val userService = remember { UserService() }
+    val sessionManager = remember { SessionManager(context) }
     val coroutineScope = rememberCoroutineScope()
     
     var profileData by remember { mutableStateOf<UserService.ProfileData?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var isEditMode by remember { mutableStateOf(false) }
     var showSuccessMessage by remember { mutableStateOf(false) }
+    var isUploadingAvatar by remember { mutableStateOf(false) }
 
-    // Load profile khi màn hình mở
-    LaunchedEffect(Unit) {
+    // Function để load profile
+    fun loadProfile() {
         coroutineScope.launch {
             isLoading = true
             val result = userService.getUserProfile(accessToken)
             isLoading = false
             
             result.onSuccess { response ->
-                android.util.Log.d("ProfileScreen", "✅ Load profile success: ${response.message}")
                 profileData = response.data
+                // Lưu avatar vào SessionManager nếu có
+                response.data?.avatar?.let { avatarUrl ->
+                    if (avatarUrl.isNotBlank()) {
+                        sessionManager.updateUserAvatar(avatarUrl)
+                    }
+                }
             }.onFailure { error ->
-                android.util.Log.e("ProfileScreen", "❌ Load profile failed: ${error.message}")
                 Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    // Image picker launcher
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            coroutineScope.launch {
+                try {
+                    isUploadingAvatar = true
+                    
+                    // Convert URI to File
+                    val file = uriToFile(context, uri)
+                    
+                    // Upload avatar
+                    val result = userService.uploadAvatar(accessToken, file)
+                    
+                    result.onSuccess { avatarUrl ->
+                        // Lưu avatar URL vào SessionManager
+                        sessionManager.updateUserAvatar(avatarUrl)
+                        
+                        Toast.makeText(context, "✅ Cập nhật ảnh đại diện thành công", Toast.LENGTH_SHORT).show()
+                        // Reload profile để lấy avatar mới
+                        loadProfile()
+                    }.onFailure { error ->
+                        Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                    }
+                    
+                    isUploadingAvatar = false
+                    
+                    // Clean up temp file
+                    file.delete()
+                } catch (e: Exception) {
+                    Toast.makeText(context, "❌ Lỗi: ${e.message}", Toast.LENGTH_LONG).show()
+                    isUploadingAvatar = false
+                }
+            }
+        }
+    }
+
+    // Load profile khi màn hình mở
+    LaunchedEffect(Unit) {
+        loadProfile()
     }
 
     // Show success message
@@ -143,6 +199,8 @@ fun ProfileScreen(
                     ProfileContent(
                         profileData = profileData!!,
                         onChangePasswordClick = onChangePasswordClick,
+                        onAvatarClick = { imagePickerLauncher.launch("image/*") },
+                        isUploadingAvatar = isUploadingAvatar,
                         modifier = Modifier.padding(paddingValues)
                     )
                 }
@@ -155,6 +213,8 @@ fun ProfileScreen(
 fun ProfileContent(
     profileData: UserService.ProfileData,
     onChangePasswordClick: () -> Unit = {},
+    onAvatarClick: () -> Unit = {},
+    isUploadingAvatar: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -177,20 +237,56 @@ fun ProfileContent(
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Avatar
+                // Avatar - Clickable để upload
                 Box(
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
-                        .background(DarkPrimary),
+                        .background(DarkPrimary.copy(alpha = 0.2f))
+                        .clickable(enabled = !isUploadingAvatar) { onAvatarClick() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Avatar",
-                        tint = DarkOnPrimary,
-                        modifier = Modifier.size(60.dp)
-                    )
+                    if (isUploadingAvatar) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(40.dp),
+                            color = DarkPrimary,
+                            strokeWidth = 3.dp
+                        )
+                    } else if (!profileData.avatar.isNullOrBlank()) {
+                        AsyncImage(
+                            model = profileData.avatar,
+                            contentDescription = "Avatar",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Avatar placeholder",
+                            tint = DarkPrimary,
+                            modifier = Modifier.size(60.dp)
+                        )
+                    }
+                    
+                    // Camera icon overlay
+                    if (!isUploadingAvatar) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(DarkPrimary),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Change avatar",
+                                tint = DarkOnPrimary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
                 }
                 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -864,4 +960,28 @@ fun EditProfileContent(
         
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+/**
+ * Helper function để convert URI thành File
+ */
+private fun uriToFile(context: Context, uri: Uri): File {
+    val inputStream = context.contentResolver.openInputStream(uri)
+        ?: throw Exception("Không thể đọc file")
+    
+    val extension = when (context.contentResolver.getType(uri)) {
+        "image/jpeg", "image/jpg" -> "jpg"
+        "image/png" -> "png"
+        "image/webp" -> "webp"
+        "image/gif" -> "gif"
+        else -> "jpg"
+    }
+    
+    val file = File(context.cacheDir, "avatar_${System.currentTimeMillis()}.$extension")
+    inputStream.use { input ->
+        file.outputStream().use { output ->
+            input.copyTo(output)
+        }
+    }
+    return file
 }

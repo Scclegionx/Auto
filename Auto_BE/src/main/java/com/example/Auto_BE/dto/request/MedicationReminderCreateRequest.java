@@ -10,7 +10,6 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class MedicationReminderCreateRequest {
     @NotBlank(message = "Tên thuốc không được để trống")
-    @Size(min = 2, max = 200, message = "Tên thuốc phải từ 2 đến 200 ký tự")
     private String name;
 
     @Size(max = 1000, message = "Mô tả thuốc tối đa 1000 ký tự")

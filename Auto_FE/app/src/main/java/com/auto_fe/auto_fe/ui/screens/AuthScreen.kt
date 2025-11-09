@@ -309,6 +309,20 @@ fun AuthScreen(
                                 )
                             }
                         }
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        // Forgot Password Button
+                        TextButton(
+                            onClick = onForgotPasswordClick,
+                            modifier = Modifier.align(Alignment.End)
+                        ) {
+                            Text(
+                                text = "Quên mật khẩu?",
+                                fontSize = 16.sp,
+                                color = AIPrimarySoft
+                            )
+                        }
                     } else {
                         // REGISTER FORM
                         OutlinedTextField(

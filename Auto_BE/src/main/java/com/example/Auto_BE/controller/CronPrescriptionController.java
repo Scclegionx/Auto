@@ -48,38 +48,76 @@ public class CronPrescriptionController {
     public ResponseEntity<BaseResponse<PrescriptionResponse>> createPrescription(
             @RequestBody @Valid PrescriptionCreateRequest prescriptionCreateRequest,
             Authentication authentication) {
-
+        System.out.println("POST /create called");
         return ResponseEntity.ok(cronPrescriptionService.create(prescriptionCreateRequest, authentication));
     }
 
     /**
      * Tạo đơn thuốc mới kèm upload ảnh lên Cloudinary
-     * Flow: Upload ảnh → Lưu DB → Tránh orphan files
+     * ✅ Flow: Validate → Upload ảnh → Lưu DB → Rollback nếu lỗi
      */
     @PostMapping(value = "/create-with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse<PrescriptionResponse>> createPrescriptionWithImage(
             @RequestParam("data") String prescriptionDataJson,
             @RequestParam("image") MultipartFile image,
             Authentication authentication) {
-
+        System.out.println("POST /create-with-image called");
+        String uploadedImageUrl = null;
+        
         try {
-            // Parse JSON to PrescriptionCreateRequest
+            // Step 1: Parse JSON
             PrescriptionCreateRequest prescriptionData = objectMapper.readValue(
                     prescriptionDataJson, PrescriptionCreateRequest.class);
 
-            // Upload image to Cloudinary
+            // Step 2: Validate cơ bản
+            if (prescriptionData.getName() == null || prescriptionData.getName().trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(BaseResponse.<PrescriptionResponse>builder()
+                                .status("error")
+                                .message("Tên đơn thuốc không được để trống")
+                                .build());
+            }
+
+            if (prescriptionData.getMedicationReminders() == null || prescriptionData.getMedicationReminders().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(BaseResponse.<PrescriptionResponse>builder()
+                                .status("error")
+                                .message("Phải có ít nhất 1 loại thuốc")
+                                .build());
+            }
+
+            if (image == null || image.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(BaseResponse.<PrescriptionResponse>builder()
+                                .status("error")
+                                .message("File ảnh không được để trống")
+                                .build());
+            }
+
+            // Step 3: Upload image to Cloudinary
             log.info("Uploading image to Cloudinary: {} (size: {} bytes)", 
                     image.getOriginalFilename(), image.getSize());
-            String imageUrl = cloudinaryService.uploadImage(image);
-            prescriptionData.setImageUrl(imageUrl);
+            uploadedImageUrl = cloudinaryService.uploadImage(image);
+            prescriptionData.setImageUrl(uploadedImageUrl);
 
-            // Create prescription in DB
+            // Step 4: Create prescription in DB
             BaseResponse<PrescriptionResponse> response = cronPrescriptionService.create(prescriptionData, authentication);
 
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             log.error("Error creating prescription with image", e);
+            
+            // ✅ ROLLBACK: Xóa ảnh nếu lỗi
+            if (uploadedImageUrl != null) {
+                try {
+                    log.warn("Rollback: Deleting image from Cloudinary");
+                    cloudinaryService.deleteImage(uploadedImageUrl);
+                } catch (Exception ex) {
+                    log.error("Failed to delete image", ex);
+                }
+            }
+            
             return ResponseEntity.internalServerError()
                     .body(BaseResponse.<PrescriptionResponse>builder()
                             .status("error")

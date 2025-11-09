@@ -8,8 +8,11 @@ import kotlinx.coroutines.withContext
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 
 /**
  * Service để xử lý Prescription (Đơn thuốc) với Auto_BE API
@@ -307,6 +310,115 @@ class PrescriptionService {
             }
         } catch (e: Exception) {
             Log.e("PrescriptionService", "Exception in createPrescription", e)
+            Result.failure(Exception("Lỗi kết nối: ${e.message}"))
+        }
+    }
+
+    /**
+     * Tạo đơn thuốc mới với upload ảnh
+     * ✅ Lazy Upload: Chỉ upload khi user submit form
+     * ✅ Atomic operation: Upload + Create DB cùng lúc
+     * ✅ Không có orphan files
+     */
+    suspend fun createPrescriptionWithImage(
+        name: String,
+        description: String,
+        imageFile: File,
+        medications: List<MedicationReminderForm>,
+        accessToken: String
+    ): Result<PrescriptionDetailResponse> = withContext(Dispatchers.IO) {
+        try {
+            Log.d("PrescriptionService", "Creating prescription with image: $name")
+
+            // Build prescription data JSON
+            val prescriptionData = JSONObject().apply {
+                put("name", name)
+                put("description", description)
+                put("imageUrl", "") // Backend sẽ set sau khi upload
+
+                val medicationsArray = JSONArray()
+                medications.forEach { med ->
+                    val medJson = JSONObject().apply {
+                        put("name", med.name)
+                        put("description", med.description)
+                        put("type", med.type)
+
+                        val timesArray = JSONArray()
+                        med.reminderTimes.forEach { time ->
+                            timesArray.put(time)
+                        }
+                        put("reminderTimes", timesArray)
+                        put("daysOfWeek", med.daysOfWeek)
+                    }
+                    medicationsArray.put(medJson)
+                }
+                put("medicationReminders", medicationsArray)
+            }
+
+            Log.d("PrescriptionService", "Prescription data: ${prescriptionData.toString(2)}")
+
+            // Detect MIME type from file extension
+            val extension = imageFile.extension.lowercase()
+            val mimeType = when (extension) {
+                "jpg", "jpeg" -> "image/jpeg"
+                "png" -> "image/png"
+                "webp" -> "image/webp"
+                "gif" -> "image/gif"
+                else -> "image/jpeg"
+            }
+
+            // Build multipart request
+            val requestBody = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("data", prescriptionData.toString())
+                .addFormDataPart(
+                    "image",
+                    imageFile.name,
+                    imageFile.asRequestBody(mimeType.toMediaType())
+                )
+                .build()
+
+            val request = Request.Builder()
+                .url("$baseUrl/create-with-image")
+                .addHeader("Authorization", "Bearer $accessToken")
+                .post(requestBody)
+                .build()
+
+            Log.d("PrescriptionService", "Sending multipart request to /create-with-image")
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string()
+
+            Log.d("PrescriptionService", "Response code: ${response.code}")
+            Log.d("PrescriptionService", "Response body: $responseBody")
+
+            if (response.isSuccessful && responseBody != null) {
+                val json = JSONObject(responseBody)
+                val prescription = parsePrescription(json.getJSONObject("data"))
+
+                Result.success(
+                    PrescriptionDetailResponse(
+                        status = json.getString("status"),
+                        message = json.getString("message"),
+                        data = prescription
+                    )
+                )
+            } else {
+                val errorMessage = if (responseBody != null) {
+                    try {
+                        val json = JSONObject(responseBody)
+                        json.optString("message", "Không thể tạo đơn thuốc")
+                    } catch (e: Exception) {
+                        "Lỗi không xác định"
+                    }
+                } else {
+                    "Lỗi không xác định"
+                }
+                Log.e("PrescriptionService", "Error: $errorMessage")
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Log.e("PrescriptionService", "Exception in createPrescriptionWithImage", e)
             Result.failure(Exception("Lỗi kết nối: ${e.message}"))
         }
     }

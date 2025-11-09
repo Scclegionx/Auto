@@ -14,11 +14,9 @@ public class PrescriptionCreateRequest {
     @Size(min = 3, max = 200, message = "Tên đơn thuốc phải từ 3 đến 200 ký tự")
     private String name;
 
-    @NotBlank(message = "Mô tả không được để trống")
-    @Size(min = 10, max = 1000, message = "Mô tả phải từ 10 đến 1000 ký tự")
+    @Size(max = 1000, message = "Mô tả không được quá 1000 ký tự")
     private String description;
 
-    @NotBlank(message = "URL hình ảnh không được để trống")
     private String imageUrl;
 
     @Valid

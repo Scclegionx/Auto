@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.auto_fe.auto_fe.service.NotificationHistoryResponse
@@ -38,26 +39,34 @@ fun NotificationHistoryScreen(
     var notifications by remember { mutableStateOf<List<NotificationHistoryResponse>>(emptyList()) }
     var unreadCount by remember { mutableStateOf(0L) }
     var isLoading by remember { mutableStateOf(false) }
+    var isLoadingMore by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var selectedFilter by remember { mutableStateOf("all") } // all, today, week, unread
+    var currentPage by remember { mutableStateOf(0) }
+    var hasMoreData by remember { mutableStateOf(true) }
+    val pageSize = 20
     
-    // Load data
+    // Load initial data
     LaunchedEffect(selectedFilter) {
         isLoading = true
         errorMessage = null
+        currentPage = 0
+        hasMoreData = true
+        notifications = emptyList()
         
         scope.launch {
             try {
                 val result = when (selectedFilter) {
-                    "today" -> service.getTodayHistory(accessToken)
-                    "week" -> service.getWeekHistory(accessToken)
-                    "unread" -> service.getHistory(accessToken, limit = 50)
+                    "today" -> service.getTodayHistory(accessToken, page = 0, size = pageSize)
+                    "week" -> service.getWeekHistory(accessToken, page = 0, size = pageSize)
+                    "unread" -> service.getHistory(accessToken, page = 0, size = pageSize)
                         .map { list -> list.filter { !it.isRead } }
-                    else -> service.getHistory(accessToken, limit = 50)
+                    else -> service.getHistory(accessToken, page = 0, size = pageSize)
                 }
                 
                 result.onSuccess { data ->
                     notifications = data
+                    hasMoreData = data.size >= pageSize
                     isLoading = false
                 }.onFailure { error ->
                     errorMessage = error.message
@@ -72,6 +81,36 @@ fun NotificationHistoryScreen(
             } catch (e: Exception) {
                 errorMessage = e.message
                 isLoading = false
+            }
+        }
+    }
+    
+    // Function để load thêm data
+    fun loadMoreData() {
+        if (isLoadingMore || !hasMoreData) return
+        
+        isLoadingMore = true
+        scope.launch {
+            try {
+                val nextPage = currentPage + 1
+                val result = when (selectedFilter) {
+                    "today" -> service.getTodayHistory(accessToken, page = nextPage, size = pageSize)
+                    "week" -> service.getWeekHistory(accessToken, page = nextPage, size = pageSize)
+                    "unread" -> service.getHistory(accessToken, page = nextPage, size = pageSize)
+                        .map { list -> list.filter { !it.isRead } }
+                    else -> service.getHistory(accessToken, page = nextPage, size = pageSize)
+                }
+                
+                result.onSuccess { data ->
+                    notifications = notifications + data
+                    currentPage = nextPage
+                    hasMoreData = data.size >= pageSize
+                    isLoadingMore = false
+                }.onFailure {
+                    isLoadingMore = false
+                }
+            } catch (e: Exception) {
+                isLoadingMore = false
             }
         }
     }
@@ -230,18 +269,62 @@ fun NotificationHistoryScreen(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(notifications) { notification ->
+                        items(notifications.size) { index ->
+                            val notification = notifications[index]
+                            
                             NotificationHistoryItem(
                                 notification = notification,
                                 onMarkAsRead = {
                                     scope.launch {
                                         service.markAsRead(accessToken, notification.id).onSuccess {
-                                            // Reload
-                                            selectedFilter = selectedFilter
+                                            // Update local state
+                                            notifications = notifications.map { 
+                                                if (it.id == notification.id) it.copy(isRead = true) else it 
+                                            }
+                                            unreadCount = maxOf(0, unreadCount - 1)
                                         }
                                     }
                                 }
                             )
+                            
+                            // ✅ Lazy loading trigger - Load khi scroll đến item gần cuối
+                            if (index >= notifications.size - 3 && hasMoreData && !isLoadingMore) {
+                                LaunchedEffect(Unit) {
+                                    loadMoreData()
+                                }
+                            }
+                        }
+                        
+                        // Loading indicator khi load more
+                        if (isLoadingMore) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        color = DarkPrimary
+                                    )
+                                }
+                            }
+                        }
+                        
+                        // End indicator
+                        if (!hasMoreData && notifications.isNotEmpty()) {
+                            item {
+                                Text(
+                                    text = "Đã hiển thị tất cả thông báo",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                    color = Color.Gray,
+                                    fontSize = AppTextSize.bodySmall
+                                )
+                            }
                         }
                     }
                 }
@@ -308,17 +391,17 @@ fun NotificationHistoryItem(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Time
+                    // Time - ✅ Giảm font size
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "🕐",
-                            fontSize = AppTextSize.bodyMedium,
+                            fontSize = 14.sp,
                             color = Color.Gray
                         )
                         Spacer(Modifier.width(4.dp))
                         Text(
                             text = formatDateTime(notification.reminderTime),
-                            fontSize = AppTextSize.bodySmall,
+                            fontSize = 14.sp,
                             color = Color.Gray
                         )
                     }

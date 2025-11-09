@@ -14,6 +14,7 @@ class SessionManager(context: Context) {
         private const val KEY_USER_EMAIL = "user_email"
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_USER_ID = "user_id"
+        private const val KEY_USER_AVATAR = "user_avatar"
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
         // Remember credentials
         private const val KEY_REMEMBER_ME = "remember_me"
@@ -29,7 +30,8 @@ class SessionManager(context: Context) {
         refreshToken: String? = null,
         userEmail: String? = null,
         userName: String? = null,
-        userId: Long? = null
+        userId: Long? = null,
+        userAvatar: String? = null
     ) {
         prefs.edit().apply {
             putString(KEY_ACCESS_TOKEN, accessToken)
@@ -37,7 +39,22 @@ class SessionManager(context: Context) {
             userEmail?.let { putString(KEY_USER_EMAIL, it) }
             userName?.let { putString(KEY_USER_NAME, it) }
             userId?.let { putLong(KEY_USER_ID, it) }
+            userAvatar?.let { putString(KEY_USER_AVATAR, it) }
             putBoolean(KEY_IS_LOGGED_IN, true)
+            apply()
+        }
+    }
+    
+    /**
+     * Cập nhật avatar
+     */
+    fun updateUserAvatar(avatar: String?) {
+        prefs.edit().apply {
+            if (avatar != null) {
+                putString(KEY_USER_AVATAR, avatar)
+            } else {
+                remove(KEY_USER_AVATAR)
+            }
             apply()
         }
     }
@@ -77,6 +94,13 @@ class SessionManager(context: Context) {
         val id = prefs.getLong(KEY_USER_ID, -1L)
         return if (id != -1L) id else null
     }
+    
+    /**
+     * Lấy avatar người dùng
+     */
+    fun getUserAvatar(): String? {
+        return prefs.getString(KEY_USER_AVATAR, null)
+    }
 
     /**
      * Kiểm tra trạng thái đăng nhập
@@ -96,6 +120,7 @@ class SessionManager(context: Context) {
             remove(KEY_USER_EMAIL)
             remove(KEY_USER_NAME)
             remove(KEY_USER_ID)
+            remove(KEY_USER_AVATAR)
             putBoolean(KEY_IS_LOGGED_IN, false)
             apply()
         }

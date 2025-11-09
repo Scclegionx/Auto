@@ -46,7 +46,9 @@ fun PrescriptionDetailScreen(
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showToggleStatusDialog by remember { mutableStateOf(false) }
     var isDeleting by remember { mutableStateOf(false) }
+    var isTogglingStatus by remember { mutableStateOf(false) }
 
     // Load prescription detail when screen opens
     LaunchedEffect(prescriptionId) {
@@ -159,9 +161,96 @@ fun PrescriptionDetailScreen(
                     }
                 }
                 prescription != null -> {
-                    PrescriptionDetailContent(prescription = prescription!!)
+                    PrescriptionDetailContent(
+                        prescription = prescription!!,
+                        prescriptionId = prescriptionId,
+                        accessToken = accessToken,
+                        prescriptionService = prescriptionService,
+                        onPrescriptionUpdated = { updatedPrescription ->
+                            prescription = updatedPrescription
+                        },
+                        onToggleStatusClick = { showToggleStatusDialog = true }
+                    )
                 }
             }
+        }
+        
+        // Toggle Status Confirmation Dialog
+        if (showToggleStatusDialog) {
+            AlertDialog(
+                onDismissRequest = { showToggleStatusDialog = false },
+                title = { Text("Xác nhận thay đổi trạng thái", color = DarkOnSurface) },
+                text = { 
+                    Text(
+                        if (prescription?.isActive == true) {
+                            "Bạn có chắc muốn TẠM NGƯNG đơn thuốc \"${prescription?.name}\"?\n\n" +
+                            "⚠️ Tất cả lịch nhắc nhở của đơn thuốc này sẽ bị TẠM DỪNG."
+                        } else {
+                            "Bạn có chắc muốn KÍCH HOẠT lại đơn thuốc \"${prescription?.name}\"?\n\n" +
+                            "✅ Tất cả lịch nhắc nhở của đơn thuốc này sẽ được KÍCH HOẠT trở lại."
+                        },
+                        color = DarkOnSurface
+                    ) 
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showToggleStatusDialog = false
+                            isTogglingStatus = true
+                            scope.launch {
+                                val result = prescriptionService.togglePrescriptionStatus(
+                                    prescriptionId = prescriptionId,
+                                    accessToken = accessToken
+                                )
+                                result.fold(
+                                    onSuccess = { response ->
+                                        response.data?.let { updatedPrescription ->
+                                            prescription = updatedPrescription
+                                        }
+                                        Toast.makeText(
+                                            context,
+                                            "✅ Đã cập nhật trạng thái",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        isTogglingStatus = false
+                                    },
+                                    onFailure = { error ->
+                                        Toast.makeText(
+                                            context,
+                                            "❌ ${error.message}",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        isTogglingStatus = false
+                                    }
+                                )
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (prescription?.isActive == true) AIWarning else AISuccess
+                        ),
+                        enabled = !isTogglingStatus
+                    ) {
+                        if (isTogglingStatus) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp),
+                                color = DarkOnPrimary,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text(if (prescription?.isActive == true) "Tạm ngưng" else "Kích hoạt")
+                        }
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showToggleStatusDialog = false },
+                        enabled = !isTogglingStatus
+                    ) {
+                        Text("Hủy", color = DarkOnSurface)
+                    }
+                },
+                containerColor = DarkSurface
+            )
         }
         
         // Delete Confirmation Dialog
@@ -225,7 +314,15 @@ fun PrescriptionDetailScreen(
 }
 
 @Composable
-fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
+fun PrescriptionDetailContent(
+    prescription: PrescriptionService.Prescription,
+    prescriptionId: Long,
+    accessToken: String,
+    prescriptionService: PrescriptionService,
+    onPrescriptionUpdated: (PrescriptionService.Prescription) -> Unit,
+    onToggleStatusClick: () -> Unit
+) {
+    
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -268,8 +365,9 @@ fun PrescriptionDetailContent(prescription: PrescriptionService.Prescription) {
                             }
                         }
                         
-                        // Status badge
+                        // Status badge - Clickable to toggle (with confirmation)
                         Surface(
+                            onClick = { onToggleStatusClick() },
                             color = if (prescription.isActive) 
                                 AISuccess.copy(alpha = 0.2f) 
                             else 
@@ -524,7 +622,10 @@ fun MedicationCard(medication: PrescriptionService.MedicationReminder) {
 fun MedicationGroupCard(medication: PrescriptionService.Medication) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = DarkSurface
+            containerColor = if (medication.isActive) 
+                DarkSurface 
+            else 
+                DarkSurface.copy(alpha = 0.5f)  // Làm mờ khi inactive
         ),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -537,7 +638,7 @@ fun MedicationGroupCard(medication: PrescriptionService.Medication) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Header: Name + Status
+            // Header: Name + Status Badge
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -556,16 +657,30 @@ fun MedicationGroupCard(medication: PrescriptionService.Medication) {
                         text = medication.medicationName,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = DarkOnSurface
+                        color = if (medication.isActive) 
+                            DarkOnSurface 
+                        else 
+                            DarkOnSurface.copy(alpha = 0.5f)
                     )
                 }
                 
-                // Status indicator
-                if (medication.isActive) {
-                    Box(
-                        modifier = Modifier
-                            .size(10.dp)
-                            .background(SuccessColor, CircleShape)
+                // Status badge - Luôn hiển thị để user biết trạng thái
+                Surface(
+                    color = if (medication.isActive) 
+                        AISuccess.copy(alpha = 0.2f) 
+                    else 
+                        DarkOnSurface.copy(alpha = 0.1f),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = if (medication.isActive) "✓ Bật" else "⏸ Tắt",
+                        fontSize = 10.sp,
+                        color = if (medication.isActive) 
+                            AISuccess 
+                        else 
+                            DarkOnSurface.copy(alpha = 0.5f),
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -576,7 +691,10 @@ fun MedicationGroupCard(medication: PrescriptionService.Medication) {
                 Text(
                     text = medication.notes,
                     fontSize = 14.sp,
-                    color = DarkOnSurface.copy(alpha = 0.7f),
+                    color = if (medication.isActive) 
+                        DarkOnSurface.copy(alpha = 0.7f)
+                    else
+                        DarkOnSurface.copy(alpha = 0.4f),
                     lineHeight = 20.sp
                 )
             }
@@ -592,7 +710,10 @@ fun MedicationGroupCard(medication: PrescriptionService.Medication) {
                 medication.reminderTimes.forEach { time ->
                     Surface(
                         shape = RoundedCornerShape(20.dp),
-                        color = DarkPrimary.copy(alpha = 0.12f)
+                        color = if (medication.isActive)
+                            DarkPrimary.copy(alpha = 0.12f)
+                        else
+                            DarkOnSurface.copy(alpha = 0.05f)
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -601,13 +722,19 @@ fun MedicationGroupCard(medication: PrescriptionService.Medication) {
                         ) {
                             Text(
                                 text = "🕐",
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
+                                modifier = Modifier.graphicsLayer {
+                                    alpha = if (medication.isActive) 1f else 0.4f
+                                }
                             )
                             Text(
                                 text = time,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = DarkPrimary
+                                color = if (medication.isActive)
+                                    DarkPrimary
+                                else
+                                    DarkOnSurface.copy(alpha = 0.4f)
                             )
                         }
                     }
@@ -623,12 +750,18 @@ fun MedicationGroupCard(medication: PrescriptionService.Medication) {
             ) {
                 Text(
                     text = "📅",
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    modifier = Modifier.graphicsLayer {
+                        alpha = if (medication.isActive) 1f else 0.4f
+                    }
                 )
                 Text(
                     text = formatDaysOfWeek(medication.daysOfWeek),
                     fontSize = 13.sp,
-                    color = DarkOnSurface.copy(alpha = 0.6f)
+                    color = if (medication.isActive)
+                        DarkOnSurface.copy(alpha = 0.6f)
+                    else
+                        DarkOnSurface.copy(alpha = 0.3f)
                 )
             }
         }

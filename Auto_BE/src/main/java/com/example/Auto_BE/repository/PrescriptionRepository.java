@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface PrescriptionRepository extends JpaRepository<Prescriptions, Long> {
     List<Prescriptions> findByUserIdAndIsActiveTrue(Long userId);
+    
+    // Lấy tất cả đơn thuốc của user, sắp xếp theo ngày tạo (mới nhất trước)
+    List<Prescriptions> findByUserIdOrderByCreatedAtDesc(Long userId);
 }

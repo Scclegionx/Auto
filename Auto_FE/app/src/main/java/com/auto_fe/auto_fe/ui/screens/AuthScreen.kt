@@ -35,7 +35,7 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun AuthScreen(
-    onLoginSuccess: (String, String?, String?, Long?) -> Unit = { _, _, _, _ -> }, // Callback với accessToken, email, name, userId
+    onLoginSuccess: (String, String?, String?, Long?, String?) -> Unit = { _, _, _, _, _ -> }, // Callback với accessToken, email, name, userId, avatar
     onVerificationClick: (String, String) -> Unit = { _, _ -> }, // Callback với email và password
     onForgotPasswordClick: () -> Unit = { }, // Callback cho quên mật khẩu
     verifiedEmail: String? = null, // Email sau khi verify thành công
@@ -261,12 +261,13 @@ fun AuthScreen(
                                                         ).show()
                                                         
                                                         // Chuyển sang màn hình danh sách đơn thuốc
-                                                        // Trả về token, email, name và userId từ response
+                                                        // Trả về token, email, name, userId và avatar từ response
                                                         onLoginSuccess(
                                                             token,
                                                             userInfo?.email ?: loginEmail, // Ưu tiên email từ response
                                                             userInfo?.name, // name từ response
-                                                            userInfo?.id // userId từ response
+                                                            userInfo?.id, // userId từ response
+                                                            userInfo?.avatar // avatar từ response
                                                         )
                                                     } else {
                                                         Log.e("AuthScreen", "❌ Token is NULL! Cannot register device token")

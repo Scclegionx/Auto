@@ -95,7 +95,9 @@ public class NotificationService {
             Long userId,
             LocalDateTime startDate,
             LocalDateTime endDate,
-            ENotificationStatus status) {
+            ENotificationStatus status,
+            int page,
+            int size) {
         
         try {
             List<Notifications> notifications;
@@ -110,6 +112,13 @@ public class NotificationService {
                 notifications = notificationRepository.findByUserId(userId);
             }
             
+            // ✅ Phân trang thủ công (sort by reminderTime desc)
+            notifications = notifications.stream()
+                    .sorted((n1, n2) -> n2.getReminderTime().compareTo(n1.getReminderTime()))
+                    .skip((long) page * size)
+                    .limit(size)
+                    .collect(Collectors.toList());
+            
             // Convert to response DTO
             List<NotificationResponse> responses = notifications.stream()
                     .map(this::convertToResponse)
@@ -117,7 +126,7 @@ public class NotificationService {
             
             return BaseResponse.<List<NotificationResponse>>builder()
                     .status(SUCCESS)
-                    .message("Lấy lịch sử thông báo thành công")
+                    .message("Lấy lịch sử thông báo thành công (trang " + page + ", " + responses.size() + " items)")
                     .data(responses)
                     .build();
                     

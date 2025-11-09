@@ -424,6 +424,7 @@ fun MainScreen(sessionManager: SessionManager) {
                                     accessToken = accessToken!!,
                                     userName = displayName,
                                     userEmail = sessionManager.getUserEmail() ?: "",
+                                    userAvatar = sessionManager.getUserAvatar(),
                                     onPrescriptionClick = { prescriptionId ->
                                         selectedPrescriptionId = prescriptionId
                                     },
@@ -443,13 +444,14 @@ fun MainScreen(sessionManager: SessionManager) {
                             } else {
                                 // Chưa login → Hiển thị màn đăng nhập
                                 AuthScreen(
-                                    onLoginSuccess = { token, userEmail, userName, userId ->
+                                    onLoginSuccess = { token, userEmail, userName, userId, userAvatar ->
                                         // Lưu session
                                         sessionManager.saveLoginSession(
                                             accessToken = token,
                                             userEmail = userEmail,
                                             userName = userName,
-                                            userId = userId
+                                            userId = userId,
+                                            userAvatar = userAvatar
                                         )
                                         accessToken = token
                                         isLoggedIn = true

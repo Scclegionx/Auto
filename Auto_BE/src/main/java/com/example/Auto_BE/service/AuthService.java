@@ -64,6 +64,7 @@ public class AuthService {
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getFullName())
+                .avatar(user.getAvatar())
                 .build();
         
         LoginResponse loginResponse = LoginResponse.builder()

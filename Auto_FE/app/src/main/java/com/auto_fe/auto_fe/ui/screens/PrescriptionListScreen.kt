@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.auto_fe.auto_fe.ui.service.PrescriptionService
 import com.auto_fe.auto_fe.ui.theme.*
 import com.auto_fe.auto_fe.ui.theme.AppTextSize
@@ -41,7 +42,8 @@ fun PrescriptionListScreen(
     onProfileClick: () -> Unit = {}, // Thêm callback profile
     onNotificationHistoryClick: () -> Unit = {}, // Thêm callback notification history
     userName: String = "User", // Thêm tên user
-    userEmail: String = "" // Thêm email user
+    userEmail: String = "", // Thêm email user
+    userAvatar: String? = null // Thêm avatar URL
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -129,16 +131,26 @@ fun PrescriptionListScreen(
                             modifier = Modifier
                                 .size(48.dp)
                                 .clip(CircleShape)
-                                .background(DarkPrimary)
+                                .background(DarkPrimary.copy(alpha = 0.2f))
                                 .clickable { showMenu = !showMenu },
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = "User Menu",
-                                tint = DarkOnPrimary,
-                                modifier = Modifier.size(28.dp)
-                            )
+                            if (!userAvatar.isNullOrBlank()) {
+                                AsyncImage(
+                                    model = userAvatar,
+                                    contentDescription = "User Avatar",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape)
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = "User Menu",
+                                    tint = DarkPrimary,
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
                         }
                         
                         // Dropdown Menu
@@ -147,23 +159,29 @@ fun PrescriptionListScreen(
                             onDismissRequest = { showMenu = false },
                             modifier = Modifier
                                 .background(DarkSurface)
-                                .width(200.dp)
+                                .width(280.dp)
                         ) {
                             // User Info
                             Column(
-                                modifier = Modifier.padding(16.dp, 12.dp)
+                                modifier = Modifier
+                                    .padding(16.dp, 12.dp)
+                                    .fillMaxWidth()
                             ) {
                                 Text(
                                     text = userName.takeIf { it.isNotBlank() } ?: "Người dùng",
                                     fontSize = AppTextSize.bodyMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = DarkOnSurface
+                                    color = DarkOnSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                                 if (userEmail.isNotEmpty()) {
                                     Text(
                                         text = userEmail,
                                         fontSize = AppTextSize.bodySmall,
-                                        color = DarkOnSurface.copy(alpha = 0.6f)
+                                        color = DarkOnSurface.copy(alpha = 0.6f),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
                             }

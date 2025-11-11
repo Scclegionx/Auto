@@ -1069,7 +1069,7 @@ fun MedicationTableRow(
 }
 
 @Composable
-fun DaysOfWeekSelector(
+private fun DaysOfWeekSelector(
     selectedDays: String,
     onDaysChange: (String) -> Unit
 ) {

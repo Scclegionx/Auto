@@ -7,6 +7,7 @@ import com.example.Auto_BE.dto.response.MedicationResponse;
 import com.example.Auto_BE.entity.MedicationReminder;
 import com.example.Auto_BE.entity.Prescriptions;
 import com.example.Auto_BE.entity.User;
+import com.example.Auto_BE.entity.enums.ETypeMedication;
 import com.example.Auto_BE.repository.MedicationReminderRepository;
 import com.example.Auto_BE.repository.PrescriptionRepository;
 import com.example.Auto_BE.repository.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -137,7 +139,7 @@ public class MedicationService {
     }
 
     /**
-     * Lấy tất cả medications của user
+     * Lấy tất cả medications của user (cả prescription và standalone)
      */
     public BaseResponse<List<MedicationResponse>> getAllMedicationsByUser(Long userId) {
         try {
@@ -161,6 +163,84 @@ public class MedicationService {
             return BaseResponse.<List<MedicationResponse>>builder()
                     .status("error")
                     .message("Lỗi khi lấy danh sách medications: " + e.getMessage())
+                    .data(null)
+                    .build();
+        }
+    }
+
+    /**
+     * Lấy chỉ standalone medications (thuốc ngoài đơn)
+     * prescriptionId = null HOẶC type = OVER_THE_COUNTER
+     * Group các medications trùng HOÀN TOÀN (name, daysOfWeek, description, type, isActive)
+     * và gộp reminderTimes
+     */
+    public BaseResponse<List<MedicationResponse>> getStandaloneMedicationsByUser(Long userId) {
+        try {
+            // Lọc medications: prescriptionId = null HOẶC type = OVER_THE_COUNTER
+            List<MedicationReminder> standaloneMedications = medicationReminderRepository
+                    .findAll()
+                    .stream()
+                    .filter(med -> med.getUser().getId().equals(userId))
+                    .filter(med -> med.getPrescription() == null || 
+                                   med.getType() == ETypeMedication.OVER_THE_COUNTER)
+                    .collect(Collectors.toList());
+
+            // Group theo composite key: name + daysOfWeek + description + type + isActive
+            Map<String, List<MedicationReminder>> groupedMedications = standaloneMedications.stream()
+                    .collect(Collectors.groupingBy(med -> {
+                        // Tạo composite key để group
+                        String name = med.getName();
+                        String daysOfWeek = med.getDaysOfWeek();
+                        String description = med.getDescription() != null ? med.getDescription() : "";
+                        String type = med.getType().toString();
+                        String isActive = med.getIsActive().toString();
+                        
+                        return name + "|" + daysOfWeek + "|" + description + "|" + type + "|" + isActive;
+                    }));
+
+            List<MedicationResponse> responseList = groupedMedications.entrySet().stream()
+                    .map(entry -> {
+                        List<MedicationReminder> meds = entry.getValue();
+                        
+                        // Lấy medication đầu tiên làm template
+                        MedicationReminder first = meds.get(0);
+                        
+                        // Gộp tất cả reminderTimes và sort
+                        List<String> allReminderTimes = meds.stream()
+                                .map(MedicationReminder::getReminderTime)
+                                .sorted() // Sort để hiển thị theo thứ tự thời gian
+                                .collect(Collectors.toList());
+                        
+                        // Build response với reminderTimes đã gộp
+                        return MedicationResponse.builder()
+                                .id(first.getId())
+                                .userId(first.getUser().getId())
+                                .userName(first.getUser().getFullName())
+                                .prescriptionId(first.getPrescription() != null ? first.getPrescription().getId() : null)
+                                .medicationName(first.getName())
+                                .type(first.getType())
+                                .reminderTimes(allReminderTimes)
+                                .daysOfWeek(first.getDaysOfWeek())
+                                .description(first.getDescription())
+                                .isActive(first.getIsActive())
+                                .createdAt(first.getCreatedAt() != null ? 
+                                    java.time.LocalDateTime.ofInstant(first.getCreatedAt(), java.time.ZoneId.systemDefault()) : null)
+                                .updatedAt(first.getUpdatedAt() != null ? 
+                                    java.time.LocalDateTime.ofInstant(first.getUpdatedAt(), java.time.ZoneId.systemDefault()) : null)
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+
+            return BaseResponse.<List<MedicationResponse>>builder()
+                    .status("success")
+                    .message("Lấy danh sách standalone medications thành công")
+                    .data(responseList)
+                    .build();
+
+        } catch (Exception e) {
+            return BaseResponse.<List<MedicationResponse>>builder()
+                    .status("error")
+                    .message("Lỗi khi lấy danh sách standalone medications: " + e.getMessage())
                     .data(null)
                     .build();
         }
@@ -299,6 +379,60 @@ public class MedicationService {
         }
     }
 
+    /**
+     * Toggle trạng thái active/inactive của medication
+     */
+    public BaseResponse<MedicationResponse> toggleMedicationStatus(Long medicationId, Authentication authentication) {
+        try {
+            System.out.println("🎯 Toggling medication status: " + medicationId);
+
+            // Get user from authentication
+            User user = userRepository.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+
+            // Find medication
+            MedicationReminder medication = medicationReminderRepository.findById(medicationId)
+                    .orElseThrow(() -> new RuntimeException("Medication không tồn tại"));
+
+            // Check authorization
+            if (!medication.getUser().getId().equals(user.getId())) {
+                throw new RuntimeException("Không có quyền thao tác medication này");
+            }
+
+            // Toggle status
+            medication.setIsActive(!medication.getIsActive());
+            MedicationReminder updatedMedication = medicationReminderRepository.save(medication);
+
+            System.out.println("✅ Medication status toggled to: " + updatedMedication.getIsActive());
+
+            // Auto reschedule reminders
+            try {
+                simpleTimeBasedScheduler.scheduleUserReminders(user.getId());
+                System.out.println("⏰ Auto-rescheduled TIME-BASED reminders for user: " + user.getId());
+            } catch (Exception e) {
+                System.err.println("⚠️ Status toggled but rescheduling failed: " + e.getMessage());
+            }
+
+            // Convert to response
+            MedicationResponse response = convertToResponse(updatedMedication);
+
+            return BaseResponse.<MedicationResponse>builder()
+                    .status("success")
+                    .message("Toggle medication status thành công")
+                    .data(response)
+                    .build();
+
+        } catch (Exception e) {
+            System.err.println("💥 Error toggling medication status: " + e.getMessage());
+            e.printStackTrace();
+            return BaseResponse.<MedicationResponse>builder()
+                    .status("error")
+                    .message("Lỗi khi toggle medication status: " + e.getMessage())
+                    .data(null)
+                    .build();
+        }
+    }
+
     // ===== HELPER METHODS =====
 
     private User getUserById(Long userId) {
@@ -322,7 +456,7 @@ public class MedicationService {
                 .type(medication.getType())
                 .reminderTimes(java.util.Arrays.asList(medication.getReminderTime()))  // ✅ Chỉ time của medication này
                 .daysOfWeek(medication.getDaysOfWeek())
-                .notes(medication.getDescription())
+                .description(medication.getDescription())
                 .isActive(medication.getIsActive())
                 .createdAt(medication.getCreatedAt() != null ? 
                     java.time.LocalDateTime.ofInstant(medication.getCreatedAt(), java.time.ZoneId.systemDefault()) : null)

@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.auto_fe.auto_fe.ui.service.PrescriptionService
 import com.auto_fe.auto_fe.ui.theme.*
 import com.auto_fe.auto_fe.ui.theme.AppTextSize
+import com.auto_fe.auto_fe.ui.utils.formatDaysOfWeek
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -783,24 +784,6 @@ fun getTypeBadgeColor(type: String): androidx.compose.ui.graphics.Color {
         "AFTER_MEAL" -> AISuccess.copy(alpha = 0.2f)
         "WITH_MEAL" -> AIWarning.copy(alpha = 0.2f)
         else -> DarkOnSurface.copy(alpha = 0.1f)
-    }
-}
-
-fun formatDaysOfWeek(daysOfWeek: String): String {
-    val days = listOf("T2", "T3", "T4", "T5", "T6", "T7", "CN")
-    
-    if (daysOfWeek == "1111111") {
-        return "Hàng ngày"
-    }
-    
-    val activeDays = daysOfWeek.mapIndexed { index, char ->
-        if (char == '1' && index < days.size) days[index] else null
-    }.filterNotNull()
-    
-    return if (activeDays.isEmpty()) {
-        "Chưa đặt lịch"
-    } else {
-        activeDays.joinToString(", ")
     }
 }
 

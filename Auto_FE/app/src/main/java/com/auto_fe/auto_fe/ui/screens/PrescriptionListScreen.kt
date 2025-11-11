@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
@@ -41,6 +42,7 @@ fun PrescriptionListScreen(
     onLogout: () -> Unit = {},
     onProfileClick: () -> Unit = {}, // Thêm callback profile
     onNotificationHistoryClick: () -> Unit = {}, // Thêm callback notification history
+    onEmergencyContactClick: () -> Unit = {}, // Thêm callback emergency contact
     userName: String = "User", // Thêm tên user
     userEmail: String = "", // Thêm email user
     userAvatar: String? = null // Thêm avatar URL
@@ -228,6 +230,29 @@ fun PrescriptionListScreen(
                                 onClick = {
                                     showMenu = false
                                     onNotificationHistoryClick()
+                                }
+                            )
+                            
+                            Divider(color = DarkOnSurface.copy(alpha = 0.2f))
+                            
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Call,
+                                            contentDescription = null,
+                                            tint = DarkOnSurface,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Text("Liên hệ khẩn cấp", color = DarkOnSurface)
+                                    }
+                                },
+                                onClick = {
+                                    showMenu = false
+                                    onEmergencyContactClick()
                                 }
                             )
                             

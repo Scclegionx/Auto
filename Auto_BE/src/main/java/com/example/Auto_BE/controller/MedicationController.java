@@ -91,6 +91,24 @@ public class MedicationController {
     }
 
     /**
+     * Lấy chỉ standalone medications (thuốc ngoài đơn) đã được group theo tên
+     */
+    @GetMapping("/standalone/user/{userId}")
+    public ResponseEntity<BaseResponse<List<MedicationResponse>>> getStandaloneMedications(
+            @PathVariable Long userId) {
+        
+        System.out.println("💊 API: Get standalone medications for user - " + userId);
+        
+        BaseResponse<List<MedicationResponse>> response = medicationService.getStandaloneMedicationsByUser(userId);
+        
+        if ("success".equals(response.status)) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    /**
      * Update medication
      */
     @PutMapping("/{medicationId}")
@@ -121,6 +139,25 @@ public class MedicationController {
         System.out.println("🗑️ API: Delete medication - " + medicationId);
         
         BaseResponse<String> response = medicationService.deleteMedication(medicationId, authentication);
+        
+        if ("success".equals(response.status)) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    /**
+     * Toggle trạng thái active/inactive của medication
+     */
+    @PutMapping("/{medicationId}/toggle")
+    public ResponseEntity<BaseResponse<MedicationResponse>> toggleMedicationStatus(
+            @PathVariable Long medicationId,
+            Authentication authentication) {
+        
+        System.out.println("🔄 API: Toggle medication status - " + medicationId);
+        
+        BaseResponse<MedicationResponse> response = medicationService.toggleMedicationStatus(medicationId, authentication);
         
         if ("success".equals(response.status)) {
             return ResponseEntity.ok(response);

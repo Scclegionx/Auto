@@ -118,7 +118,7 @@ public class PrescriptionMapper {
                     return MedicationResponse.builder()
                             .id(first.getId()) // Lấy ID của bản ghi đầu tiên (có thể dùng cho edit)
                             .medicationName(first.getName())
-                            .notes(first.getDescription())
+                            .description(first.getDescription())
                             .type(first.getType())
                             .reminderTimes(times)
                             .daysOfWeek(first.getDaysOfWeek())

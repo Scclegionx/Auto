@@ -78,6 +78,8 @@ import com.auto_fe.auto_fe.ui.screens.AuthScreen
 import com.auto_fe.auto_fe.ui.screens.SettingsScreen
 import com.auto_fe.auto_fe.ui.screens.GuideScreen
 import com.auto_fe.auto_fe.ui.screens.PrescriptionListScreen
+import com.auto_fe.auto_fe.ui.screens.MedicationTabScreen
+import com.auto_fe.auto_fe.ui.screens.CreateStandaloneMedicationScreen
 import com.auto_fe.auto_fe.ui.screens.PrescriptionDetailScreen
 import com.auto_fe.auto_fe.ui.screens.CreatePrescriptionScreen
 import com.auto_fe.auto_fe.ui.screens.VerificationScreen
@@ -85,6 +87,7 @@ import com.auto_fe.auto_fe.ui.screens.ProfileScreen
 import com.auto_fe.auto_fe.ui.screens.ForgotPasswordScreen
 import com.auto_fe.auto_fe.ui.screens.ChangePasswordScreen
 import com.auto_fe.auto_fe.ui.screens.NotificationHistoryScreen
+import com.auto_fe.auto_fe.ui.screens.EmergencyContactScreen
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
 import com.auto_fe.auto_fe.utils.SessionManager
 import com.auto_fe.auto_fe.utils.PermissionManager
@@ -215,6 +218,8 @@ fun MainScreen(sessionManager: SessionManager) {
     var showForgotPassword by remember { mutableStateOf(false) }  // ✅ Thêm state cho forgot password
     var showChangePassword by remember { mutableStateOf(false) }  // ✅ Thêm state cho change password
     var showNotificationHistory by remember { mutableStateOf(false) }  // ✅ Thêm state cho notification history
+    var showEmergencyContact by remember { mutableStateOf(false) }  // ✅ Thêm state cho emergency contact
+    var showCreateStandaloneMedication by remember { mutableStateOf(false) }  // ✅ Thêm state cho create standalone medication
     var verificationEmail by remember { mutableStateOf("") }
     var verificationPassword by remember { mutableStateOf("") }
     var verifiedEmail by remember { mutableStateOf<String?>(null) }
@@ -264,8 +269,12 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     // BackHandler để xử lý nút back
-    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory) {
+    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory || showEmergencyContact) {
         when {
+            // Nếu đang ở màn emergency contact → quay về danh sách
+            showEmergencyContact -> {
+                showEmergencyContact = false
+            }
             // Nếu đang ở màn notification history → quay về danh sách
             showNotificationHistory -> {
                 showNotificationHistory = false
@@ -341,6 +350,30 @@ fun MainScreen(sessionManager: SessionManager) {
                 NotificationHistoryScreen(
                     accessToken = token,
                     onBack = { showNotificationHistory = false }
+                )
+            }
+        }
+        // Màn hình liên hệ khẩn cấp (fullscreen)
+        showEmergencyContact && accessToken != null -> {
+            val token = accessToken // Smart cast fix
+            if (token != null) {
+                EmergencyContactScreen(
+                    accessToken = token,
+                    onBackClick = { showEmergencyContact = false }
+                )
+            }
+        }
+        // Màn hình tạo thuốc ngoài đơn (fullscreen)
+        showCreateStandaloneMedication && accessToken != null -> {
+            val token = accessToken // Smart cast fix
+            if (token != null) {
+                CreateStandaloneMedicationScreen(
+                    accessToken = token,
+                    onDismiss = { showCreateStandaloneMedication = false },
+                    onSuccess = { 
+                        showCreateStandaloneMedication = false
+                        // Tab will auto-refresh when back to view
+                    }
                 )
             }
         }
@@ -420,7 +453,9 @@ fun MainScreen(sessionManager: SessionManager) {
                                     ?.takeIf { it.isNotBlank() && it != "null" } 
                                     ?: "Người dùng"
                                 
-                                PrescriptionListScreen(
+                                val context = LocalContext.current
+                                
+                                MedicationTabScreen(
                                     accessToken = accessToken!!,
                                     userName = displayName,
                                     userEmail = sessionManager.getUserEmail() ?: "",
@@ -428,14 +463,20 @@ fun MainScreen(sessionManager: SessionManager) {
                                     onPrescriptionClick = { prescriptionId ->
                                         selectedPrescriptionId = prescriptionId
                                     },
-                                    onCreateClick = {
+                                    onCreatePrescriptionClick = {
                                         showCreatePrescription = true
+                                    },
+                                    onCreateStandaloneMedicationClick = {
+                                        showCreateStandaloneMedication = true
                                     },
                                     onProfileClick = {
                                         showProfile = true
                                     },
                                     onNotificationHistoryClick = {
                                         showNotificationHistory = true
+                                    },
+                                    onEmergencyContactClick = {
+                                        showEmergencyContact = true
                                     },
                                     onLogout = {
                                         onLogout()

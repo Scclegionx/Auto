@@ -1,8 +1,11 @@
 package com.example.Auto_BE.utils;
 
+import com.example.Auto_BE.entity.User;
+import com.example.Auto_BE.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -10,7 +13,11 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtils {
+    
+    private final UserRepository userRepository;
+    
     @Value("${app.jwt.secret-key}")
     private String secretKey;
 
@@ -20,14 +27,38 @@ public class JwtUtils {
     @Value("${app.jwt.refresh-token-expiration-ms}")
     private long refreshTokenExpirationMs;
 
+    /**
+     * Generate access token from Authentication (với userId)
+     */
     public String generateAccessToken(Authentication authentication) {
+        String email = authentication.getName();
+        
+        // Tìm userId từ email
+        User user = userRepository.findByEmail(email).orElse(null);
+        Long userId = user != null ? user.getId() : null;
+        
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(email)
+                .claim("userId", userId)
                 .setIssuedAt(new java.util.Date())
                 .setExpiration(new java.util.Date(System.currentTimeMillis() + expirationMs))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
+    
+    /**
+     * Generate access token from email and userId (recommended)
+     */
+    public String generateAccessToken(String email, Long userId) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("userId", userId)
+                .setIssuedAt(new java.util.Date())
+                .setExpiration(new java.util.Date(System.currentTimeMillis() + expirationMs))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+    
     public String generateAccessToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
@@ -70,6 +101,15 @@ public class JwtUtils {
                 .getBody()
                 .getSubject();
     }
+    
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("userId", Long.class);
+    }
 
     public boolean validateAccessToken(String token) {
         try {
@@ -78,6 +118,10 @@ public class JwtUtils {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    public boolean validateToken(String token) {
+        return validateAccessToken(token);
     }
 
     public boolean validateVerificationToken(String token) {

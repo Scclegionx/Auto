@@ -1,0 +1,59 @@
+@startuml Send_Message_Sequence
+
+actor "User A" as userA
+participant "Mobile App" as app
+participant "WebSocket\nClient" as ws
+participant "Spring Boot\nController" as controller
+participant "ChatService" as service
+participant "Database" as db
+participant "WebSocket\nBroker" as broker
+actor "User B" as userB
+
+title Sequence Diagram: Gửi tin nhắn qua WebSocket
+
+' WebSocket connection
+userA -> app : Mở màn hình chat
+app -> ws : Connect WebSocket\n(với JWT token)
+ws -> controller : Handshake với\nAuthorization header
+controller -> controller : Validate JWT token
+controller --> ws : Connection established
+ws --> app : Connected
+app --> userA : Sẵn sàng chat
+
+' Subscribe to receive messages
+app -> ws : Subscribe to\n/user/queue/messages
+ws -> broker : Register subscription
+broker --> ws : Subscribed
+ws --> app : Listening for messages
+
+' Send message
+userA -> app : Nhập tin: "Hello"
+app -> ws : Send message to\n/app/chat.send
+note right
+  {
+    "chatId": 1,
+    "content": "Hello"
+  }
+end note
+
+ws -> controller : MessageMapping("/chat.send")
+controller -> service : sendMessage(request, userId)
+
+' Service logic
+service -> db : Find/Create Chat
+service -> db : Save Message
+service -> db : Update Chat.lastMessage
+service -> db : Increment unreadCount\nfor User B
+
+' Broadcast to receiver
+service -> broker : convertAndSendToUser(\nuserB.email,\n"/queue/messages", response)
+broker -> userB : Push message via WebSocket
+userB -> userB : Nhận tin "Hello"
+
+' Response to sender
+service --> controller : MessageResponse
+controller --> ws : Message sent confirmation
+ws --> app : Message delivered
+app --> userA : Hiển thị tin đã gửi
+
+@enduml

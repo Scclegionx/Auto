@@ -57,7 +57,9 @@ public class AuthService {
                         loginRequest.getPassword()
                 )
         );
-        String accessToken = jwtUtils.generateAccessToken(authentication);
+        
+        // Generate token with userId for chat feature
+        String accessToken = jwtUtils.generateAccessToken(user.getEmail(), user.getId());
         
         // Tạo UserInfo để trả về
         LoginResponse.UserInfo userInfo = LoginResponse.UserInfo.builder()

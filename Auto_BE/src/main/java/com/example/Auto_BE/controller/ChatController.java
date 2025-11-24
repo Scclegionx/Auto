@@ -129,15 +129,23 @@ public class ChatController {
             @Payload SendMessageRequest request,
             SimpMessageHeaderAccessor headerAccessor) {
         
+        System.out.println("📩 Received STOMP message via @MessageMapping");
+        System.out.println("Request: chatId=" + request.getChatId() + ", receiverId=" + request.getReceiverId() + ", content=" + request.getContent());
+        
         // Lấy username từ WebSocket session (đã set trong HandshakeInterceptor)
         String username = (String) headerAccessor.getSessionAttributes().get("username");
+        System.out.println("Username from session: " + username);
         
         if (username != null) {
             // Tìm userId từ username (email)
             Long userId = getUserIdFromUsername(username);
+            System.out.println("Found userId: " + userId);
             
             // Gửi message (ChatService sẽ tự động broadcast qua WebSocket)
             chatService.sendMessage(request, userId);
+            System.out.println("✅ Message sent successfully via STOMP");
+        } else {
+            System.err.println("❌ No username in session! Cannot send message via STOMP");
         }
     }
     

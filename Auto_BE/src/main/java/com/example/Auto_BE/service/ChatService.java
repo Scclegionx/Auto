@@ -32,6 +32,7 @@ public class ChatService {
     private final UserRepository userRepository;
     private final UserChatRepository userChatRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final FcmService fcmService;
     
     /**
      * Lấy tất cả chat của user
@@ -221,16 +222,35 @@ public class ChatService {
                 .createdAt(message.getCreatedAt())
                 .build();
         
-        // Gửi message qua WebSocket đến tất cả users khác trong chat
+        // Gửi message qua WebSocket đến tất cả users đang xem chat này
+        String topicDestination = "/topic/chat-" + chat.getId();
+        System.out.println("📤 Broadcasting message to topic: " + topicDestination);
+        System.out.println("📦 Message payload: id=" + response.getId() + ", content=" + response.getContent());
+        
+        messagingTemplate.convertAndSend(topicDestination, response);
+        
+        System.out.println("✅ WebSocket broadcast completed!");
+        
+        // Gửi FCM notification đến tất cả users khác trong chat
         for (UserChat userChat : chatMembers) {
             if (!userChat.getUser().getId().equals(senderId)) {
-                messagingTemplate.convertAndSendToUser(
-                        userChat.getUser().getEmail(),
-                        "/queue/messages",
-                        response
-                );
+                User receiver = userChat.getUser();
+                System.out.println("📲 Sending FCM to user: " + receiver.getEmail());
+                
+                try {
+                    fcmService.sendChatNotification(
+                        receiver,
+                        sender.getFullName() != null ? sender.getFullName() : "Người dùng",
+                        request.getContent(),
+                        chat.getId()
+                    );
+                } catch (Exception e) {
+                    System.err.println("❌ FCM send failed for " + receiver.getEmail() + ": " + e.getMessage());
+                }
             }
         }
+        
+        System.out.println("✅ All notifications completed!");
         
         return response;
     }

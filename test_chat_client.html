@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Test Client</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .container { border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+        input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        #messages { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin: 10px 0; }
+        .message { margin: 5px 0; padding: 5px; background: #f0f0f0; border-radius: 4px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .connected { background: #d4edda; color: #155724; }
+        .disconnected { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>WebSocket Chat Test Client</h2>
+        
+        <div id="status" class="status disconnected">Disconnected</div>
+        
+        <h3>1. Đăng nhập</h3>
+        <input type="text" id="email" placeholder="Email (ví dụ: test@gmail.com)" value="test@gmail.com">
+        <input type="password" id="password" placeholder="Password" value="123456">
+        <button onclick="login()">Đăng nhập</button>
+        
+        <h3>2. Kết nối WebSocket</h3>
+        <button onclick="connectWebSocket()" id="connectBtn">Kết nối WebSocket</button>
+        <button onclick="subscribeToChat()" id="subscribeBtn" disabled>Subscribe to Chat</button>
+        
+        <h3>3. Gửi tin nhắn</h3>
+        <input type="number" id="chatId" placeholder="Chat ID (lấy từ app)">
+        <input type="number" id="receiverId" placeholder="Receiver ID (lấy từ app)">
+        <input type="text" id="messageContent" placeholder="Nội dung tin nhắn">
+        <button onclick="sendMessage()">Gửi tin nhắn</button>
+        
+        <h3>4. Tin nhắn nhận được</h3>
+        <div id="messages"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://192.168.33.101:8080';
+        let accessToken = null;
+        let stompClient = null;
+        let userEmail = null;
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            fetch(BASE_URL + '/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.data && data.data.accessToken) {
+                    accessToken = data.data.accessToken;
+                    userEmail = email;
+                    alert('Đăng nhập thành công! Token: ' + accessToken.substring(0, 20) + '...');
+                    document.getElementById('connectBtn').disabled = false;
+                } else {
+                    alert('Đăng nhập thất bại: ' + JSON.stringify(data));
+                }
+            })
+            .catch(err => alert('Lỗi: ' + err));
+        }
+
+        function connectWebSocket() {
+            if (!accessToken) {
+                alert('Vui lòng đăng nhập trước!');
+                return;
+            }
+
+            const wsUrl = `ws://192.168.33.101:8080/ws/chat?access_token=${accessToken}`;
+            console.log('Connecting to:', wsUrl);
+
+            stompClient = new StompJs.Client({
+                brokerURL: wsUrl,
+                debug: function (str) {
+                    console.log('STOMP:', str);
+                },
+                reconnectDelay: 5000,
+                heartbeatIncoming: 4000,
+                heartbeatOutgoing: 4000,
+            });
+
+            stompClient.onConnect = function (frame) {
+                console.log('Connected:', frame);
+                document.getElementById('status').className = 'status connected';
+                document.getElementById('status').innerText = 'Connected ✓';
+                document.getElementById('subscribeBtn').disabled = false;
+
+                alert('WebSocket đã kết nối! Nhập Chat ID và click "Subscribe to Chat" để nhận tin nhắn');
+            };
+
+            stompClient.onStompError = function (frame) {
+                console.error('STOMP error:', frame);
+                alert('Lỗi STOMP: ' + frame.headers.message);
+            };
+
+            stompClient.onWebSocketError = function (error) {
+                console.error('WebSocket error:', error);
+                document.getElementById('status').className = 'status disconnected';
+                document.getElementById('status').innerText = 'Disconnected ✗';
+            };
+
+            stompClient.activate();
+        }
+
+        function subscribeToChat() {
+            const chatId = document.getElementById('chatId').value;
+            
+            if (!chatId) {
+                alert('Vui lòng nhập Chat ID trước!');
+                return;
+            }
+            
+            if (!stompClient || !stompClient.connected) {
+                alert('WebSocket chưa kết nối!');
+                return;
+            }
+            
+            // Subscribe to chat topic
+            stompClient.subscribe(`/topic/chat-${chatId}`, function (message) {
+                console.log('📨 Message received from topic:', message.body);
+                const msg = JSON.parse(message.body);
+                addMessage(`[${msg.senderName || msg.senderId}]: ${msg.content}`);
+            });
+            
+            console.log('✅ Subscribed to /topic/chat-' + chatId);
+            alert('Đã subscribe to /topic/chat-' + chatId + '\nBạn sẽ nhận tin nhắn real-time từ chat này!');
+        }
+
+        function sendMessage() {
+            if (!stompClient || !stompClient.connected) {
+                alert('WebSocket chưa kết nối!');
+                return;
+            }
+
+            const chatId = document.getElementById('chatId').value;
+            const receiverId = document.getElementById('receiverId').value;
+            const content = document.getElementById('messageContent').value;
+
+            const payload = {
+                chatId: chatId ? parseInt(chatId) : null,
+                receiverId: receiverId ? parseInt(receiverId) : null,
+                content: content
+            };
+
+            console.log('Sending message:', payload);
+
+            stompClient.publish({
+                destination: '/app/chat.send',
+                body: JSON.stringify(payload)
+            });
+
+            addMessage(`[Bạn]: ${content}`);
+            document.getElementById('messageContent').value = '';
+        }
+
+        function addMessage(text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message';
+            messageEl.innerText = new Date().toLocaleTimeString() + ' - ' + text;
+            messagesDiv.appendChild(messageEl);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>

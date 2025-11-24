@@ -1,18 +1,28 @@
 package com.example.Auto_BE.service;
 
+import com.example.Auto_BE.entity.DeviceToken;
+import com.example.Auto_BE.entity.User;
+import com.example.Auto_BE.repository.DeviceTokenRepository;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FcmService {
+    
+    @Autowired
+    private DeviceTokenRepository deviceTokenRepository;
     public static void initialize() {
         try {
             // Kiểm tra xem Firebase App đã được khởi tạo chưa
@@ -68,5 +78,77 @@ public class FcmService {
                 .setNotification(Notification.builder().setTitle(title).setBody(body).build())
                 .build();
         return FirebaseMessaging.getInstance().sendEachForMulticast(message);
+    }
+    
+    /**
+     * Gửi notification tin nhắn chat mới đến tất cả devices của user
+     */
+    public void sendChatNotification(
+            User receiver,
+            String senderName,
+            String messageContent,
+            Long chatId
+    ) {
+        // Lấy tất cả FCM tokens của receiver
+        List<DeviceToken> deviceTokens = deviceTokenRepository.findByUserAndIsActive(receiver, true);
+        
+        if (deviceTokens.isEmpty()) {
+            System.out.println("⚠️ No active device tokens found for user: " + receiver.getEmail());
+            return;
+        }
+        
+        System.out.println("📱 Sending FCM notification to " + deviceTokens.size() + " devices of " + receiver.getEmail());
+        
+        // Build notification data
+        Map<String, String> data = new HashMap<>();
+        data.put("type", "chat_message");
+        data.put("chatId", String.valueOf(chatId));
+        data.put("senderName", senderName);
+        data.put("messageContent", messageContent);
+        
+        // Gửi đến từng device
+        for (DeviceToken deviceToken : deviceTokens) {
+            try {
+                String token = deviceToken.getFcmToken();
+                
+                if (token == null || token.isEmpty()) {
+                    continue;
+                }
+                
+                // Build message
+                Message message = Message.builder()
+                        .setToken(token)
+                        .setNotification(Notification.builder()
+                                .setTitle(senderName)
+                                .setBody(messageContent)
+                                .build())
+                        .putAllData(data)
+                        .setAndroidConfig(AndroidConfig.builder()
+                                .setPriority(AndroidConfig.Priority.HIGH)
+                                .setNotification(AndroidNotification.builder()
+                                        .setSound("default")
+                                        .setClickAction("OPEN_CHAT")
+                                        .build())
+                                .build())
+                        .build();
+                
+                // Send message
+                String response = FirebaseMessaging.getInstance().send(message);
+                System.out.println("✅ FCM sent successfully to device: " + deviceToken.getDeviceName());
+                
+            } catch (FirebaseMessagingException e) {
+                System.err.println("❌ Failed to send FCM to device " + deviceToken.getDeviceName() + ": " + e.getMessage());
+                
+                // Nếu token không hợp lệ, vô hiệu hóa nó
+                if (e.getErrorCode().equals("invalid-registration-token") || 
+                    e.getErrorCode().equals("registration-token-not-registered")) {
+                    deviceToken.setIsActive(false);
+                    deviceTokenRepository.save(deviceToken);
+                    System.out.println("🗑️ Deactivated invalid token for device: " + deviceToken.getDeviceName());
+                }
+            } catch (Exception e) {
+                System.err.println("❌ Unexpected error sending FCM: " + e.getMessage());
+            }
+        }
     }
 }

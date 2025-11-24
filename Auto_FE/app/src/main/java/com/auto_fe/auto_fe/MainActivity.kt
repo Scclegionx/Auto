@@ -377,6 +377,7 @@ fun MainScreen(sessionManager: SessionManager) {
             com.auto_fe.auto_fe.ui.screens.ChatDetailScreen(
                 accessToken = accessToken ?: "",
                 currentUserId = sessionManager.getUserId() ?: 0L,
+                userEmail = sessionManager.getUserEmail() ?: "",
                 chatId = selectedChatId,
                 receiverId = selectedReceiverId,
                 chatName = selectedChatName,

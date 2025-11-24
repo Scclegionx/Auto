@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.auto_fe.auto_fe.models.ChatMessage
 import com.auto_fe.auto_fe.ui.service.ChatService
+import com.auto_fe.auto_fe.ui.service.WebSocketManager
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -28,6 +29,7 @@ import kotlinx.coroutines.launch
 fun ChatDetailScreen(
     accessToken: String,
     currentUserId: Long,
+    userEmail: String,            // Email của user hiện tại (để subscribe WebSocket)
     chatId: Long? = null,        // Chat ID (luôn có sau khi create)
     receiverId: Long? = null,    // Deprecated - không dùng nữa
     chatName: String? = null,
@@ -35,12 +37,68 @@ fun ChatDetailScreen(
 ) {
     val scope = rememberCoroutineScope()
     val chatService = remember { ChatService() }
+    val wsManager = remember { WebSocketManager() }
     val listState = rememberLazyListState()
 
     var messages by remember { mutableStateOf<List<ChatMessage>>(emptyList()) }
     var messageText by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var wsConnected by remember { mutableStateOf(false) }
+
+    // Connect WebSocket when screen opens
+    LaunchedEffect(Unit) {
+        Log.d("ChatDetailScreen", "=== WebSocket Connection Start ===")
+        Log.d("ChatDetailScreen", "User email: $userEmail")
+        Log.d("ChatDetailScreen", "Chat ID: $chatId")
+        Log.d("ChatDetailScreen", "Access token length: ${accessToken.length}")
+        
+        wsManager.connect(
+            accessToken = accessToken,
+            onConnected = {
+                wsConnected = true
+                Log.d("ChatDetailScreen", "✅ WebSocket connected successfully")
+                
+                // Subscribe to chat topic to receive real-time messages
+                chatId?.let { id ->
+                    val topicSubscription = wsManager.subscribeToTopic(
+                        topic = "/topic/chat-$id",
+                        onMessageReceived = { newMessage ->
+                            Log.d("ChatDetailScreen", "📨 New message received: ${newMessage.content}")
+                            
+                            // Add message to UI
+                            messages = messages + newMessage
+                            
+                            // Auto scroll to bottom
+                            scope.launch {
+                                if (messages.isNotEmpty()) {
+                                    listState.animateScrollToItem(messages.size - 1)
+                                }
+                            }
+                        }
+                    )
+                    
+                    if (topicSubscription != null) {
+                        Log.d("ChatDetailScreen", "✅ Subscribed to /topic/chat-$id")
+                    } else {
+                        Log.e("ChatDetailScreen", "❌ Failed to subscribe to topic")
+                    }
+                }
+            },
+            onError = { error ->
+                Log.e("ChatDetailScreen", "❌ WebSocket connection error: $error")
+                wsConnected = false
+            }
+        )
+    }
+
+    // Disconnect WebSocket when screen closes
+    DisposableEffect(Unit) {
+        onDispose {
+            Log.d("ChatDetailScreen", "Disconnecting WebSocket")
+            wsManager.disconnect()
+        }
+    }
 
     // Load messages if chatId exists
     LaunchedEffect(chatId) {
@@ -71,25 +129,31 @@ fun ChatDetailScreen(
     val sendMessage: () -> Unit = {
         if (messageText.isNotBlank() && chatId != null) {
             scope.launch {
+                val content = messageText.trim()
+                messageText = "" // Clear input immediately
+                
+                // Send via REST API (more reliable)
                 val result = chatService.sendMessage(
                     chatId = chatId,
-                    receiverId = null, // Không cần receiverId nữa
-                    content = messageText.trim(),
+                    receiverId = null,
+                    content = content,
                     accessToken = accessToken
                 )
                 result.fold(
                     onSuccess = { sentMessage ->
-                        // Add message to list
-                        messages = messages + sentMessage
-                        messageText = ""
-                        // Scroll to bottom
-                        scope.launch {
-                            listState.animateScrollToItem(messages.size - 1)
+                        // Add message to list if not already added by WebSocket
+                        if (!messages.any { it.id == sentMessage.id }) {
+                            messages = messages + sentMessage
+                            // Scroll to bottom
+                            scope.launch {
+                                listState.animateScrollToItem(messages.size - 1)
+                            }
                         }
                     },
                     onFailure = { error ->
                         errorMessage = "Không thể gửi tin nhắn: ${error.message}"
                         Log.e("ChatDetailScreen", "Send message failed", error)
+                        messageText = content // Restore message on error
                     }
                 )
             }
@@ -100,11 +164,32 @@ fun ChatDetailScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        chatName ?: "Chat",
-                        fontWeight = FontWeight.Bold,
-                        color = DarkOnSurface
-                    )
+                    Column {
+                        Text(
+                            chatName ?: "Chat",
+                            fontWeight = FontWeight.Bold,
+                            color = DarkOnSurface
+                        )
+                        // WebSocket status indicator
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .background(
+                                        color = if (wsConnected) Color.Green else Color.Gray,
+                                        shape = RoundedCornerShape(50)
+                                    )
+                            )
+                            Text(
+                                text = if (wsConnected) "Real-time" else "Connecting...",
+                                fontSize = AppTextSize.bodySmall,
+                                color = DarkOnSurface.copy(alpha = 0.6f)
+                            )
+                        }
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {

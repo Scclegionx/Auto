@@ -25,6 +25,7 @@ fun MedicationTabScreen(
     onPrescriptionClick: (Long) -> Unit,
     onCreatePrescriptionClick: () -> Unit = {},
     onCreateStandaloneMedicationClick: () -> Unit = {},
+    onChatClick: () -> Unit = {},
     onLogout: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     onNotificationHistoryClick: () -> Unit = {},
@@ -91,7 +92,8 @@ fun MedicationTabScreen(
                 0 -> PrescriptionListTab(
                     accessToken = accessToken,
                     onPrescriptionClick = onPrescriptionClick,
-                    onCreateClick = onCreatePrescriptionClick
+                    onCreateClick = onCreatePrescriptionClick,
+                    onChatClick = onChatClick
                 )
                 1 -> StandaloneMedicationTab(
                     accessToken = accessToken,

@@ -186,4 +186,48 @@ public class UserService {
         }
     }
 
+    public BaseResponse<?> searchUsers(String query, Authentication authentication) {
+        try {
+            User currentUser = userRepository.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
+
+            List<User> users;
+            if (query == null || query.trim().isEmpty()) {
+                // Nếu không có query, trả về tất cả users (trừ chính mình)
+                users = userRepository.findAll().stream()
+                        .filter(user -> !user.getId().equals(currentUser.getId()))
+                        .toList();
+            } else {
+                // Tìm kiếm theo tên hoặc email
+                String searchTerm = query.trim().toLowerCase();
+                users = userRepository.findAll().stream()
+                        .filter(user -> !user.getId().equals(currentUser.getId()))
+                        .filter(user -> {
+                            String fullName = user.getFullName();
+                            String email = user.getEmail();
+                            return (fullName != null && fullName.toLowerCase().contains(searchTerm)) ||
+                                   (email != null && email.toLowerCase().contains(searchTerm));
+                        })
+                        .toList();
+            }
+
+            // Map to response DTO
+            List<ProfileResponse> userResponses = users.stream()
+                    .map(UserMapper::toResponse)
+                    .toList();
+
+            return BaseResponse.builder()
+                    .status(SUCCESS)
+                    .message("Tìm kiếm người dùng thành công")
+                    .data(userResponses)
+                    .build();
+
+        } catch (BaseException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Error searching users", e);
+            throw new BaseException.BadRequestException("Lỗi khi tìm kiếm người dùng: " + e.getMessage());
+        }
+    }
+
 }

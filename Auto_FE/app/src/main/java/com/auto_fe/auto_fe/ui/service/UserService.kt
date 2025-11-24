@@ -288,4 +288,67 @@ class UserService {
             }
         }
     }
+
+    /**
+     * Tìm kiếm users theo tên hoặc email
+     */
+    suspend fun searchUsers(accessToken: String, query: String? = null): Result<List<ProfileData>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val url = if (query.isNullOrBlank()) {
+                    "$baseUrl/search"
+                } else {
+                    "$baseUrl/search?query=$query"
+                }
+
+                val request = Request.Builder()
+                    .url(url)
+                    .get()
+                    .addHeader("Authorization", "Bearer $accessToken")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string()
+
+                Log.d("UserService", "Search Users Response Code: ${response.code}")
+                Log.d("UserService", "Search Users Response Body: $responseBody")
+
+                if (response.isSuccessful && responseBody != null) {
+                    val jsonResponse = JSONObject(responseBody)
+                    val dataArray = jsonResponse.getJSONArray("data")
+                    val users = mutableListOf<ProfileData>()
+
+                    for (i in 0 until dataArray.length()) {
+                        val userJson = dataArray.getJSONObject(i)
+                        users.add(
+                            ProfileData(
+                                id = userJson.optLong("id"),
+                                fullName = userJson.optString("fullName", null),
+                                email = userJson.optString("email", null),
+                                dateOfBirth = userJson.optString("dateOfBirth", null),
+                                gender = userJson.optString("gender", null),
+                                phoneNumber = userJson.optString("phoneNumber", null),
+                                address = userJson.optString("address", null),
+                                bloodType = userJson.optString("bloodType", null),
+                                height = if (userJson.has("height") && !userJson.isNull("height"))
+                                    userJson.getDouble("height") else null,
+                                weight = if (userJson.has("weight") && !userJson.isNull("weight"))
+                                    userJson.getDouble("weight") else null,
+                                avatar = userJson.optString("avatar", null),
+                                isActive = userJson.optBoolean("isActive", false)
+                            )
+                        )
+                    }
+
+                    Result.success(users)
+                } else {
+                    Result.failure(Exception("Không thể tìm kiếm người dùng: ${response.code}"))
+                }
+            } catch (e: Exception) {
+                Log.e("UserService", "Search users error", e)
+                Result.failure(Exception("Lỗi kết nối: ${e.message}"))
+            }
+        }
+    }
 }
+

@@ -234,6 +234,84 @@ public class ChatService {
         
         return response;
     }
+
+    /**
+     * Tạo hoặc lấy chat 1-1 giữa 2 users
+     */
+    @Transactional
+    public ChatResponse createOrGetChat(Long user1Id, Long user2Id) {
+        User user1 = userRepository.findById(user1Id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user2 = userRepository.findById(user2Id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        // Tìm chat đã tồn tại
+        Chat chat = chatRepository.findDirectChatBetweenUsers(user1Id, user2Id)
+                .orElseGet(() -> {
+                    // Tạo chat mới
+                    Chat newChat = new Chat();
+                    newChat.setChatType("DIRECT");
+                    newChat = chatRepository.save(newChat);
+                    
+                    // Tạo UserChat cho user1
+                    UserChat userChat1 = new UserChat();
+                    userChat1.setChat(newChat);
+                    userChat1.setUser(user1);
+                    userChat1.setUnreadCount(0);
+                    userChat1.setIsActive(true);
+                    userChatRepository.save(userChat1);
+                    
+                    // Tạo UserChat cho user2
+                    UserChat userChat2 = new UserChat();
+                    userChat2.setChat(newChat);
+                    userChat2.setUser(user2);
+                    userChat2.setUnreadCount(0);
+                    userChat2.setIsActive(true);
+                    userChatRepository.save(userChat2);
+                    
+                    return newChat;
+                });
+        
+        // Build response
+        return buildChatResponse(chat, user1Id);
+    }
+
+    /**
+     * Xây dựng ChatResponse cho 1 chat theo user hiện tại (để trả về UI)
+     */
+    private ChatResponse buildChatResponse(Chat chat, Long userId) {
+    // Tìm UserChat của user hiện tại trong chat
+    UserChat currentUserChat = userChatRepository.findByUserIdAndChatId(userId, chat.getId())
+        .orElse(null);
+
+    // Lấy thông tin người kia (nếu có)
+    List<UserChat> chatMembers = userChatRepository.findAllByChatId(chat.getId());
+    UserChat otherUserChat = chatMembers.stream()
+        .filter(uc -> !uc.getUser().getId().equals(userId))
+        .findFirst()
+        .orElse(null);
+
+    User otherUser = otherUserChat != null ? otherUserChat.getUser() : null;
+
+    ChatResponse.ChatResponseBuilder builder = ChatResponse.builder()
+        .id(chat.getId())
+        .lastMessage(chat.getLastMessageContent())
+        .lastMessageTime(chat.getLastMessageAt())
+        .unreadCount(currentUserChat != null && currentUserChat.getUnreadCount() != null ? currentUserChat.getUnreadCount().longValue() : 0L)
+        .createdAt(chat.getCreatedAt())
+        .updatedAt(chat.getUpdatedAt());
+
+    if (otherUser != null && currentUserChat != null) {
+        builder.user1Id(userId)
+            .user1Name(currentUserChat.getUser().getFullName())
+            .user1Avatar(currentUserChat.getUser().getAvatar())
+            .user2Id(otherUser.getId())
+            .user2Name(otherUser.getFullName())
+            .user2Avatar(otherUser.getAvatar());
+    }
+
+    return builder.build();
+    }
     
     /**
      * Đánh dấu tất cả message trong chat là đã đọc

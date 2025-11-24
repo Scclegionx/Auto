@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,7 +28,8 @@ import kotlinx.coroutines.launch
 fun PrescriptionListTab(
     accessToken: String,
     onPrescriptionClick: (Long) -> Unit,
-    onCreateClick: () -> Unit = {}
+    onCreateClick: () -> Unit = {},
+    onChatClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -181,19 +183,38 @@ fun PrescriptionListTab(
             }
         }
 
-        // Floating Action Button
-        FloatingActionButton(
-            onClick = onCreateClick,
-            containerColor = DarkPrimary,
+        // Floating Action Buttons - Chat và Add
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(24.dp)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Thêm đơn thuốc",
-                tint = DarkOnPrimary
-            )
+            // Chat Button
+            FloatingActionButton(
+                onClick = onChatClick,
+                containerColor = DarkPrimary,
+                modifier = Modifier.size(56.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Email,
+                    contentDescription = "Chat",
+                    tint = DarkOnPrimary
+                )
+            }
+            
+            // Add Prescription Button
+            FloatingActionButton(
+                onClick = onCreateClick,
+                containerColor = DarkPrimary,
+                modifier = Modifier.size(56.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Thêm đơn thuốc",
+                    tint = DarkOnPrimary
+                )
+            }
         }
     }
 }

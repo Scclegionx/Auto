@@ -1,5 +1,6 @@
 package com.example.Auto_BE.controller;
 
+import com.example.Auto_BE.dto.BaseResponse;
 import com.example.Auto_BE.dto.request.SendMessageRequest;
 import com.example.Auto_BE.dto.response.ChatResponse;
 import com.example.Auto_BE.dto.response.MessageResponse;
@@ -83,6 +84,26 @@ public class ChatController {
         Long userId = getUserIdFromToken(authHeader);
         MessageResponse message = chatService.sendMessage(request, userId);
         return ResponseEntity.ok(message);
+    }
+
+    /**
+     * REST API: Tạo hoặc lấy chat với user
+     */
+    @PostMapping("/create")
+    public ResponseEntity<BaseResponse<ChatResponse>> createOrGetChat(
+            @RequestParam Long receiverId,
+            @RequestHeader("Authorization") String authHeader) {
+        
+        Long userId = getUserIdFromToken(authHeader);
+        ChatResponse chat = chatService.createOrGetChat(userId, receiverId);
+        
+        BaseResponse<ChatResponse> response = BaseResponse.<ChatResponse>builder()
+                .status("success")
+                .message("Chat created or retrieved successfully")
+                .data(chat)
+                .build();
+        
+        return ResponseEntity.ok(response);
     }
     
     /**

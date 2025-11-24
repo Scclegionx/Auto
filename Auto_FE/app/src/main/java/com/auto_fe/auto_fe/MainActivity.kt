@@ -69,7 +69,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
-import kotlin.random.Random
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.isActive
 import com.auto_fe.auto_fe.ui.FloatingWindow
 import com.auto_fe.auto_fe.ui.theme.Auto_FETheme
@@ -88,6 +88,8 @@ import com.auto_fe.auto_fe.ui.screens.ForgotPasswordScreen
 import com.auto_fe.auto_fe.ui.screens.ChangePasswordScreen
 import com.auto_fe.auto_fe.ui.screens.NotificationHistoryScreen
 import com.auto_fe.auto_fe.ui.screens.EmergencyContactScreen
+import com.auto_fe.auto_fe.ui.screens.ChatListScreen
+import com.auto_fe.auto_fe.ui.screens.SearchUserScreen
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
 import com.auto_fe.auto_fe.utils.SessionManager
 import com.auto_fe.auto_fe.utils.PermissionManager
@@ -220,6 +222,14 @@ fun MainScreen(sessionManager: SessionManager) {
     var showNotificationHistory by remember { mutableStateOf(false) }  // ✅ Thêm state cho notification history
     var showEmergencyContact by remember { mutableStateOf(false) }  // ✅ Thêm state cho emergency contact
     var showCreateStandaloneMedication by remember { mutableStateOf(false) }  // ✅ Thêm state cho create standalone medication
+    var showChatList by remember { mutableStateOf(false) }  // ✅ Thêm state cho chat list
+    var showSearchUser by remember { mutableStateOf(false) }  // ✅ Thêm state cho search user
+    var showChatDetail by remember { mutableStateOf(false) }  // ✅ Thêm state cho chat detail
+    var selectedChatId by remember { mutableStateOf<Long?>(null) }  // ✅ Chat ID đã tồn tại
+    var selectedReceiverId by remember { mutableStateOf<Long?>(null) }  // ✅ Receiver ID cho chat mới
+    var selectedChatName by remember { mutableStateOf<String?>(null) }  // ✅ Tên người nhận
+    var selectedUserId by remember { mutableStateOf<Long?>(null) }  // ✅ State để trigger create chat
+    var selectedUserName by remember { mutableStateOf<String?>(null) }  // ✅ State để lưu tên user
     var verificationEmail by remember { mutableStateOf("") }
     var verificationPassword by remember { mutableStateOf("") }
     var verifiedEmail by remember { mutableStateOf<String?>(null) }
@@ -268,9 +278,60 @@ fun MainScreen(sessionManager: SessionManager) {
         }
     }
 
+    // Handle create chat with user
+    LaunchedEffect(selectedUserId) {
+        selectedUserId?.let { userId ->
+            selectedUserName?.let { userName ->
+                try {
+                    val chatService = com.auto_fe.auto_fe.ui.service.ChatService()
+                    val result = chatService.getOrCreateChatWithUser(userId, accessToken ?: "")
+                    result.onSuccess { chatId ->
+                        // Navigate đến ChatDetailScreen với chatId
+                        selectedChatId = chatId
+                        selectedChatName = userName
+                        showChatDetail = true
+                        Log.d("MainActivity", "Open chat with user: $userId, chatId: $chatId")
+                    }.onFailure { error ->
+                        Toast.makeText(
+                            context,
+                            "Lỗi: ${error.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        context,
+                        "Lỗi: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } finally {
+                    // Reset state
+                    selectedUserId = null
+                    selectedUserName = null
+                }
+            }
+        }
+    }
+
     // BackHandler để xử lý nút back
-    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory || showEmergencyContact) {
+    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory || showEmergencyContact || showChatList || showSearchUser || showChatDetail) {
         when {
+            // Nếu đang ở màn chat detail → quay về chat list
+            showChatDetail -> {
+                showChatDetail = false
+                selectedChatId = null
+                selectedReceiverId = null
+                selectedChatName = null
+                showChatList = true
+            }
+            // Nếu đang ở màn search user → quay về chat list
+            showSearchUser -> {
+                showSearchUser = false
+            }
+            // Nếu đang ở màn chat list → quay về danh sách
+            showChatList -> {
+                showChatList = false
+            }
             // Nếu đang ở màn emergency contact → quay về danh sách
             showEmergencyContact -> {
                 showEmergencyContact = false
@@ -311,6 +372,57 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     when {
+        // Màn hình Chat Detail (fullscreen)
+        showChatDetail && accessToken != null -> {
+            com.auto_fe.auto_fe.ui.screens.ChatDetailScreen(
+                accessToken = accessToken ?: "",
+                currentUserId = sessionManager.getUserId() ?: 0L,
+                chatId = selectedChatId,
+                receiverId = selectedReceiverId,
+                chatName = selectedChatName,
+                onBackClick = {
+                    showChatDetail = false
+                    selectedChatId = null
+                    selectedReceiverId = null
+                    selectedChatName = null
+                    showChatList = true
+                }
+            )
+        }
+        // Màn hình Search User (fullscreen)
+        showSearchUser && accessToken != null -> {
+            SearchUserScreen(
+                accessToken = accessToken ?: "",
+                onUserClick = { userId, userName ->
+                    showSearchUser = false
+                    selectedUserId = userId
+                    selectedUserName = userName
+                },
+                onBackClick = {
+                    showSearchUser = false
+                }
+            )
+        }
+        // Màn hình Chat List (fullscreen)
+        showChatList && accessToken != null -> {
+            ChatListScreen(
+                accessToken = accessToken ?: "",
+                currentUserId = sessionManager.getUserId() ?: 0L,
+                onChatClick = { chatId ->
+                    // Navigate to chat detail screen
+                    selectedChatId = chatId
+                    selectedChatName = null // Will be loaded from chat data
+                    showChatDetail = true
+                    Log.d("MainActivity", "Navigate to chat: $chatId")
+                },
+                onSearchUserClick = {
+                    showSearchUser = true
+                },
+                onBackClick = {
+                    showChatList = false
+                }
+            )
+        }
         // Màn hình change password (fullscreen)
         showChangePassword && accessToken != null -> {
             ChangePasswordScreen(
@@ -468,6 +580,9 @@ fun MainScreen(sessionManager: SessionManager) {
                                     },
                                     onCreateStandaloneMedicationClick = {
                                         showCreateStandaloneMedication = true
+                                    },
+                                    onChatClick = {
+                                        showChatList = true
                                     },
                                     onProfileClick = {
                                         showProfile = true

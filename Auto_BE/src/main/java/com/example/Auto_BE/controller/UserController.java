@@ -47,4 +47,12 @@ public class UserController {
         BaseResponse<String> response = userService.uploadAvatar(avatar, authentication);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<?>> searchUsers(
+            @RequestParam(required = false) String query,
+            Authentication authentication) {
+        BaseResponse<?> response = userService.searchUsers(query, authentication);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -163,6 +163,13 @@ class WebSocketManager {
                     senderName = json.optString("senderName", null),
                     senderAvatar = json.optString("senderAvatar", null),
                     content = json.getString("content"),
+                    messageType = json.optString("messageType", "TEXT"),
+                    attachmentUrl = json.optString("attachmentUrl", null),
+                    attachmentName = json.optString("attachmentName", null),
+                    attachmentType = json.optString("attachmentType", null),
+                    attachmentSize = if (json.has("attachmentSize") && !json.isNull("attachmentSize")) {
+                        json.getLong("attachmentSize")
+                    } else null,
                     isRead = json.optBoolean("isRead", false),
                     readAt = json.optString("readAt", null),
                     createdAt = json.optString("createdAt", null)

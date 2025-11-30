@@ -18,6 +18,11 @@ public class MessageResponse {
     private String senderName;
     private String senderAvatar;
     private String content;
+    private String messageType; // TEXT, IMAGE, FILE, AUDIO, VIDEO
+    private String attachmentUrl; // Cloud storage URL
+    private String attachmentName; // Original filename
+    private String attachmentType; // MIME type
+    private Long attachmentSize; // File size in bytes
     private Boolean isRead;
     private Instant readAt;
     private Instant createdAt;

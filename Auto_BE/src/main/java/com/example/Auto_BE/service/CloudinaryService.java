@@ -19,6 +19,50 @@ public class CloudinaryService {
     private final Cloudinary cloudinary;
 
     /**
+     * Upload file (image/document) lên Cloudinary
+     * @param file File cần upload
+     * @return Map chứa thông tin file đã upload (url, public_id, format, resource_type, bytes)
+     */
+    public Map<String, Object> upload(MultipartFile file) throws IOException {
+        try {
+            // Generate unique filename
+            String publicId = "chat_attachments/" + UUID.randomUUID().toString();
+
+            // Determine resource type based on file type
+            String contentType = file.getContentType();
+            String resourceType = "auto"; // auto-detect
+            String folder = "auto_chat";
+
+            if (contentType != null) {
+                if (contentType.startsWith("image/")) {
+                    resourceType = "image";
+                } else if (contentType.startsWith("video/")) {
+                    resourceType = "video";
+                } else {
+                    resourceType = "raw"; // for documents, audio, etc.
+                }
+            }
+
+            // Upload to Cloudinary
+            @SuppressWarnings("unchecked")
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), 
+                ObjectUtils.asMap(
+                    "public_id", publicId,
+                    "folder", folder,
+                    "resource_type", resourceType
+                ));
+
+            log.info("File uploaded to Cloudinary: {}", uploadResult.get("secure_url"));
+
+            return uploadResult;
+
+        } catch (IOException e) {
+            log.error("Failed to upload file to Cloudinary", e);
+            throw new IOException("Failed to upload file: " + e.getMessage());
+        }
+    }
+
+    /**
      * Upload ảnh lên Cloudinary
      * @param file File ảnh cần upload
      * @return URL của ảnh trên Cloudinary
@@ -29,7 +73,8 @@ public class CloudinaryService {
             String publicId = "prescriptions/" + UUID.randomUUID().toString();
 
             // Upload to Cloudinary
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), 
+            @SuppressWarnings("unchecked")
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), 
                 ObjectUtils.asMap(
                     "public_id", publicId,
                     "folder", "auto_prescriptions",

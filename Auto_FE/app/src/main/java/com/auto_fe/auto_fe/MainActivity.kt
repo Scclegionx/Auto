@@ -409,12 +409,12 @@ fun MainScreen(sessionManager: SessionManager) {
             ChatListScreen(
                 accessToken = accessToken ?: "",
                 currentUserId = sessionManager.getUserId() ?: 0L,
-                onChatClick = { chatId ->
+                onChatClick = { chatId, chatName ->
                     // Navigate to chat detail screen
                     selectedChatId = chatId
-                    selectedChatName = null // Will be loaded from chat data
+                    selectedChatName = chatName
                     showChatDetail = true
-                    Log.d("MainActivity", "Navigate to chat: $chatId")
+                    Log.d("MainActivity", "Navigate to chat: $chatId with name: $chatName")
                 },
                 onSearchUserClick = {
                     showSearchUser = true

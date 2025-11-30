@@ -32,7 +32,7 @@ import java.util.*
 fun ChatListScreen(
     accessToken: String,
     currentUserId: Long,
-    onChatClick: (Long) -> Unit,
+    onChatClick: (Long, String) -> Unit, // Add chat name parameter
     onSearchUserClick: () -> Unit = {},
     onBackClick: () -> Unit
 ) {
@@ -170,10 +170,14 @@ fun ChatListScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(chats) { chat ->
+                            // Determine other user name
+                            val isCurrentUserUser1 = chat.user1Id == currentUserId
+                            val otherUserName = if (isCurrentUserUser1) chat.user2Name else chat.user1Name
+                            
                             ChatRoomCard(
                                 chat = chat,
                                 currentUserId = currentUserId,
-                                onClick = { onChatClick(chat.id) }
+                                onClick = { onChatClick(chat.id, otherUserName ?: "Unknown") }
                             )
                         }
                     }

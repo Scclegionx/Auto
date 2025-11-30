@@ -22,6 +22,11 @@ data class ChatMessage(
     val senderName: String?,
     val senderAvatar: String?,
     val content: String,
+    val messageType: String? = "TEXT", // TEXT, IMAGE, FILE, AUDIO, VIDEO
+    val attachmentUrl: String? = null,
+    val attachmentName: String? = null,
+    val attachmentType: String? = null,
+    val attachmentSize: Long? = null,
     val isRead: Boolean,
     val readAt: String?,
     val createdAt: String?
@@ -30,5 +35,10 @@ data class ChatMessage(
 data class SendMessageRequest(
     val chatId: Long? = null,
     val receiverId: Long? = null,
-    val content: String
+    val content: String,
+    val messageType: String? = "TEXT",
+    val attachmentUrl: String? = null,
+    val attachmentName: String? = null,
+    val attachmentType: String? = null,
+    val attachmentSize: Long? = null
 )

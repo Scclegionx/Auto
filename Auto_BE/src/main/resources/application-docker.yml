@@ -49,6 +49,18 @@ spring:
             enable: true
     default-encoding: utf-8
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+server:
+  tomcat:
+    connection-timeout: 300000  # 5 minutes
+    max-http-header-size: 8MB
+  max-http-request-header-size: 8MB
+
 app:
   jwt:
     secret-key: 1cbaee3794baa86215098188f54d3adaaefc3c7b49ed28dc475cc29a4ac4fe05

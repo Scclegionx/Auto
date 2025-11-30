@@ -134,6 +134,11 @@ public class ChatService {
                 .senderName(message.getSender().getFullName())
                 .senderAvatar(message.getSender().getAvatar())
                 .content(message.getContent())
+                .messageType(message.getMessageType())
+                .attachmentUrl(message.getAttachmentUrl())
+                .attachmentName(message.getAttachmentName())
+                .attachmentType(message.getAttachmentType())
+                .attachmentSize(message.getAttachmentSize())
                 .isRead(message.getIsRead())
                 .readAt(message.getReadAt())
                 .createdAt(message.getCreatedAt())
@@ -193,11 +198,19 @@ public class ChatService {
         message.setChat(chat);
         message.setSender(sender);
         message.setContent(request.getContent());
+        message.setMessageType(request.getMessageType() != null ? request.getMessageType() : "TEXT");
+        message.setAttachmentUrl(request.getAttachmentUrl());
+        message.setAttachmentName(request.getAttachmentName());
+        message.setAttachmentType(request.getAttachmentType());
+        message.setAttachmentSize(request.getAttachmentSize());
         message.setIsRead(false);
         message = messageRepository.save(message);
         
         // Cập nhật lastMessage của chat
-        chat.setLastMessageContent(request.getContent());
+        String lastMessageContent = request.getMessageType() != null && !request.getMessageType().equals("TEXT") 
+            ? "[" + request.getMessageType() + "] " + (request.getAttachmentName() != null ? request.getAttachmentName() : "Attachment")
+            : request.getContent();
+        chat.setLastMessageContent(lastMessageContent);
         chat.setLastMessageAt(Instant.now());
         chatRepository.save(chat);
         
@@ -218,6 +231,11 @@ public class ChatService {
                 .senderName(sender.getFullName())
                 .senderAvatar(sender.getAvatar())
                 .content(message.getContent())
+                .messageType(message.getMessageType())
+                .attachmentUrl(message.getAttachmentUrl())
+                .attachmentName(message.getAttachmentName())
+                .attachmentType(message.getAttachmentType())
+                .attachmentSize(message.getAttachmentSize())
                 .isRead(false)
                 .createdAt(message.getCreatedAt())
                 .build();

@@ -30,6 +30,21 @@ public class Message extends BaseEntity {
     @Column(name = "content", nullable = false, length = 2000)
     private String content; // Nội dung tin nhắn
     
+    @Column(name = "message_type", nullable = false, length = 20)
+    private String messageType = "TEXT"; // TEXT, IMAGE, FILE, AUDIO, VIDEO
+    
+    @Column(name = "attachment_url", length = 500)
+    private String attachmentUrl; // Cloud storage URL
+    
+    @Column(name = "attachment_name", length = 255)
+    private String attachmentName; // Original filename
+    
+    @Column(name = "attachment_type", length = 50)
+    private String attachmentType; // MIME type or extension
+    
+    @Column(name = "attachment_size")
+    private Long attachmentSize; // File size in bytes
+    
     @Column(name = "is_read", nullable = false)
     private Boolean isRead = false; // Đã đọc chưa
     

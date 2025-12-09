@@ -37,11 +37,20 @@ class UserService {
         val gender: String?, // MALE, FEMALE, OTHER
         val phoneNumber: String?,
         val address: String?,
+        val avatar: String?,
+        val isActive: Boolean?,
+        
+        //  Role: ELDER, SUPERVISOR, USER
+        val role: String?,
+        
+        //  Elder-specific fields (chỉ có khi role = ELDER)
         val bloodType: String?, // A, B, AB, O, A_POSITIVE, etc.
         val height: Double?,
         val weight: Double?,
-        val avatar: String?,
-        val isActive: Boolean?
+        
+        //  Supervisor-specific fields (chỉ có khi role = SUPERVISOR)
+        val occupation: String?, // Nghề nghiệp
+        val workplace: String? // Nơi làm việc
     )
 
     /**
@@ -71,19 +80,39 @@ class UserService {
                         val dataJson = jsonResponse.getJSONObject("data")
                         ProfileData(
                             id = dataJson.optLong("id"),
-                            fullName = dataJson.optString("fullName", null),
-                            email = dataJson.optString("email", null),
-                            dateOfBirth = dataJson.optString("dateOfBirth", null),
-                            gender = dataJson.optString("gender", null),
-                            phoneNumber = dataJson.optString("phoneNumber", null),
-                            address = dataJson.optString("address", null),
-                            bloodType = dataJson.optString("bloodType", null),
+                            fullName = if (dataJson.has("fullName") && !dataJson.isNull("fullName")) 
+                                dataJson.getString("fullName") else null,
+                            email = if (dataJson.has("email") && !dataJson.isNull("email")) 
+                                dataJson.getString("email") else null,
+                            dateOfBirth = if (dataJson.has("dateOfBirth") && !dataJson.isNull("dateOfBirth")) 
+                                dataJson.getString("dateOfBirth") else null,
+                            gender = if (dataJson.has("gender") && !dataJson.isNull("gender")) 
+                                dataJson.getString("gender") else null,
+                            phoneNumber = if (dataJson.has("phoneNumber") && !dataJson.isNull("phoneNumber")) 
+                                dataJson.getString("phoneNumber") else null,
+                            address = if (dataJson.has("address") && !dataJson.isNull("address")) 
+                                dataJson.getString("address") else null,
+                            avatar = if (dataJson.has("avatar") && !dataJson.isNull("avatar")) 
+                                dataJson.getString("avatar") else null,
+                            isActive = dataJson.optBoolean("isActive", false),
+                            
+                            //  Role
+                            role = if (dataJson.has("role") && !dataJson.isNull("role")) 
+                                dataJson.getString("role") else null,
+                            
+                            //  Elder-specific fields
+                            bloodType = if (dataJson.has("bloodType") && !dataJson.isNull("bloodType")) 
+                                dataJson.getString("bloodType") else null,
                             height = if (dataJson.has("height") && !dataJson.isNull("height")) 
                                 dataJson.getDouble("height") else null,
                             weight = if (dataJson.has("weight") && !dataJson.isNull("weight")) 
                                 dataJson.getDouble("weight") else null,
-                            avatar = dataJson.optString("avatar", null),
-                            isActive = dataJson.optBoolean("isActive", false)
+                            
+                            //  Supervisor-specific fields
+                            occupation = if (dataJson.has("occupation") && !dataJson.isNull("occupation")) 
+                                dataJson.getString("occupation") else null,
+                            workplace = if (dataJson.has("workplace") && !dataJson.isNull("workplace")) 
+                                dataJson.getString("workplace") else null
                         )
                     } else null
 
@@ -120,7 +149,9 @@ class UserService {
         address: String?,
         bloodType: String?, // "A_POSITIVE", "B_POSITIVE", etc.
         height: Double?,
-        weight: Double?
+        weight: Double?,
+        occupation: String?, // Supervisor field
+        workplace: String? // Supervisor field
     ): Result<ProfileResponse> {
         return withContext(Dispatchers.IO) {
             try {
@@ -133,6 +164,8 @@ class UserService {
                     bloodType?.let { put("bloodType", it) }
                     height?.let { put("height", it) }
                     weight?.let { put("weight", it) }
+                    occupation?.let { put("occupation", it) }
+                    workplace?.let { put("workplace", it) }
                 }
 
                 Log.d("UserService", "Update Profile Request: $jsonBody")
@@ -167,13 +200,22 @@ class UserService {
                             gender = dataJson.optString("gender", null),
                             phoneNumber = dataJson.optString("phoneNumber", null),
                             address = dataJson.optString("address", null),
+                            avatar = dataJson.optString("avatar", null),
+                            isActive = dataJson.optBoolean("isActive", false),
+                            
+                            //  Role
+                            role = dataJson.optString("role", null),
+                            
+                            //  Elder-specific fields
                             bloodType = dataJson.optString("bloodType", null),
                             height = if (dataJson.has("height") && !dataJson.isNull("height")) 
                                 dataJson.getDouble("height") else null,
                             weight = if (dataJson.has("weight") && !dataJson.isNull("weight")) 
                                 dataJson.getDouble("weight") else null,
-                            avatar = dataJson.optString("avatar", null),
-                            isActive = dataJson.optBoolean("isActive", false)
+                            
+                            //  Supervisor-specific fields
+                            occupation = dataJson.optString("occupation", null),
+                            workplace = dataJson.optString("workplace", null)
                         )
                     } else null
 
@@ -329,13 +371,22 @@ class UserService {
                                 gender = userJson.optString("gender", null),
                                 phoneNumber = userJson.optString("phoneNumber", null),
                                 address = userJson.optString("address", null),
+                                avatar = userJson.optString("avatar", null),
+                                isActive = userJson.optBoolean("isActive", false),
+                                
+                                //  Role
+                                role = userJson.optString("role", null),
+                                
+                                //  Elder-specific fields
                                 bloodType = userJson.optString("bloodType", null),
                                 height = if (userJson.has("height") && !userJson.isNull("height"))
                                     userJson.getDouble("height") else null,
                                 weight = if (userJson.has("weight") && !userJson.isNull("weight"))
                                     userJson.getDouble("weight") else null,
-                                avatar = userJson.optString("avatar", null),
-                                isActive = userJson.optBoolean("isActive", false)
+                                
+                                //  Supervisor-specific fields
+                                occupation = userJson.optString("occupation", null),
+                                workplace = userJson.optString("workplace", null)
                             )
                         )
                     }

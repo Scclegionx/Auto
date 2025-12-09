@@ -287,7 +287,7 @@ fun NotificationHistoryScreen(
                                 }
                             )
                             
-                            // ✅ Lazy loading trigger - Load khi scroll đến item gần cuối
+                            // Lazy loading trigger - Load khi scroll đến item gần cuối
                             if (index >= notifications.size - 3 && hasMoreData && !isLoadingMore) {
                                 LaunchedEffect(Unit) {
                                     loadMoreData()
@@ -391,7 +391,6 @@ fun NotificationHistoryItem(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Time - ✅ Giảm font size
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "🕐",

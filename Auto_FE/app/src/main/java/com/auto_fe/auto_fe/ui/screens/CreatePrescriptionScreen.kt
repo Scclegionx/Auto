@@ -57,7 +57,9 @@ fun CreatePrescriptionScreen(
     accessToken: String,
     onBackClick: () -> Unit,
     onSuccess: () -> Unit,
-    editPrescriptionId: Long? = null  // ✅ Null = tạo mới, có giá trị = chỉnh sửa
+    editPrescriptionId: Long? = null,  // Null = tạo mới, có giá trị = chỉnh sửa
+    elderUserId: Long? = null,  // Nếu có = Supervisor tạo cho Elder
+    elderUserName: String? = null  // Tên Elder để hiển thị
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -65,6 +67,7 @@ fun CreatePrescriptionScreen(
     val ocrService = remember { OcrService() }
     
     val isEditMode = editPrescriptionId != null
+    val isSupervisorMode = elderUserId != null
 
     // Form states
     var name by remember { mutableStateOf("") }
@@ -75,7 +78,7 @@ fun CreatePrescriptionScreen(
     var isLoadingData by remember { mutableStateOf(isEditMode) }
     var isOcrProcessing by remember { mutableStateOf(false) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var selectedImageFile by remember { mutableStateOf<File?>(null) }  // ✅ Lưu File để upload sau
+    var selectedImageFile by remember { mutableStateOf<File?>(null) }  // Lưu File để upload sau
     var ocrJob by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
     
     // Dialog states
@@ -83,12 +86,12 @@ fun CreatePrescriptionScreen(
     var editingIndex by remember { mutableStateOf<Int?>(null) }
     var editingMedication by remember { mutableStateOf<MedicationReminderForm?>(null) }
     
-    // ✅ Error states cho validation
+    // Error states cho validation
     var nameError by remember { mutableStateOf<String?>(null) }
     var descriptionError by remember { mutableStateOf<String?>(null) }
     var medicationErrors by remember { mutableStateOf<Map<Int, String>>(emptyMap()) }
 
-    // ✅ Image picker for OCR (AI tự động điền)
+    // Image picker for OCR (AI tự động điền)
     val ocrImagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -104,7 +107,7 @@ fun CreatePrescriptionScreen(
                     inputStream?.close()
                     outputStream.close()
 
-                    // ✅ Lưu File để upload sau
+                    // Lưu File để upload sau
                     selectedImageFile = file
 
                     // Call OCR API to extract data ONLY
@@ -116,7 +119,7 @@ fun CreatePrescriptionScreen(
                             // Auto-fill form với kết quả OCR
                             name = ocrResult.name
                             description = ocrResult.description
-                            // ❌ KHÔNG dùng imageUrl từ OCR nữa (vì chưa upload)
+                            // KHÔNG dùng imageUrl từ OCR nữa (vì chưa upload)
                             
                             medications = ocrResult.medications.map { med ->
                                 MedicationReminderForm(
@@ -130,14 +133,14 @@ fun CreatePrescriptionScreen(
                             
                             Toast.makeText(
                                 context,
-                                "✅ OCR thành công! Đã tự động điền thông tin",
+                                "OCR thành công! Đã tự động điền thông tin",
                                 Toast.LENGTH_LONG
                             ).show()
                         },
                         onFailure = { error ->
                             Toast.makeText(
                                 context,
-                                "❌ OCR thất bại: ${error.message}",
+                                "OCR thất bại: ${error.message}",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -145,14 +148,14 @@ fun CreatePrescriptionScreen(
                     
                     isOcrProcessing = false
                 } catch (e: Exception) {
-                    Toast.makeText(context, "❌ Lỗi: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Lỗi: ${e.message}", Toast.LENGTH_LONG).show()
                     isOcrProcessing = false
                 }
             }
         }
     }
 
-    // ✅ Image picker thông thường (chỉ đính kèm ảnh, không OCR)
+    // Image picker thông thường (chỉ đính kèm ảnh, không OCR)
     val simpleImagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -168,14 +171,14 @@ fun CreatePrescriptionScreen(
                 outputStream.close()
 
                 selectedImageFile = file
-                Toast.makeText(context, "✅ Đã chọn ảnh", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Đã chọn ảnh", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Toast.makeText(context, "❌ Lỗi: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Lỗi: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    // ✅ Load prescription data khi ở chế độ edit
+    // Load prescription data khi ở chế độ edit
     LaunchedEffect(editPrescriptionId) {
         if (editPrescriptionId != null) {
             scope.launch {
@@ -202,7 +205,7 @@ fun CreatePrescriptionScreen(
                         isLoadingData = false
                     },
                     onFailure = { error ->
-                        Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                         isLoadingData = false
                         onBackClick()
                     }
@@ -214,7 +217,17 @@ fun CreatePrescriptionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (isEditMode) "Sửa đơn thuốc" else "Tạo đơn thuốc mới", color = DarkOnSurface) },
+                title = { 
+                    Text(
+                        text = when {
+                            isEditMode && isSupervisorMode -> "Sửa đơn thuốc cho ${elderUserName}"
+                            isEditMode -> "Sửa đơn thuốc"
+                            isSupervisorMode -> "Tạo đơn thuốc cho ${elderUserName}"
+                            else -> "Tạo đơn thuốc mới"
+                        },
+                        color = DarkOnSurface
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -244,7 +257,7 @@ fun CreatePrescriptionScreen(
                 )
         ) {
             if (isLoadingData || isOcrProcessing) {
-                // ✅ Loading state khi đang tải dữ liệu edit hoặc OCR
+                // Loading state khi đang tải dữ liệu edit hoặc OCR
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -428,7 +441,7 @@ fun CreatePrescriptionScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // ✅ Card upload ảnh (chỉ hiển thị khi tạo mới)
+                // Card upload ảnh (chỉ hiển thị khi tạo mới)
                 if (!isEditMode) {
                     Card(
                         colors = CardDefaults.cardColors(containerColor = DarkSurface.copy(alpha = 0.9f)),
@@ -517,7 +530,7 @@ fun CreatePrescriptionScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "✅ Đã chọn ảnh",
+                                        text = "Đã chọn ảnh",
                                         fontSize = 13.sp,
                                         color = DarkPrimary,
                                         fontWeight = FontWeight.Bold
@@ -685,12 +698,12 @@ fun CreatePrescriptionScreen(
                 // Buttons
                 Button(
                     onClick = {
-                        // ✅ Clear old errors
+                        // Clear old errors
                         nameError = null
                         descriptionError = null
                         medicationErrors = emptyMap()
                         
-                        // ✅ Validate chi tiết
+                        // Validate chi tiết
                         var hasError = false
                         
                         // Validate name
@@ -726,52 +739,55 @@ fun CreatePrescriptionScreen(
                         medicationErrors = medErrors
                         
                         if (hasError) {
-                            Toast.makeText(context, "❌ Vui lòng kiểm tra lại thông tin", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Vui lòng kiểm tra lại thông tin", Toast.LENGTH_LONG).show()
                             return@Button
                         }
 
                         isLoading = true
                         scope.launch {
                             val result = if (isEditMode && editPrescriptionId != null) {
-                                // ✅ Cập nhật đơn thuốc
+                                // Cập nhật đơn thuốc
                                 prescriptionService.updatePrescription(
                                     prescriptionId = editPrescriptionId,
                                     name = name,
                                     description = description,
                                     imageUrl = imageUrl,
                                     medications = medications,
-                                    accessToken = accessToken
+                                    accessToken = accessToken,
+                                    elderUserId = elderUserId
                                 )
                             } else {
-                                // ✅ Tạo mới đơn thuốc
+                                // Tạo mới đơn thuốc
                                 if (selectedImageFile != null) {
-                                    // ✅ Có ảnh → Dùng API /create-with-image (Lazy Upload)
+                                    // Có ảnh → Dùng API /create-with-image (Lazy Upload)
                                     prescriptionService.createPrescriptionWithImage(
                                         name = name,
                                         description = description,
                                         imageFile = selectedImageFile!!,
                                         medications = medications,
                                         accessToken = accessToken
+                                        , elderUserId = elderUserId
                                     )
                                 } else {
-                                    // ❌ Không có ảnh → Dùng API /create thông thường
+                                    // Không có ảnh → Dùng API /create thông thường
                                     prescriptionService.createPrescription(
                                         name = name,
                                         description = description,
                                         imageUrl = imageUrl,
                                         medications = medications,
                                         accessToken = accessToken
+                                        , elderUserId = elderUserId
                                     )
                                 }
                             }
                             
                             result.fold(
                                 onSuccess = { response ->
-                                    Toast.makeText(context, "✅ ${response.message}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "${response.message}", Toast.LENGTH_SHORT).show()
                                     onSuccess()
                                 },
                                 onFailure = { error ->
-                                    Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                                     isLoading = false
                                 }
                             )
@@ -798,8 +814,8 @@ fun CreatePrescriptionScreen(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                }  // ✅ Đóng Column scrollable
-            }  // ✅ Đóng if-else isLoadingData
+                }
+            }
         }
     }
 
@@ -963,7 +979,7 @@ fun MedicationReminderCard(
     }
 }
 
-// ✅ COMPONENT MỚI: Table Row hiển thị tóm tắt thuốc
+// COMPONENT MỚI: Table Row hiển thị tóm tắt thuốc
 @Composable
 fun MedicationTableRow(
     medication: MedicationReminderForm,

@@ -247,7 +247,7 @@ public class ChatService {
         
         messagingTemplate.convertAndSend(topicDestination, response);
         
-        System.out.println("✅ WebSocket broadcast completed!");
+        System.out.println("WebSocket broadcast completed!");
         
         // Gửi FCM notification đến tất cả users khác trong chat
         for (UserChat userChat : chatMembers) {
@@ -263,12 +263,12 @@ public class ChatService {
                         chat.getId()
                     );
                 } catch (Exception e) {
-                    System.err.println("❌ FCM send failed for " + receiver.getEmail() + ": " + e.getMessage());
+                    System.err.println("FCM send failed for " + receiver.getEmail() + ": " + e.getMessage());
                 }
             }
         }
         
-        System.out.println("✅ All notifications completed!");
+        System.out.println("All notifications completed!");
         
         return response;
     }

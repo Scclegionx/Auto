@@ -31,6 +31,9 @@ import com.auto_fe.auto_fe.ui.theme.AppTextSize
 import com.auto_fe.auto_fe.utils.SessionManager
 import kotlinx.coroutines.launch
 import java.io.File
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,7 +69,7 @@ fun ProfileScreen(
                     }
                 }
             }.onFailure { error ->
-                Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -90,11 +93,11 @@ fun ProfileScreen(
                         // Lưu avatar URL vào SessionManager
                         sessionManager.updateUserAvatar(avatarUrl)
                         
-                        Toast.makeText(context, "✅ Cập nhật ảnh đại diện thành công", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Cập nhật ảnh đại diện thành công", Toast.LENGTH_SHORT).show()
                         // Reload profile để lấy avatar mới
                         loadProfile()
                     }.onFailure { error ->
-                        Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                     }
                     
                     isUploadingAvatar = false
@@ -102,7 +105,7 @@ fun ProfileScreen(
                     // Clean up temp file
                     file.delete()
                 } catch (e: Exception) {
-                    Toast.makeText(context, "❌ Lỗi: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Lỗi: ${e.message}", Toast.LENGTH_LONG).show()
                     isUploadingAvatar = false
                 }
             }
@@ -192,7 +195,7 @@ fun ProfileScreen(
                             showSuccessMessage = true
                         },
                         onUpdateError = { error ->
-                            Toast.makeText(context, "❌ $error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "$error", Toast.LENGTH_LONG).show()
                         }
                     )
                 } else {
@@ -293,17 +296,17 @@ fun ProfileContent(
                 
                 // Tên
                 Text(
-                    text = profileData.fullName?.takeIf { it.isNotBlank() } ?: "Người dùng",
+                    text = profileData.fullName?.takeIf { it.isNotBlank() && it != "null" } ?: "Người dùng",
                     fontSize = AppTextSize.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = DarkOnSurface
                 )
                 
                 // Email
-                if (!profileData.email.isNullOrBlank()) {
+                profileData.email?.takeIf { it.isNotBlank() && it != "null" }?.let { email ->
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = profileData.email,
+                        text = email,
                         fontSize = AppTextSize.bodyMedium,
                         color = DarkOnSurface.copy(alpha = 0.7f)
                     )
@@ -352,7 +355,7 @@ fun ProfileContent(
                 ProfileInfoRow(
                     icon = Icons.Default.Phone,
                     label = "Số điện thoại",
-                    value = profileData.phoneNumber ?: "Chưa cập nhật"
+                    value = profileData.phoneNumber?.takeIf { it.isNotBlank() && it != "null" } ?: "Chưa cập nhật"
                 )
                 
                 Divider(
@@ -363,7 +366,7 @@ fun ProfileContent(
                 ProfileInfoRow(
                     icon = Icons.Default.DateRange,
                     label = "Ngày sinh",
-                    value = profileData.dateOfBirth ?: "Chưa cập nhật"
+                    value = profileData.dateOfBirth?.takeIf { it.isNotBlank() && it != "null" } ?: "Chưa cập nhật"
                 )
                 
                 Divider(
@@ -390,65 +393,109 @@ fun ProfileContent(
                 ProfileInfoRow(
                     icon = Icons.Default.Home,
                     label = "Địa chỉ",
-                    value = profileData.address ?: "Chưa cập nhật"
+                    value = profileData.address?.takeIf { it.isNotBlank() && it != "null" } ?: "Chưa cập nhật"
                 )
             }
         }
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Thông tin sức khỏe
-        Text(
-            text = "Thông tin sức khỏe",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = DarkOnSurface,
-            modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
-        )
-        
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = DarkSurface
+        // Thông tin sức khỏe - CHỈ hiển thị cho ELDER
+        if (profileData.role == "ELDER") {
+            Text(
+                text = "Thông tin sức khỏe",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = DarkOnSurface,
+                modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
             )
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
+            
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = DarkSurface
+                )
             ) {
-                ProfileInfoRow(
-                    icon = Icons.Default.Favorite,
-                    label = "Nhóm máu",
-                    value = profileData.bloodType?.let { 
-                        it.replace("_", " ")
-                    } ?: "Chưa cập nhật"
-                )
-                
-                Divider(
-                    color = DarkOnSurface.copy(alpha = 0.1f),
-                    modifier = Modifier.padding(vertical = 12.dp)
-                )
-                
-                ProfileInfoRow(
-                    icon = Icons.Default.Info,
-                    label = "Chiều cao",
-                    value = profileData.height?.let { "$it cm" } ?: "Chưa cập nhật"
-                )
-                
-                Divider(
-                    color = DarkOnSurface.copy(alpha = 0.1f),
-                    modifier = Modifier.padding(vertical = 12.dp)
-                )
-                
-                ProfileInfoRow(
-                    icon = Icons.Default.Star,
-                    label = "Cân nặng",
-                    value = profileData.weight?.let { "$it kg" } ?: "Chưa cập nhật"
-                )
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    ProfileInfoRow(
+                        icon = Icons.Default.Favorite,
+                        label = "Nhóm máu",
+                        value = profileData.bloodType?.takeIf { it.isNotBlank() && it != "null" }?.let { 
+                            it.replace("_", " ")
+                        } ?: "Chưa cập nhật"
+                    )
+                    
+                    Divider(
+                        color = DarkOnSurface.copy(alpha = 0.1f),
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    )
+                    
+                    ProfileInfoRow(
+                        icon = Icons.Default.Info,
+                        label = "Chiều cao",
+                        value = profileData.height?.let { "$it cm" } ?: "Chưa cập nhật"
+                    )
+                    
+                    Divider(
+                        color = DarkOnSurface.copy(alpha = 0.1f),
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    )
+                    
+                    ProfileInfoRow(
+                        icon = Icons.Default.Star,
+                        label = "Cân nặng",
+                        value = profileData.weight?.let { "$it kg" } ?: "Chưa cập nhật"
+                    )
+                }
             }
+            
+            Spacer(modifier = Modifier.height(16.dp))
         }
         
-        Spacer(modifier = Modifier.height(16.dp))
+        // Thông tin công việc - CHỈ hiển thị cho SUPERVISOR
+        if (profileData.role == "SUPERVISOR") {
+            Text(
+                text = "Thông tin công việc",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = DarkOnSurface,
+                modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+            )
+            
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = DarkSurface
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    ProfileInfoRow(
+                        icon = Icons.Default.AccountBox,
+                        label = "Nghề nghiệp",
+                        value = profileData.occupation?.takeIf { it.isNotBlank() && it != "null" } ?: "Chưa cập nhật"
+                    )
+                    
+                    Divider(
+                        color = DarkOnSurface.copy(alpha = 0.1f),
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    )
+                    
+                    ProfileInfoRow(
+                        icon = Icons.Default.LocationOn,
+                        label = "Nơi làm việc",
+                        value = profileData.workplace?.takeIf { it.isNotBlank() && it != "null" } ?: "Chưa cập nhật"
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+        }
         
         // Bảo mật
         Text(
@@ -561,13 +608,20 @@ fun EditProfileContent(
     var dateOfBirth by remember { mutableStateOf(profileData.dateOfBirth ?: "") }
     var gender by remember { mutableStateOf(profileData.gender ?: "MALE") }
     var address by remember { mutableStateOf(profileData.address ?: "") }
+    
+    // Elder fields
     var bloodType by remember { mutableStateOf(profileData.bloodType ?: "A_POSITIVE") }
     var height by remember { mutableStateOf(profileData.height?.toString() ?: "") }
     var weight by remember { mutableStateOf(profileData.weight?.toString() ?: "") }
     
+    //  Supervisor fields
+    var occupation by remember { mutableStateOf(profileData.occupation ?: "") }
+    var workplace by remember { mutableStateOf(profileData.workplace ?: "") }
+    
     var isUpdating by remember { mutableStateOf(false) }
     var expandedGender by remember { mutableStateOf(false) }
     var expandedBloodType by remember { mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(false) } // DatePicker dialog state
 
     val genderOptions = listOf(
         "MALE" to "Nam",
@@ -655,16 +709,22 @@ fun EditProfileContent(
                 
                 Spacer(modifier = Modifier.height(12.dp))
                 
-                // Ngày sinh
+                // Ngày sinh (DatePicker)
                 OutlinedTextField(
                     value = dateOfBirth,
-                    onValueChange = { dateOfBirth = it },
-                    label = { Text("Ngày sinh (yyyy-MM-dd)") },
+                    onValueChange = {}, // Read-only, chỉ cho phép chọn từ DatePicker
+                    readOnly = true,
+                    label = { Text("Ngày sinh") },
                     leadingIcon = {
                         Icon(Icons.Default.DateRange, "Ngày sinh", tint = DarkPrimary)
                     },
-                    placeholder = { Text("2000-01-01") },
-                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        Icon(Icons.Default.KeyboardArrowDown, "Chọn ngày", tint = DarkOnSurface)
+                    },
+                    placeholder = { Text("Chọn ngày sinh") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showDatePicker = true },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = DarkPrimary,
                         unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
@@ -672,8 +732,12 @@ fun EditProfileContent(
                         unfocusedLabelColor = DarkOnSurface.copy(alpha = 0.6f),
                         cursorColor = DarkPrimary,
                         focusedTextColor = DarkOnSurface,
-                        unfocusedTextColor = DarkOnSurface
-                    )
+                        unfocusedTextColor = DarkOnSurface,
+                        disabledTextColor = DarkOnSurface,
+                        disabledBorderColor = DarkOnSurface.copy(alpha = 0.3f),
+                        disabledLabelColor = DarkOnSurface.copy(alpha = 0.6f)
+                    ),
+                    enabled = false // Disable editing nhưng vẫn clickable
                 )
                 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -758,48 +822,92 @@ fun EditProfileContent(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Thông tin sức khỏe
-        Text(
-            text = "Thông tin sức khỏe",
-            fontSize = AppTextSize.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = DarkOnSurface,
-            modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
-        )
-        
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = DarkSurface
+        // Thông tin sức khỏe (chỉ hiển thị cho ELDER)
+        if (profileData.role == "ELDER") {
+            Text(
+                text = "Thông tin sức khỏe",
+                fontSize = AppTextSize.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = DarkOnSurface,
+                modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
             )
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
+            
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = DarkSurface
+                )
             ) {
-                // Nhóm máu
-                ExposedDropdownMenuBox(
-                    expanded = expandedBloodType,
-                    onExpandedChange = { expandedBloodType = it }
+                Column(
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    OutlinedTextField(
-                        value = bloodTypeOptions.find { it.first == bloodType }?.second ?: "A+",
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Nhóm máu") },
-                        leadingIcon = {
-                            Icon(Icons.Default.Favorite, "Nhóm máu", tint = DarkPrimary)
-                        },
-                        trailingIcon = {
-                            Icon(
-                                if (expandedBloodType) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                                "Dropdown",
-                                tint = DarkOnSurface
+                    // Nhóm máu
+                    ExposedDropdownMenuBox(
+                        expanded = expandedBloodType,
+                        onExpandedChange = { expandedBloodType = it }
+                    ) {
+                        OutlinedTextField(
+                            value = bloodTypeOptions.find { it.first == bloodType }?.second ?: "A+",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Nhóm máu") },
+                            leadingIcon = {
+                                Icon(Icons.Default.Favorite, "Nhóm máu", tint = DarkPrimary)
+                            },
+                            trailingIcon = {
+                                Icon(
+                                    if (expandedBloodType) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                    "Dropdown",
+                                    tint = DarkOnSurface
+                                )
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .menuAnchor(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = DarkPrimary,
+                                unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
+                                focusedLabelColor = DarkPrimary,
+                                unfocusedLabelColor = DarkOnSurface.copy(alpha = 0.6f),
+                                cursorColor = DarkPrimary,
+                                focusedTextColor = DarkOnSurface,
+                                unfocusedTextColor = DarkOnSurface
                             )
+                        )
+                        
+                        ExposedDropdownMenu(
+                            expanded = expandedBloodType,
+                            onDismissRequest = { expandedBloodType = false },
+                            modifier = Modifier.background(DarkSurface)
+                        ) {
+                            bloodTypeOptions.forEach { option ->
+                                DropdownMenuItem(
+                                    text = { Text(option.second, color = DarkOnSurface) },
+                                    onClick = {
+                                        bloodType = option.first
+                                        expandedBloodType = false
+                                    },
+                                    colors = MenuDefaults.itemColors(
+                                        textColor = DarkOnSurface
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    // Chiều cao
+                    OutlinedTextField(
+                        value = height,
+                        onValueChange = { height = it },
+                        label = { Text("Chiều cao (cm)") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Info, "Chiều cao", tint = DarkPrimary)
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor(),
+                        placeholder = { Text("170") },
+                        modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = DarkPrimary,
                             unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
@@ -811,75 +919,167 @@ fun EditProfileContent(
                         )
                     )
                     
-                    ExposedDropdownMenu(
-                        expanded = expandedBloodType,
-                        onDismissRequest = { expandedBloodType = false },
-                        modifier = Modifier.background(DarkSurface)
-                    ) {
-                        bloodTypeOptions.forEach { option ->
-                            DropdownMenuItem(
-                                text = { Text(option.second, color = DarkOnSurface) },
-                                onClick = {
-                                    bloodType = option.first
-                                    expandedBloodType = false
-                                },
-                                colors = MenuDefaults.itemColors(
-                                    textColor = DarkOnSurface
-                                )
-                            )
-                        }
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(12.dp))
-                
-                // Chiều cao
-                OutlinedTextField(
-                    value = height,
-                    onValueChange = { height = it },
-                    label = { Text("Chiều cao (cm)") },
-                    leadingIcon = {
-                        Icon(Icons.Default.Info, "Chiều cao", tint = DarkPrimary)
-                    },
-                    placeholder = { Text("170") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = DarkPrimary,
-                        unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
-                        focusedLabelColor = DarkPrimary,
-                        unfocusedLabelColor = DarkOnSurface.copy(alpha = 0.6f),
-                        cursorColor = DarkPrimary,
-                        focusedTextColor = DarkOnSurface,
-                        unfocusedTextColor = DarkOnSurface
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    // Cân nặng
+                    OutlinedTextField(
+                        value = weight,
+                        onValueChange = { weight = it },
+                        label = { Text("Cân nặng (kg)") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Star, "Cân nặng", tint = DarkPrimary)
+                        },
+                        placeholder = { Text("65") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = DarkPrimary,
+                            unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
+                            focusedLabelColor = DarkPrimary,
+                            unfocusedLabelColor = DarkOnSurface.copy(alpha = 0.6f),
+                            cursorColor = DarkPrimary,
+                            focusedTextColor = DarkOnSurface,
+                            unfocusedTextColor = DarkOnSurface
+                        )
                     )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+        
+        // Thông tin công việc (chỉ hiển thị cho SUPERVISOR)
+        if (profileData.role == "SUPERVISOR") {
+            Text(
+                text = "Thông tin công việc",
+                fontSize = AppTextSize.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = DarkOnSurface,
+                modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+            )
+            
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = DarkSurface
                 )
-                
-                Spacer(modifier = Modifier.height(12.dp))
-                
-                // Cân nặng
-                OutlinedTextField(
-                    value = weight,
-                    onValueChange = { weight = it },
-                    label = { Text("Cân nặng (kg)") },
-                    leadingIcon = {
-                        Icon(Icons.Default.Star, "Cân nặng", tint = DarkPrimary)
-                    },
-                    placeholder = { Text("65") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = DarkPrimary,
-                        unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
-                        focusedLabelColor = DarkPrimary,
-                        unfocusedLabelColor = DarkOnSurface.copy(alpha = 0.6f),
-                        cursorColor = DarkPrimary,
-                        focusedTextColor = DarkOnSurface,
-                        unfocusedTextColor = DarkOnSurface
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    // Nghề nghiệp
+                    OutlinedTextField(
+                        value = occupation,
+                        onValueChange = { occupation = it },
+                        label = { Text("Nghề nghiệp") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Build, "Nghề nghiệp", tint = DarkPrimary)
+                        },
+                        placeholder = { Text("Bác sĩ, Điều dưỡng, ...") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = DarkPrimary,
+                            unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
+                            focusedLabelColor = DarkPrimary,
+                            unfocusedLabelColor = DarkOnSurface.copy(alpha = 0.6f),
+                            cursorColor = DarkPrimary,
+                            focusedTextColor = DarkOnSurface,
+                            unfocusedTextColor = DarkOnSurface
+                        )
+                    )
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    // Nơi làm việc
+                    OutlinedTextField(
+                        value = workplace,
+                        onValueChange = { workplace = it },
+                        label = { Text("Nơi làm việc") },
+                        leadingIcon = {
+                            Icon(Icons.Default.LocationOn, "Nơi làm việc", tint = DarkPrimary)
+                        },
+                        placeholder = { Text("Bệnh viện, Phòng khám, ...") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = DarkPrimary,
+                            unfocusedBorderColor = DarkOnSurface.copy(alpha = 0.3f),
+                            focusedLabelColor = DarkPrimary,
+                            unfocusedLabelColor = DarkOnSurface.copy(alpha = 0.6f),
+                            cursorColor = DarkPrimary,
+                            focusedTextColor = DarkOnSurface,
+                            unfocusedTextColor = DarkOnSurface
+                        )
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+        
+        // DatePicker Dialog
+        if (showDatePicker) {
+            val datePickerState = rememberDatePickerState(
+                initialSelectedDateMillis = try {
+                    if (dateOfBirth.isNotBlank() && dateOfBirth != "null") {
+                        val formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                        java.time.LocalDate.parse(dateOfBirth, formatter)
+                            .atStartOfDay(java.time.ZoneId.systemDefault())
+                            .toInstant()
+                            .toEpochMilli()
+                    } else {
+                        System.currentTimeMillis()
+                    }
+                } catch (e: Exception) {
+                    System.currentTimeMillis()
+                }
+            )
+            
+            androidx.compose.material3.DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            datePickerState.selectedDateMillis?.let { millis ->
+                                val instant = java.time.Instant.ofEpochMilli(millis)
+                                val localDate = instant.atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+                                dateOfBirth = localDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                            }
+                            showDatePicker = false
+                        }
+                    ) {
+                        Text("Xác nhận", color = DarkPrimary)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text("Hủy", color = DarkOnSurface.copy(alpha = 0.6f))
+                    }
+                },
+                colors = DatePickerDefaults.colors(
+                    containerColor = DarkSurface
+                )
+            ) {
+                DatePicker(
+                    state = datePickerState,
+                    colors = DatePickerDefaults.colors(
+                        containerColor = DarkSurface,
+                        titleContentColor = DarkOnSurface,
+                        headlineContentColor = DarkOnSurface,
+                        weekdayContentColor = DarkOnSurface,
+                        subheadContentColor = DarkOnSurface,
+                        yearContentColor = DarkOnSurface,
+                        currentYearContentColor = DarkPrimary,
+                        selectedYearContentColor = DarkOnPrimary,
+                        selectedYearContainerColor = DarkPrimary,
+                        dayContentColor = DarkOnSurface,
+                        selectedDayContentColor = DarkOnPrimary,
+                        selectedDayContainerColor = DarkPrimary,
+                        todayContentColor = DarkPrimary,
+                        todayDateBorderColor = DarkPrimary
                     )
                 )
             }
         }
-        
-        Spacer(modifier = Modifier.height(24.dp))
         
         // Nút cập nhật
         Button(
@@ -918,18 +1118,22 @@ fun EditProfileContent(
                         gender = gender.takeIf { it.isNotBlank() && it != "null" },
                         phoneNumber = phoneNumber.takeIf { it.isNotBlank() },
                         address = address.takeIf { it.isNotBlank() },
-                        bloodType = bloodType.takeIf { it.isNotBlank() && it != "null" },
-                        height = height.toDoubleOrNull(),
-                        weight = weight.toDoubleOrNull()
+                        // Elder fields (chỉ gửi khi role là ELDER)
+                        bloodType = if (profileData.role == "ELDER") bloodType.takeIf { it.isNotBlank() && it != "null" } else null,
+                        height = if (profileData.role == "ELDER") height.toDoubleOrNull() else null,
+                        weight = if (profileData.role == "ELDER") weight.toDoubleOrNull() else null,
+                        // Supervisor fields (chỉ gửi khi role là SUPERVISOR)
+                        occupation = if (profileData.role == "SUPERVISOR") occupation.takeIf { it.isNotBlank() && it != "null" } else null,
+                        workplace = if (profileData.role == "SUPERVISOR") workplace.takeIf { it.isNotBlank() && it != "null" } else null
                     )
                     
                     isUpdating = false
                     
                     result.onSuccess { response ->
-                        android.util.Log.d("ProfileScreen", "✅ Update success: ${response.message}")
+                        android.util.Log.d("ProfileScreen", "Update success: ${response.message}")
                         response.data?.let { onUpdateSuccess(it) }
                     }.onFailure { error ->
-                        android.util.Log.e("ProfileScreen", "❌ Update failed: ${error.message}")
+                        android.util.Log.e("ProfileScreen", "Update failed: ${error.message}")
                         onUpdateError(error.message ?: "Không thể cập nhật")
                     }
                 }

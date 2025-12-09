@@ -115,7 +115,7 @@ fun ChatDetailScreen(
             accessToken = accessToken,
             onConnected = {
                 wsConnected = true
-                Log.d("ChatDetailScreen", "✅ WebSocket connected successfully")
+                Log.d("ChatDetailScreen", "WebSocket connected successfully")
                 
                 // Subscribe to chat topic to receive real-time messages
                 chatId?.let { id ->

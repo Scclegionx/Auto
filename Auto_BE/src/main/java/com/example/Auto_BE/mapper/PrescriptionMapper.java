@@ -6,29 +6,29 @@ import com.example.Auto_BE.dto.request.PrescriptionCreateRequest;
 import com.example.Auto_BE.dto.response.MedicationReminderResponse;
 import com.example.Auto_BE.dto.response.MedicationResponse;
 import com.example.Auto_BE.dto.response.PrescriptionResponse;
+import com.example.Auto_BE.entity.ElderUser;
 import com.example.Auto_BE.entity.MedicationReminder;
 import com.example.Auto_BE.entity.Prescriptions;
-import com.example.Auto_BE.entity.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class PrescriptionMapper {
 
-    public static Prescriptions toEntity(PrescriptionCreateRequest dto, User user) {
+    public static Prescriptions toEntity(PrescriptionCreateRequest dto, ElderUser elderUser) {
         Prescriptions p = new Prescriptions()
                 .setName(dto.getName())
                 .setDescription(dto.getDescription())
                 .setImageUrl(dto.getImageUrl())
                 .setIsActive(true)
-                .setUser(user);
+                .setElderUser(elderUser);
         return p;
     }
 
     // Mapper snippet (đặt trong PrescriptionMapper hoặc class tiện ích của bạn)
     public static List<MedicationReminder> toEntities(
             MedicationReminderCreateRequest dto,
-            User user,
+            ElderUser elderUser,
             Prescriptions p
     ) {
         if (dto.getReminderTimes() == null || dto.getReminderTimes().isEmpty()) {
@@ -51,7 +51,7 @@ public class PrescriptionMapper {
                     .setReminderTime(timeStr)              // mỗi bản ghi 1 giờ
                     .setDaysOfWeek(dto.getDaysOfWeek())
                     .setIsActive(true)
-                    .setUser(user)
+                    .setElderUser(elderUser)
                     .setPrescription(p);
             list.add(mr);
         }
@@ -66,7 +66,7 @@ public class PrescriptionMapper {
                 .description(p.getDescription())
                 .imageUrl(p.getImageUrl())
                 .isActive(p.getIsActive())
-                .userId(p.getUser() != null ? p.getUser().getId() : null)
+                .userId(p.getElderUser() != null ? p.getElderUser().getId() : null)
                 .medicationReminders(reminders)
                 .build();
     }
@@ -81,12 +81,12 @@ public class PrescriptionMapper {
                 .daysOfWeek(mr.getDaysOfWeek())
                 .isActive(mr.getIsActive())
                 .prescriptionId(mr.getPrescription() != null ? mr.getPrescription().getId() : null)
-                .userId(mr.getUser() != null ? mr.getUser().getId() : null)
+                .userId(mr.getElderUser() != null ? mr.getElderUser().getId() : null)
                 .build();
     }
 
     /**
-     * ✅ Gộp các MedicationReminder thành MedicationResponse
+     * Gộp các MedicationReminder thành MedicationResponse
      * - Medications có cùng name+description+type+daysOfWeek → gộp reminderTimes thành array
      */
     public static List<MedicationResponse> groupMedicationsByName(List<MedicationReminder> medications) {
@@ -124,7 +124,7 @@ public class PrescriptionMapper {
                             .daysOfWeek(first.getDaysOfWeek())
                             .isActive(first.getIsActive())
                             .prescriptionId(first.getPrescription() != null ? first.getPrescription().getId() : null)
-                            .userId(first.getUser() != null ? first.getUser().getId() : null)
+                            .userId(first.getElderUser() != null ? first.getElderUser().getId() : null)
                             .build();
                 })
                 .collect(Collectors.toList());

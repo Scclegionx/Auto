@@ -17,7 +17,7 @@ public class PrescriptionResponse {
     private Boolean isActive;
     private Long userId;
 
-    // ✅ Grouped medications (name + reminderTimes array)
+    // Grouped medications (name + reminderTimes array)
     private List<MedicationResponse> medications;
     
     // Legacy field (deprecated, kept for backward compatibility)

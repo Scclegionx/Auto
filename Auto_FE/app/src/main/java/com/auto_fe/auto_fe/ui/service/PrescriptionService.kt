@@ -44,11 +44,11 @@ class PrescriptionService {
         val imageUrl: String?,
         val isActive: Boolean,
         val userId: Long,
-        val medications: List<Medication>? = null,  // ✅ New grouped format
+        val medications: List<Medication>? = null,  // New grouped format
         val medicationReminders: List<MedicationReminder>? = null  // Legacy
     )
 
-    // ✅ New grouped medication format
+    //  New grouped medication format
     data class Medication(
         val id: Long,
         val medicationName: String,
@@ -156,10 +156,59 @@ class PrescriptionService {
     }
 
     /**
+     * Lấy danh sách đơn thuốc theo userId (cho Supervisor xem đơn của Elder)
+     */
+    suspend fun getPrescriptionsByUserId(accessToken: String, userId: Long): Result<PrescriptionListResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val url = "$baseUrl/user/$userId"
+                Log.d("PrescriptionService", "=== GET PRESCRIPTIONS BY USER ID ===")
+                Log.d("PrescriptionService", "URL: $url")
+                Log.d("PrescriptionService", "User ID: $userId")
+                Log.d("PrescriptionService", "Token: ${accessToken.take(20)}...")
+                
+                val request = Request.Builder()
+                    .url(url)
+                    .get()
+                    .addHeader("Authorization", "Bearer $accessToken")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string()
+
+                Log.d("PrescriptionService", "Response Code: ${response.code}")
+                Log.d("PrescriptionService", "Response Body: $responseBody")
+
+                if (response.isSuccessful && responseBody != null) {
+                    val jsonResponse = JSONObject(responseBody)
+                    val status = jsonResponse.getString("status")
+                    val message = jsonResponse.getString("message")
+
+                    val prescriptions = mutableListOf<Prescription>()
+                    if (jsonResponse.has("data") && !jsonResponse.isNull("data")) {
+                        val dataArray = jsonResponse.getJSONArray("data")
+                        for (i in 0 until dataArray.length()) {
+                            val prescriptionJson = dataArray.getJSONObject(i)
+                            prescriptions.add(parsePrescription(prescriptionJson))
+                        }
+                    }
+
+                    Result.success(PrescriptionListResponse(status, message, prescriptions))
+                } else {
+                    Result.failure(Exception("Không thể tải danh sách đơn thuốc: ${response.code}"))
+                }
+            } catch (e: Exception) {
+                Log.e("PrescriptionService", "Get prescriptions by user error", e)
+                Result.failure(Exception("Lỗi kết nối: ${e.message}"))
+            }
+        }
+    }
+
+    /**
      * Parse JSON thành Prescription object
      */
     private fun parsePrescription(json: JSONObject): Prescription {
-        // ✅ Parse medications (grouped format)
+        // Parse medications (grouped format)
         val medications = mutableListOf<Medication>()
         if (json.has("medications") && !json.isNull("medications")) {
             val medicationsArray = json.getJSONArray("medications")
@@ -220,7 +269,7 @@ class PrescriptionService {
             imageUrl = json.optString("imageUrl"),
             isActive = json.optBoolean("isActive", true),
             userId = json.getLong("userId"),
-            medications = medications.takeIf { it.isNotEmpty() },  // ✅ New field
+            medications = medications.takeIf { it.isNotEmpty() },  //  New field
             medicationReminders = medicationReminders.takeIf { it.isNotEmpty() }  // Legacy
         )
     }
@@ -233,16 +282,23 @@ class PrescriptionService {
         description: String,
         imageUrl: String,
         medications: List<MedicationReminderForm>,
-        accessToken: String
+        accessToken: String,
+        elderUserId: Long? = null // For Supervisor creating prescription for Elder
     ): Result<PrescriptionDetailResponse> = withContext(Dispatchers.IO) {
         try {
-            Log.d("PrescriptionService", "Creating prescription: $name")
+            Log.d("PrescriptionService", "Creating prescription: $name" + 
+                if (elderUserId != null) " for Elder ID: $elderUserId" else "")
 
             // Build request body
             val requestBody = JSONObject().apply {
                 put("name", name)
                 put("description", description)
                 put("imageUrl", imageUrl)
+
+                // Include elderUserId if Supervisor is creating for Elder
+                if (elderUserId != null) {
+                    put("elderUserId", elderUserId)
+                }
 
                 val medicationsArray = JSONArray()
                 medications.forEach { med ->
@@ -316,25 +372,32 @@ class PrescriptionService {
 
     /**
      * Tạo đơn thuốc mới với upload ảnh
-     * ✅ Lazy Upload: Chỉ upload khi user submit form
-     * ✅ Atomic operation: Upload + Create DB cùng lúc
-     * ✅ Không có orphan files
+     * Lazy Upload: Chỉ upload khi user submit form
+     *  Atomic operation: Upload + Create DB cùng lúc
+     *  Không có orphan files
      */
     suspend fun createPrescriptionWithImage(
         name: String,
         description: String,
         imageFile: File,
         medications: List<MedicationReminderForm>,
-        accessToken: String
+        accessToken: String,
+        elderUserId: Long? = null // For Supervisor creating prescription for Elder
     ): Result<PrescriptionDetailResponse> = withContext(Dispatchers.IO) {
         try {
-            Log.d("PrescriptionService", "Creating prescription with image: $name")
+            Log.d("PrescriptionService", "Creating prescription with image: $name" + 
+                if (elderUserId != null) " for Elder ID: $elderUserId" else "")
 
             // Build prescription data JSON
             val prescriptionData = JSONObject().apply {
                 put("name", name)
                 put("description", description)
                 put("imageUrl", "") // Backend sẽ set sau khi upload
+
+                // Include elderUserId if Supervisor is creating for Elder
+                if (elderUserId != null) {
+                    put("elderUserId", elderUserId)
+                }
 
                 val medicationsArray = JSONArray()
                 medications.forEach { med ->
@@ -432,7 +495,8 @@ class PrescriptionService {
         description: String,
         imageUrl: String,
         medications: List<MedicationReminderForm>,
-        accessToken: String
+        accessToken: String,
+        elderUserId: Long? = null // For Supervisor updating prescription for Elder
     ): Result<PrescriptionDetailResponse> = withContext(Dispatchers.IO) {
         try {
             Log.d("PrescriptionService", "Updating prescription ID: $prescriptionId")
@@ -442,6 +506,11 @@ class PrescriptionService {
                 put("name", name)
                 put("description", description)
                 put("imageUrl", imageUrl)
+
+                // Include elderUserId if Supervisor is updating for Elder
+                if (elderUserId != null) {
+                    put("elderUserId", elderUserId)
+                }
 
                 val medicationsArray = JSONArray()
                 medications.forEach { med ->

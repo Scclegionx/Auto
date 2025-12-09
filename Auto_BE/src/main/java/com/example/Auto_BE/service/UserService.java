@@ -4,6 +4,8 @@ import com.example.Auto_BE.dto.BaseResponse;
 import com.example.Auto_BE.dto.request.ChangePasswordRequest;
 import com.example.Auto_BE.dto.request.UpdateProfileRequest;
 import com.example.Auto_BE.dto.response.ProfileResponse;
+import com.example.Auto_BE.entity.ElderUser;
+import com.example.Auto_BE.entity.SupervisorUser;
 import com.example.Auto_BE.entity.User;
 import com.example.Auto_BE.entity.enums.EGender;
 import com.example.Auto_BE.exception.BaseException;
@@ -77,16 +79,34 @@ public class UserService {
                 user.setAddress(updateProfileRequest.getAddress());
             }
 
-            if (updateProfileRequest.getBloodType() != null) {
-                user.setBloodType(updateProfileRequest.getBloodType());
+            // Update Elder-specific fields
+            if (user instanceof ElderUser) {
+                ElderUser elderUser = (ElderUser) user;
+                
+                if (updateProfileRequest.getBloodType() != null) {
+                    elderUser.setBloodType(updateProfileRequest.getBloodType());
+                }
+                
+                if (updateProfileRequest.getHeight() != null) {
+                    elderUser.setHeight(updateProfileRequest.getHeight());
+                }
+                
+                if (updateProfileRequest.getWeight() != null) {
+                    elderUser.setWeight(updateProfileRequest.getWeight());
+                }
             }
-
-            if (updateProfileRequest.getHeight() != null) {
-                user.setHeight(updateProfileRequest.getHeight());
-            }
-
-            if (updateProfileRequest.getWeight() != null) {
-                user.setWeight(updateProfileRequest.getWeight());
+            
+            // Update Supervisor-specific fields
+            if (user instanceof SupervisorUser) {
+                SupervisorUser supervisorUser = (SupervisorUser) user;
+                
+                if (updateProfileRequest.getOccupation() != null) {
+                    supervisorUser.setOccupation(updateProfileRequest.getOccupation());
+                }
+                
+                if (updateProfileRequest.getWorkplace() != null) {
+                    supervisorUser.setWorkplace(updateProfileRequest.getWorkplace());
+                }
             }
 
             User updatedUser = userRepository.save(user);

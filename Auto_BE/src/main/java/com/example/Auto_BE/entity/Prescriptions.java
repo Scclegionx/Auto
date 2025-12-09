@@ -30,8 +30,8 @@ public class Prescriptions extends BaseEntity{
     private Boolean isActive = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Liên kết với người dùng sở hữu đơn thuốc này
+    @JoinColumn(name = "elder_user_id", nullable = false)
+    private ElderUser elderUser; // Liên kết với người cao tuổi sở hữu đơn thuốc này
 
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MedicationReminder> medicationReminders; // Danh sách nhắc nhở thuốc liên quan đến đơn thuốc này

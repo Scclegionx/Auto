@@ -17,7 +17,7 @@ public class EmergencyContactMapper {
                 .address(contact.getAddress())
                 .relationship(contact.getRelationship())
                 .note(contact.getNote())
-                .userId(contact.getUser() != null ? contact.getUser().getId() : null)
+                .userId(contact.getElderUser() != null ? contact.getElderUser().getId() : null)
                 .createdAt(contact.getCreatedAt())
                 .updatedAt(contact.getUpdatedAt())
                 .build();

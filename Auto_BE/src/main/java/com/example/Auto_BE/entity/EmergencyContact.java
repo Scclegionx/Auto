@@ -31,6 +31,6 @@ public class EmergencyContact extends BaseEntity{
     private String note; // Ghi chú thêm về người liên hệ khẩn cấp (nếu cần)
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Người dùng sở hữu liên hệ khẩn cấp này
+    @JoinColumn(name = "elder_user_id", nullable = false)
+    private ElderUser elderUser; // Người cao tuổi sở hữu liên hệ khẩn cấp này
 }

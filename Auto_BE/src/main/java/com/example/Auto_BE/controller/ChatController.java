@@ -143,9 +143,9 @@ public class ChatController {
             
             // Gửi message (ChatService sẽ tự động broadcast qua WebSocket)
             chatService.sendMessage(request, userId);
-            System.out.println("✅ Message sent successfully via STOMP");
+            System.out.println("Message sent successfully via STOMP");
         } else {
-            System.err.println("❌ No username in session! Cannot send message via STOMP");
+            System.err.println("No username in session! Cannot send message via STOMP");
         }
     }
     

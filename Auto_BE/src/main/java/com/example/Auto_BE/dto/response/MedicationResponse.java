@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 💊 UNIFIED Response cho Medication
+ * UNIFIED Response cho Medication
  * 
- * ✅ Đồng bộ với CreateMedicationRequest
- * ✅ Hỗ trợ multiple reminder times
+ * Đồng bộ với CreateMedicationRequest
+ * Hỗ trợ multiple reminder times
  */
 @Getter
 @Setter
@@ -26,12 +26,12 @@ public class MedicationResponse {
     private String userName;
     private Long prescriptionId;
     
-    // ✅ UNIFIED FIELDS
+    // UNIFIED FIELDS
     private String medicationName;
-    private ETypeMedication type;                  // ✅ Loại thuốc
-    private List<String> reminderTimes;            // ✅ Array: ["08:00", "14:00", "20:00"]
-    private String daysOfWeek;                     // ✅ "1111111"
-    private String description;                    // ✅ Mô tả/ghi chú thuốc
+    private ETypeMedication type;                  // Loại thuốc
+    private List<String> reminderTimes;            // Array: ["08:00", "14:00", "20:00"]
+    private String daysOfWeek;                     // "1111111"
+    private String description;                    // Mô tả/ghi chú thuốc
     
     private Boolean isActive;
     private LocalDateTime createdAt;

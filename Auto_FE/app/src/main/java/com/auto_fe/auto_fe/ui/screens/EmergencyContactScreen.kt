@@ -50,7 +50,7 @@ fun EmergencyContactScreen(
             result.onSuccess { response ->
                 contacts = response.data ?: emptyList()
             }.onFailure { error ->
-                Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -193,11 +193,11 @@ fun EmergencyContactScreen(
                 coroutineScope.launch {
                     val result = emergencyContactService.create(accessToken, request)
                     result.onSuccess {
-                        Toast.makeText(context, "✅ Thêm liên hệ thành công", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Thêm liên hệ thành công", Toast.LENGTH_SHORT).show()
                         showAddDialog = false
                         loadContacts()
                     }.onFailure { error ->
-                        Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -216,12 +216,12 @@ fun EmergencyContactScreen(
                 coroutineScope.launch {
                     val result = emergencyContactService.update(accessToken, selectedContact!!.id, request)
                     result.onSuccess {
-                        Toast.makeText(context, "✅ Cập nhật thành công", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
                         showEditDialog = false
                         selectedContact = null
                         loadContacts()
                     }.onFailure { error ->
-                        Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -248,12 +248,12 @@ fun EmergencyContactScreen(
                         coroutineScope.launch {
                             val result = emergencyContactService.delete(accessToken, selectedContact!!.id)
                             result.onSuccess {
-                                Toast.makeText(context, "✅ Xóa thành công", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Xóa thành công", Toast.LENGTH_SHORT).show()
                                 showDeleteDialog = false
                                 selectedContact = null
                                 loadContacts()
                             }.onFailure { error ->
-                                Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                             }
                         }
                     }

@@ -7,10 +7,10 @@ import lombok.*;
 import java.util.List;
 
 /**
- * 💊 UNIFIED Update Request cho Individual Medication
+ * UNIFIED Update Request cho Individual Medication
  * 
- * ✅ Đồng bộ với MedicationReminderCreateRequest structure
- * ✅ Tất cả fields optional (chỉ update fields được gửi)
+ * Đồng bộ với MedicationReminderCreateRequest structure
+ * Tất cả fields optional (chỉ update fields được gửi)
  */
 @Getter
 @Setter

@@ -7,6 +7,8 @@ import com.example.Auto_BE.dto.request.RegisterRequest;
 import com.example.Auto_BE.dto.request.SendVerificationRequest;
 import com.example.Auto_BE.dto.request.VerifyOtpRequest;
 import com.example.Auto_BE.dto.response.LoginResponse;
+import com.example.Auto_BE.entity.ElderUser;
+import com.example.Auto_BE.entity.SupervisorUser;
 import com.example.Auto_BE.entity.User;
 import com.example.Auto_BE.entity.Verification;
 import com.example.Auto_BE.event.ForgotPasswordEvent;
@@ -61,12 +63,23 @@ public class AuthService {
         // Generate token with userId for chat feature
         String accessToken = jwtUtils.generateAccessToken(user.getEmail(), user.getId());
         
+        // Determine user role
+        String role;
+        if (user instanceof ElderUser) {
+            role = "ELDER";
+        } else if (user instanceof SupervisorUser) {
+            role = "SUPERVISOR";
+        } else {
+            role = "USER";
+        }
+        
         // Tạo UserInfo để trả về
         LoginResponse.UserInfo userInfo = LoginResponse.UserInfo.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getFullName())
                 .avatar(user.getAvatar())
+                .role(role) // Add role
                 .build();
         
         LoginResponse loginResponse = LoginResponse.builder()
@@ -83,6 +96,12 @@ public class AuthService {
 
     @Transactional
     public BaseResponse<Void> register(RegisterRequest registerRequest) {
+        // Validate userType
+        String userType = registerRequest.getUserType().toUpperCase();
+        if (!userType.equals("ELDER") && !userType.equals("SUPERVISOR")) {
+            throw new BaseException.BadRequestException("User type must be ELDER or SUPERVISOR");
+        }
+        
         Optional<User> existingUserOpt = userRepository.findByEmail(registerRequest.getEmail());
         if (existingUserOpt.isPresent()) {
             User existingUser = existingUserOpt.get();
@@ -115,11 +134,20 @@ public class AuthService {
             }
         }
 
-        User newUser = new User();
+        // Tạo user mới dựa theo userType
+        User newUser;
+        if (userType.equals("ELDER")) {
+            newUser = new ElderUser();
+        } else {
+            newUser = new SupervisorUser();
+        }
+        
         newUser.setEmail(registerRequest.getEmail())
                 .setPassword(passwordEncoder.encode(registerRequest.getPassword()))
                 .setIsActive(false); // Chưa active, phải verify email trước
         userRepository.save(newUser);
+
+        log.info("Registered new {} user: {}", userType, registerRequest.getEmail());
 
         // Tự động gửi mã OTP sau khi đăng ký
         String otp = generateOtp();

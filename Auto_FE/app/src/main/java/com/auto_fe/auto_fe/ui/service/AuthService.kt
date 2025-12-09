@@ -36,7 +36,8 @@ class AuthService {
         val id: Long?,
         val email: String?,
         val name: String?,
-        val avatar: String?
+        val avatar: String?,
+        val role: String? // ELDER, SUPERVISOR, USER
     )
 
     data class RegisterResponse(
@@ -106,7 +107,8 @@ class AuthService {
                                 id = if (userJson.has("id")) userJson.getLong("id") else null,
                                 email = userJson.optString("email", null),
                                 name = userJson.optString("name", null),
-                                avatar = userJson.optString("avatar", null)
+                                avatar = userJson.optString("avatar", null),
+                                role = userJson.optString("role", null) // Parse role
                             )
                         } else null
                         
@@ -141,14 +143,16 @@ class AuthService {
      * Đăng ký tài khoản mới
      * @param email Email của user
      * @param password Password của user
+     * @param userType Loại user: "ELDER" hoặc "SUPERVISOR"
      * @return Result<RegisterResponse> - Success nếu đăng ký thành công, Failure nếu có lỗi
      */
-    suspend fun register(email: String, password: String): Result<RegisterResponse> {
+    suspend fun register(email: String, password: String, userType: String): Result<RegisterResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val json = JSONObject().apply {
                     put("email", email)
                     put("password", password)
+                    put("userType", userType)
                 }
 
                 val requestBody = json.toString()

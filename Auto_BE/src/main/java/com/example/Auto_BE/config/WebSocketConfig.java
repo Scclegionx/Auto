@@ -76,9 +76,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                             );
                         accessor.setUser(authentication);
                         
-                        System.out.println("✅ Authenticated STOMP message from user: " + username);
+                        System.out.println("Authenticated STOMP message from user: " + username);
                     } else {
-                        System.out.println("⚠️ No username in session attributes for STOMP message");
+                        System.out.println("No username in session attributes for STOMP message");
                     }
                 }
                 
@@ -120,7 +120,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     token = authHeader.substring(7);
-                    System.out.println("✅ Token from Authorization header: " + token.substring(0, Math.min(20, token.length())) + "...");
+                    System.out.println("Token from Authorization header: " + token.substring(0, Math.min(20, token.length())) + "...");
                 }
                 
                 // Nếu không có token trong header, thử lấy từ query parameter
@@ -128,9 +128,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     String accessToken = servletRequest.getServletRequest().getParameter("access_token");
                     if (accessToken != null && !accessToken.isEmpty()) {
                         token = accessToken;
-                        System.out.println("✅ Token from query parameter: " + token.substring(0, Math.min(20, token.length())) + "...");
+                        System.out.println("Token from query parameter: " + token.substring(0, Math.min(20, token.length())) + "...");
                     } else {
-                        System.out.println("❌ No access_token in query parameters");
+                        System.out.println("No access_token in query parameters");
                         System.out.println("Available parameters: " + servletRequest.getServletRequest().getParameterMap().keySet());
                     }
                 }
@@ -140,23 +140,23 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     try {
                         if (jwtUtils.validateToken(token)) {
                             String username = jwtUtils.getUsernameFromToken(token);
-                            System.out.println("✅ Authentication successful for user: " + username);
+                            System.out.println("Authentication successful for user: " + username);
                             
                             // Lưu username vào WebSocket session attributes
                             attributes.put("username", username);
                             System.out.println("========== Handshake SUCCESS ==========");
                             return true;
                         } else {
-                            System.err.println("❌ Token validation failed");
+                            System.err.println("Token validation failed");
                         }
                     } catch (Exception e) {
-                        System.err.println("❌ JWT validation error: " + e.getMessage());
+                        System.err.println("JWT validation error: " + e.getMessage());
                         e.printStackTrace();
                         System.out.println("========== Handshake FAILED ==========");
                         return false;
                     }
                 } else {
-                    System.err.println("❌ No token provided in header or query parameter");
+                    System.err.println("No token provided in header or query parameter");
                 }
             }
             

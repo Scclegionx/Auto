@@ -4,13 +4,15 @@ import com.example.Auto_BE.dto.BaseResponse;
 import com.example.Auto_BE.dto.request.CreateMedicationRequest;
 import com.example.Auto_BE.dto.request.UpdateMedicationRequest;
 import com.example.Auto_BE.dto.response.MedicationResponse;
+import com.example.Auto_BE.entity.ElderUser;
 import com.example.Auto_BE.entity.MedicationReminder;
 import com.example.Auto_BE.entity.Prescriptions;
-import com.example.Auto_BE.entity.User;
 import com.example.Auto_BE.entity.enums.ETypeMedication;
+import com.example.Auto_BE.exception.BaseException;
+import com.example.Auto_BE.repository.ElderSupervisorRepository;
+import com.example.Auto_BE.repository.ElderUserRepository;
 import com.example.Auto_BE.repository.MedicationReminderRepository;
 import com.example.Auto_BE.repository.PrescriptionRepository;
-import com.example.Auto_BE.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -29,25 +31,49 @@ public class MedicationService {
     private MedicationReminderRepository medicationReminderRepository;
     
     @Autowired
-    private UserRepository userRepository;
+    private ElderUserRepository elderUserRepository;
     
     @Autowired
     private PrescriptionRepository prescriptionRepository;
     
     @Autowired
     private SimpleTimeBasedScheduler simpleTimeBasedScheduler;
+    
+    @Autowired
+    private ElderSupervisorRepository elderSupervisorRepository;
 
     /**
      * Tạo medication reminder mới và auto schedule
-     * ✅ FIXED: Response trả LIST của medications (1 medication per time)
+     * Response trả LIST của medications (1 medication per time)
      */
     public BaseResponse<List<MedicationResponse>> createMedication(CreateMedicationRequest request, Authentication authentication) {
         try {
-            System.out.println("🎯 Creating medication: " + request.getName());
+            System.out.println("Creating medication: " + request.getName());
 
-            // Get user from authentication
-            User user = userRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+            // Nếu có elderUserId → Supervisor tạo cho Elder
+            ElderUser elderUser;
+            if (request.getElderUserId() != null) {
+                elderUser = elderUserRepository.findById(request.getElderUserId())
+                        .orElseThrow(() -> new BaseException.EntityNotFoundException("Elder user không tồn tại"));
+                
+                // Verify Supervisor permission
+                ElderUser supervisorUser = elderUserRepository.findByEmail(authentication.getName())
+                        .orElseThrow(() -> new BaseException.EntityNotFoundException("User không tồn tại"));
+
+                boolean hasPermission = elderSupervisorRepository
+                        .findActiveWithUpdatePermission(supervisorUser.getId(), elderUser.getId())
+                        .isPresent();
+
+                if (!hasPermission) {
+                    throw new BaseException.BadRequestException("Không có quyền tạo medication cho Elder này");
+                }
+                
+                System.out.println("Supervisor " + supervisorUser.getId() + " creating medication for Elder " + elderUser.getId());
+            } else {
+                // Elder tự tạo cho mình
+                elderUser = elderUserRepository.findByEmail(authentication.getName())
+                        .orElseThrow(() -> new RuntimeException("Elder user không tồn tại"));
+            }
 
             // Validate prescription exists (optional)
             Prescriptions prescription = null;
@@ -56,7 +82,7 @@ public class MedicationService {
                         .orElseThrow(() -> new RuntimeException("Prescription không tồn tại"));
             }
 
-            // ✅ Tạo NHIỀU MedicationReminders (1 per time)
+            // Tạo NHIỀU MedicationReminders (1 per time)
             List<MedicationReminder> savedMedications = new java.util.ArrayList<>();
             
             for (String reminderTime : request.getReminderTimes()) {
@@ -64,26 +90,26 @@ public class MedicationService {
                 medication.setName(request.getName());
                 medication.setDescription(request.getDescription());
                 medication.setType(request.getType());
-                medication.setReminderTime(reminderTime);  // ✅ Dùng setReminderTime() như yêu cầu
+                medication.setReminderTime(reminderTime);
                 medication.setDaysOfWeek(request.getDaysOfWeek());
                 medication.setIsActive(request.getIsActive());
-                medication.setUser(user);
+                medication.setElderUser(elderUser);
                 medication.setPrescription(prescription);
 
                 MedicationReminder saved = medicationReminderRepository.save(medication);
                 savedMedications.add(saved);
-                System.out.println("✅ Medication created with ID: " + saved.getId() + " at " + reminderTime);
+                System.out.println("Medication created with ID: " + saved.getId() + " at " + reminderTime);
             }
 
-            // Auto schedule TIME-BASED reminders
+            // Auto schedule TIME-BASED reminders cho Elder
             try {
-                simpleTimeBasedScheduler.scheduleUserReminders(user.getId());
-                System.out.println("⏰ Auto-scheduled TIME-BASED reminders for user: " + user.getId());
+                simpleTimeBasedScheduler.scheduleUserReminders(elderUser.getId());
+                System.out.println("Auto-scheduled TIME-BASED reminders for elder user: " + elderUser.getId());
             } catch (Exception e) {
-                System.err.println("⚠️ Medication created but scheduling failed: " + e.getMessage());
+                System.err.println("Medication created but scheduling failed: " + e.getMessage());
             }
 
-            // ✅ Response trả LIST - mỗi medication 1 entry
+            // Response trả LIST - mỗi medication 1 entry
             List<MedicationResponse> responseList = savedMedications.stream()
                     .map(this::convertToResponse)
                     .collect(Collectors.toList());
@@ -95,7 +121,7 @@ public class MedicationService {
                     .build();
 
         } catch (Exception e) {
-            System.err.println("💥 Error creating medication: " + e.getMessage());
+            System.err.println("Error creating medication: " + e.getMessage());
             e.printStackTrace();
             return BaseResponse.<List<MedicationResponse>>builder()
                     .status("error")
@@ -146,7 +172,7 @@ public class MedicationService {
             List<MedicationReminder> medications = medicationReminderRepository
                     .findAll()
                     .stream()
-                    .filter(med -> med.getUser().getId().equals(userId))
+                    .filter(med -> med.getElderUser().getId().equals(userId))
                     .collect(Collectors.toList());
 
             List<MedicationResponse> responseList = medications.stream()
@@ -180,7 +206,7 @@ public class MedicationService {
             List<MedicationReminder> standaloneMedications = medicationReminderRepository
                     .findAll()
                     .stream()
-                    .filter(med -> med.getUser().getId().equals(userId))
+                    .filter(med -> med.getElderUser().getId().equals(userId))
                     .filter(med -> med.getPrescription() == null || 
                                    med.getType() == ETypeMedication.OVER_THE_COUNTER)
                     .collect(Collectors.toList());
@@ -214,8 +240,8 @@ public class MedicationService {
                         // Build response với reminderTimes đã gộp
                         return MedicationResponse.builder()
                                 .id(first.getId())
-                                .userId(first.getUser().getId())
-                                .userName(first.getUser().getFullName())
+                                .userId(first.getElderUser().getId())
+                                .userName(first.getElderUser().getFullName())
                                 .prescriptionId(first.getPrescription() != null ? first.getPrescription().getId() : null)
                                 .medicationName(first.getName())
                                 .type(first.getType())
@@ -248,20 +274,19 @@ public class MedicationService {
 
     /**
      * Update medication và auto reschedule
-     * ✅ UPDATED: Xử lý theo format mới
      */
     public BaseResponse<MedicationResponse> updateMedication(Long medicationId, UpdateMedicationRequest request, Authentication authentication) {
         try {
-            System.out.println("🎯 Updating medication: " + medicationId);
+            System.out.println("Updating medication: " + medicationId);
 
             MedicationReminder medication = medicationReminderRepository.findById(medicationId)
                     .orElseThrow(() -> new RuntimeException("Medication không tồn tại"));
 
             // Verify user owns this medication
-            User user = userRepository.findByEmail(authentication.getName())
+            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User không tồn tại"));
             
-            if (!medication.getUser().getId().equals(user.getId())) {
+            if (!medication.getElderUser().getId().equals(elderUser.getId())) {
                 return BaseResponse.<MedicationResponse>builder()
                         .status("error")
                         .message("Không có quyền update medication này")
@@ -286,25 +311,25 @@ public class MedicationService {
                 medication.setIsActive(request.getIsActive());
             }
             
-            // ✅ Xử lý reminderTimes array
+            // Xử lý reminderTimes array
             if (request.getReminderTimes() != null && !request.getReminderTimes().isEmpty()) {
                 // Nếu update reminderTimes, cần xóa medication cũ và tạo mới
                 // hoặc chỉ update reminderTimeSimple của medication hiện tại
                 String newReminderTime = request.getReminderTimes().get(0);
                 medication.setReminderTime(newReminderTime);
-                System.out.println("⏰ Updated reminder time to: " + newReminderTime);
+                System.out.println("Updated reminder time to: " + newReminderTime);
             }
 
             // Save
             MedicationReminder updatedMedication = medicationReminderRepository.save(medication);
-            System.out.println("✅ Medication updated: " + updatedMedication.getId());
+            System.out.println("Medication updated: " + updatedMedication.getId());
 
             // Auto reschedule TIME-BASED reminders
             try {
-                simpleTimeBasedScheduler.scheduleUserReminders(user.getId());
-                System.out.println("⏰ Auto-rescheduled TIME-BASED reminders for user: " + user.getId());
+                simpleTimeBasedScheduler.scheduleUserReminders(elderUser.getId());
+                System.out.println("Auto-rescheduled TIME-BASED reminders for user: " + elderUser.getId());
             } catch (Exception e) {
-                System.err.println("⚠️ Medication updated but rescheduling failed: " + e.getMessage());
+                System.err.println("Medication updated but rescheduling failed: " + e.getMessage());
             }
 
             // Convert to response
@@ -317,7 +342,7 @@ public class MedicationService {
                     .build();
 
         } catch (Exception e) {
-            System.err.println("💥 Error updating medication: " + e.getMessage());
+            System.err.println("Error updating medication: " + e.getMessage());
             e.printStackTrace();
             return BaseResponse.<MedicationResponse>builder()
                     .status("error")
@@ -329,20 +354,19 @@ public class MedicationService {
 
     /**
      * Xóa medication và auto reschedule
-     * ✅ UPDATED: Thêm authorization check
      */
     public BaseResponse<String> deleteMedication(Long medicationId, Authentication authentication) {
         try {
-            System.out.println("🎯 Deleting medication: " + medicationId);
+            System.out.println("Deleting medication: " + medicationId);
 
             MedicationReminder medication = medicationReminderRepository.findById(medicationId)
                     .orElseThrow(() -> new RuntimeException("Medication không tồn tại"));
 
             // Verify user owns this medication
-            User user = userRepository.findByEmail(authentication.getName())
+            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User không tồn tại"));
             
-            if (!medication.getUser().getId().equals(user.getId())) {
+            if (!medication.getElderUser().getId().equals(elderUser.getId())) {
                 return BaseResponse.<String>builder()
                         .status("error")
                         .message("Không có quyền xóa medication này")
@@ -352,14 +376,14 @@ public class MedicationService {
 
             // Delete
             medicationReminderRepository.delete(medication);
-            System.out.println("✅ Medication deleted: " + medicationId);
+            System.out.println("Medication deleted: " + medicationId);
 
             // Auto reschedule TIME-BASED reminders (cho medications còn lại)
             try {
-                simpleTimeBasedScheduler.scheduleUserReminders(user.getId());
-                System.out.println("⏰ Auto-rescheduled remaining TIME-BASED reminders for user: " + user.getId());
+                simpleTimeBasedScheduler.scheduleUserReminders(elderUser.getId());
+                System.out.println("Auto-rescheduled remaining TIME-BASED reminders for user: " + elderUser.getId());
             } catch (Exception e) {
-                System.err.println("⚠️ Medication deleted but rescheduling failed: " + e.getMessage());
+                System.err.println("Medication deleted but rescheduling failed: " + e.getMessage());
             }
 
             return BaseResponse.<String>builder()
@@ -369,7 +393,7 @@ public class MedicationService {
                     .build();
 
         } catch (Exception e) {
-            System.err.println("💥 Error deleting medication: " + e.getMessage());
+            System.err.println("Error deleting medication: " + e.getMessage());
             e.printStackTrace();
             return BaseResponse.<String>builder()
                     .status("error")
@@ -384,10 +408,10 @@ public class MedicationService {
      */
     public BaseResponse<MedicationResponse> toggleMedicationStatus(Long medicationId, Authentication authentication) {
         try {
-            System.out.println("🎯 Toggling medication status: " + medicationId);
+            System.out.println("Toggling medication status: " + medicationId);
 
             // Get user from authentication
-            User user = userRepository.findByEmail(authentication.getName())
+            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new RuntimeException("User không tồn tại"));
 
             // Find medication
@@ -395,7 +419,7 @@ public class MedicationService {
                     .orElseThrow(() -> new RuntimeException("Medication không tồn tại"));
 
             // Check authorization
-            if (!medication.getUser().getId().equals(user.getId())) {
+            if (!medication.getElderUser().getId().equals(elderUser.getId())) {
                 throw new RuntimeException("Không có quyền thao tác medication này");
             }
 
@@ -403,14 +427,14 @@ public class MedicationService {
             medication.setIsActive(!medication.getIsActive());
             MedicationReminder updatedMedication = medicationReminderRepository.save(medication);
 
-            System.out.println("✅ Medication status toggled to: " + updatedMedication.getIsActive());
+            System.out.println("Medication status toggled to: " + updatedMedication.getIsActive());
 
             // Auto reschedule reminders
             try {
-                simpleTimeBasedScheduler.scheduleUserReminders(user.getId());
-                System.out.println("⏰ Auto-rescheduled TIME-BASED reminders for user: " + user.getId());
+                simpleTimeBasedScheduler.scheduleUserReminders(elderUser.getId());
+                System.out.println("Auto-rescheduled TIME-BASED reminders for user: " + elderUser.getId());
             } catch (Exception e) {
-                System.err.println("⚠️ Status toggled but rescheduling failed: " + e.getMessage());
+                System.err.println("Status toggled but rescheduling failed: " + e.getMessage());
             }
 
             // Convert to response
@@ -423,7 +447,7 @@ public class MedicationService {
                     .build();
 
         } catch (Exception e) {
-            System.err.println("💥 Error toggling medication status: " + e.getMessage());
+            System.err.println("Error toggling medication status: " + e.getMessage());
             e.printStackTrace();
             return BaseResponse.<MedicationResponse>builder()
                     .status("error")
@@ -435,26 +459,26 @@ public class MedicationService {
 
     // ===== HELPER METHODS =====
 
-    private User getUserById(Long userId) {
-        Optional<User> userOpt = userRepository.findById(userId);
+    private ElderUser getUserById(Long userId) {
+        Optional<ElderUser> userOpt = elderUserRepository.findById(userId);
         return userOpt.orElse(null);
     }
 
     /**
-     * ✅ FIXED: Không gom medications, chỉ return đúng medication được tạo
+     * Không gom medications, chỉ return đúng medication được tạo
      */
     private MedicationResponse convertToResponse(MedicationReminder medication) {
-        // ❌ KHÔNG GOM NỮA - Chỉ return medication hiện tại
+        // KHÔNG GOM NỮA - Chỉ return medication hiện tại
         // Vì createMedication() đã tạo nhiều records, response chỉ cần show 1 record
         
         return MedicationResponse.builder()
                 .id(medication.getId())
-                .userId(medication.getUser().getId())
-                .userName(medication.getUser().getFullName())
+                .userId(medication.getElderUser().getId())
+                .userName(medication.getElderUser().getFullName())
                 .prescriptionId(medication.getPrescription() != null ? medication.getPrescription().getId() : null)
                 .medicationName(medication.getName())
                 .type(medication.getType())
-                .reminderTimes(java.util.Arrays.asList(medication.getReminderTime()))  // ✅ Chỉ time của medication này
+                .reminderTimes(java.util.Arrays.asList(medication.getReminderTime()))  // Chỉ time của medication này
                 .daysOfWeek(medication.getDaysOfWeek())
                 .description(medication.getDescription())
                 .isActive(medication.getIsActive())

@@ -1,6 +1,7 @@
 package com.example.Auto_BE.entity;
 
 import com.example.Auto_BE.entity.enums.ENotificationStatus;
+import com.example.Auto_BE.entity.enums.ENotificationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,35 +19,36 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @Table(name = "notifications")
 public class Notifications extends BaseEntity{
-    @Column(name = "reminder_time", nullable = false)
-    private LocalDateTime reminderTime; // Thời gian nhắc nhở, ví dụ: "2023-10-01T10:00:00"
-
-    @Column(name = "title", length = 255)
-    private String title; // Tiêu đề thông báo đã gửi
+    
+    @Column(name = "notification_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ENotificationType notificationType; // Loại thông báo
+    
+    @Column(name = "title", length = 255, nullable = false)
+    private String title; // Tiêu đề thông báo
 
     @Column(name = "body", length = 1000)
-    private String body; // Nội dung thông báo đã gửi
-
-    @Column(name = "medication_count", nullable = false)
-    private Integer medicationCount = 1; // Số lượng thuốc trong thông báo này
-
-    @Column(name = "medication_ids", length = 500)
-    private String medicationIds; // Danh sách ID thuốc cách nhau bởi dấu phẩy, ví dụ: "1,5,8"
-
-    @Column(name = "medication_names", length = 1000)
-    private String medicationNames; // Danh sách tên thuốc cách nhau bởi dấu phẩy, ví dụ: "Paracetamol,Vitamin C,Amoxicillin"
-
+    private String body; // Nội dung thông báo
+    
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ENotificationStatus status = ENotificationStatus.SENT; // Trạng thái thông báo, mặc định là SENT
+    private ENotificationStatus status = ENotificationStatus.SENT; // Trạng thái thông báo
 
     @Column(name = "is_read", nullable = false)
-    private Boolean isRead = false; // Đã xem thông báo hay chưa, mặc định là chưa xem
-
-    @Column(name = "last_sent_time")
-    private LocalDateTime lastSentTime; // Thời gian gửi thông báo lần cuối, có thể null nếu chưa gửi lần nào
+    private Boolean isRead = false; // Đã xem thông báo hay chưa
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Người dùng sở hữu thông báo này
+    private User user; // Người NHẬN thông báo (ElderUser HOẶC SupervisorUser)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "related_elder_id")
+    private ElderUser relatedElder; // Elder liên quan (nếu notification cho Supervisor về Elder cụ thể)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "related_medication_log_id")
+    private MedicationLog relatedMedicationLog; // Link đến MedicationLog (nếu là MEDICATION_REMINDER)
+    
+    @Column(name = "action_url", length = 500)
+    private String actionUrl; // Deep link hoặc URL hành động (VD: "/medication-logs/123")
 }

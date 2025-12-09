@@ -20,6 +20,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED) // Sử dụng JOINED strategy cho inheritance
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 public class User extends BaseEntity{
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -43,16 +45,6 @@ public class User extends BaseEntity{
     @Column(name = "address")
     private String address;
 
-    @Column(name = "blood_type")
-    @Enumerated(EnumType.STRING)
-    private EBloodType bloodType;
-
-    @Column(name = "height")
-    private Double height; // Chiều cao tính bằng cm
-
-    @Column(name = "weight")
-    private Double weight; // Cân nặng tính bằng kg
-
     @Column(name = "avatar")
     private String avatar; // URL hoặc đường dẫn đến ảnh đại diện
 
@@ -63,20 +55,8 @@ public class User extends BaseEntity{
     private List<DeviceToken> deviceTokens;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<EmergencyContact> emergencyContacts;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Verification> verifications;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<MedicationReminder> medicationReminders;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Prescriptions>  prescriptions;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Notifications> notifications;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<MedicalDocument> medicalDocuments;
 }

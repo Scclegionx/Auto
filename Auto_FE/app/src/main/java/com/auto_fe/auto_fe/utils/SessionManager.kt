@@ -15,6 +15,7 @@ class SessionManager(context: Context) {
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_USER_ID = "user_id"
         private const val KEY_USER_AVATAR = "user_avatar"
+        private const val KEY_USER_ROLE = "user_role" //  Add role
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
         // Remember credentials
         private const val KEY_REMEMBER_ME = "remember_me"
@@ -31,7 +32,8 @@ class SessionManager(context: Context) {
         userEmail: String? = null,
         userName: String? = null,
         userId: Long? = null,
-        userAvatar: String? = null
+        userAvatar: String? = null,
+        userRole: String? = null // Add role parameter
     ) {
         prefs.edit().apply {
             putString(KEY_ACCESS_TOKEN, accessToken)
@@ -40,6 +42,7 @@ class SessionManager(context: Context) {
             userName?.let { putString(KEY_USER_NAME, it) }
             userId?.let { putLong(KEY_USER_ID, it) }
             userAvatar?.let { putString(KEY_USER_AVATAR, it) }
+            userRole?.let { putString(KEY_USER_ROLE, it) } // Save role
             putBoolean(KEY_IS_LOGGED_IN, true)
             apply()
         }
@@ -101,6 +104,13 @@ class SessionManager(context: Context) {
     fun getUserAvatar(): String? {
         return prefs.getString(KEY_USER_AVATAR, null)
     }
+    
+    /**
+     *  Lấy role người dùng (ELDER, SUPERVISOR, USER)
+     */
+    fun getUserRole(): String? {
+        return prefs.getString(KEY_USER_ROLE, null)
+    }
 
     /**
      * Kiểm tra trạng thái đăng nhập
@@ -121,6 +131,7 @@ class SessionManager(context: Context) {
             remove(KEY_USER_NAME)
             remove(KEY_USER_ID)
             remove(KEY_USER_AVATAR)
+            remove(KEY_USER_ROLE) //  Clear role
             putBoolean(KEY_IS_LOGGED_IN, false)
             apply()
         }

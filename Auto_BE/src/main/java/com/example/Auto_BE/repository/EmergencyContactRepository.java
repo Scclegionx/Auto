@@ -1,7 +1,7 @@
 package com.example.Auto_BE.repository;
 
+import com.example.Auto_BE.entity.ElderUser;
 import com.example.Auto_BE.entity.EmergencyContact;
-import com.example.Auto_BE.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,22 +12,22 @@ import java.util.Optional;
 public interface EmergencyContactRepository extends JpaRepository<EmergencyContact, Long> {
     
     /**
-     * Tìm tất cả liên hệ khẩn cấp của một user
+     * Tìm tất cả liên hệ khẩn cấp của một elder user
      */
-    List<EmergencyContact> findByUserOrderByCreatedAtDesc(User user);
+    List<EmergencyContact> findByElderUserOrderByCreatedAtDesc(ElderUser elderUser);
     
     /**
-     * Tìm liên hệ khẩn cấp theo ID và user (để đảm bảo user chỉ truy cập được liên hệ của mình)
+     * Tìm liên hệ khẩn cấp theo ID và elder user (để đảm bảo user chỉ truy cập được liên hệ của mình)
      */
-    Optional<EmergencyContact> findByIdAndUser(Long id, User user);
+    Optional<EmergencyContact> findByIdAndElderUser(Long id, ElderUser elderUser);
     
     /**
-     * Đếm số lượng liên hệ khẩn cấp của user
+     * Đếm số lượng liên hệ khẩn cấp của elder user
      */
-    long countByUser(User user);
+    long countByElderUser(ElderUser elderUser);
     
     /**
-     * Kiểm tra liên hệ có tồn tại theo ID và user
+     * Kiểm tra liên hệ có tồn tại theo ID và elder user
      */
-    boolean existsByIdAndUser(Long id, User user);
+    boolean existsByIdAndElderUser(Long id, ElderUser elderUser);
 }

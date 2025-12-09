@@ -77,24 +77,26 @@ import com.auto_fe.auto_fe.ui.screens.VoiceScreen
 import com.auto_fe.auto_fe.ui.screens.AuthScreen
 import com.auto_fe.auto_fe.ui.screens.SettingsScreen
 import com.auto_fe.auto_fe.ui.screens.GuideScreen
-import com.auto_fe.auto_fe.ui.screens.PrescriptionListScreen
 import com.auto_fe.auto_fe.ui.screens.MedicationTabScreen
+import com.auto_fe.auto_fe.ui.screens.ManageConnectionsScreen
+import com.auto_fe.auto_fe.ui.screens.ElderListScreen
 import com.auto_fe.auto_fe.ui.screens.CreateStandaloneMedicationScreen
+import com.auto_fe.auto_fe.ui.screens.SearchUserForConnectionScreen
 import com.auto_fe.auto_fe.ui.screens.PrescriptionDetailScreen
 import com.auto_fe.auto_fe.ui.screens.CreatePrescriptionScreen
 import com.auto_fe.auto_fe.ui.screens.VerificationScreen
 import com.auto_fe.auto_fe.ui.screens.ProfileScreen
 import com.auto_fe.auto_fe.ui.screens.ForgotPasswordScreen
 import com.auto_fe.auto_fe.ui.screens.ChangePasswordScreen
-import com.auto_fe.auto_fe.ui.screens.NotificationHistoryScreen
+import com.auto_fe.auto_fe.ui.screens.NotificationScreen
 import com.auto_fe.auto_fe.ui.screens.EmergencyContactScreen
 import com.auto_fe.auto_fe.ui.screens.ChatListScreen
 import com.auto_fe.auto_fe.ui.screens.SearchUserScreen
-import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
 import com.auto_fe.auto_fe.utils.SessionManager
 import com.auto_fe.auto_fe.utils.PermissionManager
 import com.auto_fe.auto_fe.network.ApiClient
 import android.util.Log
+import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
 
 class MainActivity : ComponentActivity() {
     private lateinit var permissionManager: PermissionManager
@@ -117,10 +119,10 @@ class MainActivity : ComponentActivity() {
     ) { isGranted ->
         if (isGranted) {
             Log.d("MainActivity", "Notification permission granted")
-            Toast.makeText(this, "✅ Đã cấp quyền thông báo", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Đã cấp quyền thông báo", Toast.LENGTH_SHORT).show()
         } else {
             Log.w("MainActivity", "Notification permission denied")
-            Toast.makeText(this, "⚠️ Cần cấp quyền thông báo để nhận nhắc nhở uống thuốc", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Cần cấp quyền thông báo để nhận nhắc nhở uống thuốc", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -214,22 +216,26 @@ fun MainScreen(sessionManager: SessionManager) {
     var accessToken by remember { mutableStateOf(sessionManager.getAccessToken()) }
     var selectedPrescriptionId by remember { mutableStateOf<Long?>(null) }
     var showCreatePrescription by remember { mutableStateOf(false) }
-    var editPrescriptionId by remember { mutableStateOf<Long?>(null) }  // ✅ Thêm state cho edit
+    var editPrescriptionId by remember { mutableStateOf<Long?>(null) }  //  Thêm state cho edit
     var showVerification by remember { mutableStateOf(false) }
     var showProfile by remember { mutableStateOf(false) }
-    var showForgotPassword by remember { mutableStateOf(false) }  // ✅ Thêm state cho forgot password
-    var showChangePassword by remember { mutableStateOf(false) }  // ✅ Thêm state cho change password
-    var showNotificationHistory by remember { mutableStateOf(false) }  // ✅ Thêm state cho notification history
-    var showEmergencyContact by remember { mutableStateOf(false) }  // ✅ Thêm state cho emergency contact
-    var showCreateStandaloneMedication by remember { mutableStateOf(false) }  // ✅ Thêm state cho create standalone medication
-    var showChatList by remember { mutableStateOf(false) }  // ✅ Thêm state cho chat list
-    var showSearchUser by remember { mutableStateOf(false) }  // ✅ Thêm state cho search user
-    var showChatDetail by remember { mutableStateOf(false) }  // ✅ Thêm state cho chat detail
-    var selectedChatId by remember { mutableStateOf<Long?>(null) }  // ✅ Chat ID đã tồn tại
-    var selectedReceiverId by remember { mutableStateOf<Long?>(null) }  // ✅ Receiver ID cho chat mới
-    var selectedChatName by remember { mutableStateOf<String?>(null) }  // ✅ Tên người nhận
-    var selectedUserId by remember { mutableStateOf<Long?>(null) }  // ✅ State để trigger create chat
-    var selectedUserName by remember { mutableStateOf<String?>(null) }  // ✅ State để lưu tên user
+    var showForgotPassword by remember { mutableStateOf(false) }  //  Thêm state cho forgot password
+    var showChangePassword by remember { mutableStateOf(false) }  //  Thêm state cho change password
+    var showNotificationHistory by remember { mutableStateOf(false) }  //  Thêm state cho notification history
+    var showEmergencyContact by remember { mutableStateOf(false) }  //  Thêm state cho emergency contact
+    var showManageConnections by remember { mutableStateOf(false) }  //  Thêm state cho quản lý kết nối
+    var showCreateStandaloneMedication by remember { mutableStateOf(false) }  // Thêm state cho create standalone medication
+    var showChatList by remember { mutableStateOf(false) }  //  Thêm state cho chat list
+    var showSearchUser by remember { mutableStateOf(false) }  // Thêm state cho search user (cho chat)
+    var showSearchConnection by remember { mutableStateOf(false) }  //  Thêm state cho search connection
+    var showChatDetail by remember { mutableStateOf(false) }  // Thêm state cho chat detail
+    var selectedChatId by remember { mutableStateOf<Long?>(null) }  //  Chat ID đã tồn tại
+    var selectedReceiverId by remember { mutableStateOf<Long?>(null) }  //  Receiver ID cho chat mới
+    var selectedChatName by remember { mutableStateOf<String?>(null) }  //  Tên người nhận
+    var selectedUserId by remember { mutableStateOf<Long?>(null) }  //  State để trigger create chat
+    var selectedUserName by remember { mutableStateOf<String?>(null) }  //  State để lưu tên user
+    var selectedElderUserId by remember { mutableStateOf<Long?>(null) }  //  State cho Supervisor xem Elder
+    var selectedElderUserName by remember { mutableStateOf<String?>(null) }  // Tên Elder
     var verificationEmail by remember { mutableStateOf("") }
     var verificationPassword by remember { mutableStateOf("") }
     var verifiedEmail by remember { mutableStateOf<String?>(null) }
@@ -314,8 +320,24 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     // BackHandler để xử lý nút back
-    BackHandler(enabled = selectedPrescriptionId != null || showCreatePrescription || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory || showEmergencyContact || showChatList || showSearchUser || showChatDetail) {
+    BackHandler(enabled = selectedElderUserId != null || selectedPrescriptionId != null || showCreatePrescription || showCreateStandaloneMedication || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory || showEmergencyContact || showChatList || showSearchUser || showSearchConnection || showChatDetail) {
         when {
+            //  PRIORITY 1: Handle detail/create screens first (highest priority overlays)
+            showCreatePrescription -> {
+                showCreatePrescription = false
+                editPrescriptionId = null
+            }
+            selectedPrescriptionId != null -> {
+                selectedPrescriptionId = null
+            }
+            showCreateStandaloneMedication -> {
+                showCreateStandaloneMedication = false
+            }
+            //  PRIORITY 2: Main screens
+            selectedElderUserId != null -> {
+                selectedElderUserId = null
+                selectedElderUserName = null
+            }
             // Nếu đang ở màn chat detail → quay về chat list
             showChatDetail -> {
                 showChatDetail = false
@@ -323,6 +345,10 @@ fun MainScreen(sessionManager: SessionManager) {
                 selectedReceiverId = null
                 selectedChatName = null
                 showChatList = true
+            }
+            // Nếu đang ở màn search connection → quay về danh sách
+            showSearchConnection -> {
+                showSearchConnection = false
             }
             // Nếu đang ở màn search user → quay về chat list
             showSearchUser -> {
@@ -359,19 +385,91 @@ fun MainScreen(sessionManager: SessionManager) {
                 verificationEmail = ""
                 verificationPassword = ""
             }
-            // Nếu đang ở màn tạo đơn thuốc → quay về danh sách
-            showCreatePrescription -> {
-                showCreatePrescription = false
-            }
-            // Nếu đang ở chi tiết đơn thuốc → quay về danh sách
-            selectedPrescriptionId != null -> {
-                selectedPrescriptionId = null
-            }
-            // Không handle case danh sách thuốc - để system thoát app
         }
     }
 
     when {
+        // ===== PRIORITY 1: Fullscreen overlays (highest priority) =====
+        
+        // Màn hình tạo đơn thuốc mới (fullscreen, không có bottom nav)
+        showCreatePrescription && accessToken != null -> {
+            CreatePrescriptionScreen(
+                accessToken = accessToken!!,
+                onBackClick = { 
+                    showCreatePrescription = false
+                    editPrescriptionId = null  // Reset edit state
+                },
+                onSuccess = {
+                    showCreatePrescription = false
+                    editPrescriptionId = null  //  Reset edit state
+                    // Optionally refresh prescription list
+                },
+                editPrescriptionId = editPrescriptionId,  //  Truyền prescription ID để edit
+                elderUserId = selectedElderUserId,  //  Pass if Supervisor is creating for Elder
+                elderUserName = selectedElderUserName
+            )
+        }
+        
+        // Màn hình chi tiết đơn thuốc (fullscreen, không có bottom nav)
+        selectedPrescriptionId != null && accessToken != null -> {
+            PrescriptionDetailScreen(
+                prescriptionId = selectedPrescriptionId!!,
+                accessToken = accessToken ?: "",
+                elderUserId = selectedElderUserId,  //  Pass elderUserId for Supervisor mode
+                onBackClick = { selectedPrescriptionId = null },
+                onEditClick = { prescriptionId ->
+                    editPrescriptionId = prescriptionId
+                    showCreatePrescription = true
+                    selectedPrescriptionId = null
+                }
+            )
+        }
+        
+        // Màn hình tạo thuốc ngoài đơn (fullscreen)
+        showCreateStandaloneMedication && accessToken != null -> {
+            CreateStandaloneMedicationScreen(
+                accessToken = accessToken!!,
+                elderUserId = selectedElderUserId,  // Pass elderUserId for Supervisor mode
+                elderUserName = selectedElderUserName,
+                onDismiss = { showCreateStandaloneMedication = false },
+                onSuccess = { showCreateStandaloneMedication = false }
+            )
+        }
+        
+        // ===== PRIORITY 2: Main screens =====
+        
+        //  Màn hình Supervisor xem thuốc của Elder (fullscreen) - Dùng MedicationTabScreen
+        selectedElderUserId != null && accessToken != null -> {
+            MedicationTabScreen(
+                accessToken = accessToken!!,
+                userName = sessionManager.getUserName() ?: "Supervisor",
+                userEmail = sessionManager.getUserEmail() ?: "",
+                userAvatar = sessionManager.getUserAvatar(),
+                elderUserId = selectedElderUserId,  //  Pass elderUserId để load thuốc của Elder
+                elderUserName = selectedElderUserName,
+                onPrescriptionClick = { prescriptionId ->
+                    selectedPrescriptionId = prescriptionId
+                },
+                onBackClick = {
+                    selectedElderUserId = null
+                    selectedElderUserName = null
+                },
+                onCreatePrescriptionClick = {
+                    // Supervisor tạo đơn thuốc cho Elder
+                    showCreatePrescription = true
+                },
+                onCreateStandaloneMedicationClick = {
+                    // Supervisor tạo thuốc ngoài đơn cho Elder
+                    showCreateStandaloneMedication = true
+                },
+                onLogout = { onLogout() },
+                onProfileClick = { showProfile = true },
+                onNotificationHistoryClick = { showNotificationHistory = true },
+                onEmergencyContactClick = { showEmergencyContact = true },
+                onManageConnectionsClick = { /* TODO */ },
+                onChatClick = { showChatList = true }
+            )
+        }
         // Màn hình Chat Detail (fullscreen)
         showChatDetail && accessToken != null -> {
             com.auto_fe.auto_fe.ui.screens.ChatDetailScreen(
@@ -390,7 +488,7 @@ fun MainScreen(sessionManager: SessionManager) {
                 }
             )
         }
-        // Màn hình Search User (fullscreen)
+        // Màn hình Search User (fullscreen - cho chat)
         showSearchUser && accessToken != null -> {
             SearchUserScreen(
                 accessToken = accessToken ?: "",
@@ -401,6 +499,15 @@ fun MainScreen(sessionManager: SessionManager) {
                 },
                 onBackClick = {
                     showSearchUser = false
+                }
+            )
+        }
+        // Màn hình Search User For Connection (fullscreen - cho yêu cầu kết nối)
+        showSearchConnection && accessToken != null -> {
+            SearchUserForConnectionScreen(
+                accessToken = accessToken ?: "",
+                onBack = {
+                    showSearchConnection = false
                 }
             )
         }
@@ -456,13 +563,44 @@ fun MainScreen(sessionManager: SessionManager) {
                 }
             )
         }
-        // Màn hình lịch sử thông báo (fullscreen)
+        // Màn hình thông báo (fullscreen)
         showNotificationHistory && accessToken != null -> {
             val token = accessToken // Smart cast fix
             if (token != null) {
-                NotificationHistoryScreen(
+                NotificationScreen(
                     accessToken = token,
-                    onBack = { showNotificationHistory = false }
+                    onBackClick = { showNotificationHistory = false },
+                    onNotificationClick = { notification ->
+                        // Handle notification click - Navigate based on type
+                        when (notification.notificationType) {
+                            "MEDICATION_REMINDER" -> {
+                                // TODO: Navigate to medication log detail
+                                notification.relatedMedicationLogId?.let { logId ->
+                                    android.util.Log.d("MainActivity", "Navigate to medication log: $logId")
+                                    // navController.navigate("medication-log/$logId")
+                                }
+                            }
+                            "ELDER_MISSED_MEDICATION", "ELDER_LATE_MEDICATION" -> {
+                                // TODO: Navigate to medication log detail
+                                notification.relatedMedicationLogId?.let { logId ->
+                                    android.util.Log.d("MainActivity", "Navigate to medication log: $logId")
+                                }
+                            }
+                            "ELDER_HEALTH_ALERT" -> {
+                                // TODO: Navigate to elder health detail
+                                notification.relatedElderId?.let { elderId ->
+                                    android.util.Log.d("MainActivity", "Navigate to elder: $elderId")
+                                }
+                            }
+                            "RELATIONSHIP_REQUEST" -> {
+                                // TODO: Navigate to relationship requests
+                                android.util.Log.d("MainActivity", "Navigate to relationship requests")
+                            }
+                            else -> {
+                                android.util.Log.d("MainActivity", "Notification clicked: ${notification.title}")
+                            }
+                        }
+                    }
                 )
             }
         }
@@ -476,20 +614,20 @@ fun MainScreen(sessionManager: SessionManager) {
                 )
             }
         }
-        // Màn hình tạo thuốc ngoài đơn (fullscreen)
-        showCreateStandaloneMedication && accessToken != null -> {
+        // Màn hình Manage Connections (fullscreen)
+        showManageConnections && accessToken != null -> {
             val token = accessToken // Smart cast fix
+            val role = sessionManager.getUserRole() ?: "ELDER"
             if (token != null) {
-                CreateStandaloneMedicationScreen(
+                ManageConnectionsScreen(
                     accessToken = token,
-                    onDismiss = { showCreateStandaloneMedication = false },
-                    onSuccess = { 
-                        showCreateStandaloneMedication = false
-                        // Tab will auto-refresh when back to view
-                    }
+                    userRole = role,
+                    onBackClick = { showManageConnections = false },
+                    onSearchUserClick = { showSearchConnection = true }
                 )
             }
         }
+        
         // Màn hình verification (fullscreen)
         showVerification -> {
             VerificationScreen(
@@ -502,7 +640,7 @@ fun MainScreen(sessionManager: SessionManager) {
                     verificationPassword = ""
                     verifiedEmail = email
                     verifiedPassword = password
-                    Toast.makeText(context, "✅ Xác thực thành công! Vui lòng đăng nhập.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Xác thực thành công! Vui lòng đăng nhập.", Toast.LENGTH_LONG).show()
                 },
                 onBackClick = {
                     showVerification = false
@@ -511,35 +649,7 @@ fun MainScreen(sessionManager: SessionManager) {
                 }
             )
         }
-        // Màn hình tạo đơn thuốc mới (fullscreen, không có bottom nav)
-        showCreatePrescription && accessToken != null -> {
-            CreatePrescriptionScreen(
-                accessToken = accessToken!!,
-                onBackClick = { 
-                    showCreatePrescription = false
-                    editPrescriptionId = null  // ✅ Reset edit state
-                },
-                onSuccess = {
-                    showCreatePrescription = false
-                    editPrescriptionId = null  // ✅ Reset edit state
-                    // Optionally refresh prescription list
-                },
-                editPrescriptionId = editPrescriptionId  // ✅ Truyền prescription ID để edit
-            )
-        }
-        // Màn hình chi tiết đơn thuốc (fullscreen, không có bottom nav)
-        selectedPrescriptionId != null -> {
-            PrescriptionDetailScreen(
-                prescriptionId = selectedPrescriptionId!!,
-                accessToken = accessToken ?: "",
-                onBackClick = { selectedPrescriptionId = null },
-                onEditClick = { prescriptionId ->
-                    editPrescriptionId = prescriptionId
-                    showCreatePrescription = true
-                    selectedPrescriptionId = null
-                }
-            )
-        }
+        
         // Màn hình chính với bottom navigation
         else -> {
             Scaffold(
@@ -560,55 +670,94 @@ fun MainScreen(sessionManager: SessionManager) {
                     // Tab Content
                     when (selectedTab) {
                         0 -> {
-                            // Tab Đơn thuốc - chỉ hiển thị khi đã login
+                            // Tab Đơn thuốc/Danh sách Elder - chỉ hiển thị khi đã login
                             if (isLoggedIn && accessToken != null) {
                                 val displayName = sessionManager.getUserName()
                                     ?.takeIf { it.isNotBlank() && it != "null" } 
                                     ?: "Người dùng"
                                 
                                 val context = LocalContext.current
+                                val userRole = sessionManager.getUserRole() // Get role từ session
                                 
-                                MedicationTabScreen(
-                                    accessToken = accessToken!!,
-                                    userName = displayName,
-                                    userEmail = sessionManager.getUserEmail() ?: "",
-                                    userAvatar = sessionManager.getUserAvatar(),
-                                    onPrescriptionClick = { prescriptionId ->
-                                        selectedPrescriptionId = prescriptionId
-                                    },
-                                    onCreatePrescriptionClick = {
-                                        showCreatePrescription = true
-                                    },
-                                    onCreateStandaloneMedicationClick = {
-                                        showCreateStandaloneMedication = true
-                                    },
-                                    onChatClick = {
-                                        showChatList = true
-                                    },
-                                    onProfileClick = {
-                                        showProfile = true
-                                    },
-                                    onNotificationHistoryClick = {
-                                        showNotificationHistory = true
-                                    },
-                                    onEmergencyContactClick = {
-                                        showEmergencyContact = true
-                                    },
-                                    onLogout = {
-                                        onLogout()
-                                    }
-                                )
+                                // Phân biệt Elder vs Supervisor
+                                if (userRole == "SUPERVISOR") {
+                                    // SUPERVISOR → Hiển thị danh sách Elder
+                                    ElderListScreen(
+                                        accessToken = accessToken!!,
+                                        userAvatar = sessionManager.getUserAvatar(),
+                                        onElderClick = { elderUserId, elderUserName ->
+                                            // Set selected elder và navigate to detail
+                                            selectedElderUserId = elderUserId
+                                            selectedElderUserName = elderUserName
+                                            android.util.Log.d("MainActivity", "Selected Elder: $elderUserId - $elderUserName")
+                                        },
+                                        onSearchUserClick = {
+                                            showSearchConnection = true
+                                        },
+                                        onChatClick = {
+                                            showChatList = true
+                                        },
+                                        onProfileClick = {
+                                            showProfile = true
+                                        },
+                                        onNotificationHistoryClick = {
+                                            showNotificationHistory = true
+                                        },
+                                        onManageConnectionsClick = {
+                                            showManageConnections = true
+                                        },
+                                        onLogout = {
+                                            onLogout()
+                                        }
+                                    )
+                                } else {
+                                    // ELDER → Hiển thị danh sách đơn thuốc
+                                    MedicationTabScreen(
+                                        accessToken = accessToken!!,
+                                        userName = displayName,
+                                        userEmail = sessionManager.getUserEmail() ?: "",
+                                        userAvatar = sessionManager.getUserAvatar(),
+                                        onPrescriptionClick = { prescriptionId ->
+                                            selectedPrescriptionId = prescriptionId
+                                        },
+                                        onCreatePrescriptionClick = {
+                                            showCreatePrescription = true
+                                        },
+                                        onCreateStandaloneMedicationClick = {
+                                            showCreateStandaloneMedication = true
+                                        },
+                                        onChatClick = {
+                                            showChatList = true
+                                        },
+                                        onProfileClick = {
+                                            showProfile = true
+                                        },
+                                        onNotificationHistoryClick = {
+                                            showNotificationHistory = true
+                                        },
+                                        onEmergencyContactClick = {
+                                            showEmergencyContact = true
+                                        },
+                                        onManageConnectionsClick = {
+                                            showManageConnections = true
+                                        },
+                                        onLogout = {
+                                            onLogout()
+                                        }
+                                    )
+                                }
                             } else {
                                 // Chưa login → Hiển thị màn đăng nhập
                                 AuthScreen(
-                                    onLoginSuccess = { token, userEmail, userName, userId, userAvatar ->
-                                        // Lưu session
+                                    onLoginSuccess = { token, userEmail, userName, userId, userAvatar, userRole ->
+                                        // Lưu session với role
                                         sessionManager.saveLoginSession(
                                             accessToken = token,
                                             userEmail = userEmail,
                                             userName = userName,
                                             userId = userId,
-                                            userAvatar = userAvatar
+                                            userAvatar = userAvatar,
+                                            userRole = userRole // Lưu role
                                         )
                                         accessToken = token
                                         isLoggedIn = true
@@ -616,6 +765,13 @@ fun MainScreen(sessionManager: SessionManager) {
                                         verifiedEmail = null
                                         verifiedPassword = null
                                         // Giữ nguyên tab 0 để hiển thị PrescriptionList
+                                        
+
+                                        // if (userRole == "SUPERVISOR") {
+                                        //     // Chuyển sang màn hình giám sát
+                                        // } else {
+                                        //     // ELDER - giữ nguyên
+                                        // }
                                     },
                                     onVerificationClick = { email, password ->
                                         // Chuyển sang màn hình verification với email và password

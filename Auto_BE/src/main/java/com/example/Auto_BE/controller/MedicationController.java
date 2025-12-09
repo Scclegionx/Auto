@@ -35,14 +35,14 @@ public class MedicationController {
 
     /**
      * Tạo medication mới
-     * ✅ Response trả LIST - mỗi time = 1 medication
+     * Response trả LIST - mỗi time = 1 medication
      */
     @PostMapping
     public ResponseEntity<BaseResponse<List<MedicationResponse>>> createMedication(
             @RequestBody CreateMedicationRequest request,
             Authentication authentication) {
         
-        System.out.println("🎯 API: Create medication - " + request.getName());
+        System.out.println("API: Create medication - " + request.getName());
         
         BaseResponse<List<MedicationResponse>> response = medicationService.createMedication(request, authentication);
         
@@ -97,7 +97,7 @@ public class MedicationController {
     public ResponseEntity<BaseResponse<List<MedicationResponse>>> getStandaloneMedications(
             @PathVariable Long userId) {
         
-        System.out.println("💊 API: Get standalone medications for user - " + userId);
+        System.out.println("API: Get standalone medications for user - " + userId);
         
         BaseResponse<List<MedicationResponse>> response = medicationService.getStandaloneMedicationsByUser(userId);
         
@@ -117,7 +117,7 @@ public class MedicationController {
             @RequestBody UpdateMedicationRequest request,
             Authentication authentication) {
         
-        System.out.println("🎯 API: Update medication - " + medicationId);
+        System.out.println("API: Update medication - " + medicationId);
         
         BaseResponse<MedicationResponse> response = medicationService.updateMedication(medicationId, request, authentication);
         

@@ -7,11 +7,11 @@ import lombok.*;
 import java.util.List;
 
 /**
- * 💊 UNIFIED Request cho Individual Medication CRUD
+ * UNIFIED Request cho Individual Medication CRUD
  * 
- * ✅ Đồng bộ với MedicationReminderCreateRequest (dùng trong Prescription)
- * ✅ Cùng lưu vào bảng MedicationReminder
- * ✅ Hỗ trợ TIME-BASED scheduling
+ * Đồng bộ với MedicationReminderCreateRequest (dùng trong Prescription)
+ * Cùng lưu vào bảng MedicationReminder
+ * Hỗ trợ TIME-BASED scheduling
  */
 @Getter
 @Setter
@@ -45,4 +45,7 @@ public class CreateMedicationRequest {
 
     @Builder.Default
     private Boolean isActive = true; // Mặc định active
+    
+    // Optional: Supervisor tạo cho Elder
+    private Long elderUserId;
 }

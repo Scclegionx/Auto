@@ -37,7 +37,8 @@ fun PrescriptionDetailScreen(
     prescriptionId: Long,
     accessToken: String,
     onBackClick: () -> Unit,
-    onEditClick: (Long) -> Unit = {}
+    onEditClick: (Long) -> Unit = {},
+    elderUserId: Long? = null  // Add for Supervisor viewing Elder's prescription
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -55,16 +56,23 @@ fun PrescriptionDetailScreen(
     LaunchedEffect(prescriptionId) {
         scope.launch {
             isLoading = true
+            android.util.Log.d("PrescriptionDetailScreen", "=== LOADING DETAIL ===")
+            android.util.Log.d("PrescriptionDetailScreen", "prescriptionId: $prescriptionId")
+            android.util.Log.d("PrescriptionDetailScreen", "elderUserId: $elderUserId")
+            android.util.Log.d("PrescriptionDetailScreen", "accessToken: ${accessToken.take(20)}...")
+            
             val result = prescriptionService.getPrescriptionById(prescriptionId, accessToken)
             result.fold(
                 onSuccess = { response ->
                     prescription = response.data
                     isLoading = false
+                    android.util.Log.d("PrescriptionDetailScreen", "Loaded prescription: ${response.data?.name}")
                 },
                 onFailure = { error ->
                     errorMessage = error.message
                     isLoading = false
-                    Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                    android.util.Log.e("PrescriptionDetailScreen", "Error: ${error.message}", error)
+                    Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                 }
             )
         }
@@ -185,10 +193,10 @@ fun PrescriptionDetailScreen(
                     Text(
                         if (prescription?.isActive == true) {
                             "Bạn có chắc muốn TẠM NGƯNG đơn thuốc \"${prescription?.name}\"?\n\n" +
-                            "⚠️ Tất cả lịch nhắc nhở của đơn thuốc này sẽ bị TẠM DỪNG."
+                            "Tất cả lịch nhắc nhở của đơn thuốc này sẽ bị TẠM DỪNG."
                         } else {
                             "Bạn có chắc muốn KÍCH HOẠT lại đơn thuốc \"${prescription?.name}\"?\n\n" +
-                            "✅ Tất cả lịch nhắc nhở của đơn thuốc này sẽ được KÍCH HOẠT trở lại."
+                            "Tất cả lịch nhắc nhở của đơn thuốc này sẽ được KÍCH HOẠT trở lại."
                         },
                         color = DarkOnSurface
                     ) 
@@ -210,7 +218,7 @@ fun PrescriptionDetailScreen(
                                         }
                                         Toast.makeText(
                                             context,
-                                            "✅ Đã cập nhật trạng thái",
+                                            "Đã cập nhật trạng thái",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                         isTogglingStatus = false
@@ -218,7 +226,7 @@ fun PrescriptionDetailScreen(
                                     onFailure = { error ->
                                         Toast.makeText(
                                             context,
-                                            "❌ ${error.message}",
+                                            "${error.message}",
                                             Toast.LENGTH_LONG
                                         ).show()
                                         isTogglingStatus = false
@@ -277,11 +285,11 @@ fun PrescriptionDetailScreen(
                                 )
                                 result.fold(
                                     onSuccess = { message ->
-                                        Toast.makeText(context, "✅ $message", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, "$message", Toast.LENGTH_SHORT).show()
                                         onBackClick() // Quay về màn hình trước
                                     },
                                     onFailure = { error ->
-                                        Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                                        Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                                         isDeleting = false
                                     }
                                 )
@@ -464,7 +472,7 @@ fun PrescriptionDetailContent(
         }
 
         // Medication List
-        // ✅ Ưu tiên dùng medications (grouped), fallback về medicationReminders (legacy)
+        // Ưu tiên dùng medications (grouped), fallback về medicationReminders (legacy)
         val medications = prescription.medications ?: emptyList()
         val hasData = medications.isNotEmpty()
         
@@ -617,7 +625,7 @@ fun MedicationCard(medication: PrescriptionService.MedicationReminder) {
     }
 }
 
-// ✅ Modern card for grouped medications
+// Modern card for grouped medications
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MedicationGroupCard(medication: PrescriptionService.Medication) {

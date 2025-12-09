@@ -28,6 +28,6 @@ public class MedicalDocument extends BaseEntity {
     private List<MedicalDocumentFile> files; // Danh sách các tệp đính kèm liên quan đến tài liệu y tế
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Người dùng sở hữu tài liệu y tế này
+    @JoinColumn(name = "elder_user_id", nullable = false)
+    private ElderUser elderUser; // Người cao tuổi sở hữu tài liệu y tế này
 }

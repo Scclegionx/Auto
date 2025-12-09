@@ -22,4 +22,7 @@ public class PrescriptionCreateRequest {
     @Valid
     @NotEmpty(message = "Danh sách thuốc không được để trống")
     private List<MedicationReminderCreateRequest> medicationReminders;
+    
+    // Optional: Supervisor tạo cho Elder
+    private Long elderUserId;
 }

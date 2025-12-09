@@ -38,8 +38,8 @@ public class MedicationReminder extends BaseEntity {
     private Boolean isActive = true; // Trạng thái hoạt động của nhắc nhở thuốc
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Người dùng sở hữu nhắc nhở thuốc này
+    @JoinColumn(name = "elder_user_id", nullable = false)
+    private ElderUser elderUser; // Người cao tuổi sở hữu nhắc nhở thuốc này
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prescription_id", nullable = true)//null khi thuốc mua ngoài

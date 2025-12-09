@@ -1,6 +1,7 @@
 package com.auto_fe.auto_fe.ui.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,7 +30,9 @@ fun PrescriptionListTab(
     accessToken: String,
     onPrescriptionClick: (Long) -> Unit,
     onCreateClick: () -> Unit = {},
-    onChatClick: () -> Unit = {}
+    onChatClick: () -> Unit = {},
+    elderUserId: Long? = null,  // Add elderUserId parameter
+    elderUserName: String? = null  // Add elderUserName parameter
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -40,22 +43,33 @@ fun PrescriptionListTab(
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     // Load prescriptions when screen opens
-    LaunchedEffect(Unit) {
-        scope.launch {
-            isLoading = true
-            val result = prescriptionService.getAllPrescriptions(accessToken)
-            result.fold(
-                onSuccess = { response ->
-                    prescriptions = response.data ?: emptyList()
-                    isLoading = false
-                },
-                onFailure = { error ->
-                    errorMessage = error.message
-                    isLoading = false
-                    Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
-                }
-            )
+    LaunchedEffect(elderUserId) {  // Reload when elderUserId changes
+        isLoading = true
+        android.util.Log.d("PrescriptionListTab", "Loading prescriptions - elderUserId: $elderUserId")
+        
+        val result = if (elderUserId != null) {
+            // Supervisor mode: Load prescriptions của Elder
+            android.util.Log.d("PrescriptionListTab", "Supervisor mode - loading for elder: $elderUserId")
+            prescriptionService.getPrescriptionsByUserId(accessToken, elderUserId)
+        } else {
+            // Elder mode: Load own prescriptions
+            android.util.Log.d("PrescriptionListTab", "Elder mode - loading own prescriptions")
+            prescriptionService.getAllPrescriptions(accessToken)
         }
+        
+        result.fold(
+            onSuccess = { response ->
+                prescriptions = response.data ?: emptyList()
+                isLoading = false
+                android.util.Log.d("PrescriptionListTab", "Loaded ${prescriptions.size} prescriptions")
+            },
+            onFailure = { error ->
+                errorMessage = error.message
+                isLoading = false
+                android.util.Log.e("PrescriptionListTab", "Error: ${error.message}")
+                Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
+            }
+        )
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -190,17 +204,19 @@ fun PrescriptionListTab(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Chat Button
-            FloatingActionButton(
-                onClick = onChatClick,
-                containerColor = DarkPrimary,
-                modifier = Modifier.size(56.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Email,
-                    contentDescription = "Chat",
-                    tint = DarkOnPrimary
-                )
+            // Chat Button - Chỉ hiện khi elderUserId == null (Elder mode)
+            if (elderUserId == null) {  // Hide chat button in supervisor mode
+                FloatingActionButton(
+                    onClick = onChatClick,
+                    containerColor = DarkPrimary,
+                    modifier = Modifier.size(56.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = "Chat",
+                        tint = DarkOnPrimary
+                    )
+                }
             }
             
             // Add Prescription Button
@@ -214,6 +230,134 @@ fun PrescriptionListTab(
                     contentDescription = "Thêm đơn thuốc",
                     tint = DarkOnPrimary
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PrescriptionCard(
+    prescription: PrescriptionService.Prescription,
+    onClick: () -> Unit
+) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = DarkSurface.copy(alpha = 0.9f)
+        ),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = prescription.name,
+                        fontSize = AppTextSize.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = DarkOnSurface
+                    )
+                    
+                    if (!prescription.description.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = prescription.description,
+                            fontSize = AppTextSize.bodyMedium,
+                            color = DarkOnSurface.copy(alpha = 0.7f),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+                
+                // Status badge
+                Surface(
+                    color = if (prescription.isActive) AISuccess.copy(alpha = 0.2f) else DarkOnSurface.copy(alpha = 0.1f),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = if (prescription.isActive) "✓ Đang dùng" else "⏸ Tạm ngưng",
+                        fontSize = 11.sp,
+                        color = if (prescription.isActive) AISuccess else DarkOnSurface.copy(alpha = 0.5f),
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Divider(color = DarkOnSurface.copy(alpha = 0.1f))
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Medication count và info
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "💊",
+                        fontSize = AppTextSize.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "${prescription.medications?.size} loại thuốc",
+                        fontSize = AppTextSize.bodyMedium,
+                        color = DarkOnSurface.copy(alpha = 0.8f)
+                    )
+                }
+
+                Text(
+                    text = "Xem chi tiết →",
+                    fontSize = AppTextSize.bodySmall,
+                    color = DarkPrimary,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            
+            // Nút xem ảnh (nếu có)
+            if (!prescription.imageUrl.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                var showImageDialog by remember { mutableStateOf(false) }
+                
+                OutlinedButton(
+                    onClick = { 
+                        showImageDialog = true
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = DarkPrimary
+                    ),
+                    border = BorderStroke(1.dp, DarkPrimary.copy(alpha = 0.5f)),
+                    contentPadding = PaddingValues(vertical = 8.dp)
+                ) {
+                    Text(text = "📷", fontSize = 16.sp)
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Xem ảnh đơn thuốc",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                
+                if (showImageDialog) {
+                    ZoomableImageDialog(
+                        imageUrl = prescription.imageUrl,
+                        onDismiss = { showImageDialog = false }
+                    )
+                }
             }
         }
     }

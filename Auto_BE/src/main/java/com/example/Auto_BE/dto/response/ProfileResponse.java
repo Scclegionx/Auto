@@ -19,9 +19,18 @@ public class ProfileResponse {
     private EGender gender;
     private String phoneNumber;
     private String address;
+    private String avatar;
+    private Boolean isActive;
+    
+    // Role: ELDER, SUPERVISOR, USER
+    private String role;
+    
+    // Elder-specific fields (chỉ có khi role = ELDER)
     private EBloodType bloodType;
     private Double height;
     private Double weight;
-    private String avatar;
-    private Boolean isActive;
+    
+    // Supervisor-specific fields (chỉ có khi role = SUPERVISOR)
+    private String occupation; // Nghề nghiệp
+    private String workplace; // Nơi làm việc
 }

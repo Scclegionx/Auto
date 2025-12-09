@@ -36,4 +36,11 @@ public class UpdateProfileRequest {
     @DecimalMin(value = "10.0", message = "Cân nặng phải lớn hơn 10kg")
     @DecimalMax(value = "300.0", message = "Cân nặng phải nhỏ hơn 300kg")
     private Double weight;
+    
+    // Supervisor-specific fields
+    @Size(max = 100, message = "Nghề nghiệp tối đa 100 ký tự")
+    private String occupation;
+    
+    @Size(max = 200, message = "Nơi làm việc tối đa 200 ký tự")
+    private String workplace;
 }

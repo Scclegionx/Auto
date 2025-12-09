@@ -17,11 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 /**
- * 🎯 OPTIMIZED Prescription Controller với TIME-BASED Scheduling
+ * OPTIMIZED Prescription Controller với TIME-BASED Scheduling
  * 
- * ✅ Service tự động xử lý TIME-BASED scheduling
- * ✅ Controller chỉ focus vào REST API logic
- * ✅ Loại bỏ manual scheduling endpoints
+ * Service tự động xử lý TIME-BASED scheduling
+ * Controller chỉ focus vào REST API logic
+ * Loại bỏ manual scheduling endpoints
  */
 @RestController
 @RequestMapping("/api/cron-prescriptions")
@@ -54,7 +54,7 @@ public class CronPrescriptionController {
 
     /**
      * Tạo đơn thuốc mới kèm upload ảnh lên Cloudinary
-     * ✅ Flow: Validate → Upload ảnh → Lưu DB → Rollback nếu lỗi
+     * Flow: Validate → Upload ảnh → Lưu DB → Rollback nếu lỗi
      */
     @PostMapping(value = "/create-with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse<PrescriptionResponse>> createPrescriptionWithImage(
@@ -108,7 +108,7 @@ public class CronPrescriptionController {
         } catch (Exception e) {
             log.error("Error creating prescription with image", e);
             
-            // ✅ ROLLBACK: Xóa ảnh nếu lỗi
+            // ROLLBACK: Xóa ảnh nếu lỗi
             if (uploadedImageUrl != null) {
                 try {
                     log.warn("Rollback: Deleting image from Cloudinary");
@@ -145,6 +145,18 @@ public class CronPrescriptionController {
             Authentication authentication) {
 
         return ResponseEntity.ok(cronPrescriptionService.getAllByUser(authentication));
+    }
+
+    /**
+     * Lấy tất cả đơn thuốc của một user cụ thể (cho Supervisor xem đơn của Elder)
+     * Endpoint này cần thiết vì Supervisor cần xem đơn thuốc của Elder, không phải của chính mình
+     */
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<BaseResponse<List<PrescriptionResponse>>> getPrescriptionsByUserId(
+            @PathVariable Long userId,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(cronPrescriptionService.getAllByUserId(userId, authentication));
     }
 
     /**

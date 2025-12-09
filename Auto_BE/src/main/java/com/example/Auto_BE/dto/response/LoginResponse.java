@@ -21,5 +21,6 @@ public class LoginResponse {
         private String email;
         private String name;
         private String avatar;
+        private String role; // ELDER, SUPERVISOR, USER
     }
 }

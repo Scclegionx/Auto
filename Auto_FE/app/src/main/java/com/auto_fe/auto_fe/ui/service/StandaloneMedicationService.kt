@@ -46,7 +46,8 @@ class StandaloneMedicationService {
         val type: String = "OVER_THE_COUNTER",
         val reminderTimes: List<String>,
         val daysOfWeek: String,
-        val isActive: Boolean = true
+        val isActive: Boolean = true,
+        val elderUserId: Long? = null  // For Supervisor creating medication for Elder
     )
 
     data class BaseResponse<T>(
@@ -147,6 +148,11 @@ class StandaloneMedicationService {
                     put("daysOfWeek", request.daysOfWeek)
                     put("isActive", request.isActive)
                     put("prescriptionId", JSONObject.NULL) // Standalone medication
+                    
+                    // Include elderUserId if Supervisor is creating for Elder
+                    if (request.elderUserId != null) {
+                        put("elderUserId", request.elderUserId)
+                    }
                 }
 
                 val httpRequest = Request.Builder()

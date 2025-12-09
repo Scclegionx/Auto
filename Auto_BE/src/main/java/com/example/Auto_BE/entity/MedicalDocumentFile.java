@@ -15,11 +15,21 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class MedicalDocumentFile extends BaseEntity {
+    
     @Column(name = "file_name", nullable = false, length = 255)
     private String fileName; // Tên của tệp tin
 
-    @Column(name = "file_type", nullable = false, length = 50)
+    @Column(name = "file_type", length = 100)
     private String fileType; // Loại tệp tin, ví dụ: "image/jpeg", "application/pdf"
+    
+    @Column(name = "file_url", nullable = false, length = 500)
+    private String fileUrl; // URL file trên cloud storage (Cloudinary, S3, v.v.)
+    
+    @Column(name = "file_size")
+    private Integer fileSize; // Kích thước file tính bằng bytes
+    
+    @Column(name = "note", columnDefinition = "TEXT")
+    private String note; // Ghi chú về file
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medical_document_id", nullable = false)

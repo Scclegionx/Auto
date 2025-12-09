@@ -3,7 +3,6 @@ package com.example.Auto_BE.service;
 import com.example.Auto_BE.dto.BaseResponse;
 import com.example.Auto_BE.dto.response.NotificationResponse;
 import com.example.Auto_BE.entity.Notifications;
-import com.example.Auto_BE.entity.enums.ENotificationStatus;
 import com.example.Auto_BE.exception.BaseException;
 import com.example.Auto_BE.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
@@ -86,35 +85,28 @@ public class NotificationService {
         return notificationRepository.countUnreadByUserId(userId);
     }
     
-    // ============= LỊCH SỬ THÔNG BÁO =============
-    
     /**
-     * Lấy lịch sử thông báo với filter
+     * Lấy danh sách thông báo của user (general notifications)
+     * Note: Medication history đã chuyển sang MedicationLogController
      */
-    public BaseResponse<List<NotificationResponse>> getHistory(
+    public BaseResponse<List<NotificationResponse>> getUserNotifications(
             Long userId,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
-            ENotificationStatus status,
+            Boolean isRead,
             int page,
             int size) {
         
         try {
             List<Notifications> notifications;
             
-            // Nếu có đầy đủ filters, dùng query tổng hợp
-            if (startDate != null || endDate != null || status != null) {
-                notifications = notificationRepository.findByFilters(
-                        userId, startDate, endDate, status
-                );
+            if (isRead != null) {
+                notifications = notificationRepository.findByUserIdAndIsRead(userId, isRead);
             } else {
-                // Nếu không có filter nào, lấy tất cả của user
                 notifications = notificationRepository.findByUserId(userId);
             }
             
-            // ✅ Phân trang thủ công (sort by reminderTime desc)
+            // Sort by createdAt desc và phân trang
             notifications = notifications.stream()
-                    .sorted((n1, n2) -> n2.getReminderTime().compareTo(n1.getReminderTime()))
+                    .sorted((n1, n2) -> n2.getCreatedAt().compareTo(n1.getCreatedAt()))
                     .skip((long) page * size)
                     .limit(size)
                     .collect(Collectors.toList());
@@ -126,12 +118,12 @@ public class NotificationService {
             
             return BaseResponse.<List<NotificationResponse>>builder()
                     .status(SUCCESS)
-                    .message("Lấy lịch sử thông báo thành công (trang " + page + ", " + responses.size() + " items)")
+                    .message("Lấy thông báo thành công")
                     .data(responses)
                     .build();
                     
         } catch (Exception e) {
-            throw new BaseException.BadRequestException("Lỗi khi lấy lịch sử: " + e.getMessage());
+            throw new BaseException.BadRequestException("Lỗi khi lấy thông báo: " + e.getMessage());
         }
     }
     
@@ -139,19 +131,28 @@ public class NotificationService {
      * Convert Notifications entity sang NotificationResponse DTO
      */
     private NotificationResponse convertToResponse(Notifications notification) {
+        // Convert Instant to LocalDateTime
+        LocalDateTime createdAt = notification.getCreatedAt() != null 
+                ? LocalDateTime.ofInstant(notification.getCreatedAt(), java.time.ZoneId.systemDefault())
+                : null;
+        LocalDateTime updatedAt = notification.getUpdatedAt() != null
+                ? LocalDateTime.ofInstant(notification.getUpdatedAt(), java.time.ZoneId.systemDefault())
+                : null;
+        
         return NotificationResponse.builder()
                 .id(notification.getId())
-                .reminderTime(notification.getReminderTime())
-                .lastSentTime(notification.getLastSentTime())
-                .status(notification.getStatus())
-                .isRead(notification.getIsRead())
+                .notificationType(notification.getNotificationType())
                 .title(notification.getTitle())
                 .body(notification.getBody())
-                .medicationCount(notification.getMedicationCount())
-                .medicationIds(notification.getMedicationIds())
-                .medicationNames(notification.getMedicationNames())
+                .status(notification.getStatus())
+                .isRead(notification.getIsRead())
+                .actionUrl(notification.getActionUrl())
+                .relatedElderId(notification.getRelatedElder() != null ? notification.getRelatedElder().getId() : null)
+                .relatedMedicationLogId(notification.getRelatedMedicationLog() != null ? notification.getRelatedMedicationLog().getId() : null)
                 .userId(notification.getUser().getId())
                 .userEmail(notification.getUser().getEmail())
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
                 .build();
     }
 }

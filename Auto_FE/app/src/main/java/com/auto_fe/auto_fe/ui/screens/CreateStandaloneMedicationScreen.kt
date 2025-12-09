@@ -29,11 +29,15 @@ import kotlinx.coroutines.launch
 fun CreateStandaloneMedicationScreen(
     accessToken: String,
     onDismiss: () -> Unit,
-    onSuccess: () -> Unit
+    onSuccess: () -> Unit,
+    elderUserId: Long? = null,  // Nếu có = Supervisor tạo cho Elder
+    elderUserName: String? = null  // Tên Elder để hiển thị
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val medicationService = remember { StandaloneMedicationService() }
+    
+    val isSupervisorMode = elderUserId != null
 
     var medicationName by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -47,7 +51,16 @@ fun CreateStandaloneMedicationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Thêm Thuốc Ngoài Đơn", fontWeight = FontWeight.Bold) },
+                title = { 
+                    Text(
+                        text = if (isSupervisorMode) {
+                            "Thêm Thuốc cho $elderUserName"
+                        } else {
+                            "Thêm Thuốc Ngoài Đơn"
+                        },
+                        fontWeight = FontWeight.Bold
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = onDismiss) {
                         Icon(Icons.Default.Close, "Đóng")
@@ -229,19 +242,20 @@ fun CreateStandaloneMedicationScreen(
                                     type = "OVER_THE_COUNTER",
                                     reminderTimes = selectedTimes.sorted(),
                                     daysOfWeek = daysOfWeek,
-                                    isActive = true
+                                    isActive = true,
+                                    elderUserId = elderUserId  // Pass elderUserId to service
                                 )
 
                                 val result = medicationService.create(accessToken, request)
                                 result.fold(
                                     onSuccess = { response ->
                                         isLoading = false
-                                        Toast.makeText(context, "✅ ${response.message}", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, "${response.message}", Toast.LENGTH_SHORT).show()
                                         onSuccess()
                                     },
                                     onFailure = { error ->
                                         isLoading = false
-                                        Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                                        Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                                     }
                                 )
                             }

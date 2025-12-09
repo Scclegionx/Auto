@@ -11,6 +11,10 @@ import lombok.*;
 public class RegisterRequest {
     @NotBlank(message = "Email is required")
     private String email;
+    
     @NotBlank(message = "Password is required")
     private String password;
+    
+    @NotBlank(message = "User type is required")
+    private String userType; // "ELDER" hoặc "SUPERVISOR"
 }

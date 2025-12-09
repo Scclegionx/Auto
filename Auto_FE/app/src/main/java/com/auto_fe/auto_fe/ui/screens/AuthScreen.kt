@@ -35,7 +35,7 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun AuthScreen(
-    onLoginSuccess: (String, String?, String?, Long?, String?) -> Unit = { _, _, _, _, _ -> }, // Callback với accessToken, email, name, userId, avatar
+    onLoginSuccess: (String, String?, String?, Long?, String?, String?) -> Unit = { _, _, _, _, _, _ -> }, // Callback với accessToken, email, name, userId, avatar, role
     onVerificationClick: (String, String) -> Unit = { _, _ -> }, // Callback với email và password
     onForgotPasswordClick: () -> Unit = { }, // Callback cho quên mật khẩu
     verifiedEmail: String? = null, // Email sau khi verify thành công
@@ -75,6 +75,7 @@ fun AuthScreen(
     var registerConfirmPassword by remember { mutableStateOf("") }
     var registerPasswordVisible by remember { mutableStateOf(false) }
     var registerConfirmPasswordVisible by remember { mutableStateOf(false) }
+    var registerUserType by remember { mutableStateOf("ELDER") } // ELDER hoặc SUPERVISOR
     var isRegisterLoading by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
@@ -252,31 +253,32 @@ fun AuthScreen(
                                                                 scope = this
                                                             )
                                                         }
-                                                        Log.d("AuthScreen", "✅ registerDeviceToken launched in GlobalScope")
+                                                        Log.d("AuthScreen", "registerDeviceToken launched in GlobalScope")
                                                         
                                                         Toast.makeText(
                                                             context,
-                                                            "✅ ${response.message}",
+                                                            "${response.message}",
                                                             Toast.LENGTH_SHORT
                                                         ).show()
                                                         
                                                         // Chuyển sang màn hình danh sách đơn thuốc
-                                                        // Trả về token, email, name, userId và avatar từ response
+                                                        // Trả về token, email, name, userId, avatar và role từ response
                                                         onLoginSuccess(
                                                             token,
                                                             userInfo?.email ?: loginEmail, // Ưu tiên email từ response
                                                             userInfo?.name, // name từ response
                                                             userInfo?.id, // userId từ response
-                                                            userInfo?.avatar // avatar từ response
+                                                            userInfo?.avatar, // avatar từ response
+                                                            userInfo?.role // role từ response (ELDER/SUPERVISOR/USER)
                                                         )
                                                     } else {
-                                                        Log.e("AuthScreen", "❌ Token is NULL! Cannot register device token")
+                                                        Log.e("AuthScreen", "Token is NULL! Cannot register device token")
                                                     }
                                                 },
                                                 onFailure = { error ->
                                                     Toast.makeText(
                                                         context,
-                                                        "❌ ${error.message}",
+                                                        "${error.message}",
                                                         Toast.LENGTH_LONG
                                                     ).show()
                                                 }
@@ -348,6 +350,73 @@ fun AuthScreen(
                             ),
                             modifier = Modifier.fillMaxWidth()
                         )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // User Type Selection
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Loại tài khoản",
+                                color = AITextPrimary.copy(alpha = 0.7f),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                // ELDER option
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { registerUserType = "ELDER" }
+                                        .padding(8.dp)
+                                ) {
+                                    RadioButton(
+                                        selected = registerUserType == "ELDER",
+                                        onClick = { registerUserType = "ELDER" },
+                                        colors = RadioButtonDefaults.colors(
+                                            selectedColor = AIPrimarySoft,
+                                            unselectedColor = AITextPrimary.copy(alpha = 0.5f)
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "👴 Người cao tuổi",
+                                        color = AITextPrimary,
+                                        fontSize = 16.sp
+                                    )
+                                }
+                                
+                                // SUPERVISOR option
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable { registerUserType = "SUPERVISOR" }
+                                        .padding(8.dp)
+                                ) {
+                                    RadioButton(
+                                        selected = registerUserType == "SUPERVISOR",
+                                        onClick = { registerUserType = "SUPERVISOR" },
+                                        colors = RadioButtonDefaults.colors(
+                                            selectedColor = AIPrimarySoft,
+                                            unselectedColor = AITextPrimary.copy(alpha = 0.5f)
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "👨‍👩‍👧 Người thân",
+                                        color = AITextPrimary,
+                                        fontSize = 16.sp
+                                    )
+                                }
+                            }
+                        }
 
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -451,12 +520,12 @@ fun AuthScreen(
                                     isRegisterLoading = true
                                     scope.launch {
                                         try {
-                                            val result = authService.register(registerEmail, registerPassword)
+                                            val result = authService.register(registerEmail, registerPassword, registerUserType)
                                             result.fold(
                                                 onSuccess = { response ->
                                                     Toast.makeText(
                                                         context,
-                                                        "✅ ${response.message}\nĐã gửi mã xác thực qua email!",
+                                                        "${response.message}\nĐã gửi mã xác thực qua email!",
                                                         Toast.LENGTH_LONG
                                                     ).show()
                                                     // Chuyển sang màn hình verification với email và password
@@ -466,7 +535,7 @@ fun AuthScreen(
                                                 onFailure = { error ->
                                                     Toast.makeText(
                                                         context,
-                                                        "❌ ${error.message}",
+                                                        "${error.message}",
                                                         Toast.LENGTH_LONG
                                                     ).show()
                                                 }

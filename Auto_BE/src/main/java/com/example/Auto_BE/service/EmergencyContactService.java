@@ -4,12 +4,12 @@ import com.example.Auto_BE.dto.request.EmergencyContactCreateRequest;
 import com.example.Auto_BE.dto.request.EmergencyContactUpdateRequest;
 import com.example.Auto_BE.dto.BaseResponse;
 import com.example.Auto_BE.dto.response.EmergencyContactResponse;
+import com.example.Auto_BE.entity.ElderUser;
 import com.example.Auto_BE.entity.EmergencyContact;
-import com.example.Auto_BE.entity.User;
 import com.example.Auto_BE.exception.BaseException;
 import com.example.Auto_BE.mapper.EmergencyContactMapper;
+import com.example.Auto_BE.repository.ElderUserRepository;
 import com.example.Auto_BE.repository.EmergencyContactRepository;
-import com.example.Auto_BE.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -29,7 +29,7 @@ import static com.example.Auto_BE.constants.SuccessMessage.SUCCESS;
 public class EmergencyContactService {
     
     private final EmergencyContactRepository emergencyContactRepository;
-    private final UserRepository userRepository;
+    private final ElderUserRepository elderUserRepository;
     
     /**
      * Tạo liên hệ khẩn cấp mới
@@ -40,7 +40,7 @@ public class EmergencyContactService {
             Authentication authentication) {
         try {
             // Lấy user hiện tại
-            User user = userRepository.findByEmail(authentication.getName())
+            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
             
             // Tạo emergency contact mới
@@ -50,11 +50,11 @@ public class EmergencyContactService {
                     .setAddress(request.getAddress())
                     .setRelationship(request.getRelationship())
                     .setNote(request.getNote())
-                    .setUser(user);
+                    .setElderUser(elderUser);
             
             EmergencyContact savedContact = emergencyContactRepository.save(contact);
             
-            log.info("Created emergency contact: {} for user: {}", savedContact.getId(), user.getEmail());
+            log.info("Created emergency contact: {} for elder user: {}", savedContact.getId(), elderUser.getEmail());
             
             return BaseResponse.<EmergencyContactResponse>builder()
                     .status(SUCCESS)
@@ -71,14 +71,14 @@ public class EmergencyContactService {
     }
     
     /**
-     * Lấy tất cả liên hệ khẩn cấp của user
+     * Lấy tất cả liên hệ khẩn cấp của elder user
      */
     public BaseResponse<List<EmergencyContactResponse>> getAllByUser(Authentication authentication) {
         try {
-            User user = userRepository.findByEmail(authentication.getName())
+            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
             
-            List<EmergencyContact> contacts = emergencyContactRepository.findByUserOrderByCreatedAtDesc(user);
+            List<EmergencyContact> contacts = emergencyContactRepository.findByElderUserOrderByCreatedAtDesc(elderUser);
             
             List<EmergencyContactResponse> responses = contacts.stream()
                     .map(EmergencyContactMapper::toResponse)
@@ -103,10 +103,10 @@ public class EmergencyContactService {
      */
     public BaseResponse<EmergencyContactResponse> getById(Long id, Authentication authentication) {
         try {
-            User user = userRepository.findByEmail(authentication.getName())
+            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
             
-            EmergencyContact contact = emergencyContactRepository.findByIdAndUser(id, user)
+            EmergencyContact contact = emergencyContactRepository.findByIdAndElderUser(id, elderUser)
                     .orElseThrow(() -> new BaseException.EntityNotFoundException("Không tìm thấy liên hệ khẩn cấp"));
             
             return BaseResponse.<EmergencyContactResponse>builder()
@@ -132,10 +132,10 @@ public class EmergencyContactService {
             EmergencyContactUpdateRequest request,
             Authentication authentication) {
         try {
-            User user = userRepository.findByEmail(authentication.getName())
+            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
             
-            EmergencyContact contact = emergencyContactRepository.findByIdAndUser(id, user)
+            EmergencyContact contact = emergencyContactRepository.findByIdAndElderUser(id, elderUser)
                     .orElseThrow(() -> new BaseException.EntityNotFoundException("Không tìm thấy liên hệ khẩn cấp"));
             
             // Update fields
@@ -147,7 +147,7 @@ public class EmergencyContactService {
             
             EmergencyContact updatedContact = emergencyContactRepository.save(contact);
             
-            log.info("Updated emergency contact: {} for user: {}", id, user.getEmail());
+            log.info("Updated emergency contact: {} for elder user: {}", id, elderUser.getEmail());
             
             return BaseResponse.<EmergencyContactResponse>builder()
                     .status(SUCCESS)
@@ -169,15 +169,15 @@ public class EmergencyContactService {
     @Transactional
     public BaseResponse<Void> delete(Long id, Authentication authentication) {
         try {
-            User user = userRepository.findByEmail(authentication.getName())
+            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
                     .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
             
-            EmergencyContact contact = emergencyContactRepository.findByIdAndUser(id, user)
+            EmergencyContact contact = emergencyContactRepository.findByIdAndElderUser(id, elderUser)
                     .orElseThrow(() -> new BaseException.EntityNotFoundException("Không tìm thấy liên hệ khẩn cấp"));
             
             emergencyContactRepository.delete(contact);
             
-            log.info("Deleted emergency contact: {} for user: {}", id, user.getEmail());
+            log.info("Deleted emergency contact: {} for elder user: {}", id, elderUser.getEmail());
             
             return BaseResponse.<Void>builder()
                     .status(SUCCESS)

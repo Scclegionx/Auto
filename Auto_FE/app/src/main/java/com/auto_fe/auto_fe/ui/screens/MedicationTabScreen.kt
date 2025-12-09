@@ -30,12 +30,17 @@ fun MedicationTabScreen(
     onProfileClick: () -> Unit = {},
     onNotificationHistoryClick: () -> Unit = {},
     onEmergencyContactClick: () -> Unit = {},
+    onManageConnectionsClick: () -> Unit = {},
     userName: String = "User",
     userEmail: String = "",
-    userAvatar: String? = null
+    userAvatar: String? = null,
+    elderUserId: Long? = null,  // Nếu có = Supervisor đang xem Elder
+    elderUserName: String? = null,  // Tên Elder
+    onBackClick: (() -> Unit)? = null  // Back về danh sách Elder
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("📋 Đơn thuốc", "💊 Thuốc ngoài đơn")
+    val isSupervisorMode = elderUserId != null  // Supervisor mode detection
 
     Box(
         modifier = Modifier
@@ -57,10 +62,12 @@ fun MedicationTabScreen(
                 userName = userName,
                 userEmail = userEmail,
                 userAvatar = userAvatar,
+                isSupervisorMode = isSupervisorMode,  // Pass supervisor mode
                 onLogout = onLogout,
                 onProfileClick = onProfileClick,
                 onNotificationHistoryClick = onNotificationHistoryClick,
-                onEmergencyContactClick = onEmergencyContactClick
+                onEmergencyContactClick = onEmergencyContactClick,
+                onManageConnectionsClick = onManageConnectionsClick
             )
 
             // Tab Row
@@ -91,12 +98,16 @@ fun MedicationTabScreen(
             when (selectedTabIndex) {
                 0 -> PrescriptionListTab(
                     accessToken = accessToken,
+                    elderUserId = elderUserId,  // Pass elderUserId
+                    elderUserName = elderUserName,  // Pass elderUserName
                     onPrescriptionClick = onPrescriptionClick,
                     onCreateClick = onCreatePrescriptionClick,
-                    onChatClick = onChatClick
+                    onChatClick = if (isSupervisorMode) ({}) else onChatClick  // Disable chat in supervisor mode
                 )
                 1 -> StandaloneMedicationTab(
                     accessToken = accessToken,
+                    elderUserId = elderUserId,  // Pass elderUserId
+                    elderUserName = elderUserName,  // Pass elderUserName
                     onCreateClick = onCreateStandaloneMedicationClick
                 )
             }
@@ -109,10 +120,12 @@ private fun HeaderCard(
     userName: String,
     userEmail: String,
     userAvatar: String?,
+    isSupervisorMode: Boolean,  // Add supervisor mode flag
     onLogout: () -> Unit,
     onProfileClick: () -> Unit,
     onNotificationHistoryClick: () -> Unit,
-    onEmergencyContactClick: () -> Unit
+    onEmergencyContactClick: () -> Unit,
+    onManageConnectionsClick: () -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -148,18 +161,21 @@ private fun HeaderCard(
                 )
             }
 
-            // Avatar với Dropdown Menu
-            UserMenu(
-                userAvatar = userAvatar,
-                userName = userName,
-                userEmail = userEmail,
-                showMenu = showMenu,
-                onShowMenuChange = { showMenu = it },
-                onProfileClick = onProfileClick,
-                onNotificationHistoryClick = onNotificationHistoryClick,
-                onEmergencyContactClick = onEmergencyContactClick,
-                onLogout = onLogout
-            )
+            // Avatar với Dropdown Menu (ẩn khi Supervisor mode)
+            if (!isSupervisorMode) {  // Only show menu for Elder
+                UserMenu(
+                    userAvatar = userAvatar,
+                    userName = userName,
+                    userEmail = userEmail,
+                    showMenu = showMenu,
+                    onShowMenuChange = { showMenu = it },
+                    onProfileClick = onProfileClick,
+                    onNotificationHistoryClick = onNotificationHistoryClick,
+                    onEmergencyContactClick = onEmergencyContactClick,
+                    onManageConnectionsClick = onManageConnectionsClick,
+                    onLogout = onLogout
+                )
+            }
         }
     }
 }
@@ -174,6 +190,7 @@ private fun UserMenu(
     onProfileClick: () -> Unit,
     onNotificationHistoryClick: () -> Unit,
     onEmergencyContactClick: () -> Unit,
+    onManageConnectionsClick: () -> Unit,
     onLogout: () -> Unit
 ) {
     Box {
@@ -276,6 +293,27 @@ private fun UserMenu(
                 onClick = {
                     onShowMenuChange(false)
                     onNotificationHistoryClick()
+                }
+            )
+
+            DropdownMenuItem(
+                text = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.SupervisedUserCircle,
+                            contentDescription = null,
+                            tint = DarkOnSurface,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text("Quản lý kết nối", color = DarkOnSurface)
+                    }
+                },
+                onClick = {
+                    onShowMenuChange(false)
+                    onManageConnectionsClick()
                 }
             )
 

@@ -29,13 +29,17 @@ import kotlinx.coroutines.launch
 @Composable
 fun StandaloneMedicationTab(
     accessToken: String,
-    onCreateClick: () -> Unit = {}
+    onCreateClick: () -> Unit = {},
+    elderUserId: Long? = null,  //  Add elderUserId parameter
+    elderUserName: String? = null  // Add elderUserName parameter
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val medicationService = remember { StandaloneMedicationService() }
     val sessionManager = remember { SessionManager(context) }
-    val userId = sessionManager.getUserId() ?: 0L
+    
+    //  Nếu có elderUserId (Supervisor mode) thì dùng elderUserId, không thì dùng userId của chính mình
+    val targetUserId = elderUserId ?: (sessionManager.getUserId() ?: 0L)
     
     var medications by remember { mutableStateOf<List<StandaloneMedicationService.Medication>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
@@ -47,7 +51,8 @@ fun StandaloneMedicationTab(
         scope.launch {
             isLoading = true
             errorMessage = null
-            val result = medicationService.getAll(accessToken, userId)
+            android.util.Log.d("StandaloneMedicationTab", "Loading medications for userId: $targetUserId (elderMode: ${elderUserId != null})")
+            val result = medicationService.getAll(accessToken, targetUserId)
             result.fold(
                 onSuccess = { response ->
                     medications = response.data ?: emptyList()
@@ -56,14 +61,14 @@ fun StandaloneMedicationTab(
                 onFailure = { error ->
                     errorMessage = error.message
                     isLoading = false
-                    Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
                 }
             )
         }
     }
 
-    // Load medications when screen opens
-    LaunchedEffect(Unit) {
+    // Load medications when screen opens or elderUserId changes
+    LaunchedEffect(elderUserId) {  //  Reload when elderUserId changes
         loadMedications()
     }
 
@@ -168,7 +173,7 @@ fun StandaloneMedicationTab(
                                             ).show()
                                             loadMedications()
                                         }.onFailure { error ->
-                                            Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, "${error.message}", Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                 },
@@ -240,12 +245,12 @@ fun StandaloneMedicationTab(
                         scope.launch {
                             val result = medicationService.delete(accessToken, selectedMedication!!.id)
                             result.onSuccess {
-                                Toast.makeText(context, "✅ Đã xóa thuốc", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Đã xóa thuốc", Toast.LENGTH_SHORT).show()
                                 showDeleteDialog = false
                                 selectedMedication = null
                                 loadMedications()
                             }.onFailure { error ->
-                                Toast.makeText(context, "❌ ${error.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "${error.message}", Toast.LENGTH_SHORT).show()
                             }
                         }
                     },

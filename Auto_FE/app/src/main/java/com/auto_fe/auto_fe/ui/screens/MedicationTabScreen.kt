@@ -22,6 +22,7 @@ import com.auto_fe.auto_fe.ui.theme.*
 @Composable
 fun MedicationTabScreen(
     accessToken: String,
+    currentUserId: Long? = null,  // Add current user ID
     onPrescriptionClick: (Long) -> Unit,
     onCreatePrescriptionClick: () -> Unit = {},
     onCreateStandaloneMedicationClick: () -> Unit = {},
@@ -39,7 +40,7 @@ fun MedicationTabScreen(
     onBackClick: (() -> Unit)? = null  // Back về danh sách Elder
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabs = listOf("📋 Đơn thuốc", "💊 Thuốc ngoài đơn")
+    val tabs = listOf("📋 Đơn thuốc", "💊 Thuốc ngoài đơn", "📊 Lịch sử uống thuốc")
     val isSupervisorMode = elderUserId != null  // Supervisor mode detection
 
     Box(
@@ -109,6 +110,12 @@ fun MedicationTabScreen(
                     elderUserId = elderUserId,  // Pass elderUserId
                     elderUserName = elderUserName,  // Pass elderUserName
                     onCreateClick = onCreateStandaloneMedicationClick
+                )
+                2 -> MedicationLogTab(
+                    accessToken = accessToken,
+                    currentUserId = currentUserId,  // Pass current user ID
+                    elderUserId = elderUserId,
+                    elderUserName = elderUserName
                 )
             }
         }

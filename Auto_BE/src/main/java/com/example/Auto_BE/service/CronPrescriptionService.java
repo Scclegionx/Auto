@@ -22,18 +22,22 @@ import static com.example.Auto_BE.constants.SuccessMessage.*;
 @Service
 public class CronPrescriptionService {
     private final ElderUserRepository elderUserRepository;
+    private final SupervisorUserRepository supervisorUserRepository;
     private final UserRepository userRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final MedicationReminderRepository medicationReminderRepository;
     private final SimpleTimeBasedScheduler simpleTimeBasedScheduler; // NEW - TIME-BASED SCHEDULING
-        private final ElderSupervisorRepository elderSupervisorRepository;
+    private final ElderSupervisorRepository elderSupervisorRepository;
 
-    public CronPrescriptionService(ElderUserRepository elderUserRepository, UserRepository userRepository,
+    public CronPrescriptionService(ElderUserRepository elderUserRepository, 
+                                   SupervisorUserRepository supervisorUserRepository,
+                                   UserRepository userRepository,
                                    PrescriptionRepository prescriptionRepository,
                                    MedicationReminderRepository medicationReminderRepository,
                                    SimpleTimeBasedScheduler simpleTimeBasedScheduler,
                                    ElderSupervisorRepository elderSupervisorRepository) {
         this.elderUserRepository = elderUserRepository;
+        this.supervisorUserRepository = supervisorUserRepository;
         this.userRepository = userRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.medicationReminderRepository = medicationReminderRepository;
@@ -44,15 +48,25 @@ public class CronPrescriptionService {
     @Transactional
     public BaseResponse<PrescriptionResponse> create(PrescriptionCreateRequest prescriptionCreateRequest,
                                                      Authentication authentication) {
+        System.out.println("Creating prescription. ElderUserId from request: " + 
+                prescriptionCreateRequest.getElderUserId() + ", Auth email: " + authentication.getName());
+        
         // Nếu có elderUserId → Supervisor tạo cho Elder
         ElderUser elderUser;
         if (prescriptionCreateRequest.getElderUserId() != null) {
             elderUser = elderUserRepository.findById(prescriptionCreateRequest.getElderUserId())
-                    .orElseThrow(() -> new BaseException.EntityNotFoundException("Elder user không tồn tại"));
+                    .orElseThrow(() -> new BaseException.EntityNotFoundException("Elder user không tồn tại với ID: " + prescriptionCreateRequest.getElderUserId()));
+            
+            System.out.println("Found elder user: " + elderUser.getEmail() + " (ID: " + elderUser.getId() + ")");
+            
             // Verify Supervisor permission
-            ElderUser supervisorUser = elderUserRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
+            System.out.println("Finding supervisor by email: " + authentication.getName());
+            SupervisorUser supervisorUser = supervisorUserRepository.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND + ": " + authentication.getName()));
 
+            System.out.println("Found supervisor user: " + supervisorUser.getEmail() + " (ID: " + supervisorUser.getId() + ")");
+            
+            System.out.println("Checking permission: supervisor ID " + supervisorUser.getId() + " for elder ID " + elderUser.getId());
             boolean hasPermission = elderSupervisorRepository
                     .findActiveWithUpdatePermission(supervisorUser.getId(), elderUser.getId())
                     .isPresent();
@@ -61,9 +75,11 @@ public class CronPrescriptionService {
                 throw new BaseException.BadRequestException(PERMISSION_ERROR);
             }
         } else {
+            System.out.println("Elder mode - Finding elder by email: " + authentication.getName());
             // Elder tự tạo cho mình
             elderUser = elderUserRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
+                    .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND + ": " + authentication.getName()));
+            System.out.println("Found elder user: " + elderUser.getEmail() + " (ID: " + elderUser.getId() + ")");
         }
 
 //        // 2. Validate medication reminders data
@@ -114,19 +130,34 @@ public class CronPrescriptionService {
     public BaseResponse<PrescriptionResponse> update(Long prescriptionId,
                                                      PrescriptionCreateRequest prescriptionUpdateRequest,
                                                      Authentication authentication) {
-        // 1. Validate authenticated user (could be Elder or Supervisor)
-        ElderUser authUser = elderUserRepository.findByEmail(authentication.getName())
-                .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
-
-        // 2. Find existing prescription
+        System.out.println("Updating prescription ID: " + prescriptionId + ", Auth email: " + authentication.getName());
+        
+        // 1. Find existing prescription first
         Prescriptions existingPrescription = prescriptionRepository.findById(prescriptionId)
                 .orElseThrow(() -> new BaseException.EntityNotFoundException(PRESCRIPTION_NOT_FOUND));
 
+        // 2. Validate authenticated user (could be Elder or Supervisor)
+        // Try Elder first
+        ElderUser authUserAsElder = elderUserRepository.findByEmail(authentication.getName()).orElse(null);
+        SupervisorUser authUserAsSupervisor = supervisorUserRepository.findByEmail(authentication.getName()).orElse(null);
+
         // 3. Permission check: owner (elder) OR supervisor with update permission
-        boolean isOwner = existingPrescription.getElderUser().getId().equals(authUser.getId());
-        boolean isSupervisorWithPermission = elderSupervisorRepository
-                .findActiveWithUpdatePermission(authUser.getId(), existingPrescription.getElderUser().getId())
-                .isPresent();
+        boolean isOwner = false;
+        boolean isSupervisorWithPermission = false;
+
+        if (authUserAsElder != null) {
+            System.out.println("Auth user is Elder ID: " + authUserAsElder.getId());
+            isOwner = existingPrescription.getElderUser().getId().equals(authUserAsElder.getId());
+            System.out.println("Is owner: " + isOwner);
+        }
+
+        if (authUserAsSupervisor != null) {
+            System.out.println("Auth user is Supervisor ID: " + authUserAsSupervisor.getId());
+            isSupervisorWithPermission = elderSupervisorRepository
+                    .findActiveWithUpdatePermission(authUserAsSupervisor.getId(), existingPrescription.getElderUser().getId())
+                    .isPresent();
+            System.out.println("Is supervisor with permission: " + isSupervisorWithPermission);
+        }
 
         if (!isOwner && !isSupervisorWithPermission) {
             throw new BaseException.BadRequestException(PERMISSION_ERROR);
@@ -401,17 +432,28 @@ public class CronPrescriptionService {
 
     @Transactional
     public BaseResponse<String> delete(Long prescriptionId, Authentication authentication) {
-        ElderUser authUser = elderUserRepository.findByEmail(authentication.getName())
-                .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
-
         Prescriptions prescription = prescriptionRepository.findById(prescriptionId)
                 .orElseThrow(() -> new BaseException.EntityNotFoundException(PRESCRIPTION_NOT_FOUND));
 
+        // Try both Elder and Supervisor
+        ElderUser authUserAsElder = elderUserRepository.findByEmail(authentication.getName()).orElse(null);
+        SupervisorUser authUserAsSupervisor = supervisorUserRepository.findByEmail(authentication.getName()).orElse(null);
+
         // Allow owner or supervisor with update permission
-        boolean isOwner = prescription.getElderUser().getId().equals(authUser.getId());
-        boolean isSupervisorWithPermission = elderSupervisorRepository
-                .findActiveWithUpdatePermission(authUser.getId(), prescription.getElderUser().getId())
-                .isPresent();
+        boolean isOwner = false;
+        boolean isSupervisorWithPermission = false;
+
+        if (authUserAsElder != null) {
+            isOwner = prescription.getElderUser().getId().equals(authUserAsElder.getId());
+            System.out.println("Is owner (Elder): " + isOwner);
+        }
+
+        if (authUserAsSupervisor != null) {
+            isSupervisorWithPermission = elderSupervisorRepository
+                    .findActiveWithUpdatePermission(authUserAsSupervisor.getId(), prescription.getElderUser().getId())
+                    .isPresent();
+            System.out.println("Is supervisor with permission: " + isSupervisorWithPermission);
+        }
 
         if (!isOwner && !isSupervisorWithPermission) {
             throw new BaseException.BadRequestException(PERMISSION_ERROR);
@@ -444,19 +486,29 @@ public class CronPrescriptionService {
      */
     @Transactional
     public BaseResponse<PrescriptionResponse> toggleStatus(Long prescriptionId, Authentication authentication) {
-        // 1. Validate authenticated user
-        ElderUser authUser = elderUserRepository.findByEmail(authentication.getName())
-                .orElseThrow(() -> new BaseException.EntityNotFoundException(USER_NOT_FOUND));
-
-        // 2. Find prescription
+        // 1. Find prescription
         Prescriptions prescription = prescriptionRepository.findById(prescriptionId)
                 .orElseThrow(() -> new BaseException.EntityNotFoundException(PRESCRIPTION_NOT_FOUND));
 
+        // 2. Validate authenticated user (Elder or Supervisor)
+        ElderUser authUserAsElder = elderUserRepository.findByEmail(authentication.getName()).orElse(null);
+        SupervisorUser authUserAsSupervisor = supervisorUserRepository.findByEmail(authentication.getName()).orElse(null);
+
         // 3. Permission: owner or supervisor with update permission
-        boolean isOwner = prescription.getElderUser().getId().equals(authUser.getId());
-        boolean isSupervisorWithPermission = elderSupervisorRepository
-                .findActiveWithUpdatePermission(authUser.getId(), prescription.getElderUser().getId())
-                .isPresent();
+        boolean isOwner = false;
+        boolean isSupervisorWithPermission = false;
+
+        if (authUserAsElder != null) {
+            isOwner = prescription.getElderUser().getId().equals(authUserAsElder.getId());
+            System.out.println("Is owner (Elder): " + isOwner);
+        }
+
+        if (authUserAsSupervisor != null) {
+            isSupervisorWithPermission = elderSupervisorRepository
+                    .findActiveWithUpdatePermission(authUserAsSupervisor.getId(), prescription.getElderUser().getId())
+                    .isPresent();
+            System.out.println("Is supervisor with permission: " + isSupervisorWithPermission);
+        }
 
         if (!isOwner && !isSupervisorWithPermission) {
             throw new BaseException.BadRequestException(PERMISSION_ERROR);

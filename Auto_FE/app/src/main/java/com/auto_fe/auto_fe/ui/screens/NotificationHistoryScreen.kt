@@ -377,12 +377,14 @@ fun NotificationHistoryItem(
                 
                 Spacer(Modifier.height(4.dp))
                 
-                // Medication names
-                Text(
-                    text = notification.medicationNames ?: "",
-                    fontSize = AppTextSize.bodyMedium,
-                    color = DarkOnSurface.copy(alpha = 0.8f)
-                )
+                // Body - Full medication details with descriptions
+                if (!notification.body.isNullOrBlank()) {
+                    Text(
+                        text = notification.body,
+                        fontSize = AppTextSize.bodyMedium,
+                        color = DarkOnSurface.copy(alpha = 0.8f)
+                    )
+                }
                 
                 Spacer(Modifier.height(8.dp))
                 

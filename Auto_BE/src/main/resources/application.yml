@@ -59,6 +59,8 @@ spring:
     default-encoding: utf-8
 
 server:
+  address: 0.0.0.0
+  port: 8080
   tomcat:
     connection-timeout: 300000  # 5 minutes
     max-http-header-size: 8MB

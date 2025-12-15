@@ -1,14 +1,12 @@
 import re
 from typing import Dict, List, Optional, Tuple
 from .entity_extractor import EntityExtractor
-from .value_generator import ValueGenerator
 
 class CommunicationOptimizer:
     """Module tối ưu hóa cho hệ thống gọi điện/nhắn tin"""
     
     def __init__(self):
         self.entity_extractor = EntityExtractor()
-        self.value_generator = ValueGenerator()
         
         # Từ khóa ưu tiên cho gọi điện/nhắn tin
         self.call_keywords = [
@@ -249,34 +247,6 @@ class CommunicationOptimizer:
             base_confidence += 0.1
         
         return min(base_confidence, 1.0)
-    
-    def get_optimized_value(self, intent: str, entities: Dict[str, str], original_text: str) -> str:
-        """Tạo value tối ưu hóa với payload gọn"""
-        try:
-            # Tạo payload gọn cho communication intents
-            if intent in ["call", "make-video-call"]:
-                receiver = entities.get("RECEIVER", "người nhận")
-                platform = entities.get("PLATFORM", "phone")
-                return f"CALL|{receiver}|{platform}"
-            
-            elif intent == "send-mess":
-                receiver = entities.get("RECEIVER", "người nhận")
-                platform = entities.get("PLATFORM", "sms")
-                message = entities.get("MESSAGE", "tin nhắn")
-                return f"MSG|{receiver}|{platform}|{message}"
-            
-            elif intent == "add-contacts":
-                receiver = entities.get("RECEIVER", "người nhận")
-                return f"CONTACT|{receiver}"
-            
-            else:
-                # Fallback to value generator for non-communication intents
-                return self.value_generator.generate_value(intent, entities, original_text)
-                
-        except Exception as e:
-            print(f"⚠️ Error in communication optimizer: {e}")
-            # Fallback to value generator
-            return self.value_generator.generate_value(intent, entities, original_text)
     
     def validate_communication_entities(self, entities: Dict[str, str], communication_type: str) -> Dict[str, str]:
         """Validate entities cho giao tiếp"""

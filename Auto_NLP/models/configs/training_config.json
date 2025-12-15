@@ -1,6 +1,6 @@
 {
   "model_name": "vinai/phobert-base",
-  "num_intents": 13,
+  "num_intents": 10,
   "intent_labels": [
     "add-contacts",
     "call",
@@ -8,32 +8,32 @@
     "get-info",
     "make-video-call",
     "open-cam",
-    "play-media",
     "search-internet",
     "search-youtube",
     "send-mess",
-    "set-alarm",
-    "set-event-calendar",
-    "view-content"
+    "set-alarm"
   ],
   "entity_labels": [
     "ACTION",
+    "CAMERA_TYPE",
     "CONTACT_NAME",
-    "CONTENT_TYPE",
     "DATE",
     "DEVICE",
+    "FREQUENCY",
     "LEVEL",
     "LOCATION",
-    "MEDIA_TYPE",
+    "MESSAGE",
+    "MODE",
     "PHONE",
     "PLATFORM",
     "QUERY",
-    "TIME",
-    "TITLE"
+    "RECEIVER",
+    "REMINDER_CONTENT",
+    "TIME"
   ],
-  "train_samples": 7963,
-  "val_samples": 1134,
-  "test_samples": 1089,
+  "train_samples": 7680,
+  "val_samples": 928,
+  "test_samples": 969,
   "max_length": 128,
   "batch_size": 16,
   "learning_rate": 2e-05,
@@ -41,5 +41,5 @@
   "hidden_size": 768,
   "dropout": 0.1,
   "normalized": true,
-  "source": "elderly_command_dataset_MERGED_13C_VITEXT.json"
+  "source": "elderly_commands_master.json"
 }

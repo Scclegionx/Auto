@@ -1,13 +1,13 @@
 # Models Package
 
 ## Structure
-- `base/` - Model class definitions (intent, entity, etc.)
-- `inference/` - Model loading and inference scripts
-- `utils/` - Model utilities and helpers
-- `checkpoints/` - Empty directory for future use
+- `base/` - Định nghĩa mô hình cốt lõi (`MultiTaskModel` cho intent/entity/command).
+- `inference/` - Tiện ích load checkpoint và suy luận (`load_multi_task_model`).
+- `utils/` - Helper phục vụ huấn luyện/đánh giá.
+- `checkpoints/` - Placeholder lưu checkpoint (nếu cần).
 
 ## Usage
 ```python
-from models.base.intent_model import IntentModel
-from models.inference.model_loader import load_trained_model
+from models.base import MultiTaskModel
+from models.inference.model_loader import load_multi_task_model
 ```

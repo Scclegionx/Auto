@@ -515,32 +515,28 @@ class ReasoningEngine:
         
         # Khởi tạo intent fallback config
         self.intent_fallback = self._load_intent_fallback(
-            self.config.get("fallback_path", "intent_fallback.json")
+            self.config.get("fallback_path", os.path.join(os.path.dirname(__file__), "intent_fallback.json"))
         )
         
         self._initialize_vector_store()
         
         self.similarity_threshold = self.config.get("similarity_threshold", 0.6)
         
-        # Bảng normalize intent cũ → 13 command chuẩn
+        # Bảng normalize intent cũ → bộ command rút gọn
         self.normalize_intent = {
-            # Giữ nguyên 13 command chuẩn
+            # Giữ nguyên command rút gọn
             "call": "call",
             "send-mess": "send-mess", 
             "make-video-call": "make-video-call",
-            "play-media": "play-media",
-            "view-content": "view-content",
             "search-internet": "search-internet",
             "search-youtube": "search-youtube",
             "get-info": "get-info",
             "set-alarm": "set-alarm",
-            "set-event-calendar": "set-event-calendar",
             "open-cam": "open-cam",
             "control-device": "control-device",
             "add-contacts": "add-contacts",
             "unknown": "unknown",
             # Map từ intent cũ → command mới
-            "set-reminder": "set-event-calendar",
             "check-weather": "get-info",
             "read-news": "get-info", 
             "check-health-status": "get-info",
@@ -561,7 +557,7 @@ class ReasoningEngine:
             "knowledge_base_path": os.path.join(os.path.dirname(__file__), "knowledge_base.json"),
             "patterns_path": os.path.join(os.path.dirname(__file__), "semantic_patterns.json"),
             "rules_path": os.path.join(os.path.dirname(__file__), "context_rules.json"),
-            "fallback_path": "intent_fallback.json",
+            "fallback_path": os.path.join(os.path.dirname(__file__), "intent_fallback.json"),
             "enable_fuzzy_matching": True,
             "enable_vectorstore": True,
             "enable_cache": True,
@@ -592,15 +588,12 @@ class ReasoningEngine:
                 "make-video-call": ["gọi video", "video call", "face time", "zalo video", "gọi facetime"],
                 "send-mess": ["gửi tin nhắn", "nhắn tin", "text", "sms", "thông báo", "soạn tin", "message", "send"],
                 "add-contacts": ["thêm liên lạc", "lưu số", "thêm số", "lưu danh bạ", "thêm danh bạ"],
-                "play-media": ["phát nhạc", "bật nhạc", "nghe nhạc", "video", "mở nhạc", "chơi nhạc", "play", "music"],
-                "view-content": ["xem nội dung", "mở bài", "xem bài", "mở link", "xem link"],
                 "search-internet": ["tìm kiếm", "tìm", "search", "tra cứu", "google"],
                 "search-youtube": ["tìm youtube", "tìm trên youtube", "youtube", "yt"],
                 "get-info": ["thông tin", "thời tiết", "nhiệt độ", "mưa", "nắng", "dự báo thời tiết", "weather", "temperature", 
                            "đọc tin tức", "tin tức", "báo", "thời sự", "cập nhật tin", "news", "read",
                            "kiểm tra sức khỏe", "đo", "theo dõi", "chỉ số", "tình trạng", "health", "check"],
                 "set-alarm": ["đặt báo thức", "nhắc nhở", "hẹn giờ", "đánh thức", "chuông báo", "ghi nhớ", "alarm", "reminder"],
-                "set-event-calendar": ["đặt nhắc nhở", "ghi nhớ", "lời nhắc", "nhắc tôi", "tạo lời nhắc", "reminder", "tạo sự kiện", "lịch"],
                 "open-cam": ["mở camera", "bật camera", "camera", "chụp ảnh"],
                 "control-device": ["điều khiển", "bật", "tắt", "wifi", "bluetooth", "đèn pin", "âm lượng", "volume"],
                 "unknown": ["không hiểu", "không rõ", "lạ", "không biết", "chưa rõ", "xin chào", "tạm biệt", "cảm ơn", "trò chuyện", "nói chuyện", "hello", "conversation",
@@ -619,14 +612,11 @@ class ReasoningEngine:
                 "make-video-call": ["gọi video", "video call", "face time", "zalo video", "gọi facetime", "video"],
                 "send-mess": ["nhắn", "tin", "message", "sms", "text", "gửi", "nhắn tin", "gửi tin", "soạn tin", "tin nhắn"],
                 "add-contacts": ["thêm liên lạc", "lưu số", "thêm số", "lưu danh bạ", "thêm danh bạ", "lưu", "thêm"],
-                "play-media": ["nhạc", "music", "phát", "bật", "nghe", "play", "video", "audio"],
-                "view-content": ["xem", "mở", "đọc", "bài", "link", "nội dung"],
                 "search-internet": ["tìm kiếm", "tìm", "search", "tra cứu", "google", "internet"],
                 "search-youtube": ["youtube", "yt", "tìm youtube", "tìm trên youtube"],
                 "get-info": ["thông tin", "thời tiết", "weather", "nhiệt", "mưa", "nắng", "tin", "news", "báo", "đọc", "thời sự", 
                             "sức khỏe", "health", "kiểm tra", "đo", "theo dõi", "chỉ số", "tình trạng"],
                 "set-alarm": ["báo thức", "nhắc", "hẹn", "alarm", "reminder", "giờ", "chuông"],
-                "set-event-calendar": ["nhắc", "nhớ", "reminder", "ghi", "lời nhắc", "uống thuốc", "thuốc", "viên thuốc", "tạo sự kiện", "lịch", "sự kiện"],
                 "open-cam": ["camera", "chụp", "ảnh", "mở camera", "bật camera"],
                 "control-device": ["điều khiển", "bật", "tắt", "wifi", "bluetooth", "đèn pin", "âm lượng", "volume", "thiết bị"],
                 "unknown": ["không hiểu", "chưa rõ", "không biết", "chào", "hello", "cảm ơn", "tạm biệt", "nói chuyện", 
@@ -634,7 +624,6 @@ class ReasoningEngine:
             },
             "multi_intent_indicators": {
                 "call,send-mess": ["gọi", "nhắn", "liên lạc"],
-                "set-alarm,set-event-calendar": ["nhắc", "giờ", "hẹn", "đặt"],
                 "get-info,search-internet": ["thông tin", "tìm kiếm", "cập nhật"]
             }
         }
@@ -698,12 +687,6 @@ class ReasoningEngine:
                 r"nhiệt độ.*(?:bao nhiêu|thế nào)",
                 r"dự báo.*(?:thời tiết|mưa|nắng)"
             ],
-            "media_patterns": [
-                r"phát.*(?:nhạc|bài hát)",
-                r"bật.*(?:nhạc|video)",
-                r"nghe.*(?:nhạc|bài hát)",
-                r"mở.*(?:nhạc|video)"
-            ],
             "news_patterns": [
                 r"đọc.*(?:tin tức|báo)",
                 r"tin tức.*(?:mới nhất|hôm nay)",
@@ -752,16 +735,13 @@ class ReasoningEngine:
         default_rules = {
             "time_context": [
                 {"keywords": ["giờ", "phút"], "intent": "set-alarm", "confidence_boost": 0.1},
-                {"keywords": ["sáng", "chiều", "tối", "đêm"], "intent": "set-alarm", "confidence_boost": 0.1},
-                {"keywords": ["mai", "hôm nay"], "intent": "set-event-calendar", "confidence_boost": 0.1, "required_keywords": ["nhắc", "nhớ"]}
+                {"keywords": ["sáng", "chiều", "tối", "đêm"], "intent": "set-alarm", "confidence_boost": 0.1}
             ],
             "person_context": [
                 {"keywords": ["mẹ", "bố", "con", "cháu"], "intent": "call", "confidence_boost": 0.2},
                 {"keywords": ["bạn", "anh", "chị"], "intent": "general-conversation", "confidence_boost": 0.1}
             ],
             "action_context": [
-                {"keywords": ["uống thuốc", "thuốc", "viên thuốc", "kháng sinh", "tiểu đường", "huyết áp", "tim", "vitamin", "sắt", "cảm", "đau đầu"], "intent": "set-event-calendar", "confidence_boost": 0.3},
-                {"keywords": ["uống", "ăn"], "intent": "set-event-calendar", "confidence_boost": 0.2},
                 {"keywords": ["ngủ", "đi"], "intent": "set-alarm", "confidence_boost": 0.15}
             ],
             "multi_turn_context": [
@@ -771,8 +751,7 @@ class ReasoningEngine:
             ],
             "intent_disambiguation": [
                 {"ambiguous_intents": ["call", "send-mess"], "keywords": ["gọi", "điện"], "intent": "call", "confidence_boost": 0.25},
-                {"ambiguous_intents": ["call", "send-mess"], "keywords": ["nhắn", "tin"], "intent": "send-mess", "confidence_boost": 0.25},
-                {"ambiguous_intents": ["set-alarm", "set-event-calendar"], "keywords": ["báo thức", "chuông"], "intent": "set-alarm", "confidence_boost": 0.25}
+                {"ambiguous_intents": ["call", "send-mess"], "keywords": ["nhắn", "tin"], "intent": "send-mess", "confidence_boost": 0.25}
             ]
         }
         
@@ -824,9 +803,7 @@ class ReasoningEngine:
                 "call": ["Bạn muốn gọi cho ai?", "Bạn cần gọi điện thoại phải không?"],
                 "set-alarm": ["Bạn muốn đặt báo thức lúc mấy giờ?", "Bạn cần đặt báo thức phải không?"],
                 "send-mess": ["Bạn muốn nhắn tin cho ai?", "Bạn cần gửi tin nhắn phải không?"],
-                "set-event-calendar": ["Bạn muốn đặt nhắc nhở gì?", "Bạn cần tạo sự kiện/lời nhắc phải không?"],
                 "check-weather": ["Bạn muốn xem thời tiết ở đâu?", "Bạn cần biết thời tiết phải không?"],
-                "play-media": ["Bạn muốn nghe bài hát gì?", "Bạn cần phát nhạc phải không?"],
                 "read-news": ["Bạn muốn đọc tin tức về chủ đề gì?", "Bạn cần đọc tin tức phải không?"],
                 "check-health-status": ["Bạn muốn kiểm tra chỉ số sức khỏe nào?", "Bạn cần theo dõi sức khỏe phải không?"],
                 "unknown": ["Xin lỗi, tôi chưa hiểu bạn muốn gì. Bạn có thể nói rõ hơn được không?", 
@@ -1160,7 +1137,7 @@ class ReasoningEngine:
                                 adjusted_confidence += confidence_boost
                                 logger.debug(f"Boosted confidence for {base_intent} by {confidence_boost}")
         
-        if context_features.get("has_time") and adjusted_intent in ["set-alarm", "set-event-calendar"]:
+        if context_features.get("has_time") and adjusted_intent in ["set-alarm"]:
             adjusted_confidence += 0.1
             logger.debug(f"Boosted confidence for {adjusted_intent} due to time entity")
         
@@ -1194,7 +1171,6 @@ class ReasoningEngine:
                 "alarm": "set-alarm",
                 "message": "send-mess",
                 "weather": "get-info",
-                "media": "play-media",
                 "news": "get-info",
                 "health": "get-info",
                 "conversation": "unknown"
@@ -1474,8 +1450,7 @@ class ReasoningEngine:
         conflicting_patterns = {
             "call": ["nhắn tin", "gửi tin nhắn", "soạn tin"],
             "send-mess": ["gọi", "điện thoại", "alo"],
-            "set-alarm": ["gửi tin nhắn", "gọi", "nhắn tin"],
-            "play-media": ["gọi", "nhắn tin", "kiểm tra"]
+            "set-alarm": ["gửi tin nhắn", "gọi", "nhắn tin"]
         }
         
         if intent in conflicting_patterns:
@@ -1494,9 +1469,6 @@ class ReasoningEngine:
             "call": ["person"],
             "send-mess": ["person"],                 # message text là optional
             "set-alarm": ["time"],
-            "set-event-calendar": ["time"],          # mô tả optional
-            "play-media": [],                        # object optional
-            "view-content": [],                      # optional
             "get-info": [],                          # location/time optional
             "search-internet": [], 
             "search-youtube": [],

@@ -10,29 +10,38 @@ import re
 import sys
 import time
 import unicodedata
+import types
 
 # Add project root to path
 current_dir = Path(__file__).parent
 project_root = current_dir.parent
 sys.path.insert(0, str(project_root))
 
-# Fix torchvision issue
+# Fix torchvision issue (tạo mock module đúng kiểu để tránh lỗi import)
 try:
     import torchvision
     print("torchvision available")
 except ImportError:
     print("torchvision not available - creating mock")
-    class MockTorchvision:
-        class transforms:
-            class InterpolationMode:
-                BILINEAR = "bilinear"
-                NEAREST = "nearest"
-    
-    sys.modules['torchvision'] = MockTorchvision()
-    sys.modules['torchvision.transforms'] = MockTorchvision.transforms
+    # Tạo module torchvision giả với cấu trúc tối thiểu: torchvision.transforms.InterpolationMode
+    mock_tv = types.ModuleType("torchvision")
+    transforms_mod = types.ModuleType("transforms")
+
+    class _InterpolationMode:
+        BILINEAR = "bilinear"
+        NEAREST = "nearest"
+
+    # gán class vào module transforms
+    transforms_mod.InterpolationMode = _InterpolationMode  # type: ignore[attr-defined]
+    # gán transforms vào torchvision
+    mock_tv.transforms = transforms_mod  # type: ignore[attr-defined]
+
+    sys.modules["torchvision"] = mock_tv
+    sys.modules["torchvision.transforms"] = transforms_mod
 
 try:
     from core.reasoning_engine import ReasoningEngine
+    from core.model_loader import TrainedModelInference, load_trained_model
     from src.inference.engines.entity_extractor import EntityExtractor as SpecializedEntityExtractor
     print("Imported ReasoningEngine and SpecializedEntityExtractor")
 except ImportError as e:
@@ -46,12 +55,13 @@ class ModelFirstHybridSystem:
     - Reasoning engine làm phụ (validation, enhancement, fallback)
     """
     
-    def __init__(self, model_path: str = "models/phobert_large_intent_model"):
+    def __init__(self, model_path: str = "models/phobert_multitask"):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model_path = Path(model_path)
         
         # Components
         self.trained_model = None
+        self.model_inference: Optional[TrainedModelInference] = None
         self.tokenizer = None
         self.reasoning_engine = None
         self.label_mappings = None
@@ -277,56 +287,21 @@ class ModelFirstHybridSystem:
             self.specialized_extractor_loaded = False
     
     def _load_trained_model(self):
-        """Load trained model"""
+        """Load trained multi-task model (phobert_multitask) cho hybrid system."""
         try:
-            # Find best model checkpoint
-            best_model_path = self.model_path / "model_best.pth"
-            if not best_model_path.exists():
-                epoch_models = sorted(self.model_path.glob("model_epoch_*.pth"), reverse=True)
-                if epoch_models:
-                    best_model_path = epoch_models[0]
-                else:
-                    raise FileNotFoundError(f"No trained model found in {self.model_path}")
-            
-            self.logger.info(f"Loading trained model from: {best_model_path}")
-            
-            # Load checkpoint
-            checkpoint = torch.load(best_model_path, map_location=self.device)
-            
-            # Load label mappings
-            self.label_mappings = {
-                'intent_to_id': checkpoint.get('intent_to_id', {}),
-                'id_to_intent': checkpoint.get('id_to_intent', {}),
-                'entity_to_id': checkpoint.get('entity_to_id', {}),
-                'id_to_entity': checkpoint.get('id_to_entity', {}),
-                'value_to_id': checkpoint.get('value_to_id', {}),
-                'id_to_value': checkpoint.get('id_to_value', {}),
-                'command_to_id': checkpoint.get('command_to_id', {}),
-                'id_to_command': checkpoint.get('id_to_command', {})
-            }
-            
-            # Load tokenizer
-            self.tokenizer = AutoTokenizer.from_pretrained(str(self.model_path))
-            if self.tokenizer.pad_token is None:
-                if hasattr(self.tokenizer, 'eos_token') and self.tokenizer.eos_token is not None:
-                    self.tokenizer.pad_token = self.tokenizer.eos_token
-                else:
-                    self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-            
-            # Load config
-            self.config = checkpoint.get('config', {})
-            self.max_length = self.config.get('max_length', 128)
-            
-            # Load model architecture (simplified approach)
-            self.model = checkpoint.get('model_state_dict', {})
-            self.enable_multi_task = checkpoint.get('enable_multi_task', False)
-            
+            # Sử dụng wrapper load_trained_model đã được chuẩn hoá cho multi-task
+            self.logger.info("Loading multi-task model via TrainedModelInference (phobert_multitask)")
+            # model_path chỉ dùng để log; TrainedModelInference tự chọn checkpoint/best_model.pt
+            self.model_inference = load_trained_model("phobert_multitask", device=self.device)
+            self.enable_multi_task = True
             self.model_loaded = True
-            self.logger.info(f"✅ Trained model loaded successfully")
-            self.logger.info(f"   Intents: {len(self.label_mappings['intent_to_id'])}")
-            if self.enable_multi_task:
-                self.logger.info(f"   Entities: {len(self.label_mappings['entity_to_id'])}")
-                self.logger.info(f"   Commands: {len(self.label_mappings['command_to_id'])}")
+
+            # Thông tin model (nếu cần log)
+            try:
+                info = self.model_inference.get_model_info()
+                self.logger.info(f"✅ Trained model loaded successfully: {info}")
+            except Exception:
+                self.logger.info("✅ Trained model loaded successfully (no extra info)")
             
         except Exception as e:
             self.logger.error(f"❌ Failed to load trained model: {e}")
@@ -403,6 +378,11 @@ class ModelFirstHybridSystem:
                 # Normalize device keywords
                 has_volume = any(w in text_l for w in ["âm lượng", "loa", "âm thanh", "volume"])
                 has_brightness = any(w in text_l for w in ["độ sáng", "sáng", "brightness", "ánh sáng"]) 
+                has_aircon = any(w in text_l for w in ["điều hòa", "dieu hoa", "máy lạnh", "may lanh"])
+                has_flashlight = any(w in text_l for w in ["đèn pin", "den pin", "flash", "đèn flash"])
+                has_fan = any(w in text_l for w in ["quạt", "quat"])
+                has_light = any(w in text_l for w in ["đèn", "den"])
+                has_tv = any(w in text_l for w in ["tivi", "tv"])
 
                 # Normalize action keywords
                 has_on = any(w in text_l for w in ["bật", "mở", "on"]) 
@@ -415,6 +395,17 @@ class ModelFirstHybridSystem:
                     entities["DEVICE"] = "âm lượng"
                 elif has_brightness:
                     entities["DEVICE"] = "độ sáng"
+                elif has_aircon:
+                    entities["DEVICE"] = "điều hòa"
+                elif has_flashlight:
+                    entities["DEVICE"] = "đèn pin"
+                elif has_fan:
+                    entities["DEVICE"] = "quạt"
+                elif has_light and not entities.get("DEVICE"):
+                    # Chỉ gán "đèn" nếu chưa bắt được thiết bị cụ thể khác (đèn pin, âm lượng...)
+                    entities["DEVICE"] = "đèn"
+                elif has_tv:
+                    entities["DEVICE"] = "tivi"
 
                 # ACTION/MODE mapping
                 if has_on:
@@ -434,14 +425,27 @@ class ModelFirstHybridSystem:
                 if any(w in text_l for w in ["chút", "nhẹ", "một chút", "chút nữa"]):
                     entities["LEVEL"] = "small"
 
+                # VALUE / LEVEL từ số cụ thể (26 độ, 10%)
+                # Ưu tiên VALUE cho nhiệt độ, LEVEL cho phần trăm nếu chưa có
+                value_match = re.search(r"\b(\d{1,3})\s*(?:độ|c|°c)\b", text_l)
+                if value_match:
+                    entities["VALUE"] = value_match.group(1)
+                else:
+                    pct_match = re.search(r"\b(\d{1,3})\s*%", text_l)
+                    if pct_match and not entities.get("LEVEL"):
+                        entities["LEVEL"] = pct_match.group(1)
+
                 # control-device should not include PLATFORM
                 entities.pop("PLATFORM", None)
 
                 result["entities"] = entities
 
             if command == "set-alarm":
-                # Remove PLATFORM leakage
+                # Remove PLATFORM leakage nhưng không xoá MESSAGE hay các entity khác
                 entities.pop("PLATFORM", None)
+                # set-alarm không cần QUERY/YT_QUERY – tránh nhiễu kiểu QUERY="huyết"
+                entities.pop("QUERY", None)
+                entities.pop("YT_QUERY", None)
                 alarm_resolved = self._resolve_alarm_datetime(text)
                 if alarm_resolved:
                     self.logger.info(f"Alarm resolved entities: {alarm_resolved}")
@@ -464,12 +468,40 @@ class ModelFirstHybridSystem:
 
                 date_candidate = alarm_resolved.get("DATE")
                 if not date_candidate:
+                    # Hôm nay
                     if "hôm nay" in text_lower or "hom nay" in normalized:
                         date_candidate = now.date()
-                    elif any(k in text_lower for k in ["ngày mai", "mai"]) or any(k in normalized for k in ["ngay mai", "mai"]):
+                    # +1 ngày: ngày mai / mai / hôm sau / hôm tới / ngày tiếp theo
+                    elif any(
+                        k in text_lower
+                        for k in [
+                            "ngày mai",
+                            "mai",
+                            "hôm sau",
+                            "hôm tới",
+                            "ngày tiếp theo",
+                        ]
+                    ) or any(
+                        k in normalized
+                        for k in [
+                            "ngay mai",
+                            "mai",
+                            "hom sau",
+                            "hom toi",
+                            "ngay tiep theo",
+                        ]
+                    ):
                         date_candidate = (now + _dt.timedelta(days=1)).date()
-                    elif any(k in text_lower for k in ["ngày mốt", "mốt", "ngày kia"]) or any(k in normalized for k in ["ngay mot", "mot", "ngay kia"]):
+                    # +2 ngày: ngày mốt / mốt / ngày kia
+                    elif any(
+                        k in text_lower for k in ["ngày mốt", "mốt", "ngày kia"]
+                    ) or any(
+                        k in normalized for k in ["ngay mot", "mot", "ngay kia"]
+                    ):
                         date_candidate = (now + _dt.timedelta(days=2)).date()
+                    # +3 ngày: ngày kìa
+                    elif "ngày kìa" in text_lower:
+                        date_candidate = (now + _dt.timedelta(days=3)).date()
                     else:
                         weekday_map = {
                             "thứ hai": 0,
@@ -510,18 +542,19 @@ class ModelFirstHybridSystem:
                     except Exception:
                         timestamp_candidate = None
 
-                alarm_entities = {}
                 if time_candidate:
-                    alarm_entities["TIME"] = time_candidate
+                    entities["TIME"] = time_candidate
                 if date_candidate:
-                    alarm_entities["DATE"] = date_candidate.isoformat() if isinstance(date_candidate, _dt.date) else date_candidate
+                    entities["DATE"] = date_candidate.isoformat() if isinstance(date_candidate, _dt.date) else date_candidate
                 if timestamp_candidate:
-                    alarm_entities["TIMESTAMP"] = timestamp_candidate
-                result["entities"] = alarm_entities
-                entities = alarm_entities
+                    entities["TIMESTAMP"] = timestamp_candidate
+
+                if entities.get("MESSAGE") and not entities.get("REMINDER_CONTENT"):
+                    entities["REMINDER_CONTENT"] = entities["MESSAGE"]
+
+                result["entities"] = entities
 
             if command == "add-contacts":
-                # Remove unrelated fields if leaked
                 for k in ["DEVICE", "ACTION", "MODE", "PLATFORM"]:
                     entities.pop(k, None)
                 contacts_enriched = {}
@@ -587,31 +620,17 @@ class ModelFirstHybridSystem:
                     entities["PLATFORM"] = platform_guess or "zalo"
                 result["entities"] = entities
 
-            if command == "set-event-calendar":
-                if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
-                    try:
-                        calendar_entities = self.specialized_entity_extractor._extract_calendar_entities(text)  # noqa: SLF001
-                        for key in ["TITLE", "DATE", "TIME"]:
-                            if not entities.get(key) and calendar_entities.get(key):
-                                entities[key] = calendar_entities[key]
-                    except Exception:
-                        pass
-                result["entities"] = entities
-
             # Enforce required entity set per command: filter out unrelated keys
             required_entities_map = {
-                "add-contacts": ["CONTACT_NAME", "PHONE"],
-                "call": ["CONTACT_NAME", "PHONE", "RECEIVER"],
-                "make-video-call": ["CONTACT_NAME", "RECEIVER", "PLATFORM"],
-                "send-mess": ["RECEIVER", "MESSAGE", "PLATFORM"],
-                "set-alarm": ["TIME", "DATE", "TIMESTAMP"],
-                "set-event-calendar": ["TITLE", "DATE"],
-                "play-media": ["MEDIA_TYPE"],
-                "view-content": ["CONTENT_TYPE", "TITLE"],
+                "add-contacts": ["CONTACT_NAME", "PHONE", "PLATFORM", "ACTION", "RECEIVER"],
+                "call": ["CONTACT_NAME", "PHONE", "RECEIVER", "PLATFORM"],
+                "make-video-call": ["CONTACT_NAME", "RECEIVER", "PHONE", "PLATFORM"],
+                "send-mess": ["RECEIVER", "CONTACT_NAME", "PHONE", "MESSAGE", "PLATFORM"],
+                "set-alarm": ["TIME", "DATE", "REMINDER_CONTENT", "FREQUENCY", "TIMESTAMP", "MESSAGE"],
                 "search-internet": ["QUERY", "PLATFORM"],
                 "search-youtube": ["QUERY", "PLATFORM"],
-                "get-info": ["CONTENT_TYPE", "QUERY"],
-                "control-device": ["ACTION", "DEVICE", "MODE"],
+                "get-info": ["QUERY", "LOCATION", "TIME"],
+                "control-device": ["ACTION", "DEVICE", "MODE", "LEVEL", "VALUE"],
                 "open-cam": ["ACTION", "MODE", "CAMERA_TYPE"],
             }
 
@@ -644,7 +663,7 @@ class ModelFirstHybridSystem:
     
     def _model_predict(self, text: str) -> Dict[str, Any]:
         """Primary prediction using trained model"""
-        if not self.model_loaded:
+        if not self.model_loaded or self.model_inference is None:
             return {
                 "intent": "unknown",
                 "confidence": 0.0,
@@ -657,29 +676,66 @@ class ModelFirstHybridSystem:
         try:
             self.stats['model_predictions'] += 1
             
-            # Tokenize input
-            encoding = self.tokenizer(
-                text,
-                truncation=True,
-                padding='max_length',
-                max_length=self.max_length,
-                return_tensors='pt'
-            )
-            
-            input_ids = encoding['input_ids'].to(self.device)
-            attention_mask = encoding['attention_mask'].to(self.device)
-            
-            # For now, use simple rule-based prediction based on trained model patterns
-            # This is a simplified approach since we can't load the full model due to torchvision issue
-            prediction = self._rule_based_model_prediction(text)
-            
+            model_prediction = self.model_inference.predict(text)
+            model_intent = model_prediction.get("intent", "unknown")
+            model_command = model_prediction.get("command", model_intent)
+            model_entities = model_prediction.get("entities", {}) or {}
+            model_confidence = float(model_prediction.get("confidence", 0.0) or 0.0)
+
+            heuristic_prediction = self._rule_based_model_prediction(text)
+            heuristic_intent = heuristic_prediction.get("intent", "unknown")
+            heuristic_confidence = float(heuristic_prediction.get("confidence", 0.0) or 0.0)
+            heuristic_entities = heuristic_prediction.get("entities", {}) or {}
+
+            intents_align = heuristic_intent == model_intent
+
+            combined_confidence = model_confidence
+            confidence_adjustments = []
+
+            if intents_align and heuristic_confidence > 0:
+                boost = min(0.25, 0.15 + 0.3 * heuristic_confidence)
+                combined_confidence = min(1.0, combined_confidence + boost)
+                confidence_adjustments.append({
+                    "type": "keyword_boost",
+                    "value": boost,
+                    "keyword_confidence": heuristic_confidence
+                })
+            elif not intents_align and heuristic_confidence >= 0.5:
+                penalty = min(0.25, 0.2 + 0.2 * heuristic_confidence)
+                combined_confidence = max(0.05, combined_confidence - penalty)
+                confidence_adjustments.append({
+                    "type": "keyword_penalty",
+                    "value": penalty,
+                    "keyword_confidence": heuristic_confidence,
+                    "alternate_intent": heuristic_intent
+                })
+
+            if combined_confidence < 0.4 and model_confidence >= 0.4:
+                combined_confidence = (combined_confidence + model_confidence) / 2
+                confidence_adjustments.append({
+                    "type": "stability_floor",
+                    "value": combined_confidence - model_confidence
+                })
+
+            merged_entities = dict(heuristic_entities)
+            merged_entities.update(model_entities)
+
             return {
-                "intent": prediction['intent'],
-                "confidence": prediction['confidence'],
-                "entities": prediction['entities'],
-                "command": prediction['command'],
+                "intent": model_intent,
+                "confidence": combined_confidence,
+                "entities": merged_entities,
+                "command": model_command,
                 "method": "trained_model",
-                "model_type": "multi-task" if self.enable_multi_task else "single-task"
+                "model_type": model_prediction.get("model_type", "multi-task" if self.enable_multi_task else "single-task"),
+                "confidence_sources": {
+                    "model": model_confidence,
+                    "keyword": heuristic_confidence,
+                    "combined": combined_confidence,
+                    "agreement": intents_align,
+                    "adjustments": confidence_adjustments,
+                },
+                "auxiliary_intent": heuristic_intent,
+                "auxiliary_entities": heuristic_entities,
             }
             
         except Exception as e:
@@ -704,22 +760,19 @@ class ModelFirstHybridSystem:
         intent_patterns = {
             'call': ['gọi', 'call', 'phone', 'điện thoại', 'facetime', 'video call'],
             'control-device': ['bật', 'tắt', 'điều chỉnh', 'turn', 'on', 'off', 'đèn', 'quạt', 'điều hòa'],
-            'play-media': ['phát', 'chơi', 'play', 'nhạc', 'video', 'music', 'bài hát'],
             # tách youtube khỏi search-internet để giảm nhập nhằng
             'search-internet': ['tìm', 'search', 'kiếm', 'google', 'internet'],
             'search-youtube': ['youtube', 'yt', 'trên youtube', 'tìm youtube', 'tìm trên youtube', 'xem trên youtube'],
             'set-alarm': ['báo thức', 'alarm', 'nhắc', 'đặt', 'set'],
             'send-mess': ['gửi', 'nhắn', 'tin', 'message', 'sms', 'messenger'],
             'open-cam': ['camera', 'chụp', 'quay', 'ảnh', 'video'],
-            'set-event-calendar': ['lịch', 'sự kiện', 'hẹn', 'calendar', 'event'],
             'make-video-call': ['video call', 'facetime', 'gọi video'],
             'add-contacts': ['thêm', 'lưu', 'add', 'contact', 'danh bạ', 'số điện thoại'],
-            'view-content': ['xem', 'mở', 'view', 'thư viện', 'ảnh', 'video'],
             'get-info': ['hỏi', 'kiểm tra', 'thông tin', 'info', 'time', 'pin']
         }
         
         # Score each intent
-        intent_scores = {}
+        intent_scores: Dict[str, int] = {}
         for intent, patterns in intent_patterns.items():
             score = 0
             for pattern in patterns:
@@ -730,7 +783,8 @@ class ModelFirstHybridSystem:
         
         # Get best intent
         if intent_scores:
-            best_intent = max(intent_scores, key=intent_scores.get)
+            # Dùng max trên items để type checker hiểu rõ kiểu key/value
+            best_intent = max(intent_scores.items(), key=lambda kv: kv[1])[0]
             confidence = min(0.9, 0.5 + (intent_scores[best_intent] * 0.1))
         else:
             best_intent = "unknown"
@@ -839,7 +893,7 @@ class ModelFirstHybridSystem:
     
     def _reasoning_validate(self, text: str, context: Optional[Dict[str, Any]], model_result: Dict[str, Any]) -> Dict[str, Any]:
         """Secondary validation using reasoning engine"""
-        if not self.reasoning_loaded:
+        if not self.reasoning_loaded or self.reasoning_engine is None:
             return {
                 "intent": "unknown",
                 "confidence": 0.0,
@@ -853,13 +907,24 @@ class ModelFirstHybridSystem:
             self.stats['reasoning_predictions'] += 1
             
             # Use reasoning engine for validation
+            assert self.reasoning_engine is not None
             reasoning_result = self.reasoning_engine.reasoning_predict(text, context)
-            
+
+            intent = reasoning_result.get('intent', 'unknown') or 'unknown'
+            if intent == 'help':
+                intent = 'unknown'
+
+            command = reasoning_result.get('command', reasoning_result.get('intent', 'unknown')) or 'unknown'
+            if command == 'help':
+                command = 'unknown'
+
+            entities = reasoning_result.get('entities', {}) or {}
+
             return {
-                "intent": reasoning_result.get('intent', 'unknown'),
+                "intent": intent,
                 "confidence": reasoning_result.get('confidence', 0.0),
-                "entities": reasoning_result.get('entities', {}),
-                "command": reasoning_result.get('command', reasoning_result.get('intent', 'unknown')),
+                "entities": entities,
+                "command": command,
                 "method": "reasoning_engine",
                 "reasoning_details": reasoning_result
             }

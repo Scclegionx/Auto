@@ -14,7 +14,7 @@ def verify_final_data():
     print("=" * 50)
     
     # Load raw dataset
-    with open("src/data/raw/elderly_command_dataset_MERGED_13C_VITEXT.json", 'r', encoding='utf-8') as f:
+    with open("src/data/raw/elderly_commands_master.json", 'r', encoding='utf-8') as f:
         raw_data = json.load(f)
     
     # Load processed datasets
@@ -98,11 +98,6 @@ def verify_final_data():
     alarm_samples = [item for item in all_processed_data if item.get('command') == 'set-alarm']
     alarm_with_date = sum(1 for item in alarm_samples if any(e['label'] == 'DATE' for e in item.get('entities', [])))
     print(f"Alarm samples with DATE: {alarm_with_date}/{len(alarm_samples)}")
-    
-    # Check TITLE in set-event-calendar commands
-    calendar_samples = [item for item in all_processed_data if item.get('command') == 'set-event-calendar']
-    calendar_with_title = sum(1 for item in calendar_samples if any(e['label'] == 'TITLE' for e in item.get('entities', [])))
-    print(f"Calendar samples with TITLE: {calendar_with_title}/{len(calendar_samples)}")
     
     # Check sample quality
     print("\n📋 SAMPLE QUALITY CHECK:")

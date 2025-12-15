@@ -7,125 +7,106 @@ Updated for normalized Vietnamese text and processed data
 
 import os
 
+import torch
+
+from data.entity_schema import ENTITY_BASE_NAMES, generate_entity_labels
+
+
 class ModelConfig:
-    # Model settings - OPTIMIZED for Vietnamese text
-    model_name = "vinai/phobert-large"
-    model_size = "large"
-    max_length = 128  # Reduced for Vietnamese text efficiency
+    """Hyper-parameters mặc định (có thể override qua biến môi trường)"""
+
+    # Model settings - tự điều chỉnh theo VRAM
+    model_name = os.environ.get("MODEL_NAME", "vinai/phobert-large")
+    model_size = "base" if "base" in model_name else "large"
+    max_length = int(os.environ.get("MAX_LENGTH", 128))
     use_safetensors = True
-    
-    # Training settings - OPTIMIZED for balanced dataset (VITEXT normalized)
-    num_epochs = int(os.environ.get('EPOCHS', 4))  # Reduced epochs to prevent overfitting
-    batch_size = 16  # Optimal for RTX 2060 6GB
-    learning_rate = 2e-05  # Standard LR for PhoBERT fine-tuning
-    weight_decay = 0.01
-    warmup_steps = 500  # Reduced for faster convergence
-    
-    # Loss weights - OPTIMIZED for multi-task learning
-    LAMBDA_INTENT = 0.7  # Primary focus on intent
-    LAMBDA_ENTITY = 0.2  # Increased entity weight for NER
-    LAMBDA_COMMAND = 0.1  # Command classification
-    LAMBDA_VALUE = 0.0   # Disabled value extraction
-    
+
+    # Training settings
+    num_epochs = int(os.environ.get("EPOCHS", 4))
+    batch_size = int(os.environ.get("BATCH_SIZE", 16))
+    learning_rate = float(os.environ.get("LEARNING_RATE", 2e-5))
+    weight_decay = float(os.environ.get("WEIGHT_DECAY", 0.01))
+    warmup_steps = int(os.environ.get("WARMUP_STEPS", 300))
+
+    # Loss weights
+    LAMBDA_INTENT = float(os.environ.get("LAMBDA_INTENT", 0.45))
+    LAMBDA_ENTITY = float(os.environ.get("LAMBDA_ENTITY", 0.25))
+    LAMBDA_COMMAND = float(os.environ.get("LAMBDA_COMMAND", 0.2))
+    LAMBDA_ENTITY_INITIAL = float(os.environ.get("LAMBDA_ENTITY_INITIAL", 0.05))
+    LAMBDA_ENTITY_TARGET = float(os.environ.get("LAMBDA_ENTITY_TARGET", 0.25))
+    LAMBDA_ENTITY_WARMUP_EPOCHS = int(os.environ.get("LAMBDA_ENTITY_WARMUP_EPOCHS", 3))
+
     # Label smoothing
-    label_smoothing = 0.1
-    
-    # Freeze encoder - OPTIMIZED for PhoBERT-large fine-tuning
-    freeze_encoder_epochs = 0  # No freezing for better learning
-    freeze_layers = 0  # No layer freezing
-    
-    # Gradient clipping - OPTIMIZED for RTX 2060 6GB VRAM
-    max_grad_norm = 1.0
-    gradient_accumulation_steps = 2  # Effective batch size = 32
-    
-    # Mixed precision training - ENABLED for GPU
-    use_mixed_precision = True  # Enable AMP for memory efficiency
-    fp16 = True  # Enable FP16 training
-    
-    # Early stopping - OPTIMIZED for fewer epochs
-    patience = 3  # Reduced patience for 4 epochs
-    min_delta = 0.001
-    
-    # Optimizer - OPTIMIZED for GPU
-    optimizer = "adamw"
-    adam_epsilon = 1e-8
+    label_smoothing = float(os.environ.get("LABEL_SMOOTHING", 0.0))
+
+    # Encoder freezing
+    freeze_encoder_epochs = int(os.environ.get("FREEZE_ENCODER_EPOCHS", 0))
+    freeze_layers = int(os.environ.get("FREEZE_LAYERS", 0))
+
+    # Gradient handling
+    max_grad_norm = float(os.environ.get("MAX_GRAD_NORM", 1.0))
+    gradient_accumulation_steps = int(os.environ.get("GRAD_ACCUM", 2))
+
+    # Mixed precision
+    use_mixed_precision = os.environ.get("USE_MIXED_PRECISION", "1") != "0"
+
+    # Early stopping
+    patience = int(os.environ.get("PATIENCE", 3))
+    min_delta = float(os.environ.get("MIN_DELTA", 1e-3))
+
+    # Optimizer
+    optimizer = os.environ.get("OPTIMIZER", "adamw")
+    adam_epsilon = float(os.environ.get("ADAM_EPSILON", 1e-8))
     adam_betas = (0.9, 0.999)
-    clip_threshold = 1.0
-    
-    # Dropout - OPTIMIZED
-    dropout = 0.1
-    
-    # Data paths - UPDATED for processed VITEXT data
-    dataset_path = "src/data/raw/elderly_command_dataset_MERGED_13C_VITEXT.json"
+    clip_threshold = float(os.environ.get("CLIP_THRESHOLD", 1.0))
+    entity_head_lr_factor = float(os.environ.get("ENTITY_HEAD_LR_FACTOR", 0.5))
+
+    # Dropout
+    dropout = float(os.environ.get("DROPOUT", 0.1))
+    entity_dropout = float(os.environ.get("ENTITY_DROPOUT", 0.2))
+
+    # Data paths
+    dataset_path = "src/data/raw/elderly_commands_master.json"
     train_data_path = "src/data/processed/train.json"
     val_data_path = "src/data/processed/val.json"
     test_data_path = "src/data/processed/test.json"
-    
+
     # Output paths
-    output_dir = "models/phobert_large_intent_model"
-    log_dir = "logs/vitext_training"
-    
+    output_dir = os.environ.get("OUTPUT_DIR", "models/phobert_multitask")
+    log_dir = os.environ.get("LOG_DIR", "logs/multitask_training")
+
     # Metrics
-    metrics = ['accuracy', 'f1', 'precision', 'recall', 'confusion_matrix']
-    
-    # GPU-specific settings
-    device = "cuda"
-    use_cuda = True
-    cuda_visible_devices = "0"  # Use first GPU
-    
-    # Memory optimization
-    gradient_checkpointing = False  # Disabled for stability
-    use_gradient_accumulation = True  # Simulate larger batch
-    
+    metrics = ["accuracy", "f1", "precision", "recall"]
+
+    # Device
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    use_cuda = torch.cuda.is_available()
+    cuda_visible_devices = os.environ.get("CUDA_VISIBLE_DEVICES", "0")
+
     # Training stability
-    seed = 42
-    deterministic = True
+    seed = int(os.environ.get("SEED", 42))
+    deterministic = os.environ.get("DETERMINISTIC", "1") != "0"
 
 class IntentConfig:
-    """Intent classification configuration - UPDATED for VITEXT dataset"""
-    num_intents = 13
+    """Intent classification configuration - UPDATED cho bộ lệnh rút gọn"""
+    num_intents = 10
     intent_labels = [
-        "add-contacts", "call", "control-device", "get-info", "make-video-call", 
-        "open-cam", "play-media", "search-internet", "search-youtube", 
-        "send-mess", "set-alarm", "set-event-calendar", "view-content"
+        "add-contacts", "call", "control-device", "get-info", "make-video-call",
+        "open-cam", "search-internet", "search-youtube", "send-mess", "set-alarm"
     ]
 
 class EntityConfig:
-    """Entity recognition configuration - UPDATED for main dataset"""
-    num_entity_labels = 35  # Updated for main dataset with all entities
-    entity_labels = [
-        "O",  # Outside
-        # B- labels (Begin)
-        "B-ACTION", "B-CAMERA_TYPE", "B-CONTACT_NAME", "B-CONTENT_TYPE", 
-        "B-DATE", "B-DEVICE", "B-LEVEL", "B-LOCATION", "B-MEDIA_TYPE", 
-        "B-MESSAGE", "B-MODE", "B-PHONE", "B-PLATFORM", "B-QUERY", 
-        "B-RECEIVER", "B-TIME", "B-TITLE",
-        # I- labels (Inside)
-        "I-ACTION", "I-CAMERA_TYPE", "I-CONTACT_NAME", "I-CONTENT_TYPE", 
-        "I-DATE", "I-DEVICE", "I-LEVEL", "I-LOCATION", "I-MEDIA_TYPE", 
-        "I-MESSAGE", "I-MODE", "I-PHONE", "I-PLATFORM", "I-QUERY", 
-        "I-RECEIVER", "I-TIME", "I-TITLE"
-    ]
-
-class ValueConfig:
-    """Value extraction configuration - UPDATED for VITEXT dataset"""
-    num_value_labels = 33  # Updated based on actual value labels
-    value_labels = [
-        "O", "B-action", "I-action", "B-contact_name", "I-contact_name", 
-        "B-content_type", "I-content_type", "B-date", "I-date", "B-device", 
-        "I-device", "B-level", "I-level", "B-location", "I-location", 
-        "B-media_type", "I-media_type", "B-phone", "I-phone", "B-platform", 
-        "I-platform", "B-query", "I-query", "B-time", "I-time", "B-title", 
-        "I-title", "B-value", "I-value", "B-number", "I-number", "B-percentage", "I-percentage"
-    ]
+    """Entity recognition configuration - chuẩn hóa theo schema cuối."""
+    entity_base_names = ENTITY_BASE_NAMES
+    entity_labels = generate_entity_labels()
+    num_entity_labels = len(entity_labels)
 
 class CommandConfig:
-    """Command classification configuration - UPDATED for VITEXT dataset"""
-    num_command_labels = 13
+    """Command classification configuration - UPDATED cho bộ lệnh rút gọn"""
+    num_command_labels = 10
     command_labels = [
-        "add-contacts", "call", "control-device", "get-info", "make-video-call", 
-        "open-cam", "play-media", "search-internet", "search-youtube", 
-        "send-mess", "set-alarm", "set-event-calendar", "view-content"
+        "add-contacts", "call", "control-device", "get-info", "make-video-call",
+        "open-cam", "search-internet", "search-youtube", "send-mess", "set-alarm"
     ]
 
 class TrainingConfig:

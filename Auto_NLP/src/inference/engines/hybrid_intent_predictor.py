@@ -15,6 +15,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from inference.engines.intent_predictor import IntentPredictor
+from training.configs.config import IntentConfig
 
 class HybridIntentPredictor:
     """Hybrid predictor kết hợp trained model và reasoning engine"""
@@ -23,19 +24,15 @@ class HybridIntentPredictor:
         self.device = device
         self.trained_predictor = IntentPredictor(device)
         self.reasoning_engine = self._init_reasoning_engine()
+        self.intent_labels = IntentConfig().intent_labels
         
         # Confidence thresholds
         self.model_threshold = 0.3  # Threshold for trained model
         self.reasoning_threshold = 0.6  # Threshold for reasoning engine
         
         # Intent mapping
-        self.intent_mapping = {
-            'send-mess': 0, 'call': 1, 'set-alarm': 2, 'set-event-calendar': 3,
-            'get-info': 4, 'add-contacts': 5, 'control-device': 6, 'make-video-call': 7,
-            'open-cam': 8, 'play-media': 9, 'search-internet': 10, 'view-content': 11,
-            'search-youtube': 12
-        }
-        self.id_to_intent = {v: k for k, v in self.intent_mapping.items()}
+        self.intent_mapping = {label: idx for idx, label in enumerate(self.intent_labels)}
+        self.id_to_intent = {idx: label for label, idx in self.intent_mapping.items()}
     
     def _init_reasoning_engine(self):
         """Initialize reasoning engine với keyword patterns"""
@@ -51,10 +48,6 @@ class HybridIntentPredictor:
             'set-alarm': [
                 r'báo\s+thức', r'đặt\s+báo\s+thức', r'báo\s+thức\s+lúc', r'nhắc\s+nhở',
                 r'đặt\s+giờ', r'báo\s+thức\s+giờ'
-            ],
-            'set-event-calendar': [
-                r'tạo\s+sự\s+kiện', r'thêm\s+lịch', r'đặt\s+lịch', r'tạo\s+lịch',
-                r'sự\s+kiện', r'lịch\s+hẹn', r'cuộc\s+họp'
             ],
             'get-info': [
                 r'hỏi\s+thông\s+tin', r'tìm\s+hiểu', r'cho\s+biết', r'hỏi\s+về',
@@ -76,17 +69,9 @@ class HybridIntentPredictor:
                 r'mở\s+camera', r'chụp\s+ảnh', r'quay\s+video', r'mở\s+máy\s+ảnh',
                 r'camera', r'chụp\s+hình'
             ],
-            'play-media': [
-                r'phát\s+nhạc', r'bật\s+nhạc', r'nghe\s+nhạc', r'phát\s+video',
-                r'bật\s+video', r'phát\s+podcast', r'nghe\s+podcast'
-            ],
             'search-internet': [
                 r'tìm\s+kiếm', r'tìm\s+trên\s+mạng', r'search', r'tìm\s+thông\s+tin',
                 r'tìm\s+hiểu\s+về', r'tra\s+cứu'
-            ],
-            'view-content': [
-                r'xem\s+tin\s+tức', r'đọc\s+báo', r'xem\s+báo', r'xem\s+thông\s+tin',
-                r'xem\s+nội\s+dung', r'đọc\s+nội\s+dung'
             ],
             'search-youtube': [
                 r'tìm\s+trên\s+youtube', r'youtube', r'tìm\s+video', r'tìm\s+trên\s+yt',

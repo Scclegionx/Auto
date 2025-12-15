@@ -12,19 +12,16 @@ import torch
 from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from transformers import AutoTokenizer
 import numpy as np
+from training.configs.config import IntentConfig
 
 class ImbalancedDatasetProcessor:
     """Processor cho dataset bị imbalanced"""
     
     def __init__(self, tokenizer_name: str = "vinai/phobert-base"):
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
-        self.intent_mapping = {
-            'send-mess': 0, 'call': 1, 'set-alarm': 2, 'set-event-calendar': 3,
-            'get-info': 4, 'add-contacts': 5, 'control-device': 6, 'make-video-call': 7,
-            'open-cam': 8, 'play-media': 9, 'search-internet': 10, 'view-content': 11,
-            'search-youtube': 12
-        }
-        self.id_to_intent = {v: k for k, v in self.intent_mapping.items()}
+        self.intent_labels = IntentConfig().intent_labels
+        self.intent_mapping = {label: idx for idx, label in enumerate(self.intent_labels)}
+        self.id_to_intent = {idx: label for label, idx in self.intent_mapping.items()}
     
     def load_dataset(self, file_path: str) -> List[Dict]:
         """Load dataset từ file"""
@@ -248,11 +245,11 @@ def main():
     """Test dataset processor"""
     processor = ImbalancedDatasetProcessor()
     
-    # Process dataset
+    # Process dataset (sử dụng dataset chính đã chuẩn hóa)
     train_data, val_data = processor.process_dataset(
-        "src/data/raw/elderly_command_dataset_FULL_13C_FIXED.json",
+        "src/data/raw/elderly_commands_master.json",
         augment=True,
-        target_samples=1000
+        target_samples=1000,
     )
     
     # Create dataloaders

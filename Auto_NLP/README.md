@@ -16,12 +16,12 @@ Hệ thống NLP Hybrid thông minh kết hợp trained model với reasoning en
 
 ### **Setup Tự Động (Khuyến nghị)**
 ```bash
-# Clone repository
-git clone https://github.com/Scclegionx/Auto.git
-cd Auto
+# Clone repository (ví dụ)
+git clone https://github.com/your-org/auto-nlp.git
+cd auto-nlp
 
-# Chạy setup tự động
-python setup_complete.py
+# Chạy setup môi trường (tạo venv_new + cài requirements + sync dataset)
+python scripts/setup_env.py
 ```
 
 ### **Setup Thủ Công**
@@ -82,18 +82,16 @@ Auto_NLP/
 
 | Intent | Mô tả | Ví dụ |
 |--------|-------|-------|
-| `call` | Gọi điện thoại | "gọi điện cho mẹ" |
-| `send-mess` | Nhắn tin | "nhắn tin cho bố" |
-| `make-video-call` | Video call | "gọi video với con" |
 | `add-contacts` | Thêm liên hệ | "lưu số điện thoại" |
+| `call` | Gọi điện thoại | "gọi điện cho mẹ" |
+| `control-device` | Điều khiển thiết bị | "bật wifi" |
+| `get-info` | Lấy thông tin | "hỏi thời gian" |
+| `make-video-call` | Video call | "gọi video với con" |
+| `open-cam` | Mở camera | "mở camera sau" |
 | `search-internet` | Tìm kiếm web | "tìm kiếm thời tiết" |
 | `search-youtube` | Tìm YouTube | "tìm video ca nhạc" |
+| `send-mess` | Nhắn tin | "nhắn tin cho bố" |
 | `set-alarm` | Đặt báo thức | "đặt báo thức 7 giờ" |
-| `set-event-calendar` | Đặt lịch | "tạo lịch họp" |
-| `open-cam` | Mở camera | "mở camera sau" |
-| `control-device` | Điều khiển thiết bị | "bật wifi" |
-| `play-media` | Phát media | "phát nhạc" |
-| `get-info` | Lấy thông tin | "hỏi thời gian" |
 | `help` | Trợ giúp | "giúp tôi" |
 
 ## 🔧 **CẤU HÌNH**
@@ -143,74 +141,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 **🎉 Cảm ơn bạn đã sử dụng Auto NLP Hybrid System!**
 ```
 
-### 4. Test System
+### 4. Test nhanh hệ thống
 ```bash
-# Test hybrid system
-python main.py test
-
-# Test API
-python test_api.py
+# Test hybrid inference (ghi kết quả vào artifacts/tmp_infer_results_hybrid.json)
+python scripts/debug_hybrid_infer.py
 ```
-
-## 📁 Cấu trúc dự án
-
-```
-Auto_NLP/
-├── core/                       # Core components
-│   ├── hybrid_system.py       # Model-first hybrid system
-│   ├── model_loader.py        # Model loading & inference
-│   └── reasoning_engine.py    # Reasoning engine
-├── api/                       # API layer
-│   └── server.py              # FastAPI server
-├── src/                       # Source code
-│   ├── data/                  # Data management
-│   │   ├── raw/               # Raw datasets
-│   │   ├── processed/         # Processed datasets (train/val/test)
-│   │   └── grouped/           # Grouped by intent
-│   ├── training/              # Training pipeline
-│   │   ├── scripts/           # Training scripts
-│   │   └── configs/           # Training configs
-│   └── inference/             # Inference components
-│       ├── engines/           # Rule-based engines
-│       └── interfaces/        # Web interface
-├── models/                    # Trained models
-│   └── phobert_large_intent_model/
-├── config.py                  # Main configuration
-├── main.py                    # Main entry point
-└── requirements.txt           # Dependencies
-```
-
-## 🎯 Sử dụng
-
-### Command Line Interface
-```bash
-# Training
-python main.py train
-
-# Chạy API server
-python main.py api
-
-# Test system
-python main.py test
-
-# Xem config
-python main.py config
-```
-
-
-
-1. **call** - Gọi điện thoại
-2. **control-device** - Điều khiển thiết bị
-3. **play-media** - Phát media
-4. **search-internet** - Tìm kiếm internet
-5. **search-youtube** - Tìm kiếm YouTube
-6. **set-alarm** - Đặt báo thức
-7. **send-mess** - Gửi tin nhắn
-8. **open-cam** - Mở camera
-9. **set-event-calendar** - Đặt lịch
-10. **make-video-call** - Gọi video
-11. **add-contacts** - Thêm danh bạ
-12. **view-content** - Xem nội dung
-13. **get-info** - Lấy thông tin
-
 

@@ -18,22 +18,19 @@ def update_main_dataset():
     # Yêu cầu command-entity mapping
     REQUIRED_MAPPING = {
         "add-contacts": ["CONTACT_NAME", "PHONE"],
-        "call": ["CONTACT_NAME", "PHONE", "RECEIVER", "PLATFORM"],
-        "make-video-call": ["CONTACT_NAME", "RECEIVER", "PLATFORM"],
+        "call": ["CONTACT_NAME", "RECEIVER", "PHONE", "PLATFORM"],
+        "make-video-call": ["CONTACT_NAME", "RECEIVER", "PHONE", "PLATFORM"],
         "send-mess": ["RECEIVER", "MESSAGE", "PLATFORM"],
-        "set-alarm": ["TIME", "DATE"],
-        "set-event-calendar": ["TITLE", "DATE"],
-        "play-media": ["MEDIA_TYPE"],
-        "view-content": ["CONTENT_TYPE"],
-        "search-internet": ["PLATFORM", "QUERY"],
-        "search-youtube": ["PLATFORM", "QUERY"],
-        "get-info": ["QUERY", "CONTENT_TYPE", "PLATFORM"],
-        "control-device": ["ACTION", "DEVICE", "MODE"],
-        "open-cam": ["ACTION", "MODE", "CAMERA_TYPE"]
+        "set-alarm": ["TIME", "REMINDER_CONTENT"],
+        "search-internet": ["QUERY"],
+        "search-youtube": ["QUERY"],
+        "get-info": ["QUERY"],
+        "control-device": ["ACTION", "DEVICE"],
+        "open-cam": ["ACTION", "CAMERA_TYPE"]
     }
     
     # Load dataset chính
-    main_dataset_path = "src/data/raw/elderly_command_dataset_MERGED_13C_VITEXT.json"
+    main_dataset_path = "src/data/raw/elderly_commands_master.json"
     print(f"📖 Loading main dataset from {main_dataset_path}...")
     
     with open(main_dataset_path, 'r', encoding='utf-8') as f:
@@ -57,10 +54,6 @@ def update_main_dataset():
             r"(\d{1,2})\s+(tháng|month)\s+(\d{4})",
             r"ngày\s+(\d{1,2})\s+tháng\s+(\d{1,2})",
             r"(ngày|tháng|năm)\s+(\d+)"
-        ],
-        "TITLE": [
-            r"(?:họp|cuộc họp|sự kiện|lịch|nhắc nhở|ghi nhớ)\s+([A-Za-zÀ-ỹ\s]+?)(?:\s+ngày|\s+lúc|\s+tại|$)",
-            r"(?:đặt lịch|tạo lịch|nhắc tôi)\s+([A-Za-zÀ-ỹ\s]+?)(?:\s+ngày|\s+lúc|\s+tại|$)"
         ]
     }
     

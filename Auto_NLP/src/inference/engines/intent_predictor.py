@@ -221,8 +221,12 @@ class IntentPredictor:
             "call": ["gọi", "alo", "gọi điện", "nói chuyện điện thoại", "call"],
             "send-mess": ["nhắn tin", "gửi tin", "sms", "gửi tin nhắn", "nhắn", "gửi", "nhan tin", "gui tin", "tin nhan", "gui tin nhan", "nhan", "gui", "tin", "nhan tin qua", "gui tin qua", "nhan tin cho", "gui tin cho", "nhan tin toi", "gui tin toi", "nhan tin den", "gui tin den"],
             "add-contacts": ["lưu số", "thêm số", "lưu danh bạ", "thêm danh bạ", "lưu liên hệ", "thêm bạn", "create contact", "ghi contact", "add contact", "lưu chị", "lưu anh", "lưu cô", "lưu thầy", "lưu bác", "lưu ông", "lưu bà", "luu lien he", "them ban", "luu chi", "luu anh", "luu co", "luu thay", "luu bac", "luu ong", "luu ba", "luu so", "them so", "luu danh ba", "them danh ba", "luu", "them", "so", "danh ba", "lien he", "ban", "chi", "anh", "co", "thay", "bac", "ong", "ba"],
-            "play-media": ["phát nhạc", "chơi nhạc", "nghe nhạc", "phát video", "play"],
+            "make-video-call": ["gọi video", "video call", "facetime", "call video"],
             "search-internet": ["tìm kiếm", "search", "google", "tra cứu", "tìm", "tim kiem", "tim", "kiem", "tra cuu", "thong tin", "gia vang", "gia", "vang", "trong tuan", "tuan qua", "qua"],
+            "search-youtube": ["youtube", "yt", "video youtube", "tìm youtube", "xem youtube"],
+            "get-info": ["thông tin", "thời tiết", "tin tức", "đọc tin", "kiểm tra", "xem tin"],
+            "control-device": ["bật", "tắt", "điều khiển", "đèn", "âm lượng", "wifi", "bluetooth"],
+            "open-cam": ["mở camera", "bật camera", "chụp ảnh", "quay video", "camera"],
             "set-alarm": ["báo thức", "đánh thức", "đặt báo thức", "wake up"],
             "unknown": ["không hiểu", "không rõ", "lạ", "không biết"]
         }

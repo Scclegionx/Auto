@@ -30,12 +30,6 @@
     "nhiệt độ.*(?:bao nhiêu|thế nào)",
     "dự báo.*(?:thời tiết|mưa|nắng)"
   ],
-  "media_patterns": [
-    "phát.*(?:nhạc|bài hát)",
-    "bật.*(?:nhạc|video)",
-    "nghe.*(?:nhạc|bài hát)",
-    "mở.*(?:nhạc|video)"
-  ],
   "news_patterns": [
     "đọc.*(?:tin tức|báo)",
     "tin tức.*(?:mới nhất|hôm nay)",

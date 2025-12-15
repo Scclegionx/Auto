@@ -40,7 +40,8 @@ import androidx.compose.material3.DatePickerDefaults
 fun ProfileScreen(
     accessToken: String,
     onBackClick: () -> Unit = {},
-    onChangePasswordClick: () -> Unit = {}
+    onChangePasswordClick: () -> Unit = {},
+    onMedicalDocumentsClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val userService = remember { UserService() }
@@ -202,6 +203,7 @@ fun ProfileScreen(
                     ProfileContent(
                         profileData = profileData!!,
                         onChangePasswordClick = onChangePasswordClick,
+                        onMedicalDocumentsClick = onMedicalDocumentsClick,
                         onAvatarClick = { imagePickerLauncher.launch("image/*") },
                         isUploadingAvatar = isUploadingAvatar,
                         modifier = Modifier.padding(paddingValues)
@@ -216,6 +218,7 @@ fun ProfileScreen(
 fun ProfileContent(
     profileData: UserService.ProfileData,
     onChangePasswordClick: () -> Unit = {},
+    onMedicalDocumentsClick: () -> Unit = {},
     onAvatarClick: () -> Unit = {},
     isUploadingAvatar: Boolean = false,
     modifier: Modifier = Modifier
@@ -490,6 +493,64 @@ fun ProfileContent(
                         icon = Icons.Default.LocationOn,
                         label = "Nơi làm việc",
                         value = profileData.workplace?.takeIf { it.isNotBlank() && it != "null" } ?: "Chưa cập nhật"
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        
+        // Hồ sơ bệnh án - CHỈ hiển thị cho ELDER
+        if (profileData.role == "ELDER") {
+            Text(
+                text = "Tài liệu y tế",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = DarkOnSurface,
+                modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+            )
+            
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = DarkSurface
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onMedicalDocumentsClick() }
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Description,
+                        contentDescription = "Hồ sơ bệnh án",
+                        tint = DarkPrimary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    
+                    Spacer(modifier = Modifier.width(16.dp))
+                    
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Hồ sơ bệnh án",
+                            fontSize = AppTextSize.bodyMedium,
+                            color = DarkOnSurface,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "Quản lý tài liệu y tế, kết quả xét nghiệm",
+                            fontSize = AppTextSize.bodySmall,
+                            color = DarkOnSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                    
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowRight,
+                        contentDescription = "Go",
+                        tint = DarkOnSurface.copy(alpha = 0.4f)
                     )
                 }
             }

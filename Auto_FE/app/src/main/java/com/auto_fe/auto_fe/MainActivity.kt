@@ -92,6 +92,7 @@ import com.auto_fe.auto_fe.ui.screens.NotificationScreen
 import com.auto_fe.auto_fe.ui.screens.EmergencyContactScreen
 import com.auto_fe.auto_fe.ui.screens.ChatListScreen
 import com.auto_fe.auto_fe.ui.screens.SearchUserScreen
+import com.auto_fe.auto_fe.ui.screens.MedicalDocumentsScreen
 import com.auto_fe.auto_fe.utils.SessionManager
 import com.auto_fe.auto_fe.utils.PermissionManager
 import com.auto_fe.auto_fe.network.ApiClient
@@ -229,6 +230,7 @@ fun MainScreen(sessionManager: SessionManager) {
     var showSearchUser by remember { mutableStateOf(false) }  // Thêm state cho search user (cho chat)
     var showSearchConnection by remember { mutableStateOf(false) }  //  Thêm state cho search connection
     var showChatDetail by remember { mutableStateOf(false) }  // Thêm state cho chat detail
+    var showMedicalDocuments by remember { mutableStateOf(false) }  // Thêm state cho medical documents
     var selectedChatId by remember { mutableStateOf<Long?>(null) }  //  Chat ID đã tồn tại
     var selectedReceiverId by remember { mutableStateOf<Long?>(null) }  //  Receiver ID cho chat mới
     var selectedChatName by remember { mutableStateOf<String?>(null) }  //  Tên người nhận
@@ -320,7 +322,7 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     // BackHandler để xử lý nút back
-    BackHandler(enabled = selectedElderUserId != null || selectedPrescriptionId != null || showCreatePrescription || showCreateStandaloneMedication || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory || showEmergencyContact || showChatList || showSearchUser || showSearchConnection || showChatDetail) {
+    BackHandler(enabled = selectedElderUserId != null || selectedPrescriptionId != null || showCreatePrescription || showCreateStandaloneMedication || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory || showEmergencyContact || showMedicalDocuments || showChatList || showSearchUser || showSearchConnection || showChatDetail) {
         when {
             //  PRIORITY 1: Handle detail/create screens first (highest priority overlays)
             showCreatePrescription -> {
@@ -361,6 +363,11 @@ fun MainScreen(sessionManager: SessionManager) {
             // Nếu đang ở màn emergency contact → quay về danh sách
             showEmergencyContact -> {
                 showEmergencyContact = false
+            }
+            // Nếu đang ở màn medical documents → quay về profile
+            showMedicalDocuments -> {
+                showMedicalDocuments = false
+                showProfile = true
             }
             // Nếu đang ở màn notification history → quay về danh sách
             showNotificationHistory -> {
@@ -442,6 +449,7 @@ fun MainScreen(sessionManager: SessionManager) {
         selectedElderUserId != null && accessToken != null -> {
             MedicationTabScreen(
                 accessToken = accessToken!!,
+                currentUserId = sessionManager.getUserId(),  // Add current user ID
                 userName = sessionManager.getUserName() ?: "Supervisor",
                 userEmail = sessionManager.getUserEmail() ?: "",
                 userAvatar = sessionManager.getUserAvatar(),
@@ -560,6 +568,10 @@ fun MainScreen(sessionManager: SessionManager) {
                 onChangePasswordClick = {
                     showProfile = false
                     showChangePassword = true
+                },
+                onMedicalDocumentsClick = {
+                    showProfile = false
+                    showMedicalDocuments = true
                 }
             )
         }
@@ -611,6 +623,16 @@ fun MainScreen(sessionManager: SessionManager) {
                 EmergencyContactScreen(
                     accessToken = token,
                     onBackClick = { showEmergencyContact = false }
+                )
+            }
+        }
+        // Màn hình Medical Documents (fullscreen)
+        showMedicalDocuments && accessToken != null -> {
+            val token = accessToken // Smart cast fix
+            if (token != null) {
+                MedicalDocumentsScreen(
+                    accessToken = token,
+                    onBackClick = { showMedicalDocuments = false }
                 )
             }
         }
@@ -714,6 +736,7 @@ fun MainScreen(sessionManager: SessionManager) {
                                     // ELDER → Hiển thị danh sách đơn thuốc
                                     MedicationTabScreen(
                                         accessToken = accessToken!!,
+                                        currentUserId = sessionManager.getUserId(),  // Add current user ID
                                         userName = displayName,
                                         userEmail = sessionManager.getUserEmail() ?: "",
                                         userAvatar = sessionManager.getUserAvatar(),

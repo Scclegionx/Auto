@@ -76,16 +76,6 @@
         "end": 46
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "15h50"
-      },
-      {
-        "label": "title",
-        "text": "nhắc tập thể dục"
-      }
-    ],
     "split": "train"
   },
   {
@@ -148,12 +138,6 @@
         "label": "CONTACT_NAME",
         "start": 28,
         "end": 33
-      }
-    ],
-    "values": [
-      {
-        "label": "query",
-        "text": "tin công nghệ"
       }
     ],
     "split": "test"
@@ -271,128 +255,7 @@
         "end": 56
       }
     ],
-    "values": [
-      {
-        "label": "receiver",
-        "text": "Trần Quốc Linh"
-      },
-      {
-        "label": "message",
-        "text": "mai đi công tác nhé bạn"
-      }
-    ],
     "split": "test"
-  },
-  {
-    "input": "này Thêm lịch thăm bác sĩ vào ngày 24 tháng 7 nhé",
-    "intent": "set-event-calendar",
-    "command": "set-event-calendar",
-    "spans": [
-      {
-        "start": 4,
-        "end": 6,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 11,
-        "end": 16,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 30,
-        "end": 32,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 38,
-        "end": 40,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 41,
-        "end": 43,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 46,
-        "end": 48,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 35,
-        "end": 43,
-        "label": "DATE"
-      }
-    ],
-    "bio_labels": [
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "B-DATE",
-      "I-DATE",
-      "O",
-      "O"
-    ],
-    "entities": [
-      {
-        "text": "Th",
-        "label": "CONTACT_NAME",
-        "start": 4,
-        "end": 6
-      },
-      {
-        "text": "ch th",
-        "label": "CONTACT_NAME",
-        "start": 11,
-        "end": 16
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 30,
-        "end": 32
-      },
-      {
-        "text": "th",
-        "label": "CONTACT_NAME",
-        "start": 38,
-        "end": 40
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 41,
-        "end": 43
-      },
-      {
-        "text": "nh",
-        "label": "CONTACT_NAME",
-        "start": 46,
-        "end": 48
-      },
-      {
-        "text": "24 tháng",
-        "label": "DATE",
-        "start": 35,
-        "end": 43
-      }
-    ],
-    "values": [
-      {
-        "label": "title",
-        "text": "thăm bác sĩ"
-      },
-      {
-        "label": "date",
-        "text": "ngày 24 tháng 7"
-      }
-    ],
-    "split": "train"
   },
   {
     "input": "ừm bật quạt ở ban công 50% với",
@@ -443,165 +306,6 @@
         "label": "CONTACT_NAME",
         "start": 20,
         "end": 22
-      }
-    ],
-    "values": [
-      {
-        "label": "action",
-        "text": "bật"
-      },
-      {
-        "label": "device",
-        "text": "quạt"
-      },
-      {
-        "label": "location",
-        "text": "ban công"
-      },
-      {
-        "label": "level",
-        "text": "50%"
-      }
-    ],
-    "split": "train"
-  },
-  {
-    "input": "ê Tạo sự kiện thăm bác sĩ ngày 23 tháng 5 lúc 15 giờ trưa đi",
-    "intent": "set-event-calendar",
-    "command": "set-event-calendar",
-    "spans": [
-      {
-        "start": 9,
-        "end": 11,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 14,
-        "end": 16,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 26,
-        "end": 28,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 34,
-        "end": 36,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 37,
-        "end": 39,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 49,
-        "end": 51,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 53,
-        "end": 55,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 46,
-        "end": 52,
-        "label": "TIME"
-      },
-      {
-        "start": 31,
-        "end": 39,
-        "label": "DATE"
-      }
-    ],
-    "bio_labels": [
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "B-DATE",
-      "I-DATE",
-      "O",
-      "O",
-      "B-TIME",
-      "I-TIME",
-      "O",
-      "O"
-    ],
-    "entities": [
-      {
-        "text": "ki",
-        "label": "CONTACT_NAME",
-        "start": 9,
-        "end": 11
-      },
-      {
-        "text": "th",
-        "label": "CONTACT_NAME",
-        "start": 14,
-        "end": 16
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 26,
-        "end": 28
-      },
-      {
-        "text": "th",
-        "label": "CONTACT_NAME",
-        "start": 34,
-        "end": 36
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 37,
-        "end": 39
-      },
-      {
-        "text": "gi",
-        "label": "CONTACT_NAME",
-        "start": 49,
-        "end": 51
-      },
-      {
-        "text": "tr",
-        "label": "CONTACT_NAME",
-        "start": 53,
-        "end": 55
-      },
-      {
-        "text": "15 giờ",
-        "label": "TIME",
-        "start": 46,
-        "end": 52
-      },
-      {
-        "text": "23 tháng",
-        "label": "DATE",
-        "start": 31,
-        "end": 39
-      }
-    ],
-    "values": [
-      {
-        "label": "title",
-        "text": "thăm bác sĩ"
-      },
-      {
-        "label": "date",
-        "text": "ngày 23 tháng 5"
-      },
-      {
-        "label": "time",
-        "text": "15 giờ trưa"
       }
     ],
     "split": "train"
@@ -693,24 +397,6 @@
         "end": 37
       }
     ],
-    "values": [
-      {
-        "label": "action",
-        "text": "giảm"
-      },
-      {
-        "label": "device",
-        "text": "loa thông minh"
-      },
-      {
-        "label": "location",
-        "text": "phòng khách"
-      },
-      {
-        "label": "level",
-        "text": "tối đa"
-      }
-    ],
     "split": "train"
   },
   {
@@ -772,20 +458,6 @@
         "label": "CONTENT_TYPE",
         "start": 18,
         "end": 23
-      }
-    ],
-    "values": [
-      {
-        "label": "query",
-        "text": "tin công nghệ"
-      },
-      {
-        "label": "content_type",
-        "text": "video"
-      },
-      {
-        "label": "level",
-        "text": "tuần này"
       }
     ],
     "split": "test"
@@ -874,20 +546,6 @@
         "label": "DATE",
         "start": 26,
         "end": 34
-      }
-    ],
-    "values": [
-      {
-        "label": "content_type",
-        "text": "giá vàng"
-      },
-      {
-        "label": "location",
-        "text": "ban công"
-      },
-      {
-        "label": "date",
-        "text": "ngày 17 tháng 11"
       }
     ],
     "split": "train"
@@ -1002,16 +660,6 @@
         "end": 34
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "19 giờ"
-      },
-      {
-        "label": "title",
-        "text": "nhắc uống thuốc"
-      }
-    ],
     "split": "train"
   },
   {
@@ -1107,12 +755,6 @@
         "label": "TIME",
         "start": 14,
         "end": 20
-      }
-    ],
-    "values": [
-      {
-        "label": "time",
-        "text": "21 giờ 40 phút"
       }
     ],
     "split": "train"
@@ -1217,16 +859,6 @@
         "label": "CONTACT_NAME",
         "start": 59,
         "end": 61
-      }
-    ],
-    "values": [
-      {
-        "label": "receiver",
-        "text": "Nguyễn Đình Linh"
-      },
-      {
-        "label": "message",
-        "text": "đang đi công tác nhé em"
       }
     ],
     "split": "test"
@@ -1341,16 +973,6 @@
         "label": "CONTACT_NAME",
         "start": 52,
         "end": 58
-      }
-    ],
-    "values": [
-      {
-        "label": "receiver",
-        "text": "Nguyễn Quốc Quân"
-      },
-      {
-        "label": "message",
-        "text": "mai đi công tác nha"
       }
     ],
     "split": "train"
@@ -1503,20 +1125,6 @@
         "end": 31
       }
     ],
-    "values": [
-      {
-        "label": "receiver",
-        "text": "Nguyễn Thu Hà"
-      },
-      {
-        "label": "message",
-        "text": "hôm nay đi công tác giúp mình với"
-      },
-      {
-        "label": "platform",
-        "text": "Zalo"
-      }
-    ],
     "split": "val"
   },
   {
@@ -1641,16 +1249,6 @@
         "end": 28
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "11 giờ 15 phút"
-      },
-      {
-        "label": "title",
-        "text": "nhắc uống thuốc"
-      }
-    ],
     "split": "train"
   },
   {
@@ -1744,16 +1342,6 @@
         "end": 47
       }
     ],
-    "values": [
-      {
-        "label": "receiver",
-        "text": "Ngô Tuấn Huy"
-      },
-      {
-        "label": "message",
-        "text": "vừa đi công tác nhé bạn"
-      }
-    ],
     "split": "train"
   },
   {
@@ -1819,24 +1407,6 @@
         "label": "CONTACT_NAME",
         "start": 29,
         "end": 31
-      }
-    ],
-    "values": [
-      {
-        "label": "action",
-        "text": "giảm"
-      },
-      {
-        "label": "device",
-        "text": "máy lọc không khí"
-      },
-      {
-        "label": "location",
-        "text": "tầng một"
-      },
-      {
-        "label": "level",
-        "text": "50%"
       }
     ],
     "split": "train"
@@ -1965,16 +1535,6 @@
         "end": 65
       }
     ],
-    "values": [
-      {
-        "label": "receiver",
-        "text": "Nguyễn Thành Trí"
-      },
-      {
-        "label": "message",
-        "text": "hôm nay đi công tác nhé anh"
-      }
-    ],
     "split": "train"
   },
   {
@@ -2065,20 +1625,6 @@
         "end": 43
       }
     ],
-    "values": [
-      {
-        "label": "contact_name",
-        "text": "Hoàng Thanh Trí"
-      },
-      {
-        "label": "phone",
-        "text": "0949228823"
-      },
-      {
-        "label": "title",
-        "text": "bác"
-      }
-    ],
     "split": "train"
   },
   {
@@ -2116,12 +1662,6 @@
         "label": "CONTACT_NAME",
         "start": 8,
         "end": 10
-      }
-    ],
-    "values": [
-      {
-        "label": "time",
-        "text": "18h"
       }
     ],
     "split": "train"
@@ -2202,16 +1742,6 @@
         "end": 49
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "11h25"
-      },
-      {
-        "label": "title",
-        "text": "nhắc ăn sáng"
-      }
-    ],
     "split": "val"
   },
   {
@@ -2262,7 +1792,6 @@
         "end": 68
       }
     ],
-    "values": [],
     "split": "train"
   },
   {
@@ -2365,20 +1894,6 @@
         "end": 37
       }
     ],
-    "values": [
-      {
-        "label": "contact_name",
-        "text": "Vũ Lan Bình"
-      },
-      {
-        "label": "phone",
-        "text": "0991720850"
-      },
-      {
-        "label": "title",
-        "text": "mẹ"
-      }
-    ],
     "split": "val"
   },
   {
@@ -2477,24 +1992,6 @@
         "label": "CONTACT_NAME",
         "start": 44,
         "end": 46
-      }
-    ],
-    "values": [
-      {
-        "label": "action",
-        "text": "tăng"
-      },
-      {
-        "label": "device",
-        "text": "máy lọc không khí"
-      },
-      {
-        "label": "location",
-        "text": "phòng khách"
-      },
-      {
-        "label": "level",
-        "text": "100%"
       }
     ],
     "split": "train"
@@ -2622,16 +2119,6 @@
         "end": 29
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "17 giờ 15 phút"
-      },
-      {
-        "label": "title",
-        "text": "nhắc uống thuốc"
-      }
-    ],
     "split": "train"
   },
   {
@@ -2731,20 +2218,6 @@
         "end": 35
       }
     ],
-    "values": [
-      {
-        "label": "content_type",
-        "text": "thời tiết"
-      },
-      {
-        "label": "location",
-        "text": "ban công"
-      },
-      {
-        "label": "date",
-        "text": "ngày 21 tháng 2"
-      }
-    ],
     "split": "val"
   },
   {
@@ -2807,12 +2280,6 @@
         "label": "CONTACT_NAME",
         "start": 33,
         "end": 35
-      }
-    ],
-    "values": [
-      {
-        "label": "time",
-        "text": "10h"
       }
     ],
     "split": "train"
@@ -2911,306 +2378,6 @@
         "label": "DATE",
         "start": 24,
         "end": 32
-      }
-    ],
-    "values": [
-      {
-        "label": "content_type",
-        "text": "tài chính"
-      },
-      {
-        "label": "location",
-        "text": "ban công"
-      },
-      {
-        "label": "date",
-        "text": "ngày 11 tháng 8"
-      }
-    ],
-    "split": "train"
-  },
-  {
-    "input": "ừm Tạo sự kiện đưa cháu đi học ngày 4 tháng 3 lúc 22 giờ tối dùm cái",
-    "intent": "set-event-calendar",
-    "command": "set-event-calendar",
-    "spans": [
-      {
-        "start": 10,
-        "end": 12,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 19,
-        "end": 21,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 31,
-        "end": 33,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 38,
-        "end": 40,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 41,
-        "end": 43,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 53,
-        "end": 55,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 50,
-        "end": 56,
-        "label": "TIME"
-      },
-      {
-        "start": 36,
-        "end": 43,
-        "label": "DATE"
-      }
-    ],
-    "bio_labels": [
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "B-DATE",
-      "I-DATE",
-      "O",
-      "O",
-      "B-TIME",
-      "I-TIME",
-      "O",
-      "O",
-      "O"
-    ],
-    "entities": [
-      {
-        "text": "ki",
-        "label": "CONTACT_NAME",
-        "start": 10,
-        "end": 12
-      },
-      {
-        "text": "ch",
-        "label": "CONTACT_NAME",
-        "start": 19,
-        "end": 21
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 31,
-        "end": 33
-      },
-      {
-        "text": "th",
-        "label": "CONTACT_NAME",
-        "start": 38,
-        "end": 40
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 41,
-        "end": 43
-      },
-      {
-        "text": "gi",
-        "label": "CONTACT_NAME",
-        "start": 53,
-        "end": 55
-      },
-      {
-        "text": "22 giờ",
-        "label": "TIME",
-        "start": 50,
-        "end": 56
-      },
-      {
-        "text": "4 tháng",
-        "label": "DATE",
-        "start": 36,
-        "end": 43
-      }
-    ],
-    "values": [
-      {
-        "label": "title",
-        "text": "đưa cháu đi học"
-      },
-      {
-        "label": "date",
-        "text": "ngày 4 tháng 3"
-      },
-      {
-        "label": "time",
-        "text": "22 giờ tối"
-      }
-    ],
-    "split": "train"
-  },
-  {
-    "input": "ừm Tạo sự kiện đưa cháu đi học ngày 4 tháng 6 lúc 17 giờ 10 phút nhé",
-    "intent": "set-event-calendar",
-    "command": "set-event-calendar",
-    "spans": [
-      {
-        "start": 10,
-        "end": 12,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 19,
-        "end": 21,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 31,
-        "end": 33,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 38,
-        "end": 40,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 41,
-        "end": 43,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 53,
-        "end": 55,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 60,
-        "end": 62,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 65,
-        "end": 67,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 50,
-        "end": 56,
-        "label": "TIME"
-      },
-      {
-        "start": 36,
-        "end": 43,
-        "label": "DATE"
-      }
-    ],
-    "bio_labels": [
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "B-DATE",
-      "I-DATE",
-      "O",
-      "O",
-      "B-TIME",
-      "I-TIME",
-      "O",
-      "O",
-      "O"
-    ],
-    "entities": [
-      {
-        "text": "ki",
-        "label": "CONTACT_NAME",
-        "start": 10,
-        "end": 12
-      },
-      {
-        "text": "ch",
-        "label": "CONTACT_NAME",
-        "start": 19,
-        "end": 21
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 31,
-        "end": 33
-      },
-      {
-        "text": "th",
-        "label": "CONTACT_NAME",
-        "start": 38,
-        "end": 40
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 41,
-        "end": 43
-      },
-      {
-        "text": "gi",
-        "label": "CONTACT_NAME",
-        "start": 53,
-        "end": 55
-      },
-      {
-        "text": "ph",
-        "label": "CONTACT_NAME",
-        "start": 60,
-        "end": 62
-      },
-      {
-        "text": "nh",
-        "label": "CONTACT_NAME",
-        "start": 65,
-        "end": 67
-      },
-      {
-        "text": "17 giờ",
-        "label": "TIME",
-        "start": 50,
-        "end": 56
-      },
-      {
-        "text": "4 tháng",
-        "label": "DATE",
-        "start": 36,
-        "end": 43
-      }
-    ],
-    "values": [
-      {
-        "label": "title",
-        "text": "đưa cháu đi học"
-      },
-      {
-        "label": "date",
-        "text": "ngày 4 tháng 6"
-      },
-      {
-        "label": "time",
-        "text": "17 giờ 10 phút"
       }
     ],
     "split": "train"
@@ -3328,16 +2495,6 @@
         "end": 65
       }
     ],
-    "values": [
-      {
-        "label": "receiver",
-        "text": "Đặng Thanh Trí"
-      },
-      {
-        "label": "message",
-        "text": "mai đi công tác nhé bạn"
-      }
-    ],
     "split": "test"
   },
   {
@@ -3423,20 +2580,6 @@
         "label": "DATE",
         "start": 23,
         "end": 30
-      }
-    ],
-    "values": [
-      {
-        "label": "content_type",
-        "text": "sức khỏe"
-      },
-      {
-        "label": "location",
-        "text": "ban công"
-      },
-      {
-        "label": "date",
-        "text": "ngày 6 tháng 7"
       }
     ],
     "split": "train"
@@ -3534,12 +2677,6 @@
         "end": 17
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "19 giờ trưa"
-      }
-    ],
     "split": "train"
   },
   {
@@ -3628,12 +2765,6 @@
         "end": 27
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "6 giờ 40 phút"
-      }
-    ],
     "split": "train"
   },
   {
@@ -3709,24 +2840,6 @@
         "label": "CONTACT_NAME",
         "start": 36,
         "end": 38
-      }
-    ],
-    "values": [
-      {
-        "label": "action",
-        "text": "đóng"
-      },
-      {
-        "label": "device",
-        "text": "rèm cửa"
-      },
-      {
-        "label": "location",
-        "text": "ban công"
-      },
-      {
-        "label": "level",
-        "text": "tối thiểu"
       }
     ],
     "split": "val"
@@ -3814,12 +2927,6 @@
         "end": 17
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "14 giờ 15 phút"
-      }
-    ],
     "split": "train"
   },
   {
@@ -3904,12 +3011,6 @@
         "label": "TIME",
         "start": 14,
         "end": 20
-      }
-    ],
-    "values": [
-      {
-        "label": "time",
-        "text": "10 giờ 40 phút"
       }
     ],
     "split": "train"
@@ -4002,20 +3103,6 @@
         "end": 35
       }
     ],
-    "values": [
-      {
-        "label": "contact_name",
-        "text": "Bà ngoại"
-      },
-      {
-        "label": "phone",
-        "text": "0914501734"
-      },
-      {
-        "label": "title",
-        "text": "anh họ"
-      }
-    ],
     "split": "train"
   },
   {
@@ -4103,121 +3190,7 @@
         "end": 35
       }
     ],
-    "values": [
-      {
-        "label": "content_type",
-        "text": "tài chính"
-      },
-      {
-        "label": "location",
-        "text": "ban công"
-      },
-      {
-        "label": "date",
-        "text": "ngày 10 tháng 3"
-      }
-    ],
     "split": "val"
-  },
-  {
-    "input": "Thêm lịch thăm bác sĩ vào ngày 13 tháng 6 dùm cái",
-    "intent": "set-event-calendar",
-    "command": "set-event-calendar",
-    "spans": [
-      {
-        "start": 0,
-        "end": 2,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 7,
-        "end": 12,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 26,
-        "end": 28,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 34,
-        "end": 36,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 37,
-        "end": 39,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 31,
-        "end": 39,
-        "label": "DATE"
-      }
-    ],
-    "bio_labels": [
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "B-DATE",
-      "I-DATE",
-      "O",
-      "O",
-      "O"
-    ],
-    "entities": [
-      {
-        "text": "Th",
-        "label": "CONTACT_NAME",
-        "start": 0,
-        "end": 2
-      },
-      {
-        "text": "ch th",
-        "label": "CONTACT_NAME",
-        "start": 7,
-        "end": 12
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 26,
-        "end": 28
-      },
-      {
-        "text": "th",
-        "label": "CONTACT_NAME",
-        "start": 34,
-        "end": 36
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 37,
-        "end": 39
-      },
-      {
-        "text": "13 tháng",
-        "label": "DATE",
-        "start": 31,
-        "end": 39
-      }
-    ],
-    "values": [
-      {
-        "label": "title",
-        "text": "thăm bác sĩ"
-      },
-      {
-        "label": "date",
-        "text": "ngày 13 tháng 6"
-      }
-    ],
-    "split": "train"
   },
   {
     "input": "ê cài chuông báo lúc 19h45 ạ",
@@ -4256,12 +3229,6 @@
         "label": "CONTACT_NAME",
         "start": 10,
         "end": 12
-      }
-    ],
-    "values": [
-      {
-        "label": "time",
-        "text": "19h45"
       }
     ],
     "split": "train"
@@ -4376,20 +3343,6 @@
         "end": 41
       }
     ],
-    "values": [
-      {
-        "label": "contact_name",
-        "text": "Vũ Thành Quỳnh"
-      },
-      {
-        "label": "phone",
-        "text": "0934777884"
-      },
-      {
-        "label": "title",
-        "text": "mẹ"
-      }
-    ],
     "split": "train"
   },
   {
@@ -4479,144 +3432,7 @@
         "end": 28
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "12 giờ 5 phút"
-      }
-    ],
     "split": "test"
-  },
-  {
-    "input": "này Tạo sự kiện thăm bác sĩ ngày 22 tháng 10 lúc 9 giờ tối dùm cái",
-    "intent": "set-event-calendar",
-    "command": "set-event-calendar",
-    "spans": [
-      {
-        "start": 11,
-        "end": 13,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 16,
-        "end": 18,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 28,
-        "end": 30,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 36,
-        "end": 38,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 39,
-        "end": 41,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 51,
-        "end": 53,
-        "label": "CONTACT_NAME"
-      },
-      {
-        "start": 49,
-        "end": 54,
-        "label": "TIME"
-      },
-      {
-        "start": 33,
-        "end": 41,
-        "label": "DATE"
-      }
-    ],
-    "bio_labels": [
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "O",
-      "B-DATE",
-      "I-DATE",
-      "O",
-      "O",
-      "B-TIME",
-      "I-TIME",
-      "O",
-      "O",
-      "O"
-    ],
-    "entities": [
-      {
-        "text": "ki",
-        "label": "CONTACT_NAME",
-        "start": 11,
-        "end": 13
-      },
-      {
-        "text": "th",
-        "label": "CONTACT_NAME",
-        "start": 16,
-        "end": 18
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 28,
-        "end": 30
-      },
-      {
-        "text": "th",
-        "label": "CONTACT_NAME",
-        "start": 36,
-        "end": 38
-      },
-      {
-        "text": "ng",
-        "label": "CONTACT_NAME",
-        "start": 39,
-        "end": 41
-      },
-      {
-        "text": "gi",
-        "label": "CONTACT_NAME",
-        "start": 51,
-        "end": 53
-      },
-      {
-        "text": "9 giờ",
-        "label": "TIME",
-        "start": 49,
-        "end": 54
-      },
-      {
-        "text": "22 tháng",
-        "label": "DATE",
-        "start": 33,
-        "end": 41
-      }
-    ],
-    "values": [
-      {
-        "label": "title",
-        "text": "thăm bác sĩ"
-      },
-      {
-        "label": "date",
-        "text": "ngày 22 tháng 10"
-      },
-      {
-        "label": "time",
-        "text": "9 giờ tối"
-      }
-    ],
-    "split": "train"
   },
   {
     "input": "ừm đặt chuông báo lúc 16 giờ 15 phút nhắc tập thể dục với",
@@ -4730,16 +3546,6 @@
         "end": 28
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "16 giờ 15 phút"
-      },
-      {
-        "label": "title",
-        "text": "nhắc tập thể dục"
-      }
-    ],
     "split": "train"
   },
   {
@@ -4851,20 +3657,6 @@
         "end": 41
       }
     ],
-    "values": [
-      {
-        "label": "contact_name",
-        "text": "Phạm Tuấn Thắng"
-      },
-      {
-        "label": "phone",
-        "text": "0996341394"
-      },
-      {
-        "label": "title",
-        "text": "mẹ"
-      }
-    ],
     "split": "test"
   },
   {
@@ -4915,12 +3707,6 @@
         "label": "CONTACT_NAME",
         "start": 28,
         "end": 30
-      }
-    ],
-    "values": [
-      {
-        "label": "time",
-        "text": "18h50"
       }
     ],
     "split": "train"
@@ -5023,20 +3809,6 @@
         "label": "PHONE",
         "start": 31,
         "end": 41
-      }
-    ],
-    "values": [
-      {
-        "label": "contact_name",
-        "text": "Phạm Anh Phong"
-      },
-      {
-        "label": "phone",
-        "text": "0930277392"
-      },
-      {
-        "label": "title",
-        "text": "bác"
       }
     ],
     "split": "train"
@@ -5151,16 +3923,6 @@
         "end": 25
       }
     ],
-    "values": [
-      {
-        "label": "time",
-        "text": "21 giờ 35 phút"
-      },
-      {
-        "label": "title",
-        "text": "nhắc ăn sáng"
-      }
-    ],
     "split": "train"
   },
   {
@@ -5237,16 +3999,6 @@
         "label": "CONTACT_NAME",
         "start": 40,
         "end": 46
-      }
-    ],
-    "values": [
-      {
-        "label": "time",
-        "text": "8h55"
-      },
-      {
-        "label": "title",
-        "text": "nhắc uống thuốc"
       }
     ],
     "split": "train"

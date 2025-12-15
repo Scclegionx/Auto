@@ -35,23 +35,6 @@
       "lưu danh bạ",
       "thêm danh bạ"
     ],
-    "play-media": [
-      "phát nhạc",
-      "bật nhạc",
-      "nghe nhạc",
-      "video",
-      "mở nhạc",
-      "chơi nhạc",
-      "play",
-      "music"
-    ],
-    "view-content": [
-      "xem nội dung",
-      "mở bài",
-      "xem bài",
-      "mở link",
-      "xem link"
-    ],
     "search-internet": [
       "tìm kiếm",
       "tìm",
@@ -96,17 +79,6 @@
       "chuông báo",
       "bật chuông",
       "alarm"
-    ],
-    "set-event-calendar": [
-      "đặt nhắc nhở",
-      "ghi nhớ",
-      "lời nhắc",
-      "nhắc tôi",
-      "tạo lời nhắc",
-      "tạo sự kiện",
-      "đặt lịch",
-      "sắp lịch",
-      "lịch"
     ],
     "open-cam": [
       "mở camera",
@@ -242,24 +214,6 @@
       "lưu",
       "thêm"
     ],
-    "play-media": [
-      "nhạc",
-      "music",
-      "phát",
-      "bật",
-      "nghe",
-      "play",
-      "video",
-      "audio"
-    ],
-    "view-content": [
-      "xem",
-      "mở",
-      "đọc",
-      "bài",
-      "link",
-      "nội dung"
-    ],
     "search-internet": [
       "tìm kiếm",
       "tìm",
@@ -301,18 +255,6 @@
       "alarm",
       "chuông"
     ],
-    "set-event-calendar": [
-      "nhắc",
-      "lời nhắc",
-      "ghi nhớ",
-      "uống thuốc",
-      "thuốc",
-      "viên thuốc",
-      "tạo sự kiện",
-      "đặt lịch",
-      "lịch",
-      "sự kiện"
-    ],
     "open-cam": [
       "camera",
       "chụp",
@@ -351,12 +293,6 @@
       "gọi",
       "nhắn",
       "liên lạc"
-    ],
-    "set-alarm,set-event-calendar": [
-      "nhắc",
-      "giờ",
-      "hẹn",
-      "đặt"
     ],
     "get-info,search-internet": [
       "thông tin",

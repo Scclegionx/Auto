@@ -1,1 +1,3 @@
-"""Auto-generated __init__.py file"""
+from .multitask_model import MultiTaskModel
+
+__all__ = ["MultiTaskModel"]

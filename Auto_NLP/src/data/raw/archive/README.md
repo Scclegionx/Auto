@@ -1,5 +1,18 @@
 # Archive - Raw Data Files
 
+Thư mục này lưu lại các dataset raw đã cũ hoặc chỉ dùng cho mục đích đối chiếu.
+
+## Files archived
+- `elderly_command_dataset_MERGED_13C.json`
+- `elderly_command_dataset_MERGED_13C_VITEXT.json`
+- `elderly_command_dataset_MERGED_13C_VITEXT.backup_value.json`
+- `elderly_command_dataset_FULL_13C_AUDIT.json`
+
+Các file trên là phiên bản dữ liệu trước khi chuẩn hóa/ cân bằng. Hiện không sử dụng trực tiếp.
+
+_Last updated: 2025-11-17_
+# Archive - Raw Data Files
+
 This folder contains raw data files that have been processed and are no longer needed.
 
 ## Files Archived:

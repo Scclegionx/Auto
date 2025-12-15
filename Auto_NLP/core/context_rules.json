@@ -17,18 +17,6 @@
       ],
       "intent": "set-alarm",
       "confidence_boost": 0.1
-    },
-    {
-      "keywords": [
-        "mai",
-        "hôm nay"
-      ],
-      "intent": "set-event-calendar",
-      "confidence_boost": 0.1,
-      "required_keywords": [
-        "nhắc",
-        "nhớ"
-      ]
     }
   ],
   "person_context": [
@@ -53,31 +41,6 @@
     }
   ],
   "action_context": [
-    {
-      "keywords": [
-        "uống thuốc",
-        "thuốc",
-        "viên thuốc",
-        "kháng sinh",
-        "tiểu đường",
-        "huyết áp",
-        "tim",
-        "vitamin",
-        "sắt",
-        "cảm",
-        "đau đầu"
-      ],
-      "intent": "set-event-calendar",
-      "confidence_boost": 0.3
-    },
-    {
-      "keywords": [
-        "uống",
-        "ăn"
-      ],
-      "intent": "set-event-calendar",
-      "confidence_boost": 0.2
-    },
     {
       "keywords": [
         "ngủ",
@@ -142,18 +105,6 @@
         "tin"
       ],
       "intent": "send-mess",
-      "confidence_boost": 0.25
-    },
-    {
-      "ambiguous_intents": [
-        "set-alarm",
-        "set-event-calendar"
-      ],
-      "keywords": [
-        "báo thức",
-        "chuông"
-      ],
-      "intent": "set-alarm",
       "confidence_boost": 0.25
     }
   ]

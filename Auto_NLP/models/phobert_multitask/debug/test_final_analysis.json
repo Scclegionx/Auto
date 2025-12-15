@@ -1,0 +1,529 @@
+{
+  "epoch": 6,
+  "test_metrics": {
+    "loss": 7.755957516354052,
+    "intent_loss": 0.003753885685130787,
+    "entity_loss": 51.687180871788776,
+    "command_loss": 0.0039695881674862085,
+    "intent_accuracy": 0.9997200447928332,
+    "intent_macro_f1": 0.9997397288842544,
+    "intent_weighted_f1": 0.9997200891652955,
+    "intent_precision": 0.9997084548104956,
+    "intent_recall": 0.9997716894977169,
+    "command_accuracy": 0.9997200447928332,
+    "command_macro_f1": 0.9997397288842544,
+    "command_weighted_f1": 0.9997200891652955,
+    "command_precision": 0.9997084548104956,
+    "command_recall": 0.9997716894977169,
+    "entity_precision": 0.8275862068965517,
+    "entity_recall": 0.8526946107784431,
+    "entity_f1": 0.8399528116397954,
+    "entity_pred_non_o_ratio": 0.21016365202411713,
+    "entity_true_non_o_ratio": 0.2419830384946664
+  },
+  "debug": {
+    "split": "test",
+    "intent": {
+      "true_distribution": [
+        {
+          "label": "call",
+          "count": 438
+        },
+        {
+          "label": "send-mess",
+          "count": 361
+        },
+        {
+          "label": "set-alarm",
+          "count": 355
+        },
+        {
+          "label": "search-internet",
+          "count": 353
+        },
+        {
+          "label": "get-info",
+          "count": 351
+        },
+        {
+          "label": "search-youtube",
+          "count": 349
+        },
+        {
+          "label": "add-contacts",
+          "count": 342
+        },
+        {
+          "label": "control-device",
+          "count": 341
+        },
+        {
+          "label": "make-video-call",
+          "count": 341
+        },
+        {
+          "label": "open-cam",
+          "count": 341
+        }
+      ],
+      "pred_distribution": [
+        {
+          "label": "call",
+          "count": 437
+        },
+        {
+          "label": "send-mess",
+          "count": 361
+        },
+        {
+          "label": "set-alarm",
+          "count": 355
+        },
+        {
+          "label": "search-internet",
+          "count": 353
+        },
+        {
+          "label": "get-info",
+          "count": 351
+        },
+        {
+          "label": "search-youtube",
+          "count": 349
+        },
+        {
+          "label": "add-contacts",
+          "count": 343
+        },
+        {
+          "label": "control-device",
+          "count": 341
+        },
+        {
+          "label": "make-video-call",
+          "count": 341
+        },
+        {
+          "label": "open-cam",
+          "count": 341
+        }
+      ],
+      "top_confusions": [
+        {
+          "true": "call",
+          "pred": "add-contacts",
+          "count": 1
+        }
+      ]
+    },
+    "command": {
+      "true_distribution": [
+        {
+          "label": "call",
+          "count": 438
+        },
+        {
+          "label": "send-mess",
+          "count": 361
+        },
+        {
+          "label": "set-alarm",
+          "count": 355
+        },
+        {
+          "label": "search-internet",
+          "count": 353
+        },
+        {
+          "label": "get-info",
+          "count": 351
+        },
+        {
+          "label": "search-youtube",
+          "count": 349
+        },
+        {
+          "label": "add-contacts",
+          "count": 342
+        },
+        {
+          "label": "control-device",
+          "count": 341
+        },
+        {
+          "label": "make-video-call",
+          "count": 341
+        },
+        {
+          "label": "open-cam",
+          "count": 341
+        }
+      ],
+      "pred_distribution": [
+        {
+          "label": "call",
+          "count": 437
+        },
+        {
+          "label": "send-mess",
+          "count": 361
+        },
+        {
+          "label": "set-alarm",
+          "count": 355
+        },
+        {
+          "label": "search-internet",
+          "count": 353
+        },
+        {
+          "label": "get-info",
+          "count": 351
+        },
+        {
+          "label": "search-youtube",
+          "count": 349
+        },
+        {
+          "label": "add-contacts",
+          "count": 343
+        },
+        {
+          "label": "control-device",
+          "count": 341
+        },
+        {
+          "label": "make-video-call",
+          "count": 341
+        },
+        {
+          "label": "open-cam",
+          "count": 341
+        }
+      ],
+      "top_confusions": [
+        {
+          "true": "call",
+          "pred": "add-contacts",
+          "count": 1
+        }
+      ]
+    },
+    "entity": {
+      "true_distribution": [
+        {
+          "label": "O",
+          "count": 45763
+        },
+        {
+          "label": "I-QUERY",
+          "count": 5287
+        },
+        {
+          "label": "I-MESSAGE",
+          "count": 1567
+        },
+        {
+          "label": "B-QUERY",
+          "count": 1129
+        },
+        {
+          "label": "I-CONTACT_NAME",
+          "count": 1127
+        },
+        {
+          "label": "B-PLATFORM",
+          "count": 1111
+        },
+        {
+          "label": "I-TIME",
+          "count": 584
+        },
+        {
+          "label": "B-CONTACT_NAME",
+          "count": 516
+        },
+        {
+          "label": "I-DEVICE",
+          "count": 507
+        },
+        {
+          "label": "B-MODE",
+          "count": 439
+        }
+      ],
+      "pred_distribution": [
+        {
+          "label": "O",
+          "count": 47684
+        },
+        {
+          "label": "I-QUERY",
+          "count": 5363
+        },
+        {
+          "label": "B-QUERY",
+          "count": 1132
+        },
+        {
+          "label": "I-CONTACT_NAME",
+          "count": 1128
+        },
+        {
+          "label": "B-PLATFORM",
+          "count": 1119
+        },
+        {
+          "label": "I-TIME",
+          "count": 584
+        },
+        {
+          "label": "B-CONTACT_NAME",
+          "count": 516
+        },
+        {
+          "label": "I-DEVICE",
+          "count": 507
+        },
+        {
+          "label": "B-MODE",
+          "count": 439
+        },
+        {
+          "label": "B-DEVICE",
+          "count": 341
+        }
+      ],
+      "top_confusions": [
+        {
+          "true": "I-MESSAGE",
+          "pred": "O",
+          "count": 1473
+        },
+        {
+          "true": "B-MESSAGE",
+          "pred": "O",
+          "count": 254
+        },
+        {
+          "true": "I-PLATFORM",
+          "pred": "O",
+          "count": 147
+        },
+        {
+          "true": "I-PLATFORM",
+          "pred": "B-LOCATION",
+          "count": 146
+        },
+        {
+          "true": "I-PHONE",
+          "pred": "B-PHONE",
+          "count": 144
+        },
+        {
+          "true": "I-MESSAGE",
+          "pred": "B-RECEIVER",
+          "count": 94
+        },
+        {
+          "true": "I-PLATFORM",
+          "pred": "I-QUERY",
+          "count": 55
+        },
+        {
+          "true": "I-PHONE",
+          "pred": "O",
+          "count": 52
+        },
+        {
+          "true": "O",
+          "pred": "B-DATE",
+          "count": 18
+        },
+        {
+          "true": "O",
+          "pred": "I-QUERY",
+          "count": 16
+        }
+      ],
+      "sample_sequences": [
+        {
+          "true": [
+            "O",
+            "O",
+            "O",
+            "B-MODE",
+            "B-DEVICE",
+            "I-DEVICE",
+            "I-DEVICE",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O"
+          ],
+          "pred": [
+            "O",
+            "O",
+            "O",
+            "B-MODE",
+            "B-DEVICE",
+            "I-DEVICE",
+            "I-DEVICE",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O"
+          ]
+        },
+        {
+          "true": [
+            "O",
+            "O",
+            "O",
+            "O",
+            "B-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "O"
+          ],
+          "pred": [
+            "O",
+            "O",
+            "O",
+            "O",
+            "B-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "O"
+          ]
+        },
+        {
+          "true": [
+            "O",
+            "B-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O"
+          ],
+          "pred": [
+            "O",
+            "B-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O",
+            "O"
+          ]
+        },
+        {
+          "true": [
+            "O",
+            "O",
+            "B-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "B-PLATFORM",
+            "O"
+          ],
+          "pred": [
+            "O",
+            "O",
+            "B-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "I-QUERY",
+            "B-PLATFORM",
+            "O"
+          ]
+        },
+        {
+          "true": [
+            "O",
+            "O",
+            "B-CONTACT_NAME",
+            "I-CONTACT_NAME",
+            "I-CONTACT_NAME",
+            "O",
+            "B-PLATFORM"
+          ],
+          "pred": [
+            "O",
+            "O",
+            "B-CONTACT_NAME",
+            "I-CONTACT_NAME",
+            "I-CONTACT_NAME",
+            "O",
+            "B-PLATFORM"
+          ]
+        }
+      ]
+    },
+    "lambda": {
+      "intent": 0.45,
+      "entity": 0.15,
+      "entity_initial": 0.05,
+      "entity_target": 0.15,
+      "entity_warmup_epochs": 4,
+      "command": 0.3
+    }
+  }
+}

@@ -120,3 +120,8 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Run artifacts & reports (không cần push)
+artifacts/*.json
+logs/**
+reports/*.png

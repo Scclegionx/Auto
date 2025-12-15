@@ -1,44 +1,136 @@
 {
-  "total_samples": 10186,
-  "train_samples": 7963,
-  "val_samples": 1134,
-  "test_samples": 1089,
-  "train_percentage": 78.1759277439623,
-  "val_percentage": 11.132927547614372,
-  "test_percentage": 10.691144708423327,
-  "intents": [
-    "add-contacts",
-    "call",
-    "control-device",
-    "get-info",
-    "make-video-call",
-    "open-cam",
-    "play-media",
-    "search-internet",
-    "search-youtube",
-    "send-mess",
-    "set-alarm",
-    "set-event-calendar",
-    "view-content"
+  "splits": [
+    {
+      "split": "train",
+      "num_samples": 33000,
+      "num_intents": 10,
+      "intent_distribution": {
+        "search-internet": 3300,
+        "search-youtube": 3300,
+        "open-cam": 3300,
+        "make-video-call": 3300,
+        "get-info": 3300,
+        "call": 3300,
+        "add-contacts": 3300,
+        "send-mess": 3300,
+        "set-alarm": 3300,
+        "control-device": 3300
+      },
+      "entity_top5": [
+        [
+          "QUERY",
+          13200
+        ],
+        [
+          "PLATFORM",
+          12025
+        ],
+        [
+          "CONTACT_NAME",
+          9213
+        ],
+        [
+          "MODE",
+          4550
+        ],
+        [
+          "ACTION",
+          4453
+        ]
+      ]
+    },
+    {
+      "split": "val",
+      "num_samples": 928,
+      "num_intents": 10,
+      "intent_distribution": {
+        "call": 192,
+        "send-mess": 147,
+        "search-internet": 117,
+        "set-alarm": 115,
+        "search-youtube": 87,
+        "get-info": 83,
+        "control-device": 48,
+        "add-contacts": 48,
+        "open-cam": 48,
+        "make-video-call": 43
+      },
+      "entity_top5": [
+        [
+          "QUERY",
+          370
+        ],
+        [
+          "PLATFORM",
+          349
+        ],
+        [
+          "CONTACT_NAME",
+          234
+        ],
+        [
+          "RECEIVER",
+          160
+        ],
+        [
+          "MESSAGE",
+          147
+        ]
+      ]
+    },
+    {
+      "split": "test",
+      "num_samples": 969,
+      "num_intents": 10,
+      "intent_distribution": {
+        "call": 179,
+        "send-mess": 148,
+        "set-alarm": 115,
+        "get-info": 113,
+        "search-internet": 101,
+        "search-youtube": 94,
+        "add-contacts": 59,
+        "make-video-call": 56,
+        "open-cam": 55,
+        "control-device": 49
+      },
+      "entity_top5": [
+        [
+          "QUERY",
+          421
+        ],
+        [
+          "PLATFORM",
+          364
+        ],
+        [
+          "CONTACT_NAME",
+          254
+        ],
+        [
+          "RECEIVER",
+          163
+        ],
+        [
+          "MESSAGE",
+          148
+        ]
+      ]
+    }
   ],
-  "num_intents": 13,
+  "total_samples": 34897,
   "entities": [
     "ACTION",
+    "CAMERA_TYPE",
     "CONTACT_NAME",
-    "CONTENT_TYPE",
     "DATE",
     "DEVICE",
-    "LEVEL",
-    "LOCATION",
-    "MEDIA_TYPE",
+    "MESSAGE",
+    "MODE",
     "PHONE",
     "PLATFORM",
     "QUERY",
-    "TIME",
-    "TITLE"
-  ],
-  "num_entities": 13,
-  "normalized": true,
-  "source": "elderly_command_dataset_MERGED_13C_VITEXT.json",
-  "recreated": true
+    "RECEIVER",
+    "TIME"
+  ]
 }

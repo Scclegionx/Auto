@@ -1,0 +1,12 @@
+[
+  "add-contacts",
+  "call",
+  "control-device",
+  "get-info",
+  "make-video-call",
+  "open-cam",
+  "search-internet",
+  "search-youtube",
+  "send-mess",
+  "set-alarm"
+]

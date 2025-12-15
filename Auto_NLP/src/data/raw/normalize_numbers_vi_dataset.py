@@ -12,7 +12,7 @@ Chuẩn hóa toàn bộ dataset:
 - Không đụng "split", "intent", "command".
 
 Cách chạy:
-    python normalize_numbers_vi_dataset.py elderly_command_dataset_MERGED_13C.json
+    python normalize_numbers_vi_dataset.py elderly_commands_master.json
 """
 
 import sys, json, re, unicodedata

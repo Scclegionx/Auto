@@ -1,0 +1,23 @@
+[
+  {
+    "model": "vinai/phobert-base",
+    "fold_epochs_to_best": [9, 10, 8, 9, 11],
+    "avg_epoch_time_sec": 182.4
+  },
+  {
+    "model": "vinai/phobert-large",
+    "fold_epochs_to_best": [11, 12, 10, 12, 13],
+    "avg_epoch_time_sec": 295.7
+  },
+  {
+    "model": "xlm-roberta-base",
+    "fold_epochs_to_best": [10, 9, 11, 9, 10],
+    "avg_epoch_time_sec": 214.3
+  },
+  {
+    "model": "vietai/vit5-base",
+    "fold_epochs_to_best": [12, 13, 11, 12, 13],
+    "avg_epoch_time_sec": 268.1
+  }
+]
+

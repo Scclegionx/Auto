@@ -1,0 +1,31 @@
+[
+  {
+    "model": "vinai/phobert-base",
+    "intent_weighted_f1": 0.912,
+    "ner_micro_f1": 0.884,
+    "latency_ms": 28.5,
+    "vram_gb": 1.9
+  },
+  {
+    "model": "vinai/phobert-large",
+    "intent_weighted_f1": 0.934,
+    "ner_micro_f1": 0.903,
+    "latency_ms": 41.2,
+    "vram_gb": 3.4
+  },
+  {
+    "model": "xlm-roberta-base",
+    "intent_weighted_f1": 0.896,
+    "ner_micro_f1": 0.861,
+    "latency_ms": 35.7,
+    "vram_gb": 2.6
+  },
+  {
+    "model": "vietai/vit5-base",
+    "intent_weighted_f1": 0.874,
+    "ner_micro_f1": 0.842,
+    "latency_ms": 52.4,
+    "vram_gb": 4.1
+  }
+]
+

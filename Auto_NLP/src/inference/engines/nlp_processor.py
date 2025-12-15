@@ -4,7 +4,6 @@ import asyncio
 
 from .intent_predictor import IntentPredictor
 from .entity_extractor import EntityExtractor
-from .value_generator import ValueGenerator
 from .communication_optimizer import CommunicationOptimizer
 
 try:
@@ -21,7 +20,6 @@ class NLPProcessor:
         # Initialize engines
         self.intent_predictor = IntentPredictor(device)
         self.entity_extractor = EntityExtractor()
-        self.value_generator = ValueGenerator()
         self.communication_optimizer = CommunicationOptimizer()
         
         # Initialize reasoning engine if available
@@ -34,36 +32,37 @@ class NLPProcessor:
             except Exception as e:
                 print(f"WARNING: Reasoning engine not available: {e}")
         
-        # 1) 13 command chuẩn + display map tách riêng
+        # 1) Bộ command chuẩn sau khi rút gọn
         self.valid_commands = [
-            "call","make-video-call","send-mess","add-contacts",
-            "play-media","view-content",
-            "search-internet","search-youtube",
+            "call", "make-video-call", "send-mess", "add-contacts",
+            "search-internet", "search-youtube",
             "get-info",
-            "set-alarm","set-event-calendar",
-            "open-cam","control-device"
+            "set-alarm",
+            "open-cam", "control-device"
         ]
         self.display_map = {
-            "call":"Gọi điện","make-video-call":"Gọi video","send-mess":"Gửi tin nhắn","add-contacts":"Thêm liên lạc",
-            "play-media":"Phát media","view-content":"Xem nội dung",
-            "search-internet":"Tìm kiếm internet","search-youtube":"Tìm trên YouTube",
-            "get-info":"Lấy thông tin",
-            "set-alarm":"Đặt báo thức","set-event-calendar":"Tạo/nhắc lịch",
-            "open-cam":"Mở camera","control-device":"Điều khiển thiết bị"
+            "call": "Gọi điện",
+            "make-video-call": "Gọi video",
+            "send-mess": "Gửi tin nhắn",
+            "add-contacts": "Thêm liên lạc",
+            "search-internet": "Tìm kiếm internet",
+            "search-youtube": "Tìm trên YouTube",
+            "get-info": "Lấy thông tin",
+            "set-alarm": "Đặt báo thức",
+            "open-cam": "Mở camera",
+            "control-device": "Điều khiển thiết bị"
         }
         
         # 2) Chuẩn hóa intent cũ → mới
         self.command_normalization = {
             # giữ nguyên
-            "call":"call","send-mess":"send-mess","make-video-call":"make-video-call","play-media":"play-media",
-            "view-content":"view-content","search-internet":"search-internet","search-youtube":"search-youtube",
-            "get-info":"get-info","set-alarm":"set-alarm","set-event-calendar":"set-event-calendar",
-            "open-cam":"open-cam","control-device":"control-device",
+            "call": "call", "send-mess": "send-mess", "make-video-call": "make-video-call",
+            "search-internet": "search-internet", "search-youtube": "search-youtube",
+            "get-info": "get-info", "set-alarm": "set-alarm",
+            "open-cam": "open-cam", "control-device": "control-device",
             # map cũ → mới
-            "play-content":"play-media","play-audio":"play-media",
-            "read-news":"get-info","check-weather":"get-info","check-date":"get-info",
-            "search-content":"search-internet",
-            "set-reminder":"set-event-calendar",
+            "read-news": "get-info", "check-weather": "get-info", "check-date": "get-info",
+            "search-content": "search-internet",
             # các intent không dùng: để "unknown"
             "check-messages":"unknown","open-app":"unknown","open-app-action":"unknown",
             "check-health-status":"unknown","check-device-status":"unknown","read-content":"unknown",
@@ -107,32 +106,7 @@ class NLPProcessor:
         command = normalized_intent if normalized_intent in self.valid_commands else "unknown"
         command_display = self.display_map.get(command, command)
         
-        # Step 5: Generate optimized value with error handling
-        try:
-            # Use communication optimizer for communication intents (except send-mess for better value extraction)
-            if intent in ["call", "make-video-call", "add-contacts"]:
-                value = self.communication_optimizer.get_optimized_value(
-                    intent_result["intent"], 
-                    entities, 
-                    text
-                )
-            else:
-                # Use value generator for non-communication intents
-                value = self.value_generator.generate_value(
-                    intent_result["intent"], 
-                    entities, 
-                    text
-                )
-        except Exception as e:
-            print(f"⚠️ Error in value generation: {e}")
-            # Fallback to value generator
-            value = self.value_generator.generate_value(
-                intent_result["intent"], 
-                entities, 
-                text
-            )
-        
-        # Step 6: Calculate processing time
+        # Step 5: Calculate processing time
         processing_time = (datetime.now() - start_time).total_seconds()
         
         return {
@@ -141,7 +115,6 @@ class NLPProcessor:
             "confidence": max(intent_result["confidence"], communication_result["confidence"]),
             "command": command,
             "entities": entities,
-            "value": value,
             "method": intent_result.get("method", "trained_model"),
             "processing_time": processing_time,
             "timestamp": datetime.now().isoformat(),
@@ -155,81 +128,59 @@ class NLPProcessor:
         command_entity_mapping = {
             # Communication Commands
             "call": {
-                "required": ["RECEIVER", "PLATFORM"],
-                "optional": ["PHONE_NUMBER", "TIME"],
-                "remove": ["MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE"]
+                "required": [],
+                "optional": ["CONTACT_NAME", "RECEIVER", "PHONE", "PLATFORM", "TIME"],
+                "remove": ["MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "EMAIL"]
             },
             "make-video-call": {
-                "required": ["RECEIVER", "PLATFORM"],
-                "optional": ["TIME"],
-                "remove": ["MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE_NUMBER"]
+                "required": [],
+                "optional": ["CONTACT_NAME", "RECEIVER", "PHONE", "PLATFORM", "TIME"],
+                "remove": ["MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "EMAIL"]
             },
             "send-mess": {
-                "required": ["RECEIVER", "PLATFORM"],
-                "optional": ["MESSAGE", "TIME"],
-                "remove": ["QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE_NUMBER"]
-            },
-            
-            # Media Commands
-            "play-media": {
                 "required": [],
-                "optional": ["FILE_PATH", "ARTIST", "PLAYLIST", "GENRE", "PODCAST", "RADIO"],
-                "remove": ["RECEIVER", "MESSAGE", "QUERY", "PHONE_NUMBER"]
+                "optional": ["RECEIVER", "CONTACT_NAME", "PHONE", "MESSAGE", "PLATFORM", "TIME"],
+                "remove": ["QUERY", "FILE_PATH", "ARTIST", "GENRE", "EMAIL"]
             },
-            "view-content": {
-                "required": [],
-                "optional": ["CONTENT_TYPE", "URL", "TITLE", "SOURCE"],
-                "remove": ["RECEIVER", "MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE"]
-            },
-            
             # Search Commands
             "search-internet": {
                 "required": ["QUERY"],
                 "optional": ["PLATFORM", "LANGUAGE", "PREFERENCE"],
-                "remove": ["RECEIVER", "MESSAGE", "FILE_PATH", "ARTIST", "GENRE", "PHONE_NUMBER"]
+                "remove": ["RECEIVER", "MESSAGE", "FILE_PATH", "ARTIST", "GENRE", "PHONE"]
             },
             "search-youtube": {
                 "required": ["QUERY"],
-                "optional": ["PLATFORM", "CONTENT_TYPE", "DURATION"],
-                "remove": ["RECEIVER", "MESSAGE", "FILE_PATH", "ARTIST", "GENRE", "PHONE_NUMBER"]
+                "optional": ["PLATFORM", "DURATION"],
+                "remove": ["RECEIVER", "MESSAGE", "FILE_PATH", "ARTIST", "GENRE", "PHONE"]
             },
-            
             # Information Commands
             "get-info": {
-                "required": [],
-                "optional": ["INFO_TYPE", "TOPIC", "LOCATION", "TIME", "SOURCE"],
-                "remove": ["RECEIVER", "MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE_NUMBER"]
+                "required": ["QUERY"],
+                "optional": ["LOCATION", "TIME", "SOURCE"],
+                "remove": ["RECEIVER", "MESSAGE", "FILE_PATH", "ARTIST", "GENRE", "PHONE"]
             },
-            
             # Time-based Commands
             "set-alarm": {
                 "required": ["TIME"],
-                "optional": ["LABEL", "DURATION", "VOLUME", "REPEAT"],
-                "remove": ["RECEIVER", "MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE_NUMBER"]
+                "optional": ["DATE", "REMINDER_CONTENT", "FREQUENCY", "LEVEL", "MODE"],
+                "remove": ["RECEIVER", "MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE"]
             },
-            "set-event-calendar": {
-                "required": ["TITLE", "TIME"],
-                "optional": ["LOCATION", "DURATION", "REPEAT", "ATTENDEES"],
-                "remove": ["RECEIVER", "MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE_NUMBER"]
-            },
-            
             # Device Commands
             "control-device": {
-                "required": ["DEVICE_TYPE", "ACTION"],
-                "optional": ["LEVEL", "MODE", "SETTINGS"],
-                "remove": ["RECEIVER", "MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE_NUMBER"]
+                "required": ["DEVICE", "ACTION"],
+                "optional": ["LEVEL", "MODE"],
+                "remove": ["RECEIVER", "MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE"]
             },
             "open-cam": {
-                "required": ["CAMERA_TYPE"],
-                "optional": ["MODE", "SETTINGS"],
-                "remove": ["RECEIVER", "MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE_NUMBER"]
+                "required": [],
+                "optional": ["CAMERA_TYPE", "MODE", "ACTION"],
+                "remove": ["RECEIVER", "MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "PHONE"]
             },
-            
             # Contact Commands
             "add-contacts": {
                 "required": ["CONTACT_NAME"],
-                "optional": ["PHONE_NUMBER", "EMAIL", "RELATIONSHIP"],
-                "remove": ["MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE"]
+                "optional": ["PHONE", "PLATFORM", "ACTION", "RECEIVER"],
+                "remove": ["MESSAGE", "QUERY", "FILE_PATH", "ARTIST", "GENRE", "EMAIL"]
             }
         }
         
@@ -264,9 +215,7 @@ class NLPProcessor:
                     cleaned_entities[required_entity] = "now"
                 elif required_entity == "QUERY":
                     cleaned_entities[required_entity] = "search"
-                elif required_entity == "TITLE":
-                    cleaned_entities[required_entity] = "event"
-                elif required_entity == "DEVICE_TYPE":
+                elif required_entity == "DEVICE":
                     cleaned_entities[required_entity] = "device"
                 elif required_entity == "ACTION":
                     cleaned_entities[required_entity] = "control"
@@ -304,12 +253,6 @@ class NLPProcessor:
             normalized_intent = self.command_normalization.get(intent, intent)
             command = normalized_intent if normalized_intent in self.valid_commands else "unknown"
             command_display = self.display_map.get(command, command)
-            value = self.value_generator.generate_value(
-                reasoning_result.get("intent", "unknown"), 
-                entities, 
-                text
-            )
-            
             processing_time = (datetime.now() - start_time).total_seconds()
             
             return {
@@ -319,7 +262,6 @@ class NLPProcessor:
                 "command": command,
                 "command_display": command_display,
                 "entities": entities,
-                "value": value,
                 "method": "reasoning_engine",
                 "processing_time": processing_time,
                 "timestamp": datetime.now().isoformat(),
@@ -351,7 +293,6 @@ class NLPProcessor:
                     "confidence": 0.0,
                     "command": "error",
                     "entities": {},
-                    "value": f"Lỗi xử lý: {str(e)}",
                     "method": "error",
                     "processing_time": 0.0,
                     "timestamp": datetime.now().isoformat()
@@ -374,7 +315,6 @@ class NLPProcessor:
                     "confidence": 0.0,
                     "command": "error",
                     "entities": {},
-                    "value": f"Lỗi xử lý: {str(e)}",
                     "method": "error",
                     "processing_time": 0.0,
                     "timestamp": datetime.now().isoformat()

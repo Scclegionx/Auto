@@ -10,9 +10,12 @@ from pathlib import Path
 from collections import defaultdict
 import re
 
-# Add project root to path
+# Add project root and src to path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+from data.entity_schema import generate_entity_labels, canonicalize_entity_label  # noqa: E402
 
 class DatasetIOB2Updater:
     """Cập nhật dataset với IOB2 labels mới"""
@@ -22,43 +25,28 @@ class DatasetIOB2Updater:
         self.command_entity_mapping = {
             "add-contacts": {
                 "required": ["CONTACT_NAME", "PHONE"],
-                "optional": [],
+                "optional": ["PLATFORM", "ACTION", "RECEIVER"],
                 "description": "Thêm liên hệ mới"
             },
             "call": {
-                "required": ["CONTACT_NAME"],
-                "optional": ["PHONE", "RECEIVER", "PLATFORM"],
+                "required": [],
+                "optional": ["CONTACT_NAME", "PHONE", "RECEIVER", "PLATFORM"],
                 "description": "Gọi điện thoại"
             },
             "make-video-call": {
-                "required": ["CONTACT_NAME"],
-                "optional": ["RECEIVER", "PLATFORM"],
+                "required": [],
+                "optional": ["CONTACT_NAME", "PHONE", "RECEIVER", "PLATFORM"],
                 "description": "Gọi video"
             },
             "send-mess": {
-                "required": ["RECEIVER", "MESSAGE"],
-                "optional": ["PLATFORM"],
+                "required": ["MESSAGE"],
+                "optional": ["RECEIVER", "CONTACT_NAME", "PHONE", "PLATFORM"],
                 "description": "Gửi tin nhắn"
             },
             "set-alarm": {
                 "required": ["TIME"],
-                "optional": ["DATE"],
+                "optional": ["DATE", "REMINDER_CONTENT", "FREQUENCY", "LEVEL", "MODE"],
                 "description": "Đặt báo thức"
-            },
-            "set-event-calendar": {
-                "required": ["TITLE", "DATE"],
-                "optional": ["TIME"],
-                "description": "Đặt lịch sự kiện"
-            },
-            "play-media": {
-                "required": ["MEDIA_TYPE"],
-                "optional": ["CONTENT_TYPE"],
-                "description": "Phát media"
-            },
-            "view-content": {
-                "required": ["CONTENT_TYPE"],
-                "optional": ["PLATFORM"],
-                "description": "Xem nội dung"
             },
             "search-internet": {
                 "required": ["QUERY"],
@@ -72,58 +60,23 @@ class DatasetIOB2Updater:
             },
             "get-info": {
                 "required": ["QUERY"],
-                "optional": ["CONTENT_TYPE", "PLATFORM"],
+                "optional": ["LOCATION", "TIME", "PLATFORM"],
                 "description": "Lấy thông tin"
             },
             "control-device": {
                 "required": ["ACTION", "DEVICE"],
-                "optional": ["MODE", "LOCATION"],
+                "optional": ["MODE", "LEVEL", "LOCATION"],
                 "description": "Điều khiển thiết bị"
             },
             "open-cam": {
-                "required": ["ACTION"],
-                "optional": ["MODE", "CAMERA_TYPE"],
+                "required": [],
+                "optional": ["ACTION", "MODE", "CAMERA_TYPE"],
                 "description": "Mở camera"
             }
         }
         
         # Entity labels mới (BIO2 format)
-        self.new_entity_labels = [
-            "O",  # Outside
-            # B- labels (Begin)
-            "B-ACTION", "B-CAMERA_TYPE", "B-CONTACT_NAME", "B-CONTENT_TYPE", 
-            "B-DATE", "B-DEVICE", "B-LOCATION", "B-MEDIA_TYPE", "B-MESSAGE", 
-            "B-MODE", "B-PHONE", "B-PLATFORM", "B-QUERY", "B-RECEIVER", 
-            "B-TIME", "B-TITLE",
-            # I- labels (Inside)
-            "I-ACTION", "I-CAMERA_TYPE", "I-CONTACT_NAME", "I-CONTENT_TYPE", 
-            "I-DATE", "I-DEVICE", "I-LOCATION", "I-MEDIA_TYPE", "I-MESSAGE", 
-            "I-MODE", "I-PHONE", "I-PLATFORM", "I-QUERY", "I-RECEIVER", 
-            "I-TIME", "I-TITLE"
-        ]
-        
-        # Mapping từ entity cũ sang mới
-        self.entity_mapping = {
-            # Giữ nguyên
-            "CONTACT_NAME": "CONTACT_NAME",
-            "PHONE": "PHONE",
-            "RECEIVER": "RECEIVER",
-            "MESSAGE": "MESSAGE",
-            "PLATFORM": "PLATFORM",
-            "TIME": "TIME",
-            "DATE": "DATE",
-            "TITLE": "TITLE",
-            "ACTION": "ACTION",
-            "DEVICE": "DEVICE",
-            "MODE": "MODE",
-            "CAMERA_TYPE": "CAMERA_TYPE",
-            "MEDIA_TYPE": "MEDIA_TYPE",
-            "CONTENT_TYPE": "CONTENT_TYPE",
-            "QUERY": "QUERY",
-            "LOCATION": "LOCATION",
-            # Loại bỏ
-            "LEVEL": None,  # Không cần thiết
-        }
+        self.new_entity_labels = generate_entity_labels()
     
     def load_dataset(self, file_path):
         """Load dataset"""
@@ -144,15 +97,11 @@ class DatasetIOB2Updater:
         # Filter spans chỉ giữ lại entities được phép
         new_spans = []
         for span in sample.get('spans', []):
-            entity_label = span['label']
-            
-            # Map entity label
-            mapped_label = self.entity_mapping.get(entity_label, entity_label)
-            
+            entity_label = canonicalize_entity_label(span['label'])
+            span['label'] = entity_label
             # Chỉ giữ lại nếu entity được phép cho command này
-            if mapped_label and mapped_label in allowed_entities:
+            if entity_label and entity_label in allowed_entities:
                 new_span = span.copy()
-                new_span['label'] = mapped_label
                 new_spans.append(new_span)
         
         # Update sample
@@ -162,12 +111,10 @@ class DatasetIOB2Updater:
         # Update entities list
         new_entities = []
         for entity in sample.get('entities', []):
-            entity_label = entity['label']
-            mapped_label = self.entity_mapping.get(entity_label, entity_label)
-            
-            if mapped_label and mapped_label in allowed_entities:
+            entity_label = canonicalize_entity_label(entity['label'])
+            if entity_label and entity_label in allowed_entities:
                 new_entity = entity.copy()
-                new_entity['label'] = mapped_label
+                new_entity['label'] = entity_label
                 new_entities.append(new_entity)
         
         updated_sample['entities'] = new_entities
@@ -284,9 +231,9 @@ def main():
     print("🔄 UPDATING DATASET WITH IOB2 LABELS")
     print("=" * 60)
     
-    # Paths
-    input_file = "src/data/raw/elderly_command_dataset_MERGED_13C_VITEXT.json"
-    output_file = "src/data/raw/elderly_command_dataset_MERGED_13C_VITEXT_UPDATED_IOB2.json"
+    # Paths - làm việc trực tiếp trên dataset chính
+    input_file = "src/data/raw/elderly_commands_master.json"
+    output_file = "src/data/raw/elderly_commands_master.json"
     
     try:
         # Create updater

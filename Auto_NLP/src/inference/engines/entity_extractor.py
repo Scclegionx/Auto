@@ -1737,12 +1737,31 @@ class EntityExtractor:
         receiver = receiver.strip()
         receiver = re.sub(r'^[\s,.;:]+|[\s,.;:]+$', '', receiver)
 
+        # Loại bỏ prefix kiểu "qua Zalo/Messenger cho ..." để chỉ giữ lại tên người
+        receiver = re.sub(
+            r"^(?:qua|bằng|trên)\s+"
+            r"(?:zalo|messenger|telegram|viber|line|facebook|whatsapp|sms|tin\s+nhắn|phone|điện\s+thoại)\s+"
+            r"(?:cho|tới|đến)\s+",
+            "",
+            receiver,
+            flags=re.IGNORECASE,
+        )
+
         # Loại bỏ các hư từ ở đầu
         receiver = re.sub(
             r'^(?:video\s+call|gọi\s+video|video|call|cho|tới|đến|toi|den|gọi|goi|nhắn|nhan|gửi|gui|soạn|soan|nói|noi|trò|tro|liên|lien)\s+',
             '',
             receiver,
             flags=re.IGNORECASE
+        )
+
+        # Trường hợp đặc biệt: "nhắn tin cho con gái bảo tối nay bố không ăn cơm"
+        # → RECEIVER chỉ là "con gái", phần sau "bảo tối nay..." là MESSAGE.
+        receiver = re.sub(
+            r'\s+bảo\s+(?:rằng|là|tối|toi|sáng|sang|chiều|chieu|mai|ngày|ngay|hôm|hom)\b.*$',
+            '',
+            receiver,
+            flags=re.IGNORECASE,
         )
 
         # Cắt bỏ phần đuôi bắt đầu bằng các hư từ/thời gian/giới từ
@@ -1753,6 +1772,7 @@ class EntityExtractor:
             flags=re.IGNORECASE
         )
 
+        # Loại bỏ dấu câu thừa ở cuối lần nữa (trường hợp còn sót dấu ":" sau các bước cắt trên)
         receiver = re.sub(r'[\.,;:]+$', '', receiver)
         receiver = re.sub(r'\s+', ' ', receiver).strip()
 
@@ -1760,9 +1780,9 @@ class EntityExtractor:
             return ""
 
         words = receiver.split()
-        # Giới hạn tối đa 5 từ để tránh kéo dài
-        if len(words) > 5:
-            words = words[:5]
+        # Giữ cụm tên tối đa 6 từ (đủ cho các tên kiểu "Con gái bác Bảo", "Tiệm thuốc Long Châu")
+        if len(words) > 6:
+            words = words[:6]
 
         # Duy trì mối quan hệ gia đình nếu có
         relations = {"bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu", "cô", "chú", "bác", "dì"}
@@ -1782,14 +1802,34 @@ class EntityExtractor:
         return " ".join(normalized_words).strip()
     
     def _clean_message(self, message: str) -> str:
-        """Làm sạch message entity"""
-        unwanted_prefixes = ["rằng", "là", "nói", "nhắn", "gửi"]
-        
+        """Làm sạch MESSAGE: bỏ hư từ đầu câu, từ nền tảng còn sót và khoảng trắng/thừa."""
+        import re as _re
+
+        msg = (message or "").strip()
+
+        # 1) Bỏ các prefix động từ nói lại – "rằng/là/nói/nhắn/gửi/bảo ..."
+        unwanted_prefixes = ["rằng", "là", "nói", "nhắn", "gửi", "bảo"]
         for prefix in unwanted_prefixes:
-            if message.lower().startswith(prefix + " "):
-                message = message[len(prefix):].strip()
-        
-        return message.strip()
+            if msg.lower().startswith(prefix + " "):
+                msg = msg[len(prefix):].strip()
+
+        # 2) Bỏ phần "tin / tin nhắn / tin bảo / tin nói ..." đầu câu nếu còn
+        #    ví dụ: "tin bảo tối nay..." → "tối nay..."
+        msg = _re.sub(r"^(tin nhắn|tin)\s+(bảo|nói|rằng)?\s*", "", msg, flags=_re.IGNORECASE)
+
+        # 3) Bỏ các giới từ do pattern để lại ở đầu MESSAGE
+        #    ví dụ: "qua mai 7 giờ đi khám" → "mai 7 giờ đi khám"
+        msg = _re.sub(r"^(qua|bằng|trên)\s+", "", msg, flags=_re.IGNORECASE)
+
+        # 3b) Nếu bắt đầu bằng 'cho/tới/đến <...>:' thì bỏ cụm đó
+        #     ví dụ: "cho cậu sáu: mai 7 giờ đi khám" → "mai 7 giờ đi khám"
+        msg = _re.sub(r"^(cho|tới|đến)\s+[^:]+:\s*", "", msg, flags=_re.IGNORECASE)
+
+        # 4) Chuẩn hoá khoảng trắng và ký tự thừa đầu/cuối
+        msg = _re.sub(r"\s+", " ", msg)
+        msg = msg.strip(" ,.;:!?\t\n\r")
+
+        return msg
     
     def extract_phone_number(self, text: str) -> Optional[str]:
         """Extract phone number từ text - Hỗ trợ cả số và chữ"""
@@ -2138,10 +2178,6 @@ class EntityExtractor:
             entities.update(self._extract_messaging_entities(text))
         elif intent == "control-device":
             entities.update(self._extract_device_control_entities(text))
-        elif intent == "play-media":
-            entities.update(self._extract_media_playback_entities(text))
-        elif intent == "view-content":
-            entities.update(self._extract_content_viewing_entities(text))
         elif intent == "search-internet":
             entities.update(self._extract_internet_search_entities(text))
         elif intent == "search-youtube":
@@ -2150,8 +2186,6 @@ class EntityExtractor:
             entities.update(self._extract_information_entities(text))
         elif intent == "set-alarm":
             entities.update(self._extract_alarm_entities(text))
-        elif intent == "set-event-calendar":
-            entities.update(self._extract_calendar_entities(text))
         elif intent == "add-contacts":
             entities.update(self._extract_contact_entities(text))
         elif intent == "open-cam":
@@ -2278,10 +2312,20 @@ class EntityExtractor:
         # Post-clean: chuẩn hoá RECEIVER và MESSAGE cho gửi tin nhắn
         try:
             import re as _re
-            # 1) Clean RECEIVER: loại bớt từ "tôi" dư nếu có lẫn vào tên
+            # 1) Clean RECEIVER
             if entities.get("RECEIVER"):
                 rec = entities["RECEIVER"]
+                # loại "tôi" dư
                 rec = _re.sub(r"\b(tôi)\b", "", rec, flags=_re.IGNORECASE)
+                # bỏ dấu ":" thừa ở cuối (trường hợp "Cậu Sáu:")
+                rec = rec.rstrip(" :;,.")
+                # case đặc biệt: "con gái bảo tối nay..." → chỉ lấy "Con Gái"
+                text_l = text.lower()
+                if rec.lower() == "con gái bảo" and _re.search(
+                    r"con gái bảo\s+(tối|toi|sáng|sang|chiều|chieu|mai|ngày|ngay|hôm|hom|rằng|là)\b",
+                    text_l,
+                ):
+                    rec = "Con Gái"
                 rec = _re.sub(r"\s+", " ", rec).strip()
                 entities["RECEIVER"] = rec
 
@@ -2297,7 +2341,13 @@ class EntityExtractor:
                 # Remove receiver mention pattern 'cho/tới/đến <receiver>'
                 if entities.get("RECEIVER"):
                     rec = _re.escape(entities["RECEIVER"])
-                    msg = _re.sub(rf"\b(cho|tới|đến)\s+{rec}\b", "", msg, flags=_re.IGNORECASE)
+                    # Bỏ cụm "cho/tới/đến <RECEIVER>" và dấu câu ngay sau (nếu có)
+                    msg = _re.sub(
+                        rf"\b(cho|tới|đến)\s+{rec}\b[:;,.\s]*",
+                        "",
+                        msg,
+                        flags=_re.IGNORECASE,
+                    )
                 # Remove patterns 'cho số <digits/words>'
                 num_words = r"(?:không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)(?:\s+(?:không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)){5,}"
                 msg = _re.sub(r"\b(cho|tới|đến)\s+số\s+[0-9\s]{9,}\b", "", msg, flags=_re.IGNORECASE)
@@ -2306,7 +2356,8 @@ class EntityExtractor:
                 if entities.get("RECEIVER") and entities["RECEIVER"].isdigit():
                     msg = msg.replace(entities["RECEIVER"], "")
                 msg = _re.sub(r"\s+", " ", msg).strip(" ,.")
-                entities["MESSAGE"] = msg
+                # Áp dụng thêm bước sạch MESSAGE chuẩn hoá
+                entities["MESSAGE"] = self._clean_message(msg)
         except Exception:
             pass
         
@@ -2350,133 +2401,12 @@ class EntityExtractor:
         return entities
     
     def _extract_media_playback_entities(self, text: str) -> Dict[str, str]:
-        """Extract entities cho play-media - Phát nhạc/podcast/video"""
-        entities = {}
-        
-        # Extract using media playback patterns
-        for pattern, entity_type in self.media_playback_patterns:
-            match = re.search(pattern, text, re.IGNORECASE)
-            if match:
-                # Safe group access
-                if match.groups():
-                    value = match.group(1).strip() if match.group(1) else ""
-                else:
-                    value = match.group(0).strip()
-                
-                # Process based on entity type
-                if entity_type == "action":
-                    # Map Vietnamese actions to standard actions
-                    action_map = {
-                        "phát": "PLAY", "bật": "PLAY", "mở": "PLAY", "chạy": "PLAY",
-                        "dừng": "STOP", "tạm dừng": "PAUSE", "tiếp tục": "RESUME",
-                        "bài tiếp": "NEXT", "bài trước": "PREV", "tua": "SEEK"
-                    }
-                    entities["ACTION"] = action_map.get(value.lower(), "PLAY")
-                
-                elif entity_type == "song":
-                    entities["SONG"] = value
-                
-                elif entity_type == "artist":
-                    entities["ARTIST"] = value
-                
-                elif entity_type == "album":
-                    entities["ALBUM"] = value
-                
-                elif entity_type == "genre":
-                    entities["GENRE"] = value
-                
-                elif entity_type == "language":
-                    entities["LANGUAGE"] = value
-                
-                elif entity_type == "mood":
-                    entities["MOOD"] = value
-                
-                elif entity_type == "year":
-                    entities["YEAR"] = value
-                
-                elif entity_type == "season":
-                    entities["SEASON"] = value
-                
-                elif entity_type == "episode":
-                    entities["EPISODE"] = value
-                
-                elif entity_type == "resolution":
-                    entities["RESOLUTION"] = value
-                
-                elif entity_type == "subtitle_lang":
-                    entities["SUBTITLE_LANG"] = value
-                
-                elif entity_type == "shuffle":
-                    entities["SHUFFLE"] = "true" if value.lower() in ["có", "yes", "true", "1"] else "false"
-                
-                elif entity_type == "repeat":
-                    entities["REPEAT"] = value
-                
-                elif entity_type == "platform":
-                    entities["MEDIA_PLATFORM"] = value
-                
-                elif entity_type == "podcast":
-                    entities["PODCAST"] = value
-                
-                elif entity_type == "radio":
-                    entities["RADIO"] = value
-                
-                elif entity_type == "file_path":
-                    entities["FILE_PATH"] = value
-                
-                elif entity_type == "context":
-                    entities["CONTEXT"] = value
-        
-        return entities
+        """Deprecated media extraction (command no longer supported)."""
+        return {}
     
     def _extract_content_viewing_entities(self, text: str) -> Dict[str, str]:
-        """Extract entities cho view-content - Xem nội dung"""
-        entities = {}
-        
-        # Extract using content viewing patterns
-        for pattern, entity_type in self.content_viewing_patterns:
-            match = re.search(pattern, text, re.IGNORECASE)
-            if match:
-                # Safe group access
-                if match.groups():
-                    value = match.group(1).strip() if match.group(1) else ""
-                else:
-                    value = match.group(0).strip()
-                
-                # Process based on entity type
-                if entity_type == "source_app":
-                    # Map Vietnamese app names to standard names
-                    app_map = {
-                        "ảnh": "photos", "gallery": "photos", "thư viện": "photos",
-                        "facebook": "facebook", "fb": "facebook",
-                        "zalo": "zalo", "instagram": "instagram", "ig": "instagram",
-                        "youtube": "youtube", "yt": "youtube",
-                        "tiktok": "tiktok", "twitter": "twitter", "x": "twitter"
-                    }
-                    entities["SOURCE_APP"] = app_map.get(value.lower(), value)
-                
-                elif entity_type == "sort_order":
-                    # Map Vietnamese sort orders to standard orders
-                    sort_map = {
-                        "mới nhất": "newest", "cũ nhất": "oldest", "phổ biến": "popular",
-                        "newest": "newest", "oldest": "oldest", "popular": "popular",
-                        "theo tên": "name", "theo ngày": "date", "theo kích thước": "size"
-                    }
-                    entities["SORT_ORDER"] = sort_map.get(value.lower(), "newest")
-                
-                elif entity_type == "date_range":
-                    entities["DATE_RANGE"] = value
-                
-                elif entity_type == "owner":
-                    entities["OWNER"] = value
-                
-                elif entity_type == "content_type":
-                    entities["CONTENT_TYPE"] = value
-                
-                elif entity_type == "query":
-                    entities["QUERY"] = value
-        
-        return entities
+        """Deprecated content viewing extraction (command no longer supported)."""
+        return {}
     
     def _extract_internet_search_entities(self, text: str) -> Dict[str, str]:
         """Extract entities cho search-internet - Tìm kiếm internet"""
@@ -2509,7 +2439,7 @@ class EntityExtractor:
                 # Lấy group cuối cùng - nội dung query
                 query = match.group(len(match.groups())).strip()
                 if query and len(query) > 2:
-                    entities["QUERY"] = query
+                    entities["QUERY"] = self._clean_query(query)
                     query_extracted = True
                     break
         
@@ -2521,7 +2451,7 @@ class EntityExtractor:
                     if match and match.groups():
                         query = match.group(1).strip()
                         if query and len(query) > 2:  # Đảm bảo query có ý nghĩa
-                            entities["QUERY"] = query
+                            entities["QUERY"] = self._clean_query(query)
                             query_extracted = True
                             break
         
@@ -2644,7 +2574,8 @@ class EntityExtractor:
         if len(query) < 2:
             return {}
 
-        # 5) Trả về đúng một trường QUERY
+        # 5) Trả về đúng một trường QUERY (đã làm sạch)
+        query = self._clean_query(query)
         entities["QUERY"] = query
         return entities
     
@@ -2789,7 +2720,7 @@ class EntityExtractor:
                     entities["VOLUME_PROFILE"] = profile_map.get(value.lower(), "normal")
                 
                 elif entity_type == "label":
-                    entities["LABEL"] = value
+                    entities["REMINDER_CONTENT"] = value
                 
                 elif entity_type == "volume":
                     entities["VOLUME"] = value
@@ -2977,86 +2908,8 @@ class EntityExtractor:
         return entities
     
     def _extract_calendar_entities(self, text: str) -> Dict[str, str]:
-        """Extract entities cho set-event-calendar - Đặt lịch với entity mở rộng"""
-        entities = {}
-        
-        # Extract using calendar patterns
-        for pattern, entity_type in self.calendar_patterns:
-            match = re.search(pattern, text, re.IGNORECASE)
-            if match:
-                # Safe group access
-                if match.groups():
-                    value = match.group(1).strip() if match.group(1) else ""
-                else:
-                    value = match.group(0).strip()
-                
-                # Process based on entity type
-                if entity_type == "all_day":
-                    # Map Vietnamese all-day indicators to boolean
-                    all_day_map = {
-                        "cả ngày": "true", "all day": "true", "cả ngày": "true",
-                        "không": "false", "no": "false", "off": "false"
-                    }
-                    entities["ALL_DAY"] = all_day_map.get(value.lower(), "false")
-                
-                elif entity_type == "end_time":
-                    entities["END_TIME"] = value
-                
-                elif entity_type == "duration":
-                    entities["DURATION"] = value
-                
-                elif entity_type == "recurrence":
-                    # Map Vietnamese recurrence to standard recurrence
-                    recurrence_map = {
-                        "hàng ngày": "daily", "daily": "daily", "mỗi ngày": "daily",
-                        "hàng tuần": "weekly", "weekly": "weekly", "mỗi tuần": "weekly",
-                        "hàng tháng": "monthly", "monthly": "monthly", "mỗi tháng": "monthly",
-                        "hàng năm": "yearly", "yearly": "yearly", "mỗi năm": "yearly",
-                        "thứ 2-6": "weekdays", "weekdays": "weekdays", "ngày thường": "weekdays",
-                        "cuối tuần": "weekends", "weekends": "weekends", "thứ 7-chủ nhật": "weekends"
-                    }
-                    entities["RECURRENCE"] = recurrence_map.get(value.lower(), "none")
-                
-                elif entity_type == "conference_link":
-                    entities["CONFERENCE_LINK"] = value
-                
-                elif entity_type == "visibility":
-                    # Map Vietnamese visibility to standard visibility
-                    visibility_map = {
-                        "công khai": "public", "public": "public", "mọi người": "public",
-                        "riêng tư": "private", "private": "private", "cá nhân": "private",
-                        "hạn chế": "restricted", "restricted": "restricted", "giới hạn": "restricted"
-                    }
-                    entities["VISIBILITY"] = visibility_map.get(value.lower(), "private")
-                
-                elif entity_type == "priority":
-                    # Map Vietnamese priority to standard priority
-                    priority_map = {
-                        "cao": "high", "high": "high", "quan trọng": "high",
-                        "trung bình": "medium", "medium": "medium", "bình thường": "medium",
-                        "thấp": "low", "low": "low", "không quan trọng": "low"
-                    }
-                    entities["PRIORITY"] = priority_map.get(value.lower(), "medium")
-                
-                elif entity_type == "title":
-                    entities["TITLE"] = value
-                
-                elif entity_type == "time":
-                    entities["TIME"] = value
-                
-                elif entity_type == "location":
-                    entities["LOCATION"] = value
-                
-                elif entity_type == "description":
-                    entities["DESCRIPTION"] = value
-                
-                elif entity_type == "attendees":
-                    entities["ATTENDEES"] = value
-                
-                elif entity_type == "platform":
-                    entities["PLATFORM"] = value
-        
-        return entities
+        """Deprecated calendar extraction (command no longer supported)."""
+        return {}
     
     def extract_contact_entities(self, text: str) -> Dict[str, str]:
         """Extract contact entities - tên, số điện thoại, email, ghi chú, địa chỉ với entity mở rộng"""
@@ -3189,8 +3042,8 @@ class EntityExtractor:
                     entities["CONTACT_NAME"] = name
                     break
         
-        # Extract TITLE/Ghi chú - Pattern: "ghi chú [TITLE]" hoặc từ cuối câu
-        title_patterns = [
+        # Extract REMINDER_CONTENT / ghi chú cho nhắc nhở hoặc liên hệ
+        reminder_patterns = [
             r"ghi\s+chú\s+([^,\n]+)",
             r"chức\s+danh\s+([^,\n]+)",
             r"với\s+([^,\n]+)",
@@ -3198,24 +3051,24 @@ class EntityExtractor:
             r"nha\s+([^,\n]+)"
         ]
         
-        for pattern in title_patterns:
+        for pattern in reminder_patterns:
             match = re.search(pattern, text, re.IGNORECASE)
             if match:
-                title = match.group(1).strip()
-                # Clean up title
-                title = self._clean_contact_title(title)
-                if title and len(title) > 1:
-                    entities["TITLE"] = title
+                reminder = match.group(1).strip()
+                # Clean up reminder content
+                reminder = self._clean_reminder_content(reminder)
+                if reminder and len(reminder) > 1:
+                    entities["REMINDER_CONTENT"] = reminder
                     break
         
-        # Fallback: extract title từ cuối câu nếu chưa có
-        if "TITLE" not in entities:
+        # Fallback: extract reminder content từ cuối câu nếu chưa có
+        if "REMINDER_CONTENT" not in entities:
             words = text.split()
             if len(words) > 2:
                 # Lấy từ cuối cùng làm title nếu không phải số điện thoại
                 last_word = words[-1]
                 if not last_word.isdigit() and last_word not in ["số", "điện", "thoại", "phone", "so", "dien", "thoai"]:
-                    entities["TITLE"] = last_word
+                    entities["REMINDER_CONTENT"] = self._clean_reminder_content(last_word)
         
         # Chuẩn hoá: nếu có PHONE_NUMBER thì set PHONE và đảm bảo CONTACT_NAME không rỗng
         if entities.get("PHONE_NUMBER"):
@@ -3235,7 +3088,7 @@ class EntityExtractor:
         
         return " ".join(cleaned_words).strip()
     
-    def _clean_contact_title(self, title: str) -> str:
+    def _clean_reminder_content(self, reminder: str) -> str:
         stop_words = [
             "ghi", "chú", "ghi chú", "chức", "danh", "chức danh",
             "với", "voi", "nhé", "nhe", "nha", "ạ", "a",
@@ -3243,10 +3096,39 @@ class EntityExtractor:
             "hệ", "he", "contact", "lien he", "lienhe"
         ]
         
-        words = title.split()
+        words = reminder.split()
         cleaned_words = [word for word in words if word.lower() not in stop_words]
         
         return " ".join(cleaned_words).strip()
+
+    def _extract_frequency(self, text: str) -> str:
+        """Phát hiện tần suất nhắc nhở cơ bản (daily/weekly/weekday/...)"""
+        normalized = text.lower()
+        frequency_map = {
+            "daily": ["hàng ngày", "hang ngay", "mỗi ngày", "moi ngay", "hằng ngày"],
+            "weekly": ["hàng tuần", "hang tuan", "mỗi tuần", "moi tuan"],
+            "monthly": ["hàng tháng", "hang thang", "mỗi tháng", "moi thang"],
+            "weekday": [
+                "thứ hai đến thứ sáu",
+                "thu hai den thu sau",
+                "thứ 2 đến thứ 6",
+                "thu 2 den thu 6",
+                "các ngày trong tuần",
+                "cac ngay trong tuan",
+            ],
+            "weekend": [
+                "cuối tuần",
+                "cuoi tuan",
+                "thứ bảy và chủ nhật",
+                "thu bay va chu nhat",
+                "thứ 7 chủ nhật",
+                "thu 7 chu nhat",
+            ],
+        }
+        for freq, patterns in frequency_map.items():
+            if any(pattern in normalized for pattern in patterns):
+                return freq
+        return ""
     
     def _validate_entities(self, intent: str, entities: Dict[str, str], text: str) -> Dict[str, str]:
         """Validate và fallback entities cho từng command"""
@@ -3266,6 +3148,13 @@ class EntityExtractor:
                     if match:
                         validated_entities["RECEIVER"] = match.group(1).strip()
                         break
+
+            # Làm sạch RECEIVER lần cuối (kể cả khi đến từ model hoặc fallback)
+            if validated_entities.get("RECEIVER"):
+                original = validated_entities["RECEIVER"]
+                cleaned = self._clean_receiver(original)
+                # Nếu sau khi clean bị rỗng thì giữ lại bản gốc để không mất hoàn toàn
+                validated_entities["RECEIVER"] = cleaned or original
             
             # Fallback platform nếu không có
             if not validated_entities.get("PLATFORM"):
@@ -3284,6 +3173,12 @@ class EntityExtractor:
                     if match:
                         validated_entities["RECEIVER"] = match.group(1).strip()
                         break
+
+            # Làm sạch RECEIVER cho send-mess
+            if validated_entities.get("RECEIVER"):
+                original = validated_entities["RECEIVER"]
+                cleaned = self._clean_receiver(original)
+                validated_entities["RECEIVER"] = cleaned or original
             
             if not validated_entities.get("MESSAGE"):
                 # Fallback: extract message content
@@ -3297,13 +3192,23 @@ class EntityExtractor:
                     if match:
                         validated_entities["MESSAGE"] = match.group(1).strip()
                         break
+
+            # Chuẩn hoá MESSAGE cho send-mess (bỏ prefix như "nhắn", "gửi"... nếu còn)
+            if validated_entities.get("MESSAGE"):
+                validated_entities["MESSAGE"] = self._clean_message(validated_entities["MESSAGE"])
             
             # Fallback platform
             if not validated_entities.get("PLATFORM"):
                 validated_entities["PLATFORM"] = "zalo"  # Default platform
         
         elif intent == "set-alarm":
-            # Alarm cần TIME
+            # Chuẩn hóa ghi chú nhắc nhở
+            if validated_entities.get("REMINDER_CONTENT"):
+                validated_entities["REMINDER_CONTENT"] = self._clean_reminder_content(
+                    validated_entities["REMINDER_CONTENT"]
+                )
+
+            # Alarm cần TIME hoặc DATE
             if not validated_entities.get("TIME"):
                 # Fallback: extract time từ text
                 time_patterns = [
@@ -3322,45 +3227,15 @@ class EntityExtractor:
                             validated_entities["TIME"] = match.group(1)
                         break
             
-            # Fallback label
-            if not validated_entities.get("LABEL"):
-                validated_entities["LABEL"] = "Báo thức"
-        
-        elif intent == "set-event-calendar":
-            # Calendar cần TITLE và TIME
-            if not validated_entities.get("TITLE"):
-                # Fallback: extract title từ text
-                title_patterns = [
-                    r"tạo\s+lịch\s+['\"]?([^'\",\n]+)['\"]?",
-                    r"thêm\s+event\s+['\"]?([^'\",\n]+)['\"]?",
-                    r"đặt\s+deadline\s+['\"]?([^'\",\n]+)['\"]?"
-                ]
-                for pattern in title_patterns:
-                    match = re.search(pattern, text, re.IGNORECASE)
-                    if match:
-                        validated_entities["TITLE"] = match.group(1).strip()
-                        break
-                else:
-                    validated_entities["TITLE"] = "Sự kiện mới"  # Default title
-            
-            if not validated_entities.get("TIME"):
-                # Fallback: extract time
-                time_patterns = [
-                    r"(\d{1,2}):(\d{2})",
-                    r"(\d{1,2})\s*giờ\s*(\d{1,2})?\s*(?:phút)?"
-                ]
-                for pattern in time_patterns:
-                    match = re.search(pattern, text, re.IGNORECASE)
-                    if match:
-                        if len(match.groups()) >= 2:
-                            hour = match.group(1)
-                            minute = match.group(2) if match.group(2) else "00"
-                            validated_entities["TIME"] = f"{hour}:{minute}"
-                        else:
-                            validated_entities["TIME"] = match.group(1)
-                        break
-                else:
-                    validated_entities["TIME"] = "09:00"  # Default time
+            # Fallback reminder content
+            if not validated_entities.get("REMINDER_CONTENT"):
+                validated_entities["REMINDER_CONTENT"] = "Nhắc nhở"
+
+            # Extract frequency nếu có
+            if not validated_entities.get("FREQUENCY"):
+                frequency = self._extract_frequency(text)
+                if frequency:
+                    validated_entities["FREQUENCY"] = frequency
         
         elif intent == "add-contacts":
             # Add-contacts cần CONTACT_NAME và PHONE_NUMBER
@@ -3411,9 +3286,9 @@ class EntityExtractor:
                 else:
                     validated_entities["PHONE_NUMBER"] = "0000000000"  # Default phone
             
-            # Validate TITLE (optional)
-            if not validated_entities.get("TITLE"):
-                validated_entities["TITLE"] = ""  # Optional field
+        # Validate REMINDER_CONTENT (optional)
+        if not validated_entities.get("REMINDER_CONTENT"):
+            validated_entities["REMINDER_CONTENT"] = ""  # Optional field
         
         elif intent == "open-cam":
             # Open-cam cần CAMERA_TYPE
@@ -3568,6 +3443,7 @@ class EntityExtractor:
                     match = re.search(pattern, text, re.IGNORECASE)
                     if match:
                         query = match.group(1).strip()
+                        query = self._clean_query(query)
                         if intent == "search-youtube":
                             validated_entities["YT_QUERY"] = query
                         else:
@@ -3576,9 +3452,9 @@ class EntityExtractor:
                 else:
                     # Use full text as query
                     if intent == "search-youtube":
-                        validated_entities["YT_QUERY"] = text
+                        validated_entities["YT_QUERY"] = self._clean_query(text)
                     else:
-                        validated_entities["QUERY"] = text
+                        validated_entities["QUERY"] = self._clean_query(text)
         
         elif intent == "get-info":
             # Info cần TOPIC
@@ -3668,6 +3544,37 @@ class EntityExtractor:
             pass
 
         return entities
+
+    def _clean_query(self, query: str) -> str:
+        """Làm sạch QUERY: bỏ hư từ, cụm nền tảng và khoảng trắng/thừa."""
+        import re as _re
+
+        q = (query or "").strip()
+
+        # 1) Bỏ cụm "trên web/mạng/google/youtube/yt/internet" ở đầu
+        q = _re.sub(
+            r"^\s*trên\s+(web|mạng|internet|google|youtube|yt)\s+",
+            "",
+            q,
+            flags=_re.IGNORECASE,
+        )
+
+        # 2) Bỏ tên nền tảng đơn lẻ nằm trong QUERY nếu còn
+        q = _re.sub(r"\b(google|youtube|yt|web|internet)\b", "", q, flags=_re.IGNORECASE)
+
+        # 3) Bỏ hư từ lịch sự / filler
+        q = _re.sub(
+            r"\b(giúp tôi|giúp|giùm|dùm|nha|nhé|ạ|với|đi)\b",
+            "",
+            q,
+            flags=_re.IGNORECASE,
+        )
+
+        # 4) Chuẩn hoá khoảng trắng và ký tự thừa
+        q = _re.sub(r"\s+", " ", q)
+        q = q.strip(" ,.;:!?\t\n\r")
+
+        return q
     
     def extract_youtube_entities(self, text: str) -> Dict[str, str]:
         """Extract YouTube entities - query, duration, type, language, channel"""

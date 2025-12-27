@@ -122,7 +122,7 @@ class HybridIntentPredictor:
         
         # Find best intent
         if intent_scores:
-            best_intent = max(intent_scores, key=intent_scores.get)
+            best_intent = max(intent_scores.items(), key=lambda x: x[1])[0]
             best_score = intent_scores[best_intent]
             
             # Calculate confidence based on score
@@ -220,9 +220,9 @@ def main():
     """Test hybrid system"""
     # Set UTF-8 encoding for Windows
     if sys.platform == "win32":
-        import codecs
-        sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
-        sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
     
     print("TESTING HYBRID INTENT PREDICTOR")
     print("=" * 40)

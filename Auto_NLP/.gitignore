@@ -1,127 +1,106 @@
-# Virtual environments (completely ignore)
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
 venv/
 venv_new/
-venv_backup/
-venv_fixed/
-venv_*/
-**/venv/
-**/venv_*/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
+ENV/
 env/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git
-.mypy_cache
-.pytest_cache
-.hypothesis
+.venv
+.env
 
 # IDE
-.vscode/settings.json
-.vscode/launch.json
-.vscode/tasks.json
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.cursor/
+
+# Logs
+*.log
+logs/
+reasoning_engine.log
+
+# Test outputs
+test_*.txt
+test_*.py
+test_*.ps1
+*_result.txt
+FINAL_*.txt
+debug_*.py
+
+# Temporary
+artifacts/tmp_*.json
+*.tmp
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Project specific
-*.pth
-*.pt
-*.bin
-*.safetensors
+# Model cache (HuggingFace cache - will auto-download)
 model_cache/
 
-# Large files (>100MB) - Avoid pushing to repo
-# Model files (only large .pth files)
-models/phobert_large_intent_model/*.pth
-src/training/scripts/models/
-cleanup_backup_*/
+# Large model files (> 100MB - use Git LFS if needed)
+*.pt
+*.pth
+*.bin
+*.onnx
+*.h5
+*.pb
 
-# Virtual environments (large files)
-venv/
-venv_new/
-venv_backup/
-venv_fixed/
+# Keep small model configs
+!models/*/config.json
+!models/*/training_config.json
+!models/*/label_maps.json
+!models/*/labels.json
 
-# PyTorch CUDA libraries (very large)
-**/torch/lib/torch_cuda.dll
-**/torch/lib/dnnl.lib
-**/torch/lib/cudnn_engines_precompiled64_9.dll
-**/torch/lib/cublasLt64_12.dll
-**/torch/lib/cusparse64_12.dll
-**/torch/lib/torch_cpu.dll
-**/torch/lib/cudnn_adv64_9.dll
-**/torch/lib/cufft64_11.dll
-**/torch/lib/cusolver64_11.dll
-**/torch/lib/cudnn_ops64_9.dll
+# Development docs
+FIX_SUMMARY.md
+CLEANUP_*.md
+DEPLOY_*.md
 
-# Logs
-*.log
-reasoning_engine.log
+# Cursor/IDE terminals
+.cursor/
+terminals/
 
-# Temporary files
-*.tmp
-*.temp
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Data files (optional)
+*.csv
+*.xlsx
+*.sqlite
+
+# Backup files
 *.bak
 *.backup
-
-# Setup files (keep these)
-!check_training_issues.py
-!setup_complete.py
-!SETUP_COMPLETE_GUIDE.md
-
-# Temporary debug files
-debug_*.py
-test_*.py
-temp_*.py
-fix_*.py
-check_*.py
-analyze_*.py
-validate_*.py
-determine_*.py
-comprehensive_*.py
-
-# API test files
-simple_api.py
-cleanup_system.py
-
-# Model exports and logs (keep structure, ignore content)
-models/exports/*
-models/logs/*
-models/trained/*
-!models/exports/.gitkeep
-!models/logs/.gitkeep
-!models/trained/.gitkeep
-
-# Large model files
-*.pth
-*.pt
-*.bin
-*.safetensors
-models/phobert_large_intent_model/*.pth
-src/training/scripts/models/*.pth
-
-# Cache directories
-.cache/
-model_cache/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Run artifacts & reports (không cần push)
-artifacts/*.json
-logs/**
-reports/*.png
+*~

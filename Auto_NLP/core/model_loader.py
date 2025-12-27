@@ -20,11 +20,15 @@ class TrainedModelInference:
             checkpoint_path = _select_checkpoint(model_dir)
 
         tokenizer_path = str(model_dir)
+        # Cho phép thiếu config.json: MultiTaskInference sẽ tự fallback sang
+        # cấu hình tối thiểu dựa trên checkpoint + ModelConfig.*
         config_path = model_dir / "config.json"
-        if not config_path.exists():
-            raise FileNotFoundError(f"Không tìm thấy config.json tại {config_path}")
 
-        self._inference = MultiTaskInference(str(checkpoint_path), tokenizer_path, str(config_path))
+        self._inference = MultiTaskInference(
+            str(checkpoint_path),
+            tokenizer_path,
+            str(config_path),
+        )
         self.model_loaded = True
         self.model_path = model_dir
 

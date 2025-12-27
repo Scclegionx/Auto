@@ -14,69 +14,112 @@ Hệ thống NLP Hybrid thông minh kết hợp trained model với reasoning en
 
 ## 🚀 **QUICK START**
 
-### **Setup Tự Động (Khuyến nghị)**
+### **1. Clone Repository**
 ```bash
-# Clone repository (ví dụ)
-git clone https://github.com/your-org/auto-nlp.git
-cd auto-nlp
-
-# Chạy setup môi trường (tạo venv_new + cài requirements + sync dataset)
-python scripts/setup_env.py
+git clone <repository-url>
+cd Auto_NLP
 ```
 
-### **Setup Thủ Công**
+### **2. Setup Environment**
 ```bash
 # Tạo virtual environment
 python -m venv venv_new
-venv_new\Scripts\activate
+source venv_new/bin/activate  # Linux/Mac
+# hoặc
+venv_new\Scripts\activate     # Windows
 
-# Cài đặt PyTorch với CUDA
-pip install torch>=2.5.0 torchvision>=0.20.0 torchaudio>=2.5.0 --index-url https://download.pytorch.org/whl/cu121
-
-# Cài đặt packages khác
-pip install transformers>=4.30.0 datasets>=2.12.0 accelerate>=0.20.0
-pip install fastapi>=0.100.0 uvicorn>=0.20.0 pydantic>=2.0.0
-pip install underthesea>=6.6.0 pyvi>=0.1.1 scikit-learn>=1.3.0
+# Cài đặt dependencies
+pip install -r requirements.txt
 ```
+
+### **3. Download Model Files**
+```bash
+# Xem hướng dẫn chi tiết trong:
+cat models/MODEL_SETUP.md
+```
+
+### **4. Configure Environment**
+```bash
+# Copy & edit environment file
+cp env.example .env
+# Edit .env với text editor
+```
+
+### **5. Start Server**
+```bash
+# Set PYTHONPATH
+export PYTHONPATH="$PWD/src:$PWD"  # Linux/Mac
+# hoặc
+$env:PYTHONPATH="$PWD\src;$PWD"    # Windows PowerShell
+
+# Run API server
+python api/server.py
+```
+
+Server sẽ chạy tại: `http://localhost:8000`  
+API Docs: `http://localhost:8000/docs`
 
 ## 🎯 **SỬ DỤNG**
 
-### **Chạy API Server**
+### **API Request Example**
 ```bash
-python api/server.py
+# Test với curl
+curl -X POST "http://localhost:8000/api/v1/predict" \
+  -H "Content-Type: application/json" \
+  -d '{"input_text": "Nhắn tin cho mẹ hỏi ăn cơm chưa"}'
 ```
-Truy cập: `http://localhost:8000`
 
-### **Chạy Web Interface**
-Mở file `web_interface.html` trong browser
+### **Python Client Example**
+```python
+import requests
 
-### **Training Model**
-```bash
-python src/training/scripts/train_gpu.py
+response = requests.post(
+    "http://localhost:8000/api/v1/predict",
+    json={"input_text": "Gọi điện cho con gái"}
+)
+print(response.json())
 ```
 
 ## 📚 **HƯỚNG DẪN CHI TIẾT**
 
-- 📖 **[Setup Guide](SETUP_GUIDE.md)** - Hướng dẫn setup cho máy mới
-- 🎯 **[Training Guide](TRAINING_GUIDE.md)** - Chuẩn bị và chạy training
-- 🔧 **[API Documentation](api/README.md)** - Tài liệu API endpoints
+- 🚀 **[DEPLOYMENT.md](DEPLOYMENT.md)** - Hướng dẫn deploy lên server chi tiết
+- 📦 **[models/MODEL_SETUP.md](models/MODEL_SETUP.md)** - Hướng dẫn download & setup model files
+- 🔧 **API Endpoints**: `http://localhost:8000/docs` - FastAPI auto-generated docs
 
 ## 🏗️ **KIẾN TRÚC HỆ THỐNG**
 
 ```
 Auto_NLP/
+├── api/                      # FastAPI REST API
+│   └── server.py            # Main API server
+├── core/                     # Core business logic
+│   ├── hybrid_system.py     # Model-First Hybrid System
+│   ├── reasoning_engine.py  # Rule-based reasoning
+│   ├── entity_contracts.py  # Entity validation & whitelisting
+│   └── *.json               # Knowledge base, patterns, rules
 ├── src/
-│   ├── inference/          # Inference engine
-│   │   ├── engines/       # Reasoning & Entity extraction
-│   │   └── interfaces/    # Web interface
-│   ├── training/          # Training scripts
-│   ├── models/            # Model definitions
-│   └── data/              # Dataset management
-├── api/                   # FastAPI server
-├── core/                  # Core hybrid system
-├── models/                # Trained models & configs
-└── web_interface.html     # Web UI
+│   ├── inference/
+│   │   └── engines/         # Specialized entity extractors
+│   ├── models/              # Model definitions (PhoBERT, etc.)
+│   ├── training/            # Training scripts (optional)
+│   └── data/                # Dataset configs
+├── models/                   # Model files & configs
+│   ├── phobert_multitask/   # Trained model (download separately)
+│   └── configs/             # Label maps, training configs
+├── resources/                # Vietnamese accent maps, etc.
+├── scripts/                  # Utility & visualization scripts
+├── requirements.txt          # Python dependencies
+├── DEPLOYMENT.md             # Deployment guide
+└── README.md                 # This file
 ```
+
+### **Hybrid Architecture**
+1. **Input** → Voice-to-Text (Frontend) → NLP API
+2. **Intent Prediction** → PhoBERT Multi-task Model
+3. **Intent Guard** → 3-tier heuristic validation
+4. **Entity Extraction** → Specialized extractors (confidence-based)
+5. **Entity Validation** → Whitelist filtering & clarity scoring
+6. **Output** → Clean JSON → Frontend execution
 
 ## 🎯 **INTENTS ĐƯỢC HỖ TRỢ**
 
@@ -115,10 +158,17 @@ export MODEL_PATH="models/trained/best_model"
 
 | Metric | Value |
 |--------|-------|
-| **Accuracy** | 95%+ |
-| **Response Time** | <200ms |
-| **Memory Usage** | ~2GB |
-| **Supported Languages** | Vietnamese (primary), English |
+| **Intent Accuracy** | 95%+ |
+| **Entity F1 Score** | 88%+ |
+| **Response Time** | 300-800ms |
+| **Memory Usage** | ~2-4GB (with model loaded) |
+| **Model Size** | ~1.4GB (PhoBERT-based) |
+| **Supported Languages** | Vietnamese (primary) |
+
+### **Specialized Extractors Confidence**
+- **send-mess** (MESSAGE/RECEIVER): ≥0.80
+- **set-alarm** (TIME/DATE): ≥0.80
+- **control-device** (ACTION/DEVICE): ≥0.85
 
 ## 🤝 **ĐÓNG GÓP**
 
@@ -138,12 +188,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 - **Issues**: [GitHub Issues](https://github.com/Scclegionx/Auto/issues)
 
 ---
+
 **🎉 Cảm ơn bạn đã sử dụng Auto NLP Hybrid System!**
-```
-
-### 4. Test nhanh hệ thống
-```bash
-# Test hybrid inference (ghi kết quả vào artifacts/tmp_infer_results_hybrid.json)
-python scripts/debug_hybrid_infer.py
-```
-

@@ -1,0 +1,153 @@
+{
+  "all_groups": [
+    {
+      "entity_group": "QUERY",
+      "precision": 0.9988917036098797,
+      "recall": 0.9992081089642065,
+      "f1": 0.9990498812351544,
+      "support": 6314
+    },
+    {
+      "entity_group": "MESSAGE",
+      "precision": 0.9913185024416712,
+      "recall": 0.9682034976152624,
+      "f1": 0.9796246648793566,
+      "support": 1887
+    },
+    {
+      "entity_group": "CONTACT_NAME",
+      "precision": 0.9948220064724919,
+      "recall": 1.0,
+      "f1": 0.9974042829331603,
+      "support": 1537
+    },
+    {
+      "entity_group": "PLATFORM",
+      "precision": 0.999315537303217,
+      "recall": 0.999315537303217,
+      "f1": 0.999315537303217,
+      "support": 1461
+    },
+    {
+      "entity_group": "TIME",
+      "precision": 0.998911860718172,
+      "recall": 1.0,
+      "f1": 0.9994556341861731,
+      "support": 918
+    },
+    {
+      "entity_group": "DEVICE",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 821
+    },
+    {
+      "entity_group": "MODE",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 483
+    },
+    {
+      "entity_group": "CAMERA_TYPE",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 228
+    },
+    {
+      "entity_group": "PHONE",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 225
+    },
+    {
+      "entity_group": "ACTION",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 192
+    },
+    {
+      "entity_group": "RECEIVER",
+      "precision": 0.9744897959183674,
+      "recall": 0.9947916666666666,
+      "f1": 0.9845360824742269,
+      "support": 192
+    },
+    {
+      "entity_group": "DATE",
+      "precision": 0.949438202247191,
+      "recall": 0.9941176470588236,
+      "f1": 0.9712643678160919,
+      "support": 170
+    },
+    {
+      "entity_group": "FREQUENCY",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 5
+    }
+  ],
+  "selected_groups": [
+    {
+      "entity_group": "QUERY",
+      "precision": 0.9988917036098797,
+      "recall": 0.9992081089642065,
+      "f1": 0.9990498812351544,
+      "support": 6314
+    },
+    {
+      "entity_group": "MESSAGE",
+      "precision": 0.9913185024416712,
+      "recall": 0.9682034976152624,
+      "f1": 0.9796246648793566,
+      "support": 1887
+    },
+    {
+      "entity_group": "CONTACT_NAME",
+      "precision": 0.9948220064724919,
+      "recall": 1.0,
+      "f1": 0.9974042829331603,
+      "support": 1537
+    },
+    {
+      "entity_group": "PLATFORM",
+      "precision": 0.999315537303217,
+      "recall": 0.999315537303217,
+      "f1": 0.999315537303217,
+      "support": 1461
+    },
+    {
+      "entity_group": "TIME",
+      "precision": 0.998911860718172,
+      "recall": 1.0,
+      "f1": 0.9994556341861731,
+      "support": 918
+    },
+    {
+      "entity_group": "DEVICE",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 821
+    },
+    {
+      "entity_group": "MODE",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 483
+    },
+    {
+      "entity_group": "CAMERA_TYPE",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 228
+    }
+  ]
+}

@@ -56,6 +56,9 @@ class IntentResponse(BaseModel):
     method: str
     processing_time: float
     timestamp: str
+    entity_clarity_score: Optional[float] = None
+    nlp_response: Optional[str] = None
+    decision_reason: Optional[str] = None
 
 class HealthResponse(BaseModel):
     status: str
@@ -185,7 +188,7 @@ async def predict_intent_simple(request: IntentRequest):
                 cleaned_entities[key] = str(value) if value is not None else ""
         
         # Create simplified response with only required fields
-        return {
+        response = {
             "input_text": request.text,
             "intent": result.get("intent", "unknown"),
             "confidence": result.get("confidence", 0.0),
@@ -195,6 +198,16 @@ async def predict_intent_simple(request: IntentRequest):
             "processing_time": processing_time,
             "timestamp": datetime.now().isoformat(),
         }
+        
+        # Add optional Phase 3 fields if present
+        if "entity_clarity_score" in result:
+            response["entity_clarity_score"] = result["entity_clarity_score"]
+        if "nlp_response" in result:
+            response["nlp_response"] = result["nlp_response"]
+        if "decision_reason" in result:
+            response["decision_reason"] = result["decision_reason"]
+        
+        return response
         
     except Exception as e:
         logger.error(f"Prediction failed: {e}")
@@ -237,6 +250,9 @@ async def predict_intent(request: IntentRequest):
             entities=cleaned_entities,
             processing_time=processing_time,
             timestamp=datetime.now().isoformat(),
+            entity_clarity_score=result.get("entity_clarity_score"),
+            nlp_response=result.get("nlp_response"),
+            decision_reason=result.get("decision_reason"),
         )
         
     except Exception as e:

@@ -1,0 +1,18 @@
+{
+  "model_size": "large",
+  "model_name": "vinai/phobert-large",
+  "intent_to_id": {
+    "call": 0,
+    "send-mess": 1,
+    "search-internet": 2
+  },
+  "id_to_intent": {
+    "0": "call",
+    "1": "send-mess",
+    "2": "search-internet"
+  },
+  "max_length": 256,
+  "num_intents": 3,
+  "timestamp": "2025-10-21T00:51:49.797125",
+  "torch_version": "2.5.1+cu121"
+}

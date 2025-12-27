@@ -1,0 +1,45 @@
+torch>=2.0.0
+transformers>=4.30.0
+datasets>=2.12.0
+accelerate>=0.20.0
+scikit-learn>=1.3.0
+seqeval>=1.2.2
+numpy>=1.24.0
+pandas>=2.0.0
+tqdm>=4.65.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+wandb>=0.15.0
+tensorboard>=2.13.0
+# phobert-tokenizer is included in transformers
+underthesea>=6.6.0
+pyvi>=0.1.1
+fastapi>=0.100.0
+uvicorn>=0.20.0
+faiss-cpu>=1.7.0
+rapidfuzz>=3.0.0
+
+# Optional packages for advanced features
+# PEFT (Parameter Efficient Fine-Tuning)
+peft>=0.4.0
+
+# Hyperparameter optimization
+optuna>=3.0.0
+
+# Distributed training and optimization
+bitsandbytes>=0.41.0
+
+# Ray for distributed training
+ray[train]>=2.0.0
+
+# Apex for mixed precision training (optional, requires CUDA)
+# apex  # Uncomment if you have CUDA and want mixed precision training
+
+# Additional optimizers (optional)
+# galore-torch  # Uncomment if needed
+# apollo-torch  # Uncomment if needed
+# lomo-optim  # Uncomment if needed
+# grokadamw  # Uncomment if needed
+# torchao  # Uncomment if needed
+# schedulefree  # Uncomment if needed
+# optimi  # Uncomment if needed

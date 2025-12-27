@@ -1,0 +1,106 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+venv_new/
+ENV/
+env/
+.venv
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.cursor/
+
+# Logs
+*.log
+logs/
+reasoning_engine.log
+
+# Test outputs
+test_*.txt
+test_*.py
+test_*.ps1
+*_result.txt
+FINAL_*.txt
+debug_*.py
+
+# Temporary
+artifacts/tmp_*.json
+*.tmp
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Model cache (HuggingFace cache - will auto-download)
+model_cache/
+
+# Large model files (> 100MB - use Git LFS if needed)
+*.pt
+*.pth
+*.bin
+*.onnx
+*.h5
+*.pb
+
+# Keep small model configs
+!models/*/config.json
+!models/*/training_config.json
+!models/*/label_maps.json
+!models/*/labels.json
+
+# Development docs
+FIX_SUMMARY.md
+CLEANUP_*.md
+DEPLOY_*.md
+
+# Cursor/IDE terminals
+.cursor/
+terminals/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Data files (optional)
+*.csv
+*.xlsx
+*.sqlite
+
+# Backup files
+*.bak
+*.backup
+*~

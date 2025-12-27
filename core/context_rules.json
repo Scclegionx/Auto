@@ -1,0 +1,111 @@
+{
+  "time_context": [
+    {
+      "keywords": [
+        "giờ",
+        "phút"
+      ],
+      "intent": "set-alarm",
+      "confidence_boost": 0.1
+    },
+    {
+      "keywords": [
+        "sáng",
+        "chiều",
+        "tối",
+        "đêm"
+      ],
+      "intent": "set-alarm",
+      "confidence_boost": 0.1
+    }
+  ],
+  "person_context": [
+    {
+      "keywords": [
+        "mẹ",
+        "bố",
+        "con",
+        "cháu"
+      ],
+      "intent": "call",
+      "confidence_boost": 0.2
+    },
+    {
+      "keywords": [
+        "bạn",
+        "anh",
+        "chị"
+      ],
+      "intent": "general-conversation",
+      "confidence_boost": 0.1
+    }
+  ],
+  "action_context": [
+    {
+      "keywords": [
+        "ngủ",
+        "đi"
+      ],
+      "intent": "set-alarm",
+      "confidence_boost": 0.15
+    }
+  ],
+  "multi_turn_context": [
+    {
+      "previous_intent": "set-alarm",
+      "keywords": [
+        "giờ",
+        "phút",
+        "sáng"
+      ],
+      "intent": "set-alarm",
+      "confidence_boost": 0.3
+    },
+    {
+      "previous_intent": "call",
+      "keywords": [
+        "số",
+        "gọi",
+        "điện"
+      ],
+      "intent": "call",
+      "confidence_boost": 0.3
+    },
+    {
+      "previous_intent": "check-weather",
+      "keywords": [
+        "mưa",
+        "nắng",
+        "mây"
+      ],
+      "intent": "check-weather",
+      "confidence_boost": 0.3
+    }
+  ],
+  "intent_disambiguation": [
+    {
+      "ambiguous_intents": [
+        "call",
+        "send-mess"
+      ],
+      "keywords": [
+        "gọi",
+        "điện"
+      ],
+      "intent": "call",
+      "confidence_boost": 0.25
+    },
+    {
+      "ambiguous_intents": [
+        "call",
+        "send-mess"
+      ],
+      "keywords": [
+        "nhắn",
+        "tin"
+      ],
+      "intent": "send-mess",
+      "confidence_boost": 0.25
+    }
+  ]
+}

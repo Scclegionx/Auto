@@ -1,0 +1,96 @@
+{
+  "overall": {
+    "num_samples": 10186,
+    "by_command": {
+      "call": 1801,
+      "search-internet": 325,
+      "send-mess": 2048,
+      "make-video-call": 491,
+      "add-contacts": 656,
+      "set-alarm": 1147,
+      "set-event-calendar": 1147,
+      "play-media": 338,
+      "view-content": 90,
+      "search-youtube": 84,
+      "control-device": 505,
+      "get-info": 1063,
+      "open-cam": 491
+    },
+    "span_invalid_count": 49,
+    "bio_len_mismatch_count": 0,
+    "bio_unknown_labels": [],
+    "avg_tokens": 10.26,
+    "p95_tokens": 16
+  },
+  "by_split": {
+    "train": {
+      "num_samples": 7963,
+      "by_command": {
+        "call": 1441,
+        "search-internet": 253,
+        "send-mess": 1638,
+        "make-video-call": 393,
+        "add-contacts": 524,
+        "set-alarm": 917,
+        "set-event-calendar": 917,
+        "play-media": 152,
+        "view-content": 48,
+        "search-youtube": 36,
+        "control-device": 400,
+        "get-info": 851,
+        "open-cam": 393
+      },
+      "span_invalid_count": 49,
+      "bio_len_mismatch_count": 0,
+      "bio_unknown_labels": [],
+      "avg_tokens": 10.37,
+      "p95_tokens": 16
+    },
+    "val": {
+      "num_samples": 1134,
+      "by_command": {
+        "call": 180,
+        "make-video-call": 49,
+        "send-mess": 205,
+        "add-contacts": 66,
+        "set-alarm": 115,
+        "set-event-calendar": 115,
+        "play-media": 106,
+        "view-content": 26,
+        "search-internet": 24,
+        "search-youtube": 36,
+        "control-device": 57,
+        "get-info": 106,
+        "open-cam": 49
+      },
+      "span_invalid_count": 0,
+      "bio_len_mismatch_count": 0,
+      "bio_unknown_labels": [],
+      "avg_tokens": 9.85,
+      "p95_tokens": 15
+    },
+    "test": {
+      "num_samples": 1089,
+      "by_command": {
+        "call": 180,
+        "make-video-call": 49,
+        "send-mess": 205,
+        "add-contacts": 66,
+        "set-alarm": 115,
+        "set-event-calendar": 115,
+        "play-media": 80,
+        "view-content": 16,
+        "search-internet": 48,
+        "search-youtube": 12,
+        "control-device": 48,
+        "get-info": 106,
+        "open-cam": 49
+      },
+      "span_invalid_count": 0,
+      "bio_len_mismatch_count": 0,
+      "bio_unknown_labels": [],
+      "avg_tokens": 9.88,
+      "p95_tokens": 15
+    }
+  }
+}

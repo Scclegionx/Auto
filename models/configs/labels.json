@@ -1,0 +1,62 @@
+{
+  "intent_to_id": {
+    "add-contacts": 0,
+    "call": 1,
+    "control-device": 2,
+    "get-info": 3,
+    "make-video-call": 4,
+    "open-cam": 5,
+    "search-internet": 6,
+    "search-youtube": 7,
+    "send-mess": 8,
+    "set-alarm": 9
+  },
+  "id_to_intent": {
+    "0": "add-contacts",
+    "1": "call",
+    "2": "control-device",
+    "3": "get-info",
+    "4": "make-video-call",
+    "5": "open-cam",
+    "6": "search-internet",
+    "7": "search-youtube",
+    "8": "send-mess",
+    "9": "set-alarm"
+  },
+  "entity_to_id": {
+    "ACTION": 0,
+    "CAMERA_TYPE": 1,
+    "CONTACT_NAME": 2,
+    "DATE": 3,
+    "DEVICE": 4,
+    "FREQUENCY": 5,
+    "LEVEL": 6,
+    "LOCATION": 7,
+    "MESSAGE": 8,
+    "MODE": 9,
+    "PHONE": 10,
+    "PLATFORM": 11,
+    "QUERY": 12,
+    "RECEIVER": 13,
+    "REMINDER_CONTENT": 14,
+    "TIME": 15
+  },
+  "id_to_entity": {
+    "0": "ACTION",
+    "1": "CAMERA_TYPE",
+    "2": "CONTACT_NAME",
+    "3": "DATE",
+    "4": "DEVICE",
+    "5": "FREQUENCY",
+    "6": "LEVEL",
+    "7": "LOCATION",
+    "8": "MESSAGE",
+    "9": "MODE",
+    "10": "PHONE",
+    "11": "PLATFORM",
+    "12": "QUERY",
+    "13": "RECEIVER",
+    "14": "REMINDER_CONTENT",
+    "15": "TIME"
+  }
+}

@@ -1,0 +1,303 @@
+{
+  "intent_synonyms": {
+    "call": [
+      "gọi",
+      "điện thoại",
+      "alo",
+      "kết nối",
+      "liên lạc",
+      "quay số",
+      "bấm số",
+      "phone",
+      "call"
+    ],
+    "make-video-call": [
+      "gọi video",
+      "video call",
+      "face time",
+      "zalo video",
+      "gọi facetime"
+    ],
+    "send-mess": [
+      "gửi tin nhắn",
+      "nhắn tin",
+      "text",
+      "sms",
+      "thông báo",
+      "soạn tin",
+      "message",
+      "send"
+    ],
+    "add-contacts": [
+      "thêm liên lạc",
+      "lưu số",
+      "thêm số",
+      "lưu danh bạ",
+      "thêm danh bạ"
+    ],
+    "search-internet": [
+      "tìm kiếm",
+      "tìm",
+      "search",
+      "tra cứu",
+      "google"
+    ],
+    "search-youtube": [
+      "tìm youtube",
+      "tìm trên youtube",
+      "youtube",
+      "yt"
+    ],
+    "get-info": [
+      "thông tin",
+      "thời tiết",
+      "nhiệt độ",
+      "mưa",
+      "nắng",
+      "dự báo thời tiết",
+      "weather",
+      "temperature",
+      "đọc tin tức",
+      "tin tức",
+      "báo",
+      "thời sự",
+      "cập nhật tin",
+      "news",
+      "read",
+      "kiểm tra sức khỏe",
+      "đo",
+      "theo dõi",
+      "chỉ số",
+      "tình trạng",
+      "health",
+      "check"
+    ],
+    "set-alarm": [
+      "đặt báo thức",
+      "hẹn giờ",
+      "đánh thức",
+      "chuông báo",
+      "bật chuông",
+      "alarm"
+    ],
+    "open-cam": [
+      "mở camera",
+      "bật camera",
+      "camera",
+      "chụp ảnh"
+    ],
+    "control-device": [
+      "điều khiển",
+      "bật",
+      "tắt",
+      "wifi",
+      "bluetooth",
+      "đèn pin",
+      "âm lượng",
+      "volume"
+    ],
+    "unknown": [
+      "không hiểu",
+      "không rõ",
+      "lạ",
+      "không biết",
+      "chưa rõ",
+      "xin chào",
+      "tạm biệt",
+      "cảm ơn",
+      "trò chuyện",
+      "nói chuyện",
+      "hello",
+      "conversation",
+      "giúp đỡ",
+      "trợ giúp",
+      "hướng dẫn",
+      "hỗ trợ",
+      "không hiểu",
+      "help",
+      "support"
+    ]
+  },
+  "context_keywords": {
+    "time": [
+      "giờ",
+      "phút",
+      "sáng",
+      "chiều",
+      "tối",
+      "mai",
+      "hôm nay",
+      "tuần",
+      "tháng"
+    ],
+    "person": [
+      "mẹ",
+      "bố",
+      "con",
+      "cháu",
+      "bạn",
+      "anh",
+      "chị",
+      "em",
+      "ông",
+      "bà"
+    ],
+    "location": [
+      "nhà",
+      "bệnh viện",
+      "phòng",
+      "ngoài",
+      "trong",
+      "đây",
+      "đó"
+    ],
+    "action": [
+      "uống",
+      "ăn",
+      "ngủ",
+      "đi",
+      "về",
+      "đến",
+      "gặp",
+      "thăm"
+    ],
+    "object": [
+      "thuốc",
+      "nước",
+      "cơm",
+      "sách",
+      "điện thoại",
+      "tivi",
+      "radio"
+    ]
+  },
+  "intent_indicators": {
+    "call": [
+      "gọi",
+      "điện",
+      "phone",
+      "call",
+      "kết nối",
+      "liên lạc",
+      "cuộc gọi",
+      "gọi thoại",
+      "gọi điện",
+      "thực hiện gọi",
+      "thực hiện cuộc gọi"
+    ],
+    "make-video-call": [
+      "gọi video",
+      "video call",
+      "face time",
+      "zalo video",
+      "gọi facetime",
+      "video"
+    ],
+    "send-mess": [
+      "nhắn",
+      "tin",
+      "message",
+      "sms",
+      "text",
+      "gửi",
+      "nhắn tin",
+      "gửi tin",
+      "soạn tin",
+      "tin nhắn"
+    ],
+    "add-contacts": [
+      "thêm liên lạc",
+      "lưu số",
+      "thêm số",
+      "lưu danh bạ",
+      "thêm danh bạ",
+      "lưu",
+      "thêm"
+    ],
+    "search-internet": [
+      "tìm kiếm",
+      "tìm",
+      "search",
+      "tra cứu",
+      "google",
+      "internet"
+    ],
+    "search-youtube": [
+      "youtube",
+      "yt",
+      "tìm youtube",
+      "tìm trên youtube"
+    ],
+    "get-info": [
+      "thông tin",
+      "thời tiết",
+      "weather",
+      "nhiệt",
+      "mưa",
+      "nắng",
+      "tin",
+      "news",
+      "báo",
+      "đọc",
+      "thời sự",
+      "sức khỏe",
+      "health",
+      "kiểm tra",
+      "đo",
+      "theo dõi",
+      "chỉ số",
+      "tình trạng"
+    ],
+    "set-alarm": [
+      "báo thức",
+      "hẹn giờ",
+      "đánh thức",
+      "alarm",
+      "chuông"
+    ],
+    "open-cam": [
+      "camera",
+      "chụp",
+      "ảnh",
+      "mở camera",
+      "bật camera"
+    ],
+    "control-device": [
+      "điều khiển",
+      "bật",
+      "tắt",
+      "wifi",
+      "bluetooth",
+      "đèn pin",
+      "âm lượng",
+      "volume",
+      "thiết bị"
+    ],
+    "unknown": [
+      "không hiểu",
+      "chưa rõ",
+      "không biết",
+      "chào",
+      "hello",
+      "cảm ơn",
+      "tạm biệt",
+      "nói chuyện",
+      "giúp",
+      "help",
+      "hướng dẫn",
+      "hỗ trợ"
+    ]
+  },
+  "multi_intent_indicators": {
+    "call,send-mess": [
+      "gọi",
+      "nhắn",
+      "liên lạc"
+    ],
+    "get-info,search-internet": [
+      "thông tin",
+      "tìm kiếm",
+      "cập nhật"
+    ]
+  }
+}

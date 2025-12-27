@@ -1,0 +1,140 @@
+{
+  "intent_fallback": {
+    "send-mess": {
+      "keywords": [
+        "nhắn tin", "gửi tin", "soạn tin", "sms", "message", "gửi", "nhắn",
+        "text", "tin nhắn", "gửi tin nhắn", "nhắn tin cho", "gửi tin cho",
+        "soạn tin cho", "gửi cho", "nhắn cho", "messenger", "zalo"
+      ],
+      "patterns": [
+        "nhắn tin.*cho",
+        "gửi tin.*cho", 
+        "soạn tin.*cho",
+        "gửi.*tin nhắn",
+        "nhắn.*tin.*cho",
+        "gửi.*cho.*tin"
+      ],
+      "confidence": 0.9,
+      "platforms": ["messenger", "zalo", "sms"]
+    },
+    "call": {
+      "keywords": [
+        "gọi", "alo", "gọi điện", "gọi thoại", "cuộc gọi", "gọi cho",
+        "gọi tới", "gọi đến", "thực hiện cuộc gọi", "gọi ngay", "gọi khẩn cấp"
+      ],
+      "patterns": [
+        "gọi.*cho",
+        "alo.*cho",
+        "gọi điện.*cho",
+        "gọi thoại.*cho",
+        "cuộc gọi.*cho"
+      ],
+      "confidence": 0.9,
+      "platforms": ["messenger", "zalo", "phone"]
+    },
+    "make-video-call": {
+      "keywords": [
+        "gọi video", "facetime", "video call", "gọi video cho", "facetime với", "video"
+      ],
+      "patterns": [
+        "gọi video.*cho",
+        "facetime.*với",
+        "video call.*cho",
+        "gọi video",
+        "facetime"
+      ],
+      "confidence": 0.9,
+      "platforms": ["messenger", "zalo"]
+    },
+    "set-reminder": {
+      "keywords": [
+        "nhắc", "nhắc nhở", "ghi nhớ", "reminder", "đừng quên", "nhớ",
+        "đặt lời nhắc", "đặt nhắc nhở", "uống thuốc", "thuốc", "viên thuốc"
+      ],
+      "patterns": [
+        "nhắc.*nhở",
+        "đặt.*lời nhắc",
+        "đừng quên",
+        "uống thuốc",
+        "nhắc.*lúc"
+      ],
+      "confidence": 0.8
+    },
+    "set-alarm": {
+      "keywords": [
+        "báo thức", "đánh thức", "alarm", "dậy", "thức dậy", "đặt báo thức"
+      ],
+      "patterns": [
+        "báo thức.*lúc",
+        "đánh thức.*lúc",
+        "đặt báo thức",
+        "alarm.*lúc"
+      ],
+      "confidence": 0.8
+    },
+    "search": {
+      "keywords": [
+        "tìm", "tìm kiếm", "tra cứu", "search", "google", "tìm kiếm", "youtube", "facebook"
+      ],
+      "patterns": [
+        "tìm.*kiếm",
+        "tra cứu",
+        "search.*cho",
+        "google.*cho",
+        "youtube.*tìm",
+        "facebook.*tìm"
+      ],
+      "confidence": 0.8,
+      "platforms": ["youtube", "facebook", "google"]
+    },
+    "open-app": {
+      "keywords": [
+        "mở", "khởi động", "chạy", "mở ứng dụng", "khởi động ứng dụng"
+      ],
+      "patterns": [
+        "mở.*ứng dụng",
+        "khởi động.*ứng dụng",
+        "chạy.*ứng dụng",
+        "mở.*app"
+      ],
+      "confidence": 0.8
+    },
+    "check-weather": {
+      "keywords": [
+        "thời tiết", "weather", "nắng", "mưa", "nhiệt độ", "độ ẩm"
+      ],
+      "patterns": [
+        "thời tiết.*hôm nay",
+        "weather.*today",
+        "nhiệt độ.*hôm nay",
+        "có mưa không"
+      ],
+      "confidence": 0.8
+    },
+    "check-messages": {
+      "keywords": [
+        "kiểm tra tin nhắn", "tin nhắn mới", "tin nhắn", "kiểm tra tin", "tin mới"
+      ],
+      "patterns": [
+        "kiểm tra.*tin nhắn",
+        "tin nhắn.*mới",
+        "có tin nhắn.*không",
+        "tin.*mới"
+      ],
+      "confidence": 0.8
+    },
+    "help": {
+      "keywords": [
+        "giúp", "help", "trợ giúp", "hướng dẫn", "làm sao", "cách"
+      ],
+      "patterns": [
+        "giúp.*tôi",
+        "help.*me",
+        "trợ giúp",
+        "hướng dẫn",
+        "làm sao.*để"
+      ],
+      "confidence": 0.7
+    }
+  }
+}

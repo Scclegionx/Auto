@@ -1,0 +1,1538 @@
+[
+  {
+    "input": "ờ điện không chín bốn chín một ba bốn hai ba một nha",
+    "intent": "call",
+    "command": "call",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "PHONE",
+        "text": "không chín bốn chín một ba bốn hai ba một",
+        "start": 7,
+        "end": 48
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ê gọi cho Đỗ Gia Quyên giúp tôi",
+    "intent": "call",
+    "command": "call",
+    "bio_labels": [
+      "O",
+      "B-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "gọi cho Đỗ Gia Quyên giúp tôi",
+        "start": 2,
+        "end": 31
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "search YouTube xem thời sự hôm nay ạ",
+    "intent": "search-youtube",
+    "command": "search-youtube",
+    "bio_labels": [
+      "O",
+      "B-PLATFORM",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "YouTube",
+        "start": 7,
+        "end": 14
+      },
+      {
+        "label": "QUERY",
+        "text": "xem thời sự hôm nay",
+        "start": 15,
+        "end": 34
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "này Tìm trên YouTube: hướng dẫn Excel channel đi",
+    "intent": "search-youtube",
+    "command": "search-youtube",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-PLATFORM",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "YouTube",
+        "start": 13,
+        "end": 20
+      },
+      {
+        "label": "QUERY",
+        "text": "hướng dẫn Excel",
+        "start": 22,
+        "end": 37
+      }
+    ],
+    "split": "val"
+  },
+  {
+    "input": "ừm bật máy lọc không khí ở ban công tối thiểu ạ",
+    "intent": "control-device",
+    "command": "control-device",
+    "bio_labels": [
+      "O",
+      "B-ACTION",
+      "B-DEVICE",
+      "I-DEVICE",
+      "I-DEVICE",
+      "I-DEVICE",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "ACTION",
+        "text": "bật",
+        "start": 3,
+        "end": 6
+      },
+      {
+        "label": "MODE",
+        "text": "bật",
+        "start": 3,
+        "end": 6
+      },
+      {
+        "label": "DEVICE",
+        "text": "máy lọc không khí",
+        "start": 7,
+        "end": 24
+      }
+    ],
+    "split": "val"
+  },
+  {
+    "input": "ừm Cho tôi bấm máy Lê Hải Bình ạ",
+    "intent": "call",
+    "command": "call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Lê Hải Bình",
+        "start": 19,
+        "end": 30
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ờ đặt chuông báo lúc 14 giờ 35 phút với",
+    "intent": "set-alarm",
+    "command": "set-alarm",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-DATE",
+      "I-DATE",
+      "I-DATE",
+      "I-TIME",
+      "I-TIME",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "DATE",
+        "text": "lúc 14 giờ",
+        "start": 17,
+        "end": 27
+      },
+      {
+        "label": "TIME",
+        "text": "14 giờ 35 phút",
+        "start": 21,
+        "end": 35
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "Thêm liên hệ Ngô Gia Thắng số không chín tám tám sáu sáu tám bốn hai bảy giùm",
+    "intent": "add-contacts",
+    "command": "add-contacts",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "B-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Ngô Gia Thắng",
+        "start": 13,
+        "end": 26
+      },
+      {
+        "label": "PHONE",
+        "text": "số không chín tám tám sáu sáu tám bốn hai bảy",
+        "start": 27,
+        "end": 72
+      }
+    ],
+    "split": "test"
+  },
+  {
+    "input": "nè Gọi video Đỗ Đình Tú bằng Messenger đi",
+    "intent": "make-video-call",
+    "command": "make-video-call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "O",
+      "B-PLATFORM",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Đỗ Đình Tú",
+        "start": 13,
+        "end": 23
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": 29,
+        "end": 38
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "nhắn tin nhắn cho Huỳnh Hải Giang: sắp bận chút nhé bạn giùm",
+    "intent": "send-mess",
+    "command": "send-mess",
+    "bio_labels": [
+      "O",
+      "B-PLATFORM",
+      "I-PLATFORM",
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "tin nhắn",
+        "start": 5,
+        "end": 13
+      },
+      {
+        "label": "MESSAGE",
+        "text": "sắp bận chút nhé bạn giùm",
+        "start": 35,
+        "end": 60
+      },
+      {
+        "label": "RECEIVER",
+        "text": "chú",
+        "start": 43,
+        "end": 46
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "Bấm máy Phạm Anh Quyên đi nha",
+    "intent": "call",
+    "command": "call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Anh",
+        "start": 13,
+        "end": 16
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ừm Gọi video không chín hai không bốn không hai không chín không qua Viber giúp tôi",
+    "intent": "make-video-call",
+    "command": "make-video-call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-PLATFORM",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "ông",
+        "start": 15,
+        "end": 18
+      },
+      {
+        "label": "RECEIVER",
+        "text": "ông",
+        "start": 15,
+        "end": 18
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": 69,
+        "end": 74
+      }
+    ],
+    "split": "val"
+  },
+  {
+    "input": "soạn tin nhắn cho Hồ Đình Linh: ngày mai đi công tác nha",
+    "intent": "send-mess",
+    "command": "send-mess",
+    "bio_labels": [
+      "O",
+      "B-PLATFORM",
+      "I-PLATFORM",
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "tin nhắn",
+        "start": 5,
+        "end": 13
+      },
+      {
+        "label": "MESSAGE",
+        "text": "ngày mai đi công tác nha",
+        "start": 32,
+        "end": 56
+      },
+      {
+        "label": "RECEIVER",
+        "text": "cô",
+        "start": 44,
+        "end": 46
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "o mo Google roi tim nhac trinh cong son nhe",
+    "intent": "search-internet",
+    "command": "search-internet",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-PLATFORM",
+      "O",
+      "O",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "Google",
+        "start": 5,
+        "end": 11
+      },
+      {
+        "label": "QUERY",
+        "text": "nhac trinh cong son",
+        "start": 20,
+        "end": 39
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ê Cho tôi gọi Hồ Thị Quyên ạ",
+    "intent": "call",
+    "command": "call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "gọi Hồ Thị Quyên ạ",
+        "start": 10,
+        "end": 28
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "nè tra hồ sơ hưởng bảo hiểm y tế cho người cao tuổi trên Google dùm cái",
+    "intent": "search-internet",
+    "command": "search-internet",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O",
+      "B-PLATFORM",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "QUERY",
+        "text": "hồ sơ hưởng bảo hiểm y tế cho người cao tuổi",
+        "start": 7,
+        "end": 51
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Google",
+        "start": 57,
+        "end": 63
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ờ gửi tin nhắn cho Hồ Thu Hương: ngày mai trên đường về giúp mình với giùm",
+    "intent": "send-mess",
+    "command": "send-mess",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-PLATFORM",
+      "I-PLATFORM",
+      "O",
+      "B-RECEIVER",
+      "I-RECEIVER",
+      "I-RECEIVER",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "tin nhắn",
+        "start": 6,
+        "end": 14
+      },
+      {
+        "label": "RECEIVER",
+        "text": "Hồ Thu Hương",
+        "start": 19,
+        "end": 31
+      },
+      {
+        "label": "MESSAGE",
+        "text": ": ngày mai trên đường về giúp mình với giùm",
+        "start": 31,
+        "end": 74
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ờ soạn sms cho Lê Anh Phúc: trưa nay đi khám nhé em giùm",
+    "intent": "send-mess",
+    "command": "send-mess",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-PLATFORM",
+      "O",
+      "O",
+      "B-RECEIVER",
+      "B-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "sms",
+        "start": 7,
+        "end": 10
+      },
+      {
+        "label": "RECEIVER",
+        "text": "Anh",
+        "start": 18,
+        "end": 21
+      },
+      {
+        "label": "MESSAGE",
+        "text": ": trưa nay đi khám nhé em giùm",
+        "start": 26,
+        "end": 56
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "nè đặt báo thức lúc 16 giờ 20 phút dùm cái",
+    "intent": "set-alarm",
+    "command": "set-alarm",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-DATE",
+      "I-DATE",
+      "I-DATE",
+      "I-TIME",
+      "I-TIME",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "DATE",
+        "text": "lúc 16 giờ",
+        "start": 16,
+        "end": 26
+      },
+      {
+        "label": "TIME",
+        "text": "16 giờ 20 phút",
+        "start": 20,
+        "end": 34
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "em ơi mở Google rồi tìm cách thanh toán tiền điện online giùm",
+    "intent": "search-internet",
+    "command": "search-internet",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-PLATFORM",
+      "O",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "Google",
+        "start": 9,
+        "end": 15
+      },
+      {
+        "label": "QUERY",
+        "text": "tìm cách thanh toán tiền điện online giùm",
+        "start": 20,
+        "end": 61
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ừm search ảnh mèo dễ thương trên internet đi",
+    "intent": "search-internet",
+    "command": "search-internet",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "QUERY",
+        "text": "ảnh mèo dễ thương",
+        "start": 10,
+        "end": 27
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ừm Báo tôi dậy lúc 18 giờ sáng nha",
+    "intent": "set-alarm",
+    "command": "set-alarm",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-TIME",
+      "I-TIME",
+      "I-TIME",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "TIME",
+        "text": "18 giờ sáng",
+        "start": 19,
+        "end": 30
+      },
+      {
+        "label": "DATE",
+        "text": "sáng",
+        "start": 26,
+        "end": 30
+      }
+    ],
+    "split": "val"
+  },
+  {
+    "input": "ê tăng loa thông minh ở phòng khách tối đa ạ",
+    "intent": "control-device",
+    "command": "control-device",
+    "bio_labels": [
+      "O",
+      "B-ACTION",
+      "B-DEVICE",
+      "I-DEVICE",
+      "I-DEVICE",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "ACTION",
+        "text": "tăng",
+        "start": 2,
+        "end": 6
+      },
+      {
+        "label": "MODE",
+        "text": "tăng",
+        "start": 2,
+        "end": 6
+      },
+      {
+        "label": "DEVICE",
+        "text": "loa thông minh",
+        "start": 7,
+        "end": 21
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "nè Thêm danh bạ Bùi Thành Chi không chín ba tám năm chín bảy bảy chín ba ghi chú bác",
+    "intent": "add-contacts",
+    "command": "add-contacts",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "anh",
+        "start": 9,
+        "end": 12
+      },
+      {
+        "label": "PHONE",
+        "text": "không chín ba tám năm chín bảy bảy chín ba",
+        "start": 30,
+        "end": 72
+      }
+    ],
+    "split": "test"
+  },
+  {
+    "input": "nè tăng điều hòa ở phòng ngủ một trăm phần trăm giùm",
+    "intent": "control-device",
+    "command": "control-device",
+    "bio_labels": [
+      "O",
+      "B-ACTION",
+      "B-DEVICE",
+      "I-DEVICE",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "ACTION",
+        "text": "tăng",
+        "start": 3,
+        "end": 7
+      },
+      {
+        "label": "MODE",
+        "text": "tăng",
+        "start": 3,
+        "end": 7
+      },
+      {
+        "label": "DEVICE",
+        "text": "điều hòa",
+        "start": 8,
+        "end": 16
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ê thiết lập chuông báo lúc 13 giờ nhắc ăn sáng đi",
+    "intent": "set-alarm",
+    "command": "set-alarm",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-TIME",
+      "I-TIME",
+      "O",
+      "O",
+      "B-DATE",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "TIME",
+        "text": "13 giờ",
+        "start": 27,
+        "end": 33
+      },
+      {
+        "label": "DATE",
+        "text": "sáng",
+        "start": 42,
+        "end": 46
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "giá vàng tầng một ngày hai mươi tư tháng mười",
+    "intent": "get-info",
+    "command": "get-info",
+    "bio_labels": [
+      "B-CONTENT_TYPE",
+      "I-CONTENT_TYPE",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY"
+    ],
+    "entities": [
+      {
+        "label": "CONTENT_TYPE",
+        "text": "giá vàng",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "label": "QUERY",
+        "text": "giá vàng tầng một ngày hai mươi tư tháng mười",
+        "start": 0,
+        "end": 45
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "này tìm giúp xem cải lương hay trên Google dùm cái",
+    "intent": "search-internet",
+    "command": "search-internet",
+    "bio_labels": [
+      "O",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "B-PLATFORM",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "QUERY",
+        "text": "tìm giúp xem cải lương hay trên",
+        "start": 4,
+        "end": 35
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Google",
+        "start": 36,
+        "end": 42
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ừm gửi sms cho Huỳnh Gia Nam: mai bận chút giùm giùm",
+    "intent": "send-mess",
+    "command": "send-mess",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-PLATFORM",
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "sms",
+        "start": 7,
+        "end": 10
+      },
+      {
+        "label": "MESSAGE",
+        "text": "mai bận chút giùm giùm",
+        "start": 30,
+        "end": 52
+      },
+      {
+        "label": "RECEIVER",
+        "text": "chú",
+        "start": 38,
+        "end": 41
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "giúp tôi search cách phòng té ngã trong nhà trên Google nha",
+    "intent": "search-internet",
+    "command": "search-internet",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O",
+      "B-PLATFORM",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "QUERY",
+        "text": "cách phòng té ngã trong nhà",
+        "start": 16,
+        "end": 43
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Google",
+        "start": 49,
+        "end": 55
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "Search YouTube: hướng dẫn dùng zalo ạ",
+    "intent": "search-youtube",
+    "command": "search-youtube",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "QUERY",
+        "text": "hướng dẫn dùng zalo",
+        "start": 16,
+        "end": 35
+      },
+      {
+        "label": "PLATFORM",
+        "text": "zalo",
+        "start": 31,
+        "end": 35
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "này mở camera sau hẹn giờ bảy giờ bốn mươi phút nha",
+    "intent": "open-cam",
+    "command": "open-cam",
+    "bio_labels": [
+      "O",
+      "B-ACTION",
+      "O",
+      "B-MODE",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "ACTION",
+        "text": "mở",
+        "start": 4,
+        "end": 6
+      },
+      {
+        "label": "MODE",
+        "text": "sau",
+        "start": 14,
+        "end": 17
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "Liên lạc Võ Anh Lan đi giúp tôi",
+    "intent": "call",
+    "command": "call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Anh",
+        "start": 12,
+        "end": 15
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ê bấm máy cho Đỗ Mai Tùng dùm cái",
+    "intent": "call",
+    "command": "call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Đỗ Mai Tùng",
+        "start": 14,
+        "end": 25
+      }
+    ],
+    "split": "test"
+  },
+  {
+    "input": "ừm giá vàng ban công ngày mười tám tháng chín",
+    "intent": "get-info",
+    "command": "get-info",
+    "bio_labels": [
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY"
+    ],
+    "entities": [
+      {
+        "label": "QUERY",
+        "text": "ừm giá vàng ban công ngày mười tám tháng chín",
+        "start": 0,
+        "end": 45
+      },
+      {
+        "label": "CONTENT_TYPE",
+        "text": "giá vàng",
+        "start": 3,
+        "end": 11
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "này search YouTube xoa bóp giảm đau khớp gối nhé",
+    "intent": "search-youtube",
+    "command": "search-youtube",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-PLATFORM",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "YouTube",
+        "start": 11,
+        "end": 18
+      },
+      {
+        "label": "QUERY",
+        "text": "xoa bóp giảm đau khớp gối",
+        "start": 19,
+        "end": 44
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ê thời tiết phòng ngủ ngày mười tháng mười hai dùm cái",
+    "intent": "get-info",
+    "command": "get-info",
+    "bio_labels": [
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "QUERY",
+        "text": "ê thời tiết phòng ngủ ngày mười tháng mười hai",
+        "start": 0,
+        "end": 46
+      },
+      {
+        "label": "CONTENT_TYPE",
+        "text": "thời tiết",
+        "start": 2,
+        "end": 11
+      }
+    ],
+    "split": "val"
+  },
+  {
+    "input": "ừm liên lạc không chín ba tám không năm sáu bảy hai năm",
+    "intent": "call",
+    "command": "call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE"
+    ],
+    "entities": [
+      {
+        "label": "PHONE",
+        "text": "không chín ba tám không năm sáu bảy hai năm",
+        "start": 12,
+        "end": 55
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "này gửi sms cho Vũ Hữu Dũng: đang về trễ nha",
+    "intent": "send-mess",
+    "command": "send-mess",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-PLATFORM",
+      "O",
+      "B-RECEIVER",
+      "I-RECEIVER",
+      "I-RECEIVER",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "sms",
+        "start": 8,
+        "end": 11
+      },
+      {
+        "label": "RECEIVER",
+        "text": "Vũ Hữu Dũng",
+        "start": 16,
+        "end": 27
+      },
+      {
+        "label": "MESSAGE",
+        "text": ": đang về trễ nha",
+        "start": 27,
+        "end": 44
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ừm Cho tôi điện Ngô Thu Quỳnh ạ",
+    "intent": "call",
+    "command": "call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Ngô Thu Quỳnh",
+        "start": 16,
+        "end": 29
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ừm Đặt chuông 7 giờ sáng ạ",
+    "intent": "set-alarm",
+    "command": "set-alarm",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-TIME",
+      "I-TIME",
+      "I-TIME",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "TIME",
+        "text": "7 giờ sáng",
+        "start": 14,
+        "end": 24
+      },
+      {
+        "label": "DATE",
+        "text": "sáng",
+        "start": 20,
+        "end": 24
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ừm Thêm danh bạ Phan Hữu Nam không chín ba ba chín không tám năm tám sáu ghi chú công ty ạ",
+    "intent": "add-contacts",
+    "command": "add-contacts",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "O",
+      "O",
+      "O",
+      "O",
+      "B-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "I-PHONE",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "anh",
+        "start": 9,
+        "end": 12
+      },
+      {
+        "label": "PHONE",
+        "text": "không chín ba ba chín không tám năm tám sáu",
+        "start": 29,
+        "end": 72
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ừm nhắn tin nhắn cho Hồ Anh Phúc: sắp trên đường về nha ạ",
+    "intent": "send-mess",
+    "command": "send-mess",
+    "bio_labels": [
+      "O",
+      "O",
+      "B-PLATFORM",
+      "I-PLATFORM",
+      "O",
+      "O",
+      "B-RECEIVER",
+      "B-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE",
+      "I-MESSAGE"
+    ],
+    "entities": [
+      {
+        "label": "PLATFORM",
+        "text": "tin nhắn",
+        "start": 8,
+        "end": 16
+      },
+      {
+        "label": "RECEIVER",
+        "text": "Anh",
+        "start": 24,
+        "end": 27
+      },
+      {
+        "label": "MESSAGE",
+        "text": ": sắp trên đường về nha ạ",
+        "start": 32,
+        "end": 57
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "ê Gọi video Hoàng Mai Hùng bằng Messenger đi",
+    "intent": "make-video-call",
+    "command": "make-video-call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "O",
+      "B-PLATFORM",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Hoàng Mai Hùng",
+        "start": 12,
+        "end": 26
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": 32,
+        "end": 41
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "input": "nè tìm cách nấu phở trên mạng giúp tôi",
+    "intent": "search-internet",
+    "command": "search-internet",
+    "bio_labels": [
+      "O",
+      "B-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "I-QUERY",
+      "O",
+      "O",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "QUERY",
+        "text": "tìm cách nấu phở trên",
+        "start": 3,
+        "end": 24
+      }
+    ],
+    "split": "val"
+  },
+  {
+    "input": "này Gọi video Vũ Văn Khánh bằng FaceTime với",
+    "intent": "make-video-call",
+    "command": "make-video-call",
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "B-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "I-CONTACT_NAME",
+      "O",
+      "B-PLATFORM",
+      "O"
+    ],
+    "entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Vũ Văn Khánh",
+        "start": 14,
+        "end": 26
+      },
+      {
+        "label": "PLATFORM",
+        "text": "FaceTime",
+        "start": 32,
+        "end": 40
+      }
+    ],
+    "split": "train"
+  }
+]

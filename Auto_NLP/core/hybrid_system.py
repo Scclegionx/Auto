@@ -11,19 +11,17 @@ import sys
 import time
 import unicodedata
 import types
+import re
 
-# Add project root to path
 current_dir = Path(__file__).parent
 project_root = current_dir.parent
 sys.path.insert(0, str(project_root))
 
-# Fix torchvision issue (tạo mock module đúng kiểu để tránh lỗi import)
 try:
     import torchvision
     print("torchvision available")
 except ImportError:
     print("torchvision not available - creating mock")
-    # Tạo module torchvision giả với cấu trúc tối thiểu: torchvision.transforms.InterpolationMode
     mock_tv = types.ModuleType("torchvision")
     transforms_mod = types.ModuleType("transforms")
 
@@ -31,9 +29,7 @@ except ImportError:
         BILINEAR = "bilinear"
         NEAREST = "nearest"
 
-    # gán class vào module transforms
     transforms_mod.InterpolationMode = _InterpolationMode  # type: ignore[attr-defined]
-    # gán transforms vào torchvision
     mock_tv.transforms = transforms_mod  # type: ignore[attr-defined]
 
     sys.modules["torchvision"] = mock_tv
@@ -43,7 +39,8 @@ try:
     from core.reasoning_engine import ReasoningEngine
     from core.model_loader import TrainedModelInference, load_trained_model
     from src.inference.engines.entity_extractor import EntityExtractor as SpecializedEntityExtractor
-    print("Imported ReasoningEngine and SpecializedEntityExtractor")
+    from core.entity_contracts import filter_entities, validate_entities, calculate_entity_clarity_score
+    print("Imported ReasoningEngine, SpecializedEntityExtractor, and EntityContracts")
 except ImportError as e:
     print(f"Failed to import components: {e}")
     sys.exit(1)
@@ -256,6 +253,97 @@ class ModelFirstHybridSystem:
         normalized = unicodedata.normalize("NFD", text)
         return "".join(ch for ch in normalized if unicodedata.category(ch) != "Mn")
 
+    @staticmethod
+    def _extract_message_receiver(text: str) -> Dict[str, str]:
+        """
+        Heuristic parser send-mess, bám yêu cầu:
+        - Case A/B/C: receiver qua cho/tới/đến; marker nội dung (rằng|là|nói|bảo|nhắn|gửi|nhắc|:) nếu có.
+        - Platform chỉ khi có "qua|bằng|trên <platform_keyword>".
+        - Heuristic cắt receiver ngắn (<=4 token) để tránh nuốt MESSAGE.
+        """
+        if not text:
+            return {}
+
+        original = text
+        lower = text.lower()
+        out: Dict[str, str] = {}
+
+        # 1) Detect platform
+        platform_keywords = ["zalo", "sms", "messenger", "facebook", "fb", "viber", "telegram", "whatsapp", "imessage"]
+        platform = None
+        m_plat = re.search(r"\b(qua|bằng|trên)\s+([a-zA-Z0-9_]+)", lower)
+        if m_plat:
+            cand = m_plat.group(2).lower()
+            if cand in platform_keywords:
+                platform = cand
+        if platform:
+            out["PLATFORM"] = platform
+
+        # 2) Find marker positions
+        marker_list = [" rằng ", " rằng là ", " là ", " bảo ", " nói ", " nhắn ", " gửi ", " nhắc ", ":"]
+        marker_pos = []
+        for mk in marker_list:
+            pos = lower.find(mk)
+            if pos != -1:
+                marker_pos.append((pos, mk))
+        marker_pos.sort(key=lambda x: x[0])
+        first_marker = marker_pos[0] if marker_pos else None
+
+        # 3) Find receiver via cho/tới/đến
+        rec_match = re.search(r"\b(cho|tới|đến)\s+([^,:.;]+)", lower)
+        receiver = None
+        receiver_span = None
+        if rec_match:
+            span_start = rec_match.start(2)
+            span_end = rec_match.end(2)
+            candidate = original[span_start:span_end].strip()
+            # Cắt receiver khi gặp marker/dấu câu trong candidate
+            stop_tokens = [" rằng", " la", " là", " bảo", " nói", " nhắn", " gửi", " nhắc", ":", ",", "."]
+            cand_lower = candidate.lower()
+            cut_idx = None
+            for st in stop_tokens:
+                idx = cand_lower.find(st)
+                if idx != -1:
+                    cut_idx = idx
+                    break
+            if cut_idx is not None:
+                candidate = candidate[:cut_idx].strip()
+                span_end = span_start + cut_idx
+            # Heuristic: limit receiver length to 4 tokens
+            tokens = candidate.split()
+            if len(tokens) > 4:
+                candidate = " ".join(tokens[:3])
+                span_end = span_start + len(" ".join(tokens[:3]))
+            receiver = candidate.strip()
+            receiver_span = (span_start, span_end)
+
+        # 4) Message extraction based on marker and receiver ordering
+        message = None
+        if first_marker:
+            m_pos, mk = first_marker
+            mk_end = m_pos + len(mk)
+            if receiver_span and m_pos > receiver_span[0]:
+                # Marker sau receiver (Case A)
+                message = original[mk_end:].strip()
+            elif receiver_span and m_pos < receiver_span[0]:
+                # Marker trước receiver (Case C)
+                message = original[mk_end:receiver_span[0]].strip()
+                receiver = original[receiver_span[0]:receiver_span[1]].strip() if receiver_span else receiver
+            else:
+                # Không có receiver, marker vẫn cắt message
+                message = original[mk_end:].strip()
+        else:
+            # No marker: Case B, message là phần sau receiver (nếu có)
+            if receiver_span:
+                message = original[receiver_span[1]:].strip()
+
+        # Clean receiver/message
+        if receiver:
+            out["RECEIVER"] = receiver.strip(" ,.:;")
+        if message:
+            out["MESSAGE"] = message.strip(" ,.:;")
+        return out
+
     def _initialize_components(self):
         """Initialize all system components"""
         print("Initializing model-first hybrid system...")
@@ -375,185 +463,81 @@ class ModelFirstHybridSystem:
             entities = dict(result.get("entities") or {})
 
             if command == "control-device":
-                # Normalize device keywords
-                has_volume = any(w in text_l for w in ["âm lượng", "loa", "âm thanh", "volume"])
-                has_brightness = any(w in text_l for w in ["độ sáng", "sáng", "brightness", "ánh sáng"]) 
-                has_aircon = any(w in text_l for w in ["điều hòa", "dieu hoa", "máy lạnh", "may lanh"])
-                has_flashlight = any(w in text_l for w in ["đèn pin", "den pin", "flash", "đèn flash"])
-                has_fan = any(w in text_l for w in ["quạt", "quat"])
-                has_light = any(w in text_l for w in ["đèn", "den"])
-                has_tv = any(w in text_l for w in ["tivi", "tv"])
-
-                # Normalize action keywords
-                has_on = any(w in text_l for w in ["bật", "mở", "on"]) 
-                has_off = any(w in text_l for w in ["tắt", "đóng", "off"]) 
-                has_increase = any(w in text_l for w in ["tăng", "lên", "+", "up"]) 
-                has_decrease = any(w in text_l for w in ["giảm", "xuống", "-", "down"]) 
-
-                # DEVICE normalization
-                if has_volume:
-                    entities["DEVICE"] = "âm lượng"
-                elif has_brightness:
-                    entities["DEVICE"] = "độ sáng"
-                elif has_aircon:
-                    entities["DEVICE"] = "điều hòa"
-                elif has_flashlight:
-                    entities["DEVICE"] = "đèn pin"
-                elif has_fan:
-                    entities["DEVICE"] = "quạt"
-                elif has_light and not entities.get("DEVICE"):
-                    # Chỉ gán "đèn" nếu chưa bắt được thiết bị cụ thể khác (đèn pin, âm lượng...)
-                    entities["DEVICE"] = "đèn"
-                elif has_tv:
-                    entities["DEVICE"] = "tivi"
-
-                # ACTION/MODE mapping
-                if has_on:
-                    entities["ACTION"] = "mở"
-                    entities["MODE"] = "on"
-                elif has_off:
-                    entities["ACTION"] = "tắt"
-                    entities["MODE"] = "off"
-                elif has_increase:
-                    entities["ACTION"] = "+"
-                    entities["MODE"] = "up"
-                elif has_decrease:
-                    entities["ACTION"] = "-"
-                    entities["MODE"] = "down"
-
-                # LEVEL inference for small adjustments
-                if any(w in text_l for w in ["chút", "nhẹ", "một chút", "chút nữa"]):
-                    entities["LEVEL"] = "small"
-
-                # VALUE / LEVEL từ số cụ thể (26 độ, 10%)
-                # Ưu tiên VALUE cho nhiệt độ, LEVEL cho phần trăm nếu chưa có
-                value_match = re.search(r"\b(\d{1,3})\s*(?:độ|c|°c)\b", text_l)
-                if value_match:
-                    entities["VALUE"] = value_match.group(1)
-                else:
-                    pct_match = re.search(r"\b(\d{1,3})\s*%", text_l)
-                    if pct_match and not entities.get("LEVEL"):
-                        entities["LEVEL"] = pct_match.group(1)
-
-                # control-device should not include PLATFORM
+                # Use specialized extractor for mobile device control (flash, wifi, bluetooth, volume, brightness, data...)
+                if hasattr(self, 'specialized_entity_extractor'):
+                    try:
+                        specialized_ents, conf = self.specialized_entity_extractor._extract_device_control_with_confidence(text, "control-device")
+                        # Merge with high confidence (>=0.85)
+                        if conf >= 0.85:
+                            entities.update(specialized_ents)
+                            self.logger.info(f"Mobile device control entities from specialized extractor (conf={conf:.2f}): {specialized_ents}")
+                    except Exception as e:
+                        self.logger.warning(f"Specialized device extractor failed: {e}")
+                
+                # Fallback: manual detection for mobile devices
+                if not entities.get("ACTION") or not entities.get("DEVICE"):
+                    has_flash = any(w in text_l for w in ["đèn pin", "flash", "flashlight"])
+                    has_wifi = any(w in text_l for w in ["wifi", "wi fi"])
+                    has_bluetooth = any(w in text_l for w in ["bluetooth", "blutooth"])
+                    has_volume = any(w in text_l for w in ["âm lượng", "tiếng", "volume"])
+                    has_brightness = any(w in text_l for w in ["độ sáng", "sáng", "brightness"])
+                    has_data = any(w in text_l for w in ["data", "3g", "4g", "5g", "dữ liệu"])
+                    has_on = any(w in text_l for w in ["bật", "mở", "on"]) 
+                    has_off = any(w in text_l for w in ["tắt", "đóng", "off"])
+                    
+                    if not entities.get("DEVICE"):
+                        if has_flash:
+                            entities["DEVICE"] = "flash"
+                        elif has_wifi:
+                            entities["DEVICE"] = "wifi"
+                        elif has_bluetooth:
+                            entities["DEVICE"] = "bluetooth"
+                        elif has_volume:
+                            entities["DEVICE"] = "volume"
+                        elif has_brightness:
+                            entities["DEVICE"] = "brightness"
+                        elif has_data:
+                            entities["DEVICE"] = "mobile_data"
+                    
+                    if not entities.get("ACTION"):
+                        if has_on:
+                            entities["ACTION"] = "ON"
+                        elif has_off:
+                            entities["ACTION"] = "OFF"
+                
+                # Clean up unrelated entities
                 entities.pop("PLATFORM", None)
+                entities.pop("MODE", None)
+                entities.pop("VALUE", None)
+                entities.pop("LEVEL", None)
+                entities.pop("LOCATION", None)
 
                 result["entities"] = entities
 
             if command == "set-alarm":
-                # Remove PLATFORM leakage nhưng không xoá MESSAGE hay các entity khác
+                # Remove PLATFORM leakage
                 entities.pop("PLATFORM", None)
-                # set-alarm không cần QUERY/YT_QUERY – tránh nhiễu kiểu QUERY="huyết"
                 entities.pop("QUERY", None)
                 entities.pop("YT_QUERY", None)
-                alarm_resolved = self._resolve_alarm_datetime(text)
-                if alarm_resolved:
-                    self.logger.info(f"Alarm resolved entities: {alarm_resolved}")
-
-                from zoneinfo import ZoneInfo
-                import datetime as _dt
-
-                TZ = ZoneInfo("Asia/Bangkok")
-                now = _dt.datetime.now(tz=TZ)
-                text_lower = (text or "").lower()
-                normalized = self._normalize_text(text_lower)
-
-                time_candidate = alarm_resolved.get("TIME") or entities.get("TIME")
-                if time_candidate:
-                    if re.match(r"^\d{1,2}$", str(time_candidate)):
-                        time_candidate = f"{int(time_candidate):02d}:00"
-                    elif re.match(r"^\d{1,2}:\d{1,2}$", str(time_candidate)):
-                        hh, mm = str(time_candidate).split(":")
-                        time_candidate = f"{int(hh):02d}:{int(mm):02d}"
-
-                date_candidate = alarm_resolved.get("DATE")
-                if not date_candidate:
-                    # Hôm nay
-                    if "hôm nay" in text_lower or "hom nay" in normalized:
-                        date_candidate = now.date()
-                    # +1 ngày: ngày mai / mai / hôm sau / hôm tới / ngày tiếp theo
-                    elif any(
-                        k in text_lower
-                        for k in [
-                            "ngày mai",
-                            "mai",
-                            "hôm sau",
-                            "hôm tới",
-                            "ngày tiếp theo",
-                        ]
-                    ) or any(
-                        k in normalized
-                        for k in [
-                            "ngay mai",
-                            "mai",
-                            "hom sau",
-                            "hom toi",
-                            "ngay tiep theo",
-                        ]
-                    ):
-                        date_candidate = (now + _dt.timedelta(days=1)).date()
-                    # +2 ngày: ngày mốt / mốt / ngày kia
-                    elif any(
-                        k in text_lower for k in ["ngày mốt", "mốt", "ngày kia"]
-                    ) or any(
-                        k in normalized for k in ["ngay mot", "mot", "ngay kia"]
-                    ):
-                        date_candidate = (now + _dt.timedelta(days=2)).date()
-                    # +3 ngày: ngày kìa
-                    elif "ngày kìa" in text_lower:
-                        date_candidate = (now + _dt.timedelta(days=3)).date()
-                    else:
-                        weekday_map = {
-                            "thứ hai": 0,
-                            "thứ ba": 1,
-                            "thứ tư": 2,
-                            "thứ năm": 3,
-                            "thứ sáu": 4,
-                            "thứ bảy": 5,
-                            "chủ nhật": 6,
-                        }
-                        for vn, wd in weekday_map.items():
-                            if vn in text_lower or self._normalize_text(vn) in normalized:
-                                delta = (wd - now.weekday()) % 7
-                                if delta == 0:
-                                    delta = 7
-                                if "tuần sau" in text_lower or "tuan sau" in normalized:
-                                    delta += 7
-                                date_candidate = (now + _dt.timedelta(days=delta)).date()
-                                break
-                    if date_candidate is None and time_candidate:
-                        try:
-                            hh, mm = [int(x) for x in time_candidate.split(":")]
-                            base_dt = _dt.datetime.combine(now.date(), _dt.time(hour=hh, minute=mm), tzinfo=TZ)
-                            if base_dt <= now:
-                                date_candidate = (now + _dt.timedelta(days=1)).date()
-                            else:
-                                date_candidate = now.date()
-                        except Exception:
-                            date_candidate = now.date()
-
-                timestamp_candidate = alarm_resolved.get("TIMESTAMP")
-                if not timestamp_candidate and time_candidate and date_candidate:
+                
+                # Use specialized extractor for TIME/DATE/TIMESTAMP (Phase 1.2)
+                if hasattr(self, 'specialized_entity_extractor'):
                     try:
-                        hh, mm = [int(x) for x in time_candidate.split(":")]
-                        date_obj = date_candidate if isinstance(date_candidate, _dt.date) else _dt.date.fromisoformat(date_candidate)
-                        ts = _dt.datetime(date_obj.year, date_obj.month, date_obj.day, hh, mm, tzinfo=TZ)
-                        timestamp_candidate = ts.isoformat()
-                    except Exception:
-                        timestamp_candidate = None
-
-                if time_candidate:
-                    entities["TIME"] = time_candidate
-                if date_candidate:
-                    entities["DATE"] = date_candidate.isoformat() if isinstance(date_candidate, _dt.date) else date_candidate
-                if timestamp_candidate:
-                    entities["TIMESTAMP"] = timestamp_candidate
-
-                if entities.get("MESSAGE") and not entities.get("REMINDER_CONTENT"):
-                    entities["REMINDER_CONTENT"] = entities["MESSAGE"]
-
+                        specialized_ents, conf = self.specialized_entity_extractor._extract_alarm_time_date_with_confidence(text, "set-alarm")
+                        # Merge specialized results
+                        if specialized_ents:
+                            entities.update(specialized_ents)
+                            self.logger.info(f"Set-alarm entities from specialized extractor (conf={conf:.2f}): {specialized_ents}")
+                            result["entities"] = entities
+                    except Exception as e:
+                        self.logger.warning(f"Specialized alarm extractor failed: {e}")
+                
+                # Ensure default REMINDER_CONTENT if empty
+                if not entities.get("REMINDER_CONTENT"):
+                    entities["REMINDER_CONTENT"] = "Nhắc nhở"
+                
                 result["entities"] = entities
-
+            
             if command == "add-contacts":
                 for k in ["DEVICE", "ACTION", "MODE", "PLATFORM"]:
                     entities.pop(k, None)
@@ -595,6 +579,51 @@ class ModelFirstHybridSystem:
                     entities["CONTACT_NAME"] = entities["RECEIVER"]
                 result["entities"] = entities
 
+            if command == "send-mess":
+                # Bỏ bớt entity không liên quan tới nhắn tin
+                for k in ["QUERY", "DEVICE", "ACTION", "MODE", "LEVEL", "VALUE", "DATE", "DAYS_OF_WEEK", "TIMESTAMP", "REMINDER_CONTENT"]:
+                    entities.pop(k, None)
+
+                # Use specialized extractor for MESSAGE/RECEIVER (Phase 1.1)
+                if hasattr(self, 'specialized_entity_extractor'):
+                    try:
+                        specialized_ents, conf = self.specialized_entity_extractor._extract_message_receiver_with_confidence(text, "send-mess")
+                        # Merge with high confidence (>=0.8) - ALWAYS override model predictions
+                        if conf >= 0.8:
+                            # ALWAYS override RECEIVER with specialized result (more accurate)
+                            if specialized_ents.get("RECEIVER"):
+                                entities["RECEIVER"] = specialized_ents["RECEIVER"]
+                                self.logger.info(f"✅ Specialized RECEIVER (conf={conf:.2f}): '{specialized_ents['RECEIVER']}'")
+                            # ALWAYS override MESSAGE with specialized result (more accurate)
+                            if specialized_ents.get("MESSAGE"):
+                                entities["MESSAGE"] = specialized_ents["MESSAGE"]
+                                self.logger.info(f"✅ Specialized MESSAGE (conf={conf:.2f}): '{specialized_ents['MESSAGE']}'")
+                            # Update PLATFORM if found
+                            if specialized_ents.get("PLATFORM"):
+                                entities["PLATFORM"] = specialized_ents["PLATFORM"]
+                            self.logger.info(f"Send-mess entities from specialized extractor (conf={conf:.2f}): {specialized_ents}")
+                    except Exception as e:
+                        self.logger.warning(f"Specialized message/receiver extractor failed: {e}")
+                        # Fallback to old logic
+                        parsed = self._extract_message_receiver(text)
+                        if parsed.get("RECEIVER") and not entities.get("RECEIVER"):
+                            entities["RECEIVER"] = parsed["RECEIVER"]
+                        if parsed.get("MESSAGE"):
+                            existing_msg = entities.get("MESSAGE", "")
+                            if not existing_msg or len(parsed["MESSAGE"]) > len(existing_msg):
+                                entities["MESSAGE"] = parsed["MESSAGE"]
+
+                # PLATFORM: chỉ giữ nếu thực sự có tín hiệu trong text
+                platform_in_text = any(
+                    kw in text.lower()
+                    for kw in ["zalo", "sms", "messenger", "facebook", "fb", "viber", "telegram"]
+                )
+                if not platform_in_text and "PLATFORM" in entities and entities["PLATFORM"] == "sms":
+                    # sms mặc định bị loại nếu không thấy từ khóa
+                    entities.pop("PLATFORM", None)
+
+                result["entities"] = entities
+
             if command == "search-internet":
                 # Remove control-device leakage
                 for k in ["DEVICE", "ACTION", "MODE"]:
@@ -620,45 +649,28 @@ class ModelFirstHybridSystem:
                     entities["PLATFORM"] = platform_guess or "zalo"
                 result["entities"] = entities
 
-            # Enforce required entity set per command: filter out unrelated keys
-            required_entities_map = {
-                "add-contacts": ["CONTACT_NAME", "PHONE", "PLATFORM", "ACTION", "RECEIVER"],
-                "call": ["CONTACT_NAME", "PHONE", "RECEIVER", "PLATFORM"],
-                "make-video-call": ["CONTACT_NAME", "RECEIVER", "PHONE", "PLATFORM"],
-                "send-mess": ["RECEIVER", "CONTACT_NAME", "PHONE", "MESSAGE", "PLATFORM"],
-                "set-alarm": ["TIME", "DATE", "REMINDER_CONTENT", "FREQUENCY", "TIMESTAMP", "MESSAGE"],
-                "search-internet": ["QUERY", "PLATFORM"],
-                "search-youtube": ["QUERY", "PLATFORM"],
-                "get-info": ["QUERY", "LOCATION", "TIME"],
-                "control-device": ["ACTION", "DEVICE", "MODE", "LEVEL", "VALUE"],
-                "open-cam": ["ACTION", "MODE", "CAMERA_TYPE"],
-            }
-
-            if command in required_entities_map:
-                keep = set(required_entities_map[command])
-                entities = {k: v for k, v in entities.items() if k in keep}
-
-                missing = [k for k in keep if not entities.get(k)]
-                if missing and hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
-                    try:
-                        if command == "search-internet":
-                            enriched = self.specialized_entity_extractor.extract_search_entities(text)  # type: ignore[attr-defined]
-                        elif command == "search-youtube":
-                            enriched = self.specialized_entity_extractor._extract_youtube_search_entities(text)  # noqa: SLF001
-                        elif command == "make-video-call":
-                            enriched = self.specialized_entity_extractor.extract_all_entities(text, command)
-                        else:
-                            enriched = {}
-                        if enriched:
-                            for key in missing:
-                                if not entities.get(key) and enriched.get(key):
-                                    entities[key] = enriched[key]
-                    except Exception:
-                        pass
-                result["entities"] = entities
+            # PHASE 3: Apply entity whitelist filtering
+            # Filter entities using entity_contracts to ensure clean output for FE
+            filtered_entities = filter_entities(command, entities)
+            result["entities"] = filtered_entities
+            
+            # Validate required entities and log warnings
+            is_valid, missing = validate_entities(command, filtered_entities)
+            if not is_valid:
+                self.logger.warning(f"Command '{command}' missing required entities: {missing}")
+            
+            # Calculate entity clarity score for metrics
+            clarity_score = calculate_entity_clarity_score(command, filtered_entities)
+            result["entity_clarity_score"] = round(clarity_score, 2)
+            
+            if clarity_score < 0.7:
+                self.logger.info(f"Low entity clarity ({clarity_score:.2f}) for command '{command}': {filtered_entities}")
 
             return result
-        except Exception:
+        except Exception as e:
+            self.logger.error(f"Error in _postprocess_command_entities: {e}")
+            import traceback
+            traceback.print_exc()
             return result
     
     def _model_predict(self, text: str) -> Dict[str, Any]:
@@ -1030,15 +1042,28 @@ class ModelFirstHybridSystem:
                 has_time_entity = "TIME" in final_entities or (specialized_entities and "TIME" in specialized_entities)
                 time_regex = r"\b(\d{1,2})(?:[:h]\s*(\d{1,2}))?\b"
                 has_time_pattern = bool(re.search(time_regex, text_l))
-                alarm_keywords_vn = ["báo thức", "hẹn giờ", "đặt báo"]
-                alarm_keywords_ascii = ["bao thuc", "hen gio", "dat bao"]
-                period_keywords_vn = ["sáng", "trưa", "chiều", "tối", "đêm", "mai", "mốt", "ngày mai"]
-                period_keywords_ascii = ["sang", "trua", "chieu", "toi", "dem", "mai", "mot", "ngay mai"]
+                alarm_keywords_vn = ["báo thức", "hẹn giờ", "đặt báo", "hẹn báo"]
+                alarm_keywords_ascii = ["bao thuc", "hen gio", "dat bao", "hen bao"]
+                period_keywords_vn = ["sáng", "trưa", "chiều", "tối", "đêm", "mai", "mốt", "ngày mai", "thứ", "cn", "chủ nhật"]
+                period_keywords_ascii = ["sang", "trua", "chieu", "toi", "dem", "mai", "mot", "ngay mai", "thu", "chu nhat", "cn"]
                 has_alarm_kw = any(w in text_l for w in alarm_keywords_vn) or any(w in text_norm for w in alarm_keywords_ascii)
                 has_period_kw = any(w in text_l for w in period_keywords_vn) or any(w in text_norm for w in period_keywords_ascii)
-                comm_keywords = ["gọi", "goi", "video", "call", "nhắn", "nhan", "gửi", "gui", "liên lạc", "lien lac"]
-                is_communication = any(w in text_l for w in comm_keywords)
-                if final_intent != "set-alarm" and not is_communication and (has_time_entity or (has_time_pattern and (has_alarm_kw or has_period_kw))):
+                comm_keywords = [
+                    "gọi", "goi", "video", "call",
+                    "nhắn", "nhan", "gửi", "gui",
+                    "liên lạc", "lien lac", "nhắn tin", "nhan tin", "tin nhắn", "sms"
+                ]
+                receiver_keywords = [
+                    "cho bà", "cho me", "cho mẹ", "cho ba", "cho bố", "cho ong", "cho ông",
+                    "cho anh", "cho chi", "cho chị", "cho em", "cho con",
+                    "tới", "đến", "toi", "den"
+                ]
+                is_communication = any(w in text_l for w in comm_keywords) or any(k in text_l for k in receiver_keywords)
+                # Ưu tiên giữ/ép về send-mess nếu là ngữ cảnh giao tiếp (trừ call/video call)
+                if is_communication and final_intent not in ["send-mess", "call", "make-video-call"]:
+                    final_intent = "send-mess"
+                    decision_reason = "communication_guard_send_mess"
+                elif final_intent != "set-alarm" and not is_communication and (has_time_entity or (has_time_pattern and (has_alarm_kw or has_period_kw))):
                     final_intent = "set-alarm"
                     decision_reason = "time_override_set_alarm"
             except Exception:
@@ -1099,39 +1124,57 @@ class ModelFirstHybridSystem:
             except Exception:
                 pass
 
-            # Heuristic override for control-device (wifi/brightness/volume)
+            # Heuristic override for control-device (mobile devices: flash, wifi, bluetooth, data, brightness, volume)
             try:
                 text_l = (text or "").lower()
-                if any(w in text_l for w in ["wifi", "wi fi", "wi-fi", "wiai phai", "wai phai"]):
+                # Flash (đèn pin)
+                if any(w in text_l for w in ["đèn pin", "den pin", "flash", "flashlight"]):
+                    final_intent = "control-device"
+                    final_entities["DEVICE"] = "flash"
+                    if any(w in text_l for w in ["bật", "mở", "on"]):
+                        final_entities["ACTION"] = "ON"
+                    elif any(w in text_l for w in ["tắt", "đóng", "off"]):
+                        final_entities["ACTION"] = "OFF"
+                # WiFi
+                elif any(w in text_l for w in ["wifi", "wi fi", "wi-fi", "wiai phai", "wai phai"]):
                     final_intent = "control-device"
                     final_entities["DEVICE"] = "wifi"
                     if any(w in text_l for w in ["bật", "mở", "on"]):
-                        final_entities["ACTION"] = "mở"
-                        final_entities["MODE"] = "on"
+                        final_entities["ACTION"] = "ON"
                     elif any(w in text_l for w in ["tắt", "đóng", "off"]):
-                        final_entities["ACTION"] = "tắt"
-                        final_entities["MODE"] = "off"
-                elif any(w in text_l for w in ["độ sáng", "brightness", "ánh sáng"]):
+                        final_entities["ACTION"] = "OFF"
+                # Bluetooth
+                elif any(w in text_l for w in ["bluetooth", "blue tooth", "blutooth"]):
                     final_intent = "control-device"
-                    final_entities["DEVICE"] = "độ sáng"
-                    if any(w in text_l for w in ["tăng", "+", "lên", "up"]):
-                        final_entities["ACTION"] = "+"
-                        final_entities["MODE"] = "up"
-                    elif any(w in text_l for w in ["giảm", "-", "xuống", "down"]):
-                        final_entities["ACTION"] = "-"
-                        final_entities["MODE"] = "down"
-                elif any(w in text_l for w in ["âm lượng", "volume", "âm thanh", "loa"]):
+                    final_entities["DEVICE"] = "bluetooth"
+                    if any(w in text_l for w in ["bật", "mở", "on"]):
+                        final_entities["ACTION"] = "ON"
+                    elif any(w in text_l for w in ["tắt", "đóng", "off"]):
+                        final_entities["ACTION"] = "OFF"
+                # Mobile Data
+                elif any(w in text_l for w in ["data", "3g", "4g", "5g", "dữ liệu", "du lieu"]):
                     final_intent = "control-device"
-                    final_entities["DEVICE"] = "âm lượng"
-                    if any(w in text_l for w in ["tăng", "+", "lên", "up", "thêm", "chút", "chút nữa"]):
-                        final_entities["ACTION"] = "+"
-                        final_entities["MODE"] = "up"
-                        # tinh chỉnh mức độ nếu có từ chỉ mức nhỏ
-                        if any(w in text_l for w in ["chút", "nhẹ", "một chút", "chút nữa"]):
-                            final_entities["LEVEL"] = "small"
-                    elif any(w in text_l for w in ["giảm", "-", "xuống", "down"]):
-                        final_entities["ACTION"] = "-"
-                        final_entities["MODE"] = "down"
+                    final_entities["DEVICE"] = "mobile_data"
+                    if any(w in text_l for w in ["bật", "mở", "on"]):
+                        final_entities["ACTION"] = "ON"
+                    elif any(w in text_l for w in ["tắt", "đóng", "off"]):
+                        final_entities["ACTION"] = "OFF"
+                # Brightness (chỉ bắt "độ sáng" hoặc "brightness", KHÔNG bắt "sáng" đơn thuần)
+                elif any(w in text_l for w in ["độ sáng", "brightness"]):
+                    final_intent = "control-device"
+                    final_entities["DEVICE"] = "brightness"
+                    if any(w in text_l for w in ["bật", "mở", "on"]):
+                        final_entities["ACTION"] = "ON"
+                    elif any(w in text_l for w in ["tắt", "đóng", "off"]):
+                        final_entities["ACTION"] = "OFF"
+                # Volume
+                elif any(w in text_l for w in ["âm lượng", "volume", "âm thanh", "tiếng"]):
+                    final_intent = "control-device"
+                    final_entities["DEVICE"] = "volume"
+                    if any(w in text_l for w in ["bật", "mở", "on"]):
+                        final_entities["ACTION"] = "ON"
+                    elif any(w in text_l for w in ["tắt", "đóng", "off"]):
+                        final_entities["ACTION"] = "OFF"
             except Exception:
                 pass
 
@@ -1162,8 +1205,22 @@ class ModelFirstHybridSystem:
             except Exception:
                 pass
 
+            # Unknown threshold & lời nhắc lịch sự cho FE
+            nlp_response = None
+            unknown_threshold = 0.35
+            if final_confidence < unknown_threshold or final_intent == "unknown":
+                final_intent = "unknown"
+                final_entities = {}
+                final_confidence = max(final_confidence, 0.0)
+                decision_reason = f"fallback_unknown_threshold_{unknown_threshold}"
+                nlp_response = "Hệ thống chưa đủ chắc chắn, vui lòng nói rõ hơn hoặc nhắc lại giúp."
+
             # Determine command
-            final_command = final_intent  # For now, command = intent
+            valid_commands = getattr(self, "valid_commands", None)
+            if valid_commands:
+                final_command = final_intent if final_intent in valid_commands else "unknown"
+            else:
+                final_command = final_intent
             
             return {
                 "intent": final_intent,
@@ -1172,7 +1229,8 @@ class ModelFirstHybridSystem:
                 "command": final_command,
                 "method": "hybrid",
                 "decision_reason": decision_reason,
-                "primary_source": "trained_model" if model_confidence >= 0.4 else "reasoning_engine"
+                "primary_source": "trained_model" if model_confidence >= 0.4 else "reasoning_engine",
+                "nlp_response": nlp_response,
             }
             
         except Exception as e:

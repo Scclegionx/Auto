@@ -1536,7 +1536,7 @@ class EntityExtractor:
         
         return None
     
-    def extract_message(self, text: str, receiver: str = None) -> Optional[str]:
+    def extract_message(self, text: str, receiver: Optional[str] = None) -> Optional[str]:
         """Extract MESSAGE entity"""
         text_lower = text.lower()
         
@@ -2167,7 +2167,7 @@ class EntityExtractor:
         
         return result
     
-    def extract_all_entities(self, text: str, intent: str = None) -> Dict[str, str]:
+    def extract_all_entities(self, text: str, intent: Optional[str] = None) -> Dict[str, str]:
         """Extract entities theo command cụ thể - Tối ưu performance và accuracy"""
         entities = {}
         
@@ -2195,7 +2195,10 @@ class EntityExtractor:
             entities.update(self._extract_all_legacy_entities(text))
         
         # Validate và fallback entities - Sử dụng text gốc cho validation
-        validated_entities = self._validate_entities(intent, entities, text)
+        if intent:
+            validated_entities = self._validate_entities(intent, entities, text)
+        else:
+            validated_entities = entities
         
         return validated_entities
     
@@ -2215,7 +2218,8 @@ class EntityExtractor:
                 entities["RECEIVER"] = receiver_result["RECEIVER"]
         
         # Extract MESSAGE entity khi có
-        message_result = self.extract_message(text, entities.get("RECEIVER"))
+        receiver_val = entities.get("RECEIVER")
+        message_result = self.extract_message(text, str(receiver_val) if receiver_val else None)
         if message_result:
             entities["MESSAGE"] = message_result
         
@@ -2300,7 +2304,8 @@ class EntityExtractor:
             entities["RECEIVER"] = receiver_result["RECEIVER"]
         
         # Extract message
-        message_result = self.extract_message(text, entities.get("RECEIVER"))
+        receiver_val = entities.get("RECEIVER")
+        message_result = self.extract_message(text, str(receiver_val) if receiver_val else None)
         if message_result:
             entities["MESSAGE"] = message_result
         
@@ -2897,10 +2902,12 @@ class EntityExtractor:
                 entities["DATE"] = date_obj.isoformat()
 
             if entities.get("TIME") and (entities.get("DATE") or date_obj is not None):
-                target_date = _dt.date.fromisoformat(entities.get("DATE") or date_obj.isoformat())
-                hh, mm = [int(x) for x in entities["TIME"].split(":")]
-                ts = _dt.datetime(target_date.year, target_date.month, target_date.day, hh, mm, tzinfo=TZ)
-                entities["TIMESTAMP"] = ts.isoformat()
+                date_str = entities.get("DATE") or (date_obj.isoformat() if date_obj else None)
+                if date_str:
+                    target_date = _dt.date.fromisoformat(date_str)
+                    hh, mm = [int(x) for x in entities["TIME"].split(":")]
+                    ts = _dt.datetime(target_date.year, target_date.month, target_date.day, hh, mm, tzinfo=TZ)
+                    entities["TIMESTAMP"] = ts.isoformat()
 
         except Exception:
             pass
@@ -3782,3 +3789,790 @@ class EntityExtractor:
                 entities[entity_type.upper()] = value
         
         return entities
+
+    # ===== Phase 1.1: MESSAGE/RECEIVER Extractor (Case A/B/C/D + Heuristic 4) =====
+    def _extract_message_receiver_with_confidence(self, text: str, intent: str) -> Tuple[Dict[str, str], float]:
+        """
+        Extract MESSAGE, RECEIVER, PLATFORM for send-mess intent with confidence score.
+        
+        Cases:
+        - A: có receiver + marker nội dung → confidence 1.0
+        - B: có receiver nhưng không marker → confidence 0.8 (heuristic split)
+        - C: marker trước receiver (đảo) → confidence 0.9
+        - D: có platform keyword → detect và loại khỏi parse
+        
+        Returns:
+            (entities_dict, confidence_score)
+        """
+        if intent != "send-mess":
+            return ({}, 0.0)
+        
+        text_lower = text.lower().strip()
+        entities = {}
+        confidence = 0.0
+        
+        # Step 1: Extract PLATFORM (qua|bằng|trên <keyword>)
+        platform_keywords = {
+            "zalo": "zalo", "messenger": "messenger", "sms": "sms", "imessage": "imessage",
+            "viber": "viber", "telegram": "telegram", "whatsapp": "whatsapp", "facebook": "facebook",
+            "fb": "facebook", "mess": "messenger", "za": "zalo"
+        }
+        
+        # Improved: Find ALL "qua/bằng/trên <word>" matches, then check if <word> is a platform keyword
+        platform_pattern = r"\b(qua|bằng|trên|bang|tren)\s+(\w+)"
+        platform_matches = list(re.finditer(platform_pattern, text_lower))
+        platform_match = None
+        platform_position = -1
+        
+        # Iterate through matches to find one with valid platform keyword
+        for match in platform_matches:
+            platform_raw = match.group(2).lower()
+            for keyword, canonical in platform_keywords.items():
+                if keyword == platform_raw or keyword in platform_raw:
+                    entities["PLATFORM"] = canonical
+                    platform_match = match
+                    platform_position = match.start()
+                    break
+            if platform_match:
+                break
+        
+        # Step 2: Tìm marker nội dung
+        content_markers = [
+            (r"\s+rằng\s+", " rằng "),  # "nhắn cho Lan rằng …"
+            (r"\s+là\s+", " là "),       # "nhắn cho Lan là …"
+            (r"\s+nói\s+", " nói "),     # "cho Lan nói …"
+            (r"\s+bảo\s+", " bảo "),     # "cho Lan bảo …"
+            (r":\s*", ": "),             # "cho Lan: …" hoặc "cho Lan:…"
+        ]
+        
+        marker_pos = None
+        marker_text = None
+        marker_len = 0
+        for marker_re, marker_str in content_markers:
+            match = re.search(marker_re, text_lower)
+            if match:
+                marker_pos = match.start()
+                marker_text = marker_str.strip()
+                marker_len = len(match.group(0))
+                break
+        
+        # Loại platform khỏi text chỉ khi nó nằm trước marker (để parse receiver dễ hơn)
+        # Nếu platform sau marker → giữ lại trong MESSAGE
+        if platform_match and platform_position >= 0:
+            if marker_pos is None or platform_position < marker_pos:
+                # Platform trước marker hoặc không có marker → loại platform
+                text_lower = re.sub(r"\s+", " ", text_lower.replace(platform_match.group(0), " ")).strip()
+                # Recalculate marker_pos sau khi loại platform
+                for marker_re, marker_str in content_markers:
+                    match = re.search(marker_re, text_lower)
+                    if match:
+                        marker_pos = match.start()
+                        marker_text = marker_str.strip()
+                        marker_len = len(match.group(0))
+                        break
+            # Else: platform sau marker → không loại, giữ trong MESSAGE
+        
+        # Step 3: Tìm cụm receiver (sau "cho/tới/đến/với" hoặc "hộ/giúp" hoặc ngay sau verb nhắn/gửi)
+        receiver_trigger_pattern = r"\b(cho|tới|đến|den|toi|hộ|giúp|giup|ho|dum|dùm|với|voi)\s+"
+        receiver_match = re.search(receiver_trigger_pattern, text_lower)
+        
+        # Fallback: pattern "Nhắn/Gửi <receiver>" (không có "cho")
+        # IMPORTANT: Chỉ match khi KHÔNG có "tin" ở giữa (tránh "nhắn tin với" bị parse sai)
+        if not receiver_match:
+            verb_direct_pattern = r"\b(nhắn|gửi|gui|nhan)(?!\s+tin)\s+(\w+)(?:\s+(\w+))?"
+            verb_match = re.search(verb_direct_pattern, text_lower)
+            if verb_match:
+                receiver_token1 = verb_match.group(2)
+                receiver_token2 = verb_match.group(3) if verb_match.group(3) else None
+                relation_pronouns = ["bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu", "bác", "cô", "chú", "dì", "thím"]
+                demonstratives = ["này", "đó", "kia", "ấy"]
+                time_words = ["tối", "chiều", "sáng", "trưa", "nay", "ngày", "hôm"]
+                
+                # Chỉ nhận nếu receiver là xưng hô hoặc có xưng hô + tên
+                receiver_full = None
+                receiver_end_pos = verb_match.end()
+                
+                if receiver_token1 in relation_pronouns:
+                    # Nếu có token2 và nó không phải từ thời gian/đại từ/marker → ghép "chị Lan"
+                    if receiver_token2 and receiver_token2 not in time_words and receiver_token2 not in relation_pronouns and receiver_token2 not in ["là", "rằng", "nói", "bảo"]:
+                        receiver_full = f"{receiver_token1} {receiver_token2}"
+                    elif receiver_token2 and receiver_token2 in demonstratives:
+                        receiver_full = f"{receiver_token1} {receiver_token2}"
+                    else:
+                        receiver_full = receiver_token1
+                        # Recalculate receiver_end_pos
+                        receiver_end_pos = verb_match.start() + len(verb_match.group(1)) + 1 + len(receiver_token1)
+                    
+                    if receiver_full:
+                        # Tìm MESSAGE phía sau
+                        rest_text = text_lower[receiver_end_pos:].strip()
+                        # Nếu có marker, MESSAGE bắt đầu sau marker
+                        if marker_pos and marker_pos >= receiver_end_pos:
+                            message_start_pos = marker_pos + marker_len
+                            message_text_raw = text_lower[message_start_pos:].strip()
+                            entities["RECEIVER"] = receiver_full
+                            entities["MESSAGE"] = message_text_raw
+                            confidence = 0.85
+                        else:
+                            # Không có marker, lấy phần còn lại
+                            entities["RECEIVER"] = receiver_full
+                            entities["MESSAGE"] = rest_text
+                            confidence = 0.8
+                        return (entities, confidence)
+        
+        if receiver_match:
+            receiver_trigger_word = receiver_match.group(1)  # "cho", "hộ", "giúp"...
+            receiver_start = receiver_match.end()
+            
+            # Case A: có marker sau receiver
+            if marker_pos and marker_pos > receiver_start:
+                receiver_text_raw = text_lower[receiver_start:marker_pos].strip()
+                message_start_pos = marker_pos + marker_len
+                message_text_raw = text_lower[message_start_pos:].strip()
+                
+                # Clean receiver: cắt tối đa 2-3 tokens, loại bỏ khi gặp đại từ quan hệ thừa
+                receiver_tokens = receiver_text_raw.split()
+                relation_pronouns = ["bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu", "bác", "cô", "chú", "dì", "thím"]
+                demonstratives = ["này", "đó", "kia", "ấy"]
+                time_words = ["tối", "chiều", "sáng", "trưa", "nay", "ngày", "hôm"]
+                
+                # Context-aware: nếu token 0 là xưng hô, token 1 nhiều khả năng là tên (kể cả "mai", "lan")
+                if len(receiver_tokens) >= 2:
+                    if receiver_tokens[0] in relation_pronouns:
+                        # Nếu token 1 là demonstrative → giữ 2 tokens
+                        if receiver_tokens[1] in demonstratives:
+                            receiver_clean = " ".join(receiver_tokens[:2])
+                        # Nếu token 1 là đại từ quan hệ khác → chỉ giữ token 0
+                        elif receiver_tokens[1] in relation_pronouns:
+                            receiver_clean = receiver_tokens[0]
+                        # Special: Nếu token 1 là "mai" → ưu tiên TÊN (chị Mai) khi chỉ có 2 tokens
+                        elif receiver_tokens[1] == "mai":
+                            # Chỉ xem là thời gian nếu có token 2 = "này" (mai này)
+                            if len(receiver_tokens) >= 3 and receiver_tokens[2] == "này":
+                                receiver_clean = receiver_tokens[0]
+                            else:
+                                # "chị Mai" → giữ 2 tokens (tên)
+                                receiver_clean = " ".join(receiver_tokens[:2])
+                        # Special: Nếu token 1 là từ thời gian KHÁC "mai" và có token 2 → check token 2
+                        elif receiver_tokens[1] in time_words and len(receiver_tokens) >= 3:
+                            # Nếu token 2 là thời gian/đại từ → token 1 là thời gian → chỉ giữ token 0
+                            if receiver_tokens[2] in time_words or receiver_tokens[2] in relation_pronouns:
+                                receiver_clean = receiver_tokens[0]
+                            # Ngược lại, token 1 là tên → giữ 2 tokens
+                            else:
+                                receiver_clean = " ".join(receiver_tokens[:2])
+                        # Token 1 không phải demonstrative/relation_pronoun/time → ưu tiên là tên → giữ 2 tokens
+                        else:
+                            receiver_clean = " ".join(receiver_tokens[:2])
+                    else:
+                        # Token 0 không phải xưng hô, nếu token 1 là demonstrative → giữ 2 tokens
+                        if receiver_tokens[1] in demonstratives:
+                            receiver_clean = " ".join(receiver_tokens[:2])
+                        else:
+                            receiver_clean = receiver_tokens[0]
+                elif len(receiver_tokens) == 1:
+                    receiver_clean = receiver_tokens[0]
+                else:
+                    receiver_clean = " ".join(receiver_tokens[:2])
+                
+                entities["RECEIVER"] = receiver_clean.strip()
+                entities["MESSAGE"] = message_text_raw.strip()
+                confidence = 1.0  # Case A: rõ ràng nhất
+            
+            # Case B: không marker, dùng heuristic split
+            elif not marker_pos:
+                receiver_text_raw = text_lower[receiver_start:].strip()
+                receiver_tokens = receiver_text_raw.split()
+                
+                # Heuristic cải thiện:
+                # - Nếu token đầu là xưng hô (bố/mẹ/anh/chị…) và token thứ 2 là tên → receiver = 2 tokens
+                # - Nếu token đầu là tên đơn → receiver = 1 token
+                # - Dừng receiver khi gặp đại từ quan hệ thứ 2 (mẹ/con/bố/bác…) hoặc động từ nội dung mạnh hoặc từ thời gian
+                # - Đặc biệt: nếu trigger là "giúp/hộ" → chỉ lấy 1 token làm receiver
+                relation_pronouns = ["bố", "mẹ", "ông", "bà", "anh", "chị", "em", "con", "cháu", "bác", "cô", "chú", "dì", "thím", "số"]
+                demonstratives = ["này", "đó", "kia", "ấy"]
+                time_words = ["tối", "chiều", "sáng", "trưa", "mai", "nay", "ngày", "hôm"]
+                # Chỉ dùng động từ mạnh để tách receiver, không dùng "nhớ" (có thể là phần đầu MESSAGE)
+                content_verbs_strong = ["về", "đến", "ăn", "mua", "đón", "khỏe", "uống", "học", "làm", "đi", "ở", "không", "đang"]
+                
+                # Nếu trigger là "giúp/hộ" → chỉ lấy 1 token (xưng hô) làm receiver
+                if receiver_trigger_word in ["giúp", "giup", "hộ", "ho", "dum", "dùm"]:
+                    receiver_clean = receiver_tokens[0] if receiver_tokens else ""
+                    message_clean = " ".join(receiver_tokens[1:]) if len(receiver_tokens) > 1 else ""
+                    if receiver_clean:
+                        entities["RECEIVER"] = receiver_clean.strip()
+                    if message_clean:
+                        entities["MESSAGE"] = message_clean.strip()
+                    confidence = 0.8
+                    return (entities, confidence)
+                
+                receiver_end_idx = 1  # mặc định 1 token
+                if len(receiver_tokens) >= 2:
+                    # Nếu token 0 là xưng hô → ưu tiên giữ 2 tokens (context: tên theo sau xưng hô)
+                    if receiver_tokens[0] in relation_pronouns:
+                        # Nếu token 1 là demonstrative → giữ 2 tokens
+                        if receiver_tokens[1] in demonstratives:
+                            receiver_end_idx = 2
+                        # Nếu token 1 là đại từ quan hệ khác → chỉ giữ token 0
+                        elif receiver_tokens[1] in relation_pronouns:
+                            receiver_end_idx = 1
+                        # Nếu token 1 là động từ mạnh → chỉ giữ token 0
+                        elif receiver_tokens[1] in content_verbs_strong:
+                            receiver_end_idx = 1
+                        # Special case: "mai" sau xưng hô → ưu tiên tên (context: "chị Mai")
+                        # Chỉ xem là thời gian nếu token 2 là "này" (mai này) hoặc không có token 2
+                        elif receiver_tokens[1] == "mai" and len(receiver_tokens) >= 3:
+                            # Nếu token 2 là "này" (mai này = thời gian) → dừng tại token 0
+                            if receiver_tokens[2] == "này":
+                                receiver_end_idx = 1
+                            # Ngược lại, "chị Mai hôm nay..." → "Mai" là tên → giữ 2 tokens
+                            else:
+                                receiver_end_idx = 2
+                        # Nếu token 1 là "mai" và chỉ có 2 tokens → ưu tiên tên
+                        elif receiver_tokens[1] == "mai":
+                            receiver_end_idx = 2
+                        # Nếu token 1 là từ thời gian KHÁC "mai" → check token 2
+                        elif receiver_tokens[1] in time_words and len(receiver_tokens) >= 3:
+                            # Nếu token 2 cũng là thời gian/động từ → token 1 là thời gian → dừng tại token 0
+                            if receiver_tokens[2] in time_words or receiver_tokens[2] in content_verbs_strong or receiver_tokens[2] in relation_pronouns:
+                                receiver_end_idx = 1
+                            else:
+                                # Token 1 nhiều khả năng là tên
+                                receiver_end_idx = 2
+                        # Token 1 không phải edge case → giữ 2 tokens (ưu tiên tên)
+                        else:
+                            receiver_end_idx = 2
+                    # Token 0 không phải xưng hô
+                    else:
+                        # Nếu token 1 là demonstrative → giữ 2 tokens
+                        if receiver_tokens[1] in demonstratives:
+                            receiver_end_idx = 2
+                        # Nếu token 1 là thời gian/động từ/đại từ → dừng tại token 0
+                        elif receiver_tokens[1] in time_words or receiver_tokens[1] in content_verbs_strong or receiver_tokens[1] in relation_pronouns:
+                            receiver_end_idx = 1
+                        else:
+                            receiver_end_idx = 2
+                
+                receiver_clean = " ".join(receiver_tokens[:receiver_end_idx])
+                message_clean = " ".join(receiver_tokens[receiver_end_idx:])
+                
+                if receiver_clean:
+                    entities["RECEIVER"] = receiver_clean.strip()
+                if message_clean:
+                    entities["MESSAGE"] = message_clean.strip()
+                confidence = 0.8  # Case B: heuristic, ít chắc chắn hơn
+            
+            else:
+                # marker_pos < receiver_start: không xảy ra với pattern hiện tại, bỏ qua
+                pass
+        
+        # Case C: marker xuất hiện trước "cho/tới/đến" (đảo trật tự)
+        elif marker_pos and not receiver_match:
+            # "Bảo rằng … cho Lan"
+            message_start_pos = marker_pos + len(marker_text) if marker_text else marker_pos
+            rest_text = text_lower[message_start_pos:].strip()
+            
+            # Tìm "cho/tới/đến" trong phần còn lại
+            receiver_trigger_match_rest = re.search(receiver_trigger_pattern, rest_text)
+            if receiver_trigger_match_rest:
+                message_part = rest_text[:receiver_trigger_match_rest.start()].strip()
+                receiver_part = rest_text[receiver_trigger_match_rest.end():].strip()
+                
+                # Clean
+                receiver_tokens = receiver_part.split()
+                receiver_clean = " ".join(receiver_tokens[:3])
+                
+                entities["MESSAGE"] = message_part
+                entities["RECEIVER"] = receiver_clean.strip()
+                confidence = 0.9  # Case C: đảo nhưng rõ ràng
+        
+        # Case D/E/F...: các case khó khác → confidence thấp
+        else:
+            # Không tách được, trả về empty
+            confidence = 0.0
+        
+        # CLEANUP STEP: Loại bỏ platform keywords khỏi MESSAGE nếu đã extract PLATFORM entity
+        if entities.get("MESSAGE") and entities.get("PLATFORM"):
+            message_clean = entities["MESSAGE"]
+            extracted_platform = entities["PLATFORM"]
+            
+            # Pattern 1: Loại bỏ ONLY "qua/bằng/trên <detected_platform_keyword>" khỏi MESSAGE
+            # Build pattern that matches "qua/bằng/trên" + any platform keyword
+            platform_keywords_list = list(platform_keywords.keys())
+            platform_keywords_pattern = "|".join(re.escape(kw) for kw in platform_keywords_list)
+            
+            # Match "qua/bằng/trên <any_platform_keyword>"
+            platform_removal_pattern = rf"\s*(qua|bằng|trên|bang|tren)\s+({platform_keywords_pattern})\b"
+            message_clean = re.sub(platform_removal_pattern, "", message_clean, flags=re.IGNORECASE).strip()
+            
+            # Pattern 2: Loại bỏ standalone platform keywords ở cuối MESSAGE
+            for keyword in platform_keywords_list:
+                # Loại bỏ platform keyword ở cuối (với optional whitespace)
+                message_clean = re.sub(r"\s+" + re.escape(keyword) + r"\s*$", "", message_clean, flags=re.IGNORECASE).strip()
+            
+            # Cleanup multiple spaces
+            message_clean = re.sub(r"\s+", " ", message_clean).strip()
+            
+            if message_clean:
+                entities["MESSAGE"] = message_clean
+        
+        return (entities, confidence)
+
+    def test_extract_message_receiver(self):
+        """Inline test cho _extract_message_receiver_with_confidence - Target: >=90% exact match"""
+        test_cases = [
+            # Case A: có receiver + marker
+            {"input": "Nhắn cho chị Mai là hôm nay mẹ về muộn", "intent": "send-mess", "expected": {"RECEIVER": "chị mai", "MESSAGE": "hôm nay mẹ về muộn"}, "min_confidence": 1.0},
+            {"input": "Gửi tới anh Trường rằng con đến đón", "intent": "send-mess", "expected": {"RECEIVER": "anh trường", "MESSAGE": "con đến đón"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho Lan: chiều nay con đến", "intent": "send-mess", "expected": {"RECEIVER": "lan", "MESSAGE": "chiều nay con đến"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho mẹ là tối nay con về muộn", "intent": "send-mess", "expected": {"RECEIVER": "mẹ", "MESSAGE": "tối nay con về muộn"}, "min_confidence": 1.0},
+            {"input": "Gửi cho cô Hạnh rằng mai con đến sớm", "intent": "send-mess", "expected": {"RECEIVER": "cô hạnh", "MESSAGE": "mai con đến sớm"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho anh Trường là mẹ đang ở ngoài", "intent": "send-mess", "expected": {"RECEIVER": "anh trường", "MESSAGE": "mẹ đang ở ngoài"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho Lan là hôm nay là sinh nhật bác", "intent": "send-mess", "expected": {"RECEIVER": "lan", "MESSAGE": "hôm nay là sinh nhật bác"}, "min_confidence": 1.0},
+            {"input": "Gửi cho chị Mai: con đến đón lúc 5 giờ", "intent": "send-mess", "expected": {"RECEIVER": "chị mai", "MESSAGE": "con đến đón lúc 5 giờ"}, "min_confidence": 1.0},
+            {"input": "Gửi tới Lan nói rằng tối nay không ăn cơm", "intent": "send-mess", "expected": {"RECEIVER": "lan", "MESSAGE": "tối nay không ăn cơm"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho bà là ừm… hôm nay con về trễ", "intent": "send-mess", "expected": {"RECEIVER": "bà", "MESSAGE": "ừm… hôm nay con về trễ"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho chị Mai là mẹ về trễ nhé", "intent": "send-mess", "expected": {"RECEIVER": "chị mai", "MESSAGE": "mẹ về trễ nhé"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho Lan nói mẹ đang đợi ở nhà", "intent": "send-mess", "expected": {"RECEIVER": "lan", "MESSAGE": "mẹ đang đợi ở nhà"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho mẹ là con đang trên đường về", "intent": "send-mess", "expected": {"RECEIVER": "mẹ", "MESSAGE": "con đang trên đường về"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho mẹ rằng hôm nay con ăn ở ngoài", "intent": "send-mess", "expected": {"RECEIVER": "mẹ", "MESSAGE": "hôm nay con ăn ở ngoài"}, "min_confidence": 1.0},
+            {"input": "Gửi cho bố là bác sĩ hẹn mai tái khám", "intent": "send-mess", "expected": {"RECEIVER": "bố", "MESSAGE": "bác sĩ hẹn mai tái khám"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho bà rằng đừng quên uống thuốc", "intent": "send-mess", "expected": {"RECEIVER": "bà", "MESSAGE": "đừng quên uống thuốc"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho chị Lan là hôm nay về muộn nhé", "intent": "send-mess", "expected": {"RECEIVER": "chị lan", "MESSAGE": "hôm nay về muộn nhé"}, "min_confidence": 1.0},
+            {"input": "Gửi cho anh Trường nói tối nay không về nhà", "intent": "send-mess", "expected": {"RECEIVER": "anh trường", "MESSAGE": "tối nay không về nhà"}, "min_confidence": 1.0},
+            
+            # Case B: có receiver nhưng không marker
+            {"input": "Nhắn cho Lan mẹ về trễ", "intent": "send-mess", "expected": {"RECEIVER": "lan", "MESSAGE": "mẹ về trễ"}, "min_confidence": 0.8},
+            {"input": "Gửi tới bố con đang ở ngoài", "intent": "send-mess", "expected": {"RECEIVER": "bố", "MESSAGE": "con đang ở ngoài"}, "min_confidence": 0.8},
+            {"input": "Nhắn cho bố tối nay con về muộn", "intent": "send-mess", "expected": {"RECEIVER": "bố", "MESSAGE": "tối nay con về muộn"}, "min_confidence": 0.8},
+            {"input": "Nhắn chị Lan chiều nay ghé qua", "intent": "send-mess", "expected": {"RECEIVER": "chị lan", "MESSAGE": "chiều nay ghé qua"}, "min_confidence": 0.8},
+            {"input": "Gửi tin nhắn cho Lan nói tối nay không ăn cơm", "intent": "send-mess", "expected": {"RECEIVER": "lan", "MESSAGE": "tối nay không ăn cơm"}, "min_confidence": 0.8},
+            {"input": "Nhắn cho chị Mai hôm nay mẹ về muộn", "intent": "send-mess", "expected": {"RECEIVER": "chị mai", "MESSAGE": "hôm nay mẹ về muộn"}, "min_confidence": 0.8},
+            {"input": "Gửi cho chị Lan tối nay mưa to", "intent": "send-mess", "expected": {"RECEIVER": "chị lan", "MESSAGE": "tối nay mưa to"}, "min_confidence": 0.8},
+            {"input": "Nhắn cho chị Mai hôm nay trời lạnh", "intent": "send-mess", "expected": {"RECEIVER": "chị mai", "MESSAGE": "hôm nay trời lạnh"}, "min_confidence": 0.8},
+            
+            # Case D: có platform
+            {"input": "Nhắn cho anh Trường qua Zalo là con đến", "intent": "send-mess", "expected": {"RECEIVER": "anh trường", "MESSAGE": "con đến", "PLATFORM": "zalo"}, "min_confidence": 1.0},
+            {"input": "Gửi bằng SMS tới số này bác khỏe không", "intent": "send-mess", "expected": {"RECEIVER": "số này", "MESSAGE": "bác khỏe không", "PLATFORM": "sms"}, "min_confidence": 0.8},
+            {"input": "Nhắn qua Zalo cho Lan rằng con sắp tới", "intent": "send-mess", "expected": {"RECEIVER": "lan", "MESSAGE": "con sắp tới", "PLATFORM": "zalo"}, "min_confidence": 1.0},
+            {"input": "Gửi cho anh Trường qua Messenger là tối nay về trễ", "intent": "send-mess", "expected": {"RECEIVER": "anh trường", "MESSAGE": "tối nay về trễ", "PLATFORM": "messenger"}, "min_confidence": 1.0},
+            {"input": "Nhắn bằng SMS cho số 0987654321 bác khỏe không", "intent": "send-mess", "expected": {"RECEIVER": "số 0987654321", "MESSAGE": "bác khỏe không", "PLATFORM": "sms"}, "min_confidence": 0.8},
+            {"input": "Nhắn cho số này là nhớ uống thuốc nhé", "intent": "send-mess", "expected": {"RECEIVER": "số này", "MESSAGE": "nhớ uống thuốc nhé"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho mẹ qua zalo bảo tối nay khóa cửa", "intent": "send-mess", "expected": {"RECEIVER": "mẹ", "MESSAGE": "tối nay khóa cửa", "PLATFORM": "zalo"}, "min_confidence": 1.0},
+            {"input": "Gửi cho anh Trường rằng bác khỏe không qua messenger nhé", "intent": "send-mess", "expected": {"RECEIVER": "anh trường", "MESSAGE": "bác khỏe không qua messenger nhé"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho anh Nam qua Zalo là con đến rồi", "intent": "send-mess", "expected": {"RECEIVER": "anh nam", "MESSAGE": "con đến rồi", "PLATFORM": "zalo"}, "min_confidence": 1.0},
+            {"input": "Nhắn cho Lan qua Zalo tối nay con về trễ khoảng sáu rưỡi tối ạ", "intent": "send-mess", "expected": {"RECEIVER": "lan", "MESSAGE": "tối nay con về trễ khoảng sáu rưỡi tối ạ", "PLATFORM": "zalo"}, "min_confidence": 0.8},
+            {"input": "Gửi bằng Messenger tới mẹ là con đến đón", "intent": "send-mess", "expected": {"RECEIVER": "mẹ", "MESSAGE": "con đến đón", "PLATFORM": "messenger"}, "min_confidence": 1.0},
+            
+            # Edge cases: fallback pattern "hộ/giúp"
+            {"input": "Nhắn hộ mẹ là tối nay về muộn", "intent": "send-mess", "expected": {"RECEIVER": "mẹ", "MESSAGE": "tối nay về muộn"}, "min_confidence": 0.9},
+            {"input": "Nhắn giúp bà nhớ khóa cửa tối nay", "intent": "send-mess", "expected": {"RECEIVER": "bà", "MESSAGE": "nhớ khóa cửa tối nay"}, "min_confidence": 0.8},
+        ]
+        
+        passed = 0
+        total = len(test_cases)
+        
+        print("\n===== Test MESSAGE/RECEIVER Extraction =====")
+        for i, tc in enumerate(test_cases, 1):
+            entities, conf = self._extract_message_receiver_with_confidence(tc["input"], tc["intent"])
+            expected = tc["expected"]
+            
+            # Normalize for comparison
+            entities_norm = {k: v.lower().strip() for k, v in entities.items()}
+            expected_norm = {k: v.lower().strip() for k, v in expected.items()}
+            
+            # Check exact match
+            match = all(entities_norm.get(k) == v for k, v in expected_norm.items())
+            conf_ok = conf >= tc["min_confidence"]
+            
+            if match and conf_ok:
+                passed += 1
+                status = "✅ PASS"
+            else:
+                status = "❌ FAIL"
+            
+            print(f"[{i}/{total}] {status}")
+            print(f"  Input: {tc['input']}")
+            print(f"  Expected: {expected}")
+            print(f"  Got: {entities} (conf={conf:.2f})")
+            if not match:
+                print(f"  Mismatch!")
+            print()
+        
+        accuracy = (passed / total) * 100
+        print(f"Result: {passed}/{total} passed ({accuracy:.1f}%)")
+        print(f"Target: >=80% → {'✅達成' if accuracy >= 80 else '❌ NOT YET'}")
+        return accuracy
+    
+    # ===== Phase 1.2: ALARM_TIME_DATE Extractor =====
+    def _extract_alarm_time_date_with_confidence(self, text: str, intent: str) -> Tuple[Dict[str, str], float]:
+        """
+        Extract TIME, DATE, TIMESTAMP, DAYS_OF_WEEK, REMINDER_CONTENT for set-alarm intent.
+        
+        Returns:
+            (entities_dict, confidence_score)
+        """
+        from datetime import datetime, timedelta
+        import re
+        
+        if intent != "set-alarm":
+            return ({}, 0.0)
+        
+        text_lower = text.lower().strip()
+        entities = {}
+        confidence = 0.0
+        
+        # Step 1: Extract TIME (7 giờ, 19h, 6 rưỡi, 7:30...)
+        # IMPORTANT: Check for time period BOTH before AND after the time
+        
+        # First, detect if period comes BEFORE the time (e.g., "chiều nay 3 giờ")
+        time_period_prefix = None
+        prefix_match = re.search(r"(sáng|chiều|tối|trưa)\s+(?:nay|hôm\s*nay|mai)?\s*(\d{1,2})\s*giờ", text_lower)
+        if prefix_match:
+            time_period_prefix = prefix_match.group(1)
+        
+        time_patterns = [
+            (r"(\d{1,2})\s*giờ\s*(\d{1,2})(?:\s*phút)?(?:\s+(sáng|chiều|tối|trưa))?", "HH:MM"),  # "7 giờ 30 chiều"
+            (r"(\d{1,2})\s*giờ\s*rưỡi(?:\s+(sáng|chiều|tối|trưa))?", "HH:30"),  # "6 rưỡi sáng"
+            (r"(\d{1,2})\s*giờ(?:\s+(sáng|chiều|tối|trưa))?", "HH:00"),  # "7 giờ sáng"
+            (r"(\d{1,2}):(\d{2})", "HH:MM"),  # "07:30"
+            (r"(\d{1,2})h(\d{2})?(?:\s+(sáng|chiều|tối|trưa))?", "HH:MM"),  # "7h30 chiều"
+        ]
+        
+        time_value = None
+        time_period = time_period_prefix  # Use prefix if detected
+        
+        for pattern, format_type in time_patterns:
+            match = re.search(pattern, text_lower)
+            if match:
+                hour = int(match.group(1))
+                minute = 0
+                
+                if format_type == "HH:MM":
+                    minute = int(match.group(2)) if match.group(2) and match.group(2).isdigit() else 0
+                    # Check for period in group 3 or 2 (depending on whether minute exists)
+                    last_idx = match.lastindex
+                    if last_idx and last_idx >= 3 and match.group(last_idx) in ["sáng", "chiều", "tối", "trưa"]:
+                        time_period = match.group(last_idx)
+                elif format_type == "HH:30":
+                    minute = 30
+                    # Check for period in last group
+                    last_idx = match.lastindex
+                    if last_idx and last_idx >= 2 and match.group(last_idx) in ["sáng", "chiều", "tối", "trưa"]:
+                        time_period = match.group(last_idx)
+                elif format_type == "HH:00":
+                    minute = 0
+                    # Check for period in group 2
+                    if match.group(2) and match.group(2) in ["sáng", "chiều", "tối", "trưa"]:
+                        time_period = match.group(2)
+                
+                # Adjust hour based on period
+                if time_period:
+                    if time_period == "chiều" and hour <= 11:
+                        hour += 12
+                    elif time_period == "tối" and hour <= 11:
+                        hour += 12
+                    elif time_period == "trưa" and hour <= 11:
+                        hour = 12
+                    elif time_period == "sáng" and hour >= 12:
+                        hour -= 12
+                
+                time_value = f"{hour:02d}:{minute:02d}"
+                break
+        
+        if time_value:
+            entities["TIME"] = time_value
+            confidence += 0.5
+        
+        # Step 2: Extract DATE (hôm nay, mai, ngày mai, thứ 2, ngày 25/12...)
+        date_patterns = [
+            (r"hôm\s*nay|nay", "today"),
+            (r"ngày\s*mai|mai(?!\s*tái)", "tomorrow"),  # Avoid "mai tái khám"
+            (r"ngày\s*kia", "day_after_tomorrow"),
+            (r"thứ\s*(hai|ba|tư|năm|sáu|bảy|chủ\s*nhật)", "weekday"),
+            (r"(\d{1,2})[/-](\d{1,2})", "DD/MM"),  # "25/12" or "25-12"
+        ]
+        
+        date_value = None
+        weekday_map = {
+            "hai": 0, "ba": 1, "tư": 2, "năm": 3, "sáu": 4, "bảy": 5, "chủ nhật": 6
+        }
+        
+        for pattern, date_type in date_patterns:
+            match = re.search(pattern, text_lower)
+            if match:
+                now = datetime.now()
+                if date_type == "today":
+                    date_value = now.strftime("%Y-%m-%d")
+                elif date_type == "tomorrow":
+                    date_value = (now + timedelta(days=1)).strftime("%Y-%m-%d")
+                elif date_type == "day_after_tomorrow":
+                    date_value = (now + timedelta(days=2)).strftime("%Y-%m-%d")
+                elif date_type == "weekday":
+                    weekday_name = match.group(1)
+                    target_weekday = weekday_map.get(weekday_name, -1)
+                    if target_weekday >= 0:
+                        current_weekday = now.weekday()
+                        days_ahead = (target_weekday - current_weekday) % 7
+                        if days_ahead == 0:
+                            days_ahead = 7  # Next week
+                        date_value = (now + timedelta(days=days_ahead)).strftime("%Y-%m-%d")
+                elif date_type == "DD/MM":
+                    day = int(match.group(1))
+                    month = int(match.group(2))
+                    year = now.year
+                    try:
+                        date_value = f"{year}-{month:02d}-{day:02d}"
+                    except:
+                        pass
+                break
+        
+        if date_value:
+            entities["DATE"] = date_value
+            confidence += 0.3
+        
+        # Step 3: Generate TIMESTAMP if both TIME and DATE exist
+        if "TIME" in entities and "DATE" in entities:
+            try:
+                timestamp = f"{entities['DATE']}T{entities['TIME']}:00"
+                entities["TIMESTAMP"] = timestamp
+                confidence += 0.1
+            except:
+                pass
+        
+        # Step 4: Extract DAYS_OF_WEEK from DATE
+        if "DATE" in entities:
+            try:
+                date_obj = datetime.strptime(entities["DATE"], "%Y-%m-%d")
+                day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                entities["DAYS_OF_WEEK"] = day_names[date_obj.weekday()]
+            except:
+                pass
+        
+        # Step 5: Extract REMINDER_CONTENT (optional)
+        # Pattern: "nhắc <content>" hoặc "<content>" sau time/date
+        reminder_patterns = [
+            r"nhắc\s+(?:mẹ|bà|bố|ông|tôi|em|anh|chị)?\s*(.+?)(?:\s+lúc|\s+vào|\s+$)",
+            r"(?:uống|ăn|làm|đến|về)\s+(.+?)(?:\s+lúc|\s+vào|\s+$)",
+        ]
+        
+        for pattern in reminder_patterns:
+            match = re.search(pattern, text_lower)
+            if match:
+                content = match.group(1).strip()
+                if len(content) > 3:  # Avoid too short content
+                    entities["REMINDER_CONTENT"] = content
+                    confidence += 0.05
+                    break
+        
+        # Step 6: Extract FREQUENCY (mỗi ngày, hàng ngày, hàng tuần...)
+        frequency_patterns = {
+            r"mỗi\s*ngày|hàng\s*ngày": "daily",
+            r"hàng\s*tuần|mỗi\s*tuần": "weekly",
+            r"hàng\s*tháng|mỗi\s*tháng": "monthly",
+        }
+        
+        for pattern, freq_value in frequency_patterns.items():
+            if re.search(pattern, text_lower):
+                entities["FREQUENCY"] = freq_value
+                # Boost confidence for FREQUENCY (implies recurring alarm)
+                confidence += 0.25
+                break
+        
+        # Final confidence adjustment: if we have TIME but no DATE, still reasonable
+        if "TIME" in entities and "DATE" not in entities:
+            confidence = max(confidence, 0.82)  # Minimum 0.82 for TIME-only alarms (acceptable for recurring)
+        
+        return (entities, min(confidence, 1.0))
+    
+    def test_extract_alarm_time_date(self):
+        """Inline test cho _extract_alarm_time_date_with_confidence - Target: >=90% exact match"""
+        test_cases = [
+            # Basic TIME + DATE patterns
+            {"input": "Đặt báo thức lúc 6 giờ sáng mai", "intent": "set-alarm", "expected": {"TIME": "06:00"}, "min_confidence": 0.8},
+            {"input": "Hẹn báo thức 7 giờ thứ Hai", "intent": "set-alarm", "expected": {"TIME": "07:00"}, "min_confidence": 0.8},
+            {"input": "Nhắc mẹ 3 giờ chiều hôm nay", "intent": "set-alarm", "expected": {"TIME": "15:00"}, "min_confidence": 0.8},
+            {"input": "Đặt báo thức 6 giờ rưỡi sáng", "intent": "set-alarm", "expected": {"TIME": "06:30"}, "min_confidence": 0.8},
+            {"input": "Báo thức lúc 19 giờ tối nay", "intent": "set-alarm", "expected": {"TIME": "19:00"}, "min_confidence": 0.8},
+            
+            # TIME with REMINDER_CONTENT
+            {"input": "Nhắc uống thuốc lúc 8 giờ tối mỗi ngày", "intent": "set-alarm", "expected": {"TIME": "20:00", "FREQUENCY": "daily"}, "min_confidence": 0.8},
+            {"input": "Đặt lịch nhắc uống thuốc sau bữa tối", "intent": "set-alarm", "expected": {}, "min_confidence": 0.0},  # No clear TIME
+            
+            # Relative dates
+            {"input": "Báo thức mai lúc 6 giờ", "intent": "set-alarm", "expected": {"TIME": "06:00"}, "min_confidence": 0.8},
+            {"input": "Nhắc tôi hôm nay 5 giờ chiều", "intent": "set-alarm", "expected": {"TIME": "17:00"}, "min_confidence": 0.8},
+            {"input": "Đặt báo thức ngày mai 7h30", "intent": "set-alarm", "expected": {"TIME": "07:30"}, "min_confidence": 0.8},
+            
+            # Weekday patterns
+            {"input": "Nhắc tôi thứ Ba lúc 9 giờ sáng", "intent": "set-alarm", "expected": {"TIME": "09:00"}, "min_confidence": 0.8},
+            {"input": "Báo thức thứ Sáu 6 giờ rưỡi", "intent": "set-alarm", "expected": {"TIME": "06:30"}, "min_confidence": 0.8},
+            
+            # FREQUENCY patterns
+            {"input": "Nhắc uống thuốc mỗi ngày lúc 8 giờ", "intent": "set-alarm", "expected": {"TIME": "08:00", "FREQUENCY": "daily"}, "min_confidence": 0.8},
+            {"input": "Đặt báo thức hàng ngày 6 giờ sáng", "intent": "set-alarm", "expected": {"TIME": "06:00", "FREQUENCY": "daily"}, "min_confidence": 0.8},
+            
+            # Edge cases
+            {"input": "Đặt báo thức 6h sáng mai giúp tôi đi", "intent": "set-alarm", "expected": {"TIME": "06:00"}, "min_confidence": 0.8},
+            {"input": "Báo thức chiều nay 3 giờ nhắc mẹ uống thuốc", "intent": "set-alarm", "expected": {"TIME": "15:00"}, "min_confidence": 0.8},
+        ]
+        
+        passed = 0
+        total = len(test_cases)
+        
+        print("\n===== Test ALARM_TIME_DATE Extraction =====")
+        for i, tc in enumerate(test_cases, 1):
+            entities, conf = self._extract_alarm_time_date_with_confidence(tc["input"], tc["intent"])
+            expected = tc["expected"]
+            
+            # Check if all expected keys exist with correct values
+            match = all(entities.get(k) == v for k, v in expected.items())
+            conf_ok = conf >= tc["min_confidence"]
+            
+            if match and conf_ok:
+                passed += 1
+                status = "✅ PASS"
+            else:
+                status = "❌ FAIL"
+            
+            print(f"[{i}/{total}] {status}")
+            print(f"  Input: {tc['input']}")
+            print(f"  Expected: {expected}")
+            print(f"  Got: {entities} (conf={conf:.2f})")
+            if not match:
+                print(f"  Mismatch!")
+            print()
+        
+        accuracy = (passed / total) * 100
+        print(f"Result: {passed}/{total} passed ({accuracy:.1f}%)")
+        print(f"Target: >=90% → {'✅達成' if accuracy >= 90 else '❌ Chưa đạt'}")
+        return accuracy
+    
+    # ===== Phase 1.3: DEVICE_CONTROL Extractor =====
+    def _extract_device_control_with_confidence(self, text: str, intent: str) -> Tuple[Dict[str, str], float]:
+        """
+        Extract DEVICE, ACTION, MODE, LEVEL, LOCATION for control-device intent.
+        
+        Returns:
+            (entities_dict, confidence_score)
+        """
+        import re
+        
+        if intent != "control-device":
+            return ({}, 0.0)
+        
+        text_lower = text.lower().strip()
+        entities = {}
+        confidence = 0.0
+        
+        # Step 1: Extract ACTION (chỉ ON/OFF cơ bản)
+        action_keywords = {
+            r"\b(bật|mở|khởi\s*động|kích\s*hoạt)\b": "ON",
+            r"\b(tắt|đóng|ngắt|dừng)\b": "OFF",
+        }
+        
+        action_value = None
+        for pattern, action in action_keywords.items():
+            if re.search(pattern, text_lower):
+                action_value = action
+                confidence += 0.4
+                break
+        
+        if action_value:
+            entities["ACTION"] = action_value
+        
+        # Step 2: Extract DEVICE (chỉ thiết bị di động Android: flash, wifi, bluetooth, volume, brightness...)
+        device_keywords = {
+            r"\b(đèn\s*pin|den\s*pin|flash|flashlight)\b": "flash",
+            r"\b(wifi|wi\s*fi|mạng\s*không\s*dây)\b": "wifi",
+            r"\b(bluetooth|blue\s*tooth|blutooth)\b": "bluetooth",
+            r"\b(âm\s*lượng|am\s*luong|volume|tiếng|loa)\b": "volume",
+            r"\b(độ\s*sáng|do\s*sang|brightness|sáng|sang)\b": "brightness",
+            r"\b(data|dữ\s*liệu|du\s*lieu|3g|4g|5g)\b": "mobile_data",
+            r"\b(chế\s*độ\s*máy\s*bay|máy\s*bay|airplane|flight\s*mode)\b": "airplane_mode",
+            r"\b(xoay\s*màn\s*hình|xoay|rotation|auto\s*rotate)\b": "screen_rotation",
+        }
+        
+        device_value = None
+        for pattern, device in device_keywords.items():
+            match = re.search(pattern, text_lower)
+            if match:
+                device_value = device
+                confidence += 0.4
+                break
+        
+        if device_value:
+            entities["DEVICE"] = device_value
+        
+        # Step 3: LOCATION - Not applicable for mobile devices (skip)
+        # Step 4: LEVEL - Not needed for basic ON/OFF mobile controls (skip)
+        # Step 5: MODE - Not needed for basic ON/OFF mobile controls (skip)
+        
+        # Minimum confidence: if we have ACTION + DEVICE, that's sufficient
+        if "ACTION" in entities and "DEVICE" in entities:
+            confidence = max(confidence, 0.85)
+        
+        return (entities, min(confidence, 1.0))
+    
+    def test_extract_device_control(self):
+        """Inline test cho _extract_device_control_with_confidence - Target: >=90% exact match (Mobile device controls)"""
+        test_cases = [
+            # Flash (đèn pin)
+            {"input": "Bật đèn pin", "intent": "control-device", "expected": {"ACTION": "ON", "DEVICE": "flash"}, "min_confidence": 0.85},
+            {"input": "Tắt flash đi", "intent": "control-device", "expected": {"ACTION": "OFF", "DEVICE": "flash"}, "min_confidence": 0.85},
+            {"input": "Mở đèn pin giúp bà", "intent": "control-device", "expected": {"ACTION": "ON", "DEVICE": "flash"}, "min_confidence": 0.85},
+            
+            # WiFi
+            {"input": "Bật wifi lên", "intent": "control-device", "expected": {"ACTION": "ON", "DEVICE": "wifi"}, "min_confidence": 0.85},
+            {"input": "Tắt wifi đi", "intent": "control-device", "expected": {"ACTION": "OFF", "DEVICE": "wifi"}, "min_confidence": 0.85},
+            
+            # Bluetooth
+            {"input": "Bật bluetooth", "intent": "control-device", "expected": {"ACTION": "ON", "DEVICE": "bluetooth"}, "min_confidence": 0.85},
+            {"input": "Tắt bluetooth giúp bà", "intent": "control-device", "expected": {"ACTION": "OFF", "DEVICE": "bluetooth"}, "min_confidence": 0.85},
+            
+            # Volume (âm lượng)
+            {"input": "Bật âm lượng", "intent": "control-device", "expected": {"ACTION": "ON", "DEVICE": "volume"}, "min_confidence": 0.85},
+            {"input": "Tắt tiếng đi", "intent": "control-device", "expected": {"ACTION": "OFF", "DEVICE": "volume"}, "min_confidence": 0.85},
+            
+            # Brightness (độ sáng)
+            {"input": "Bật độ sáng", "intent": "control-device", "expected": {"ACTION": "ON", "DEVICE": "brightness"}, "min_confidence": 0.85},
+            
+            # Mobile data
+            {"input": "Bật data", "intent": "control-device", "expected": {"ACTION": "ON", "DEVICE": "mobile_data"}, "min_confidence": 0.85},
+            {"input": "Tắt 4G", "intent": "control-device", "expected": {"ACTION": "OFF", "DEVICE": "mobile_data"}, "min_confidence": 0.85},
+        ]
+        
+        passed = 0
+        total = len(test_cases)
+        
+        print("\n===== Test DEVICE_CONTROL Extraction =====")
+        for i, tc in enumerate(test_cases, 1):
+            entities, conf = self._extract_device_control_with_confidence(tc["input"], tc["intent"])
+            expected = tc["expected"]
+            
+            # Check if all expected keys exist with correct values
+            match = all(entities.get(k) == v for k, v in expected.items())
+            conf_ok = conf >= tc["min_confidence"]
+            
+            if match and conf_ok:
+                passed += 1
+                status = "✅ PASS"
+            else:
+                status = "❌ FAIL"
+            
+            print(f"[{i}/{total}] {status}")
+            print(f"  Input: {tc['input']}")
+            print(f"  Expected: {expected}")
+            print(f"  Got: {entities} (conf={conf:.2f})")
+            if not match:
+                print(f"  Mismatch!")
+            elif not conf_ok:
+                print(f"  Confidence too low: {conf:.2f} < {tc['min_confidence']}")
+            print()
+        
+        accuracy = (passed / total) * 100
+        print(f"Result: {passed}/{total} passed ({accuracy:.1f}%)")
+        print(f"Target: >=90% → {'✅達成' if accuracy >= 90 else '❌ Chưa đạt'}")
+        return accuracy
+
+

@@ -6,8 +6,18 @@ Updated for normalized Vietnamese text and processed data
 """
 
 import os
+import sys
+from pathlib import Path
 
 import torch
+
+# Đảm bảo có thể import được module `data.entity_schema`
+# Cấu trúc file hiện tại: <project_root>/src/training/configs/config.py
+_this_file = Path(__file__).resolve()
+_src_root = _this_file.parents[2]  # .../src
+_src_root_str = str(_src_root)
+if _src_root_str not in sys.path:
+    sys.path.insert(0, _src_root_str)
 
 from data.entity_schema import ENTITY_BASE_NAMES, generate_entity_labels
 

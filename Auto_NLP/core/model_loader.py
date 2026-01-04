@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, Optional, List, Tuple
 
-from models.inference.model_loader import MultiTaskInference, _select_checkpoint
+from src.models.inference.model_loader import MultiTaskInference, _select_checkpoint
 
 
 class TrainedModelInference:
@@ -143,13 +143,13 @@ class TrainedModelInference:
             "model_path": str(self.model_path),
         }
 
-def load_trained_model(model_name: str = "phobert_multitask", device: Optional[torch.device] = None) -> TrainedModelInference:
+def load_trained_model(model_name: str = "phobert_multitask", device: Optional[str] = None) -> TrainedModelInference:
     """
     Load trained model
     
     Args:
         model_name: Name of the model directory
-        device: Device to load model on
+        device: Device to load model on (e.g., 'cuda', 'cpu')
         
     Returns:
         TrainedModelInference instance

@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, Optional, List, Tuple
 
-from models.inference.model_loader import MultiTaskInference, _select_checkpoint
+from src.models.inference.model_loader import MultiTaskInference, _select_checkpoint
 
 
 class TrainedModelInference:
@@ -20,11 +20,15 @@ class TrainedModelInference:
             checkpoint_path = _select_checkpoint(model_dir)
 
         tokenizer_path = str(model_dir)
+        # Cho phép thiếu config.json: MultiTaskInference sẽ tự fallback sang
+        # cấu hình tối thiểu dựa trên checkpoint + ModelConfig.*
         config_path = model_dir / "config.json"
-        if not config_path.exists():
-            raise FileNotFoundError(f"Không tìm thấy config.json tại {config_path}")
 
-        self._inference = MultiTaskInference(str(checkpoint_path), tokenizer_path, str(config_path))
+        self._inference = MultiTaskInference(
+            str(checkpoint_path),
+            tokenizer_path,
+            str(config_path),
+        )
         self.model_loaded = True
         self.model_path = model_dir
 
@@ -139,13 +143,13 @@ class TrainedModelInference:
             "model_path": str(self.model_path),
         }
 
-def load_trained_model(model_name: str = "phobert_multitask", device: Optional[torch.device] = None) -> TrainedModelInference:
+def load_trained_model(model_name: str = "phobert_multitask", device: Optional[str] = None) -> TrainedModelInference:
     """
     Load trained model
     
     Args:
         model_name: Name of the model directory
-        device: Device to load model on
+        device: Device to load model on (e.g., 'cuda', 'cpu')
         
     Returns:
         TrainedModelInference instance

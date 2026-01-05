@@ -1,6 +1,7 @@
 package com.example.Auto_BE.repository;
 
 import com.example.Auto_BE.entity.ElderSupervisor;
+import com.example.Auto_BE.entity.enums.ERelationshipRequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -88,4 +89,17 @@ public interface ElderSupervisorRepository extends JpaRepository<ElderSupervisor
            "AND es.status = 'PENDING' " +
            "ORDER BY es.createdAt DESC")
     List<ElderSupervisor> findPendingSentRequests(@Param("userId") Long userId);
+
+    /**
+     * Tìm relationship theo elderUserId, supervisorUserId và status
+     */
+    @Query("SELECT es FROM ElderSupervisor es " +
+           "WHERE es.elderUser.id = :elderUserId " +
+           "AND es.supervisorUser.id = :supervisorUserId " +
+           "AND es.status = :status")
+    Optional<ElderSupervisor> findByElderUserIdAndSupervisorUserIdAndStatus(
+            @Param("elderUserId") Long elderUserId,
+            @Param("supervisorUserId") Long supervisorUserId,
+            @Param("status") ERelationshipRequestStatus status
+    );
 }

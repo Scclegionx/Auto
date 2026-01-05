@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.auto_fe.auto_fe.ui.theme.*
 
@@ -37,6 +38,8 @@ fun MedicationTabScreen(
     userAvatar: String? = null,
     elderUserId: Long? = null,  // Nếu có = Supervisor đang xem Elder
     elderUserName: String? = null,  // Tên Elder
+    canViewMedications: Boolean = true,  // Quyền xem thuốc
+    canUpdateMedications: Boolean = true,  // Quyền sửa thuốc
     onBackClick: (() -> Unit)? = null  // Back về danh sách Elder
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -95,28 +98,132 @@ fun MedicationTabScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Permission warning banner nếu không có quyền xem
+            if (isSupervisorMode && !canViewMedications) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = AIWarning.copy(alpha = 0.2f)
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "⚠️",
+                            fontSize = 24.sp,
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                        Column {
+                            Text(
+                                text = "Không có quyền xem thuốc",
+                                fontSize = AppTextSize.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = AIWarning
+                            )
+                            Text(
+                                text = "Bạn không có quyền xem thông tin thuốc của ${elderUserName ?: "người dùng"}",
+                                fontSize = AppTextSize.bodySmall,
+                                color = DarkOnSurface.copy(alpha = 0.7f)
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Permission info banner nếu chỉ có quyền xem
+            if (isSupervisorMode && canViewMedications && !canUpdateMedications) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = AIInfo.copy(alpha = 0.2f)
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "ℹ️",
+                            fontSize = 20.sp,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(
+                            text = "Chế độ chỉ xem - Không thể thêm/sửa/xóa thuốc",
+                            fontSize = AppTextSize.bodySmall,
+                            color = AIInfo
+                        )
+                    }
+                }
+            }
+
             // Content based on selected tab
-            when (selectedTabIndex) {
-                0 -> PrescriptionListTab(
-                    accessToken = accessToken,
-                    elderUserId = elderUserId,  // Pass elderUserId
-                    elderUserName = elderUserName,  // Pass elderUserName
-                    onPrescriptionClick = onPrescriptionClick,
-                    onCreateClick = onCreatePrescriptionClick,
-                    onChatClick = if (isSupervisorMode) ({}) else onChatClick  // Disable chat in supervisor mode
-                )
-                1 -> StandaloneMedicationTab(
-                    accessToken = accessToken,
-                    elderUserId = elderUserId,  // Pass elderUserId
-                    elderUserName = elderUserName,  // Pass elderUserName
-                    onCreateClick = onCreateStandaloneMedicationClick
-                )
-                2 -> MedicationLogTab(
-                    accessToken = accessToken,
-                    currentUserId = currentUserId,  // Pass current user ID
-                    elderUserId = elderUserId,
-                    elderUserName = elderUserName
-                )
+            // Nếu Supervisor không có quyền xem → chỉ hiển thị warning, không load data
+            if (isSupervisorMode && !canViewMedications) {
+                // Không hiển thị tab content, chỉ có warning banner ở trên
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Lock,
+                            contentDescription = null,
+                            modifier = Modifier.size(64.dp),
+                            tint = DarkOnSurface.copy(alpha = 0.3f)
+                        )
+                        Text(
+                            "Không có quyền truy cập",
+                            fontSize = AppTextSize.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = DarkOnSurface.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            "Bạn cần quyền xem để truy cập thông tin thuốc",
+                            fontSize = AppTextSize.bodyMedium,
+                            color = DarkOnSurface.copy(alpha = 0.5f)
+                        )
+                    }
+                }
+            } else {
+                when (selectedTabIndex) {
+                    0 -> PrescriptionListTab(
+                        accessToken = accessToken,
+                        elderUserId = elderUserId,  // Pass elderUserId
+                        elderUserName = elderUserName,  // Pass elderUserName
+                        onPrescriptionClick = onPrescriptionClick,
+                        onCreateClick = if (canUpdateMedications) onCreatePrescriptionClick else {{}},  // Disable nếu không có quyền
+                        onChatClick = if (isSupervisorMode) ({}) else onChatClick  // Disable chat in supervisor mode
+                    )
+                    1 -> StandaloneMedicationTab(
+                        accessToken = accessToken,
+                        elderUserId = elderUserId,  // Pass elderUserId
+                        elderUserName = elderUserName,  // Pass elderUserName
+                        onCreateClick = if (canUpdateMedications) onCreateStandaloneMedicationClick else {{}}  // Disable nếu không có quyền
+                    )
+                    2 -> MedicationLogTab(
+                        accessToken = accessToken,
+                        currentUserId = currentUserId,  // Pass current user ID
+                        elderUserId = elderUserId,
+                        elderUserName = elderUserName
+                    )
+                }
             }
         }
     }

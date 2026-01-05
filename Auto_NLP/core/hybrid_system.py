@@ -55,6 +55,7 @@ class ModelFirstHybridSystem:
     def __init__(self, model_path: str = "models/phobert_multitask"):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         # dùng ENV ưu tiên
+        print(f"MODEL_PATH: {os.getenv('MODEL_PATH')}")
         model_path = os.getenv("MODEL_PATH", model_path)
 
             

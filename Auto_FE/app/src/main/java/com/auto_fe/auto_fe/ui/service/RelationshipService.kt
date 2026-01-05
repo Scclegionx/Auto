@@ -42,6 +42,8 @@ class RelationshipService {
         val status: String,
         val requestMessage: String?,
         val responseMessage: String?,
+        val canViewMedications: Boolean,
+        val canUpdateMedications: Boolean,
         val respondedAt: String?,
         val createdAt: String
     )
@@ -53,6 +55,19 @@ class RelationshipService {
 
     data class RespondRequestDTO(
         val message: String?
+    )
+
+    data class SupervisorPermission(
+        val supervisorId: Long,
+        val supervisorName: String,
+        val supervisorEmail: String,
+        val elderId: Long,
+        val elderName: String,
+        val elderEmail: String,
+        val canViewMedications: Boolean,
+        val canUpdateMedications: Boolean,
+        val isActive: Boolean,
+        val relationshipStatus: String
     )
 
     /**
@@ -298,8 +313,107 @@ class RelationshipService {
             status = json.getString("status"),
             requestMessage = json.optString("requestMessage", null),
             responseMessage = json.optString("responseMessage", null),
+            canViewMedications = json.optBoolean("canViewMedications", true), // Default true
+            canUpdateMedications = json.optBoolean("canUpdateMedications", true), // Default true
             respondedAt = json.optString("respondedAt", null),
             createdAt = json.getString("createdAt")
         )
+    }
+
+    /**
+     * Lấy quyền của Supervisor đối với Elder (getRole)
+     * GET /api/relationships/role/{elderId}
+     */
+    suspend fun getRole(
+        accessToken: String,
+        elderId: Long
+    ): Result<SupervisorPermission> = withContext(Dispatchers.IO) {
+        try {
+            val request = Request.Builder()
+                .url("$baseUrl/role/$elderId")
+                .addHeader("Authorization", "Bearer $accessToken")
+                .get()
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                val responseBody = response.body?.string() ?: ""
+
+                if (!response.isSuccessful) {
+                    val errorMsg = try {
+                        JSONObject(responseBody).optString("message", "Không thể lấy thông tin quyền")
+                    } catch (e: Exception) {
+                        "Không thể lấy thông tin quyền: ${response.code}"
+                    }
+                    return@withContext Result.failure(Exception(errorMsg))
+                }
+
+                val json = JSONObject(responseBody)
+                val permission = SupervisorPermission(
+                    supervisorId = json.getLong("supervisorId"),
+                    supervisorName = json.getString("supervisorName"),
+                    supervisorEmail = json.getString("supervisorEmail"),
+                    elderId = json.getLong("elderId"),
+                    elderName = json.getString("elderName"),
+                    elderEmail = json.getString("elderEmail"),
+                    canViewMedications = json.getBoolean("canViewMedications"),
+                    canUpdateMedications = json.getBoolean("canUpdateMedications"),
+                    isActive = json.getBoolean("isActive"),
+                    relationshipStatus = json.getString("relationshipStatus")
+                )
+
+                Result.success(permission)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Cập nhật quyền của Supervisor (Elder gọi API này)
+     * PUT /api/relationships/permissions/{supervisorId}?canViewMedications=true&canUpdateMedications=false
+     */
+    suspend fun updatePermissions(
+        accessToken: String,
+        supervisorId: Long,
+        canViewMedications: Boolean,
+        canUpdateMedications: Boolean
+    ): Result<SupervisorPermission> = withContext(Dispatchers.IO) {
+        try {
+            val url = "$baseUrl/permissions/$supervisorId" +
+                    "?canViewMedications=$canViewMedications" +
+                    "&canUpdateMedications=$canUpdateMedications"
+            
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer $accessToken")
+                .put(okhttp3.RequestBody.create(null, ByteArray(0))) // Empty body for PUT
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                val responseBody = response.body?.string() ?: ""
+                
+                if (!response.isSuccessful) {
+                    throw Exception("Cập nhật quyền thất bại: ${response.code} - $responseBody")
+                }
+
+                val json = JSONObject(responseBody)
+                val permission = SupervisorPermission(
+                    supervisorId = json.getLong("supervisorId"),
+                    supervisorName = json.getString("supervisorName"),
+                    supervisorEmail = json.getString("supervisorEmail"),
+                    elderId = json.getLong("elderId"),
+                    elderName = json.getString("elderName"),
+                    elderEmail = json.getString("elderEmail"),
+                    canViewMedications = json.getBoolean("canViewMedications"),
+                    canUpdateMedications = json.getBoolean("canUpdateMedications"),
+                    isActive = json.getBoolean("isActive"),
+                    relationshipStatus = json.getString("relationshipStatus")
+                )
+
+                Result.success(permission)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

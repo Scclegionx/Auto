@@ -3,6 +3,7 @@ package com.example.Auto_BE.controller;
 import com.example.Auto_BE.dto.request.RespondToRequestDTO;
 import com.example.Auto_BE.dto.request.SendRelationshipRequestDTO;
 import com.example.Auto_BE.dto.response.RelationshipRequestResponse;
+import com.example.Auto_BE.dto.response.SupervisorPermissionResponse;
 import com.example.Auto_BE.service.RelationshipRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -136,5 +137,57 @@ public class RelationshipRequestController {
         List<RelationshipRequestResponse> supervisors = relationshipRequestService.getConnectedSupervisorsByEmail(email);
         
         return ResponseEntity.ok(supervisors);
+    }
+
+    /**
+     * Lấy quyền của Supervisor đối với Elder (getRole)
+     * GET /api/relationships/role/{elderId}
+     * 
+     * @param elderId ID của Elder cần kiểm tra quyền
+     * @param authentication Thông tin Supervisor đang đăng nhập
+     * @return SupervisorPermissionResponse chứa thông tin quyền (canViewMedications, canUpdateMedications)
+     */
+    @GetMapping("/role/{elderId}")
+    public ResponseEntity<SupervisorPermissionResponse> getRole(
+            @PathVariable Long elderId,
+            Authentication authentication) {
+        
+        String email = authentication.getName();
+        
+        // Lấy supervisorId từ email
+        Long supervisorId = relationshipRequestService.getUserIdByEmail(email);
+        
+        SupervisorPermissionResponse permissions = relationshipRequestService.getRole(supervisorId, elderId);
+        
+        return ResponseEntity.ok(permissions);
+    }
+
+    /**
+     * Cập nhật quyền của Supervisor (chỉ Elder mới được gọi)
+     * PUT /api/relationships/permissions/{supervisorId}
+     * 
+     * @param supervisorId ID của Supervisor cần cập nhật quyền
+     * @param canViewMedications Quyền xem thuốc (true/false)
+     * @param canUpdateMedications Quyền sửa/xóa thuốc (true/false)
+     * @param authentication Thông tin Elder đang đăng nhập
+     * @return SupervisorPermissionResponse với thông tin quyền đã cập nhật
+     */
+    @PutMapping("/permissions/{supervisorId}")
+    public ResponseEntity<SupervisorPermissionResponse> updatePermissions(
+            @PathVariable Long supervisorId,
+            @RequestParam Boolean canViewMedications,
+            @RequestParam Boolean canUpdateMedications,
+            Authentication authentication) {
+        
+        String elderEmail = authentication.getName();
+        
+        SupervisorPermissionResponse updatedPermissions = relationshipRequestService.updatePermissions(
+            elderEmail, 
+            supervisorId, 
+            canViewMedications, 
+            canUpdateMedications
+        );
+        
+        return ResponseEntity.ok(updatedPermissions);
     }
 }

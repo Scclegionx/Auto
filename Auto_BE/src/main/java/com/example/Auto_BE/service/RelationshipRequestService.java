@@ -3,6 +3,7 @@ package com.example.Auto_BE.service;
 import com.example.Auto_BE.dto.request.SendRelationshipRequestDTO;
 import com.example.Auto_BE.dto.request.RespondToRequestDTO;
 import com.example.Auto_BE.dto.response.RelationshipRequestResponse;
+import com.example.Auto_BE.dto.response.SupervisorPermissionResponse;
 import com.example.Auto_BE.entity.ElderSupervisor;
 import com.example.Auto_BE.entity.ElderUser;
 import com.example.Auto_BE.entity.SupervisorUser;
@@ -282,6 +283,9 @@ public class RelationshipRequestService {
                 .status(relationship.getStatus())
                 .requestMessage(relationship.getRequestMessage())
                 .responseMessage(relationship.getResponseMessage())
+                // Permissions
+                .canViewMedications(relationship.getCanViewPrescription())
+                .canUpdateMedications(relationship.getCanUpdatePrescription())
                 .respondedAt(relationship.getRespondedAt())
                 .createdAt(relationship.getCreatedAt())
                 .build();
@@ -362,5 +366,161 @@ public class RelationshipRequestService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng với email: " + email));
         return getConnectedSupervisors(user.getId());
+    }
+
+    /**
+     * Lấy quyền của Supervisor đối với Elder (getRole)
+     * @param supervisorId ID của Supervisor
+     * @param elderId ID của Elder
+     * @return SupervisorPermissionResponse chứa thông tin quyền
+     */
+    public SupervisorPermissionResponse getRole(Long supervisorId, Long elderId) {
+        log.info("Getting permissions for supervisor {} and elder {}", supervisorId, elderId);
+        
+        // Tìm Supervisor
+        SupervisorUser supervisor = userRepository.findById(supervisorId)
+                .filter(user -> user instanceof SupervisorUser)
+                .map(user -> (SupervisorUser) user)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Supervisor với ID: " + supervisorId));
+        
+        // Tìm Elder
+        ElderUser elder = userRepository.findById(elderId)
+                .filter(user -> user instanceof ElderUser)
+                .map(user -> (ElderUser) user)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Elder với ID: " + elderId));
+        
+        // Tìm relationship
+        ElderSupervisor relationship = elderSupervisorRepository
+                .findByElderUserIdAndSupervisorUserIdAndStatus(
+                    elderId, 
+                    supervisorId, 
+                    ERelationshipRequestStatus.ACCEPTED
+                )
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    "Không tìm thấy mối quan hệ giữa Supervisor và Elder này"
+                ));
+        
+        log.info("Found relationship - canView: {}, canUpdate: {}, isActive: {}", 
+            relationship.getCanViewPrescription(), 
+            relationship.getCanUpdatePrescription(),
+            relationship.getIsActive());
+        
+        return SupervisorPermissionResponse.builder()
+                .supervisorId(supervisor.getId())
+                .supervisorName(supervisor.getFullName())
+                .supervisorEmail(supervisor.getEmail())
+                .elderId(elder.getId())
+                .elderName(elder.getFullName())
+                .elderEmail(elder.getEmail())
+                .canViewMedications(relationship.getCanViewPrescription())
+                .canUpdateMedications(relationship.getCanUpdatePrescription())
+                .isActive(relationship.getIsActive())
+                .relationshipStatus(relationship.getStatus().name())
+                .build();
+    }
+
+    /**
+     * Helper method: Lấy userId từ email
+     */
+    public Long getUserIdByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng với email: " + email));
+        return user.getId();
+    }
+
+    /**
+     * Cập nhật quyền của Supervisor (chỉ Elder mới được gọi)
+     * @param elderEmail Email của Elder đang đăng nhập
+     * @param supervisorId ID của Supervisor cần cập nhật quyền
+     * @param canViewMedications Quyền xem thuốc
+     * @param canUpdateMedications Quyền sửa/xóa thuốc
+     * @return SupervisorPermissionResponse với thông tin quyền đã cập nhật
+     */
+    @Transactional
+    public SupervisorPermissionResponse updatePermissions(
+            String elderEmail,
+            Long supervisorId,
+            Boolean canViewMedications,
+            Boolean canUpdateMedications
+    ) {
+        log.info("Updating permissions - Elder: {}, Supervisor: {}, View: {}, Update: {}", 
+                elderEmail, supervisorId, canViewMedications, canUpdateMedications);
+        
+        // Tìm Elder từ email
+        ElderUser elder = userRepository.findByEmail(elderEmail)
+                .filter(user -> user instanceof ElderUser)
+                .map(user -> (ElderUser) user)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Elder với email: " + elderEmail));
+        
+        // Tìm Supervisor
+        SupervisorUser supervisor = userRepository.findById(supervisorId)
+                .filter(user -> user instanceof SupervisorUser)
+                .map(user -> (SupervisorUser) user)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy Supervisor với ID: " + supervisorId));
+        
+        // Tìm relationship ACCEPTED giữa Elder và Supervisor
+        ElderSupervisor relationship = elderSupervisorRepository
+                .findByElderUserIdAndSupervisorUserIdAndStatus(
+                    elder.getId(),
+                    supervisorId,
+                    ERelationshipRequestStatus.ACCEPTED
+                )
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    "Không tìm thấy mối quan hệ đã chấp nhận giữa Elder và Supervisor"
+                ));
+        
+        // Cập nhật quyền
+        relationship.setCanViewPrescription(canViewMedications);
+        relationship.setCanUpdatePrescription(canUpdateMedications);
+        
+        ElderSupervisor updatedRelationship = elderSupervisorRepository.save(relationship);
+        
+        log.info("Permissions updated successfully for relationship ID: {}", updatedRelationship.getId());
+        
+        // Tạo notification cho Supervisor
+        createPermissionUpdateNotification(elder, supervisor, canViewMedications, canUpdateMedications);
+        
+        // Return response
+        return SupervisorPermissionResponse.builder()
+                .supervisorId(supervisor.getId())
+                .supervisorName(supervisor.getFullName())
+                .elderId(elder.getId())
+                .elderName(elder.getFullName())
+                .canViewMedications(canViewMedications)
+                .canUpdateMedications(canUpdateMedications)
+                .isActive(updatedRelationship.getIsActive())
+                .relationshipStatus(updatedRelationship.getStatus().name())
+                .build();
+    }
+
+    /**
+     * Tạo notification khi Elder thay đổi quyền của Supervisor
+     */
+    private void createPermissionUpdateNotification(
+            ElderUser elder,
+            SupervisorUser supervisor,
+            Boolean canView,
+            Boolean canUpdate
+    ) {
+        String permissionText;
+        if (canView && canUpdate) {
+            permissionText = "xem và chỉnh sửa thuốc";
+        } else if (canView) {
+            permissionText = "chỉ xem thuốc (không được chỉnh sửa)";
+        } else {
+            permissionText = "không được xem thuốc";
+        }
+        
+        Notifications notification = new Notifications();
+        notification.setUser(supervisor); // Gửi cho Supervisor
+        notification.setNotificationType(ENotificationType.SYSTEM_ANNOUNCEMENT);
+        notification.setTitle("Quyền truy cập đã thay đổi");
+        notification.setBody(String.format("%s đã cập nhật quyền của bạn: %s", 
+                elder.getFullName(), permissionText));
+        notification.setIsRead(false);
+        notification.setRelatedElder(elder);
+        
+        notificationRepository.save(notification);
+        log.info("Created permission update notification for Supervisor: {}", supervisor.getEmail());
     }
 }

@@ -238,6 +238,8 @@ fun MainScreen(sessionManager: SessionManager) {
     var selectedUserName by remember { mutableStateOf<String?>(null) }  //  State để lưu tên user
     var selectedElderUserId by remember { mutableStateOf<Long?>(null) }  //  State cho Supervisor xem Elder
     var selectedElderUserName by remember { mutableStateOf<String?>(null) }  // Tên Elder
+    var supervisorCanView by remember { mutableStateOf(true) }  // Quyền xem của Supervisor
+    var supervisorCanUpdate by remember { mutableStateOf(true) }  // Quyền sửa của Supervisor
     var verificationEmail by remember { mutableStateOf("") }
     var verificationPassword by remember { mutableStateOf("") }
     var verifiedEmail by remember { mutableStateOf<String?>(null) }
@@ -455,6 +457,8 @@ fun MainScreen(sessionManager: SessionManager) {
                 userAvatar = sessionManager.getUserAvatar(),
                 elderUserId = selectedElderUserId,  //  Pass elderUserId để load thuốc của Elder
                 elderUserName = selectedElderUserName,
+                canViewMedications = supervisorCanView,  // Pass quyền xem
+                canUpdateMedications = supervisorCanUpdate,  // Pass quyền sửa
                 onPrescriptionClick = { prescriptionId ->
                     selectedPrescriptionId = prescriptionId
                 },
@@ -708,10 +712,49 @@ fun MainScreen(sessionManager: SessionManager) {
                                         accessToken = accessToken!!,
                                         userAvatar = sessionManager.getUserAvatar(),
                                         onElderClick = { elderUserId, elderUserName ->
-                                            // Set selected elder và navigate to detail
+                                            // Set selected elder
                                             selectedElderUserId = elderUserId
                                             selectedElderUserName = elderUserName
                                             android.util.Log.d("MainActivity", "Selected Elder: $elderUserId - $elderUserName")
+                                            
+                                            // Gọi API getRole để lấy permissions
+                                            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                                                try {
+                                                    val relationshipService = com.auto_fe.auto_fe.ui.service.RelationshipService()
+                                                    val result = relationshipService.getRole(accessToken!!, elderUserId)
+                                                    
+                                                    result.fold(
+                                                        onSuccess = { permission ->
+                                                            supervisorCanView = permission.canViewMedications
+                                                            supervisorCanUpdate = permission.canUpdateMedications
+                                                            android.util.Log.d("MainActivity", "Permissions loaded - canView: $supervisorCanView, canUpdate: $supervisorCanUpdate")
+                                                            
+                                                            if (!permission.canViewMedications) {
+                                                                android.widget.Toast.makeText(
+                                                                    context,
+                                                                    "Bạn không có quyền xem thông tin thuốc của ${permission.elderName}",
+                                                                    android.widget.Toast.LENGTH_LONG
+                                                                ).show()
+                                                            }
+                                                        },
+                                                        onFailure = { error ->
+                                                            android.util.Log.e("MainActivity", "Failed to get permissions: ${error.message}")
+                                                            android.widget.Toast.makeText(
+                                                                context,
+                                                                "Không thể lấy thông tin quyền: ${error.message}",
+                                                                android.widget.Toast.LENGTH_LONG
+                                                            ).show()
+                                                            // Reset permissions về default
+                                                            supervisorCanView = true
+                                                            supervisorCanUpdate = true
+                                                        }
+                                                    )
+                                                } catch (e: Exception) {
+                                                    android.util.Log.e("MainActivity", "Error calling getRole: ${e.message}")
+                                                    supervisorCanView = true
+                                                    supervisorCanUpdate = true
+                                                }
+                                            }
                                         },
                                         onSearchUserClick = {
                                             showSearchConnection = true

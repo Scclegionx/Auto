@@ -43,4 +43,4 @@ EXPOSE 8000
 # ==============================
 # Run FastAPI (PRODUCTION)
 # ==============================
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+CMD ["uvicorn", "api.server:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

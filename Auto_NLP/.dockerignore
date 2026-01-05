@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+venv_new/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation (giữ lại README.md)
+*.md
+!README.md
+docs/
+assets/docs/
+
+# Logs (sẽ được mount từ host)
+*.log
+logs/
+
+# Cache
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Reports
+reports/
+*.png
+*.json
+!models/**/*.json
+!core/**/*.json
+!src/**/*.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Scripts không cần thiết cho production
+scripts/
+setup_env_and_train.py
+
+# Audit files
+AUDIT_SUMMARY.txt
+*_AUDIT_REPORT.md
+*_ROADMAP.md
+*_CHECKLIST.md
+VERIFICATION_REPORT.md
+
+# Models sẽ được mount từ host, không copy vào image
+# models/
+

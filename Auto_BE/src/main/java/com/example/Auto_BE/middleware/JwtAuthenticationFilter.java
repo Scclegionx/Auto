@@ -32,6 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
         return path.startsWith("/api/auth") ||
+                path.startsWith("/api/settings") || // Settings API không cần auth
+                path.startsWith("/api/quartz") ||
                 path.startsWith("/swagger-ui") ||
                 path.startsWith("/v3/api-docs") ||
                 path.startsWith("/swagger-resources") ||

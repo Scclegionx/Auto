@@ -54,6 +54,13 @@ class ModelFirstHybridSystem:
     
     def __init__(self, model_path: str = "models/phobert_multitask"):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        #Ưu tiên ENV (EC2 / Docker)
+        if model_path is None:
+            model_path = os.getenv(
+                "MODEL_PATH",
+                "models/phobert_multitask"   # fallback cho local
+            )
+            
         self.model_path = Path(model_path)
         
         # Components

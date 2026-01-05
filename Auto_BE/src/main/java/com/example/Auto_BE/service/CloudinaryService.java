@@ -113,6 +113,55 @@ public class CloudinaryService {
         }
     }
 
+    /**
+     * Upload video lên Cloudinary
+     * @param file File video cần upload
+     * @return URL của video trên Cloudinary
+     */
+    public String uploadVideo(MultipartFile file) throws IOException {
+        try {
+            // Generate unique filename
+            String publicId = "user_guides/" + UUID.randomUUID().toString();
+
+            // Upload to Cloudinary
+            @SuppressWarnings("unchecked")
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), 
+                ObjectUtils.asMap(
+                    "public_id", publicId,
+                    "folder", "auto_user_guides",
+                    "resource_type", "video"
+                ));
+
+            String videoUrl = (String) uploadResult.get("secure_url");
+            log.info("Video uploaded to Cloudinary: {}", videoUrl);
+
+            return videoUrl;
+
+        } catch (IOException e) {
+            log.error("Failed to upload video to Cloudinary", e);
+            throw new IOException("Failed to upload video: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Xóa video từ Cloudinary
+     * @param videoUrl URL của video cần xóa
+     */
+    public void deleteVideo(String videoUrl) {
+        try {
+            // Extract public_id from URL
+            String publicId = extractPublicIdFromUrl(videoUrl);
+            
+            if (publicId != null) {
+                cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", "video"));
+                log.info("Video deleted from Cloudinary: {}", publicId);
+            }
+        } catch (Exception e) {
+            log.error("Failed to delete video from Cloudinary: {}", videoUrl, e);
+            // Don't throw exception, just log error
+        }
+    }
+
     private String extractPublicIdFromUrl(String imageUrl) {
         try {
             // Extract public_id from Cloudinary URL
@@ -121,6 +170,7 @@ public class CloudinaryService {
             }
 
             // URL format: https://res.cloudinary.com/{cloud_name}/image/upload/v{version}/{public_id}.{format}
+            // or: https://res.cloudinary.com/{cloud_name}/video/upload/v{version}/{public_id}.{format}
             String[] parts = imageUrl.split("/upload/");
             if (parts.length < 2) {
                 return null;

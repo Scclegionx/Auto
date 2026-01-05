@@ -32,48 +32,46 @@ public class GeminiService {
 
     private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent";
 
-    private static final String PROMPT = """
-            Bạn là hệ thống nhận dạng và trích xuất dữ liệu y tế.
-            
-            Từ ảnh đơn thuốc (toa thuốc) được cung cấp, hãy đọc nội dung trong ảnh và trích xuất thông tin dưới dạng JSON theo cấu trúc sau:
-            
-            {
-              "name": "Tên đơn thuốc (nếu có, ví dụ: Đơn viêm da dày)",
-              "description": "Ghi chú hoặc hướng dẫn tổng quát (ví dụ: Uống đều đặn trong 30 ngày, hoặc theo chỉ định bác sĩ)",
-              "imageUrl": null,
-              "medicationReminders": [
-                {
-                  "name": "Tên thuốc để phân biệt không cần hiển thị hoạt chất (ví dụ: Atorvastatin)",
-                  "description": "Liều lượng và cách dùng (không rõ thì để trống, ví dụ: 1 viên sau ăn tối)",
-                  "type": "PRESCRIPTION",
-                  "reminderTimes": [],
-                  "daysOfWeek": "1111111"
-                }
-              ]
-            }
-            
-            ⚠️ Quy tắc xử lý:
-            - Nếu đơn thuốc không ghi tên → đặt name = "Đơn thuốc không tiêu đề".
-            - Nếu không có mô tả chung → để description = null.
-            - Nếu tên thuốc hoặc mô tả có chứa thông tin tần suất hoặc thời điểm uống, hãy tự động gán giá trị cho "reminderTimes" theo quy tắc:
-              - "1 lần trong ngày" → ["08:00"]
-              - "2 lần trong ngày" → ["08:00","20:00"]
-              - "3 lần trong ngày" → ["08:00","12:00","20:00"]
-              - "4 lần trong ngày" → ["08:00","12:00","17:00","21:00"]
-              - "Buổi sáng" → ["08:00"]
-              - "Buổi trưa" → ["12:00"]
-              - "Buổi chiều" → ["17:00"]
-              - "Buổi tối" → ["20:00"]
-              - "Sáng và tối" → ["08:00","20:00"]
-              - "Sáng - trưa - tối" → ["08:00","12:00","20:00"]
-              - "Sau ăn" → tùy thời điểm, nếu không rõ → ["12:00"]
-            - Nếu không rõ thời điểm → để mảng reminderTimes rỗng.
-            - Mặc định daysOfWeek = "1111111" (uống hàng ngày).
-            - Luôn đảm bảo output là JSON hợp lệ, không có mô tả thừa ngoài JSON.
-            - Không dịch, giữ nguyên ngôn ngữ tiếng Việt của thuốc và mô tả.
-            
-            Kết quả: chỉ xuất đối tượng JSON hợp lệ duy nhất.
-            """;
+    private static final String PROMPT = "Bạn là hệ thống nhận dạng và trích xuất dữ liệu y tế.\n" +
+            "\n" +
+            "Từ ảnh đơn thuốc (toa thuốc) được cung cấp, hãy đọc nội dung trong ảnh và trích xuất thông tin dưới dạng JSON theo cấu trúc sau:\n" +
+            "\n" +
+            "{\n" +
+            "  \"name\": \"Tên đơn thuốc (nếu có, ví dụ: Đơn viêm da dày)\",\n" +
+            "  \"description\": \"Ghi chú hoặc hướng dẫn tổng quát (ví dụ: Uống đều đặn trong 30 ngày, hoặc theo chỉ định bác sĩ)\",\n" +
+            "  \"imageUrl\": null,\n" +
+            "  \"medicationReminders\": [\n" +
+            "    {\n" +
+            "      \"name\": \"Tên thuốc để phân biệt không cần hiển thị hoạt chất (ví dụ: Atorvastatin)\",\n" +
+            "      \"description\": \"Liều lượng và cách dùng (không rõ thì để trống, ví dụ: 1 viên sau ăn tối)\",\n" +
+            "      \"type\": \"PRESCRIPTION\",\n" +
+            "      \"reminderTimes\": [],\n" +
+            "      \"daysOfWeek\": \"1111111\"\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}\n" +
+            "\n" +
+            "Quy tắc xử lý:\n" +
+            "- Nếu đơn thuốc không ghi tên thì đặt name = \"Đơn thuốc không tiêu đề\".\n" +
+            "- Nếu không có mô tả chung thì để description = null.\n" +
+            "- Nếu tên thuốc hoặc mô tả có chứa thông tin tần suất hoặc thời điểm uống, hãy tự động gán giá trị cho \"reminderTimes\" theo quy tắc:\n" +
+            "  - \"1 lần trong ngày\" = [\"08:00\"]\n" +
+            "  - \"2 lần trong ngày\" = [\"08:00\",\"20:00\"]\n" +
+            "  - \"3 lần trong ngày\" = [\"08:00\",\"12:00\",\"20:00\"]\n" +
+            "  - \"4 lần trong ngày\" = [\"08:00\",\"12:00\",\"17:00\",\"21:00\"]\n" +
+            "  - \"Buổi sáng\" = [\"08:00\"]\n" +
+            "  - \"Buổi trưa\" = [\"12:00\"]\n" +
+            "  - \"Buổi chiều\" = [\"17:00\"]\n" +
+            "  - \"Buổi tối\" = [\"20:00\"]\n" +
+            "  - \"Sáng và tối\" = [\"08:00\",\"20:00\"]\n" +
+            "  - \"Sáng - trưa - tối\" = [\"08:00\",\"12:00\",\"20:00\"]\n" +
+            "  - \"Sau ăn\" = tùy thời điểm, nếu không rõ = [\"12:00\"]\n" +
+            "- Nếu không rõ thời điểm thì để mảng reminderTimes rỗng.\n" +
+            "- Mặc định daysOfWeek = \"1111111\" (uống hàng ngày).\n" +
+            "- Luôn đảm bảo output là JSON hợp lệ, không có mô tả thừa ngoài JSON.\n" +
+            "- Không dịch, giữ nguyên ngôn ngữ tiếng Việt của thuốc và mô tả.\n" +
+            "\n" +
+            "Kết quả: chỉ xuất đối tượng JSON hợp lệ duy nhất.";
 
     public PrescriptionCreateRequest extractPrescriptionFromImage(MultipartFile imageFile) throws IOException, InterruptedException {
         // Convert image to base64

@@ -528,10 +528,10 @@ public class MedicationService {
 
     // ===== HELPER METHODS =====
 
-    private ElderUser getUserById(Long userId) {
-        Optional<ElderUser> userOpt = elderUserRepository.findById(userId);
-        return userOpt.orElse(null);
-    }
+//    private ElderUser getUserById(Long userId) {
+//        Optional<ElderUser> userOpt = elderUserRepository.findById(userId);
+//        return userOpt.orElse(null);
+//    }
 
     /**
      * Không gom medications, chỉ return đúng medication được tạo

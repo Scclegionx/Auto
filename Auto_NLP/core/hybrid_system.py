@@ -54,14 +54,7 @@ class ModelFirstHybridSystem:
     
     def __init__(self, model_path: str = "models/phobert_multitask"):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        # Lấy từ ENV, nếu không có thì dùng tham số mặc định
-        env_model_path = os.getenv("MODEL_PATH")
-        if env_model_path:
-            model_path = env_model_path
-
-        # Convert thành Path tuyệt đối để tránh sai lệch Working Directory
-        self.model_path = Path(model_path).resolve()
-        print(f"--- Loading model from: {self.model_path} ---") # Log để debug
+        self.model_path = Path(model_path)
         
         # Components
         self.trained_model = None

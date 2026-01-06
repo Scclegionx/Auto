@@ -37,9 +37,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import com.auto_fe.auto_fe.ui.service.MedicalDocumentData
-import com.auto_fe.auto_fe.ui.service.MedicalDocumentFileData
-import com.auto_fe.auto_fe.ui.service.MedicalDocumentService
+import com.auto_fe.auto_fe.service.be.MedicalDocumentData
+import com.auto_fe.auto_fe.service.be.MedicalDocumentFileData
+import com.auto_fe.auto_fe.service.be.MedicalDocumentService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 import java.io.File

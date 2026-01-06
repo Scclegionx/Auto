@@ -20,10 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.auto_fe.auto_fe.ui.service.StandaloneMedicationService
+import com.auto_fe.auto_fe.service.be.StandaloneMedicationService
 import com.auto_fe.auto_fe.ui.theme.*
-import com.auto_fe.auto_fe.utils.SessionManager
-import com.auto_fe.auto_fe.ui.utils.formatDaysOfWeek
+import com.auto_fe.auto_fe.utils.be.SessionManager
+import com.auto_fe.auto_fe.utils.common.formatDaysOfWeek
 import kotlinx.coroutines.launch
 
 @Composable

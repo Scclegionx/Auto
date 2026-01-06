@@ -12,7 +12,7 @@ import android.speech.tts.TextToSpeech
 import androidx.core.content.ContextCompat
 import androidx.core.app.ActivityCompat
 import java.util.*
-import com.auto_fe.auto_fe.utils.SettingsManager
+import com.auto_fe.auto_fe.utils.common.SettingsManager
 
 class PhoneAutomation(private val context: Context) {
 

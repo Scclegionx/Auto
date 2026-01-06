@@ -18,8 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.auto_fe.auto_fe.ui.service.RelationshipService
-import com.auto_fe.auto_fe.ui.service.UserService
+import com.auto_fe.auto_fe.service.be.RelationshipService
+import com.auto_fe.auto_fe.service.be.UserService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 

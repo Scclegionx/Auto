@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.auto_fe.auto_fe.data.model.MedicationLog
-import com.auto_fe.auto_fe.ui.service.MedicationLogService
+import com.auto_fe.auto_fe.models.MedicationLog
+import com.auto_fe.auto_fe.service.be.MedicationLogService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime

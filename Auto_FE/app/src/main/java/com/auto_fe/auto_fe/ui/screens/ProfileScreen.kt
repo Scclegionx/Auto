@@ -25,10 +25,10 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import coil.compose.AsyncImage
-import com.auto_fe.auto_fe.ui.service.UserService
+import com.auto_fe.auto_fe.service.be.UserService
 import com.auto_fe.auto_fe.ui.theme.*
 import com.auto_fe.auto_fe.ui.theme.AppTextSize
-import com.auto_fe.auto_fe.utils.SessionManager
+import com.auto_fe.auto_fe.utils.be.SessionManager
 import kotlinx.coroutines.launch
 import java.io.File
 import androidx.compose.material3.rememberDatePickerState

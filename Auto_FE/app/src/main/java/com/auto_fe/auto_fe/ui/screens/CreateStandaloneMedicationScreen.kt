@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.auto_fe.auto_fe.ui.service.StandaloneMedicationService
+import com.auto_fe.auto_fe.service.be.StandaloneMedicationService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 

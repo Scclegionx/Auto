@@ -71,7 +71,7 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.isActive
-import com.auto_fe.auto_fe.ui.FloatingWindow
+import com.auto_fe.auto_fe.ui.components.popup.FloatingWindow
 import com.auto_fe.auto_fe.ui.theme.Auto_FETheme
 import com.auto_fe.auto_fe.ui.screens.VoiceScreen
 import com.auto_fe.auto_fe.ui.screens.AuthScreen
@@ -93,8 +93,8 @@ import com.auto_fe.auto_fe.ui.screens.EmergencyContactScreen
 import com.auto_fe.auto_fe.ui.screens.ChatListScreen
 import com.auto_fe.auto_fe.ui.screens.SearchUserScreen
 import com.auto_fe.auto_fe.ui.screens.MedicalDocumentsScreen
-import com.auto_fe.auto_fe.utils.SessionManager
-import com.auto_fe.auto_fe.utils.PermissionManager
+import com.auto_fe.auto_fe.utils.be.SessionManager
+import com.auto_fe.auto_fe.utils.common.PermissionManager
 import com.auto_fe.auto_fe.network.ApiClient
 import android.util.Log
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
@@ -293,7 +293,7 @@ fun MainScreen(sessionManager: SessionManager) {
         selectedUserId?.let { userId ->
             selectedUserName?.let { userName ->
                 try {
-                    val chatService = com.auto_fe.auto_fe.ui.service.ChatService()
+                    val chatService = com.auto_fe.auto_fe.service.be.ChatService()
                     val result = chatService.getOrCreateChatWithUser(userId, accessToken ?: "")
                     result.onSuccess { chatId ->
                         // Navigate đến ChatDetailScreen với chatId
@@ -720,7 +720,7 @@ fun MainScreen(sessionManager: SessionManager) {
                                             // Gọi API getRole để lấy permissions
                                             kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
                                                 try {
-                                                    val relationshipService = com.auto_fe.auto_fe.ui.service.RelationshipService()
+                                                    val relationshipService = com.auto_fe.auto_fe.service.be.RelationshipService()
                                                     val result = relationshipService.getRole(accessToken!!, elderUserId)
                                                     
                                                     result.fold(

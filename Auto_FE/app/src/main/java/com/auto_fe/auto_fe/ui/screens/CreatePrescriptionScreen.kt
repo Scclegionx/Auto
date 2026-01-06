@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
-import com.auto_fe.auto_fe.ui.service.PrescriptionService
-import com.auto_fe.auto_fe.ui.service.OcrService
+import com.auto_fe.auto_fe.service.be.PrescriptionService
+import com.auto_fe.auto_fe.service.be.OcrService
 import com.auto_fe.auto_fe.ui.theme.*
 import com.auto_fe.auto_fe.ui.theme.AppTextSize
 import kotlinx.coroutines.launch

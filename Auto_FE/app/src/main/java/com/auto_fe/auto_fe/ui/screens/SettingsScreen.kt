@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.clickable
 import com.auto_fe.auto_fe.ui.theme.*
 import androidx.compose.ui.platform.LocalContext
-import com.auto_fe.auto_fe.utils.SettingsManager
+import com.auto_fe.auto_fe.utils.common.SettingsManager
 import androidx.compose.ui.unit.sp
 
 /**

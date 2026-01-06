@@ -26,9 +26,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.auto_fe.auto_fe.ui.service.AuthService
+import com.auto_fe.auto_fe.service.be.AuthService
 import com.auto_fe.auto_fe.ui.theme.*
-import com.auto_fe.auto_fe.service.MyFirebaseMessagingService
+import com.auto_fe.auto_fe.service.common.MyFirebaseMessagingService
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -45,7 +45,7 @@ fun AuthScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val authService = remember { AuthService() }
-    val sessionManager = remember { com.auto_fe.auto_fe.utils.SessionManager(context) }
+    val sessionManager = remember { com.auto_fe.auto_fe.utils.be.SessionManager(context) }
 
     // Login states
     var loginEmail by remember { mutableStateOf("") }

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.auto_fe.auto_fe.models.ChatRoom
-import com.auto_fe.auto_fe.ui.service.ChatService
+import com.auto_fe.auto_fe.service.be.ChatService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

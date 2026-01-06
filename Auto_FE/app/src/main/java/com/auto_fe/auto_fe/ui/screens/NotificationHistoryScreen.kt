@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.auto_fe.auto_fe.service.NotificationHistoryResponse
-import com.auto_fe.auto_fe.service.NotificationHistoryService
+import com.auto_fe.auto_fe.service.be.NotificationHistoryResponse
+import com.auto_fe.auto_fe.service.be.NotificationHistoryService
 import com.auto_fe.auto_fe.ui.theme.*
 import com.auto_fe.auto_fe.ui.theme.AppTextSize
 import kotlinx.coroutines.launch

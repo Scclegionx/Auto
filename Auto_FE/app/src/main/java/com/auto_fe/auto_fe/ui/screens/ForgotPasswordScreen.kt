@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.auto_fe.auto_fe.ui.service.ForgotPasswordService
+import com.auto_fe.auto_fe.service.be.ForgotPasswordService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 

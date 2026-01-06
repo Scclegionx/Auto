@@ -20,8 +20,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.auto_fe.auto_fe.ui.service.NotificationData
-import com.auto_fe.auto_fe.ui.service.NotificationService
+import com.auto_fe.auto_fe.service.be.NotificationData
+import com.auto_fe.auto_fe.service.be.NotificationService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 

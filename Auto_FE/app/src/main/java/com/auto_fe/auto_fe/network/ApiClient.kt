@@ -1,7 +1,7 @@
 package com.auto_fe.auto_fe.network
 
-import com.auto_fe.auto_fe.utils.SessionManager
-import com.auto_fe.auto_fe.utils.TokenAuthenticator
+import com.auto_fe.auto_fe.utils.be.SessionManager
+import com.auto_fe.auto_fe.utils.be.TokenAuthenticator
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 

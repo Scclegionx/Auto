@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from .entity_extractor import EntityExtractor
 
 class CommunicationOptimizer:
@@ -44,7 +44,7 @@ class CommunicationOptimizer:
             "điện thoại": "phone"
         }
     
-    def optimize_for_communication(self, text: str) -> Dict[str, any]:
+    def optimize_for_communication(self, text: str) -> Dict[str, Any]:
         """Tối ưu hóa text cho hệ thống gọi điện/nhắn tin"""
         text_lower = text.lower()
         

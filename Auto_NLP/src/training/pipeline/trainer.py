@@ -14,8 +14,8 @@ from seqeval.metrics import f1_score as seqeval_f1_score
 from seqeval.metrics import precision_score as seqeval_precision_score
 from seqeval.metrics import recall_score as seqeval_recall_score
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
-from torch import amp
-from torch.optim import AdamW
+from torch.cuda.amp import GradScaler, autocast
+from torch.optim import AdamW, Optimizer
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader
 from transformers import get_linear_schedule_with_warmup
@@ -69,10 +69,10 @@ class MultitaskTrainer:
         else:
             self.entity_criterion = nn.CrossEntropyLoss(ignore_index=-100)
 
-        self.scaler: Optional[amp.GradScaler] = None
+        self.scaler: Optional[GradScaler] = None
         self.autocast_device = "cuda" if self.device.type == "cuda" else "cpu"
         if getattr(config, "use_mixed_precision", True) and self.device.type == "cuda":
-            self.scaler = amp.GradScaler(self.autocast_device)
+            self.scaler = GradScaler()
 
         self.freeze_encoder_epochs = max(0, freeze_encoder_epochs or getattr(config, "freeze_encoder_epochs", 0) or 0)
         self._encoder_frozen = False
@@ -102,7 +102,7 @@ class MultitaskTrainer:
             self._encoder_frozen = False
             self.logger.info("🔓 Mở khóa encoder từ epoch %d.", epoch)
 
-    def _setup_optimizer(self) -> Tuple[torch.optim.Optimizer, LambdaLR]:
+    def _setup_optimizer(self) -> Optimizer:
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
             {
@@ -269,7 +269,7 @@ class MultitaskTrainer:
         entity_labels = batch["entity_labels"].to(self.device)
         command_labels = batch["command_labels"].to(self.device)
 
-        with amp.autocast(self.autocast_device, enabled=self.scaler is not None):
+        with autocast(enabled=self.scaler is not None):
             outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
             intent_logits = outputs["intent_logits"]
             entity_logits = outputs["entity_logits"]
@@ -390,8 +390,8 @@ class MultitaskTrainer:
         accuracy = accuracy_score(labels, preds)
         macro_f1 = f1_score(labels, preds, average="macro")
         weighted_f1 = f1_score(labels, preds, average="weighted")
-        precision = precision_score(labels, preds, average="macro", zero_division=1)
-        recall = recall_score(labels, preds, average="macro", zero_division=1)
+        precision = precision_score(labels, preds, average="macro", zero_division="warn")
+        recall = recall_score(labels, preds, average="macro", zero_division="warn")
 
         return {
             f"{prefix}_accuracy": accuracy,
@@ -407,10 +407,14 @@ class MultitaskTrainer:
         precision = seqeval_precision_score(true_labels, pred_labels)
         recall = seqeval_recall_score(true_labels, pred_labels)
         f1 = seqeval_f1_score(true_labels, pred_labels)
+        # seqeval metrics can return float or List[float], ensure we return float
+        precision_val = float(precision) if isinstance(precision, (int, float)) else float(precision[0]) if isinstance(precision, list) and len(precision) > 0 else 0.0
+        recall_val = float(recall) if isinstance(recall, (int, float)) else float(recall[0]) if isinstance(recall, list) and len(recall) > 0 else 0.0
+        f1_val = float(f1) if isinstance(f1, (int, float)) else float(f1[0]) if isinstance(f1, list) and len(f1) > 0 else 0.0
         return {
-            "entity_precision": precision,
-            "entity_recall": recall,
-            "entity_f1": f1,
+            "entity_precision": precision_val,
+            "entity_recall": recall_val,
+            "entity_f1": f1_val,
         }
 
     def _collect_entity_sequences(

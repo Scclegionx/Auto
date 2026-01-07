@@ -1,0 +1,33 @@
+{
+  "tong_so_mau": 35609,
+  "so_intent": 10,
+  "so_entity_labels": 13,
+  "trung_binh_entity_per_mau": 1.8546715717936477,
+  "do_dai_trung_binh": 10.125361565896263,
+  "do_dai_min": 2,
+  "do_dai_max": 21,
+  "phan_bo_intent": {
+    "call": 4371,
+    "send-mess": 3599,
+    "set-alarm": 3538,
+    "search-internet": 3518,
+    "get-info": 3496,
+    "search-youtube": 3481,
+    "add-contacts": 3407,
+    "open-cam": 3403,
+    "make-video-call": 3399,
+    "control-device": 3397
+  },
+  "top_10_entity": {
+    "PLATFORM": 13997,
+    "QUERY": 10495,
+    "CONTACT_NAME": 8248,
+    "PHONE": 6336,
+    "MESSAGE": 6079,
+    "TIME": 3725,
+    "RECEIVER": 3599,
+    "DEVICE": 3397,
+    "VALUE": 3397,
+    "CAMERA_TYPE": 2355
+  }
+}

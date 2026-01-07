@@ -100,7 +100,8 @@ class FuzzyMatcher:
             scorer=fuzz.token_sort_ratio, 
             score_cutoff=self.threshold
         )
-        return results
+        # process.extract returns List[Tuple[str, float, int]], convert to List[Tuple[str, int]]
+        return [(text, idx) for text, score, idx in results]
     
     def contains_fuzzy(self, text: str, keywords: List[str], threshold: Optional[int] = None) -> List[Tuple[str, int]]:
         """Kiểm tra xem text có chứa bất kỳ keyword nào không (fuzzy matching)"""
@@ -131,21 +132,24 @@ class VectorStore:
         
     def add_vectors(self, texts: List[str], vectors: np.ndarray) -> None:
         """Thêm vectors vào index"""
-        faiss.normalize_L2(vectors)
-        self.index.add(vectors)
+        vectors_normalized = vectors.astype(np.float32)
+        # Normalize L2: faiss.normalize_L2 modifies in-place
+        # FAISS normalize_L2 modifies array in-place, type checker may not recognize the signature
+        faiss.normalize_L2(vectors_normalized)  # pyright: ignore[reportCallIssue]
+        self.index.add(vectors_normalized)
         self.text_mapping.extend(texts)
     
     def search(self, query_vector: np.ndarray, top_k: int = 5) -> List[Tuple[str, float]]:
         """Tìm kiếm vectors gần nhất"""
-        query_vector = query_vector.reshape(1, -1)
-        faiss.normalize_L2(query_vector)
+        query_vector = query_vector.reshape(1, -1).astype(np.float32)
+        faiss.normalize_L2(query_vector)  # type: ignore
         
-        scores, indices = self.index.search(query_vector, top_k)
+        distances, indices = self.index.search(query_vector, top_k)  # type: ignore
         
         results = []
         for i, idx in enumerate(indices[0]):
             if idx != -1 and idx < len(self.text_mapping):  # Check valid index
-                results.append((self.text_mapping[idx], float(scores[0][i])))
+                results.append((self.text_mapping[idx], float(distances[0][i])))
         
         return results
     
@@ -384,14 +388,14 @@ class ReasoningEngine:
         # Đọc config từ file nếu có
         self.config = self._load_config(config_path)
         
+        # Initialize variables to avoid "possibly unbound" errors
+        model_name = self.config.get("model_name", "vinai/phobert-large")
+        cache_dir = os.path.expanduser("~/.cache/huggingface/hub")
+        
         try:
             # Load PhoBERT with correct settings - SAME AS TRAINING SYSTEM
-            model_name = self.config.get("model_name", "vinai/phobert-large")
-            
             # Try loading with local cache first (same as training system)
             try:
-                # Sử dụng cache mặc định của HuggingFace
-                cache_dir = os.path.expanduser("~/.cache/huggingface/hub")
                 self.tokenizer = AutoTokenizer.from_pretrained(
                     model_name, 
                     use_fast=False,
@@ -1045,10 +1049,10 @@ class ReasoningEngine:
         # Sử dụng SpecializedEntityExtractor nếu có
         if hasattr(self.entity_extractor, 'extract_all_entities'):
             # SpecializedEntityExtractor - cần intent để extract chính xác
-            entities = self.entity_extractor.extract_all_entities(text, "call")  # Default intent
+            entities = self.entity_extractor.extract_all_entities(text, "call")  # type: ignore  # Default intent
         else:
-            # Legacy EntityExtractor
-            entities = self.entity_extractor.extract_entities(text)
+            # Legacy EntityExtractor - fallback to empty dict if method doesn't exist
+            entities = getattr(self.entity_extractor, 'extract_entities', lambda x: {})(text)  # type: ignore
         
         for entity_type, values in entities.items():
             if values:
@@ -1154,7 +1158,11 @@ class ReasoningEngine:
         
         adjusted_confidence = min(adjusted_confidence, 1.0)
         
-        return adjusted_intent, adjusted_confidence
+        # Ensure adjusted_intent is always a string
+        if adjusted_intent is None:
+            adjusted_intent = "unknown"
+        
+        return str(adjusted_intent), adjusted_confidence
     
     def pattern_matching(self, text: str) -> List[Tuple[str, float]]:
         """Pattern matching để nhận diện intent"""
@@ -1338,10 +1346,10 @@ class ReasoningEngine:
             # Sử dụng SpecializedEntityExtractor nếu có
             if hasattr(self.entity_extractor, 'extract_all_entities'):
                 # SpecializedEntityExtractor - cần intent để extract chính xác
-                entities = self.entity_extractor.extract_all_entities(text, "call")  # Default intent
+                entities = self.entity_extractor.extract_all_entities(text, "call")  # type: ignore  # Default intent
             else:
-                # Legacy EntityExtractor
-                entities = self.entity_extractor.extract_entities(text)
+                # Legacy EntityExtractor - fallback to empty dict if method doesn't exist
+                entities = getattr(self.entity_extractor, 'extract_entities', lambda x: {})(text)  # type: ignore
             
             # Ensure entities is a dict
             if not isinstance(entities, dict):
@@ -1383,8 +1391,19 @@ class ReasoningEngine:
             
             logger.info(f"Context adjustment: {base_intent} ({base_confidence:.3f}) -> {adjusted_intent} ({adjusted_confidence:.3f})")
             
+            # Ensure entities is Dict[str, List[str]]
+            entities_normalized: Dict[str, List[str]] = {}
+            if isinstance(entities, dict):
+                for key, value in entities.items():
+                    if isinstance(value, str):
+                        entities_normalized[key] = [value]
+                    elif isinstance(value, list):
+                        entities_normalized[key] = [str(v) for v in value]
+                    else:
+                        entities_normalized[key] = [str(value)]
+            
             validation_result = self.validate_reasoning_result(
-                text, adjusted_intent, adjusted_confidence, entities
+                text, adjusted_intent, adjusted_confidence, entities_normalized if entities_normalized else None
             )
             
             fallback_result = self.apply_fallback_strategy(
@@ -1402,7 +1421,7 @@ class ReasoningEngine:
                 "entities": entities,
                 "validation": validation_result,
                 "fallback": fallback_result.get("fallback_info"),
-                "explanation": self.generate_explanation(text, fallback_result["intent"], validation_result, entities),
+                "explanation": self.generate_explanation(text, fallback_result["intent"], validation_result, entities_normalized if entities_normalized else None),
                 "suggestions": fallback_result.get("suggestions", []),
                 "processing_time": time.time() - start_time
             }
@@ -1676,20 +1695,24 @@ class ReasoningEngine:
         if self.config.get("enable_vectorstore", True):
             self._initialize_vector_store()
     
-    def save_knowledge_base(self, file_path: str = None):
+    def save_knowledge_base(self, file_path: Optional[str] = None):
         """Lưu knowledge base"""
         if file_path is None:
             file_path = self.config.get("knowledge_base_path", "knowledge_base.json")
+        if file_path is None:
+            file_path = "knowledge_base.json"
         
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(self.knowledge_base, f, ensure_ascii=False, indent=2)
         
         logger.info(f"Đã lưu knowledge base vào {file_path}")
     
-    def load_knowledge_base(self, file_path: str = None):
+    def load_knowledge_base(self, file_path: Optional[str] = None):
         """Load knowledge base"""
         if file_path is None:
             file_path = self.config.get("knowledge_base_path", "knowledge_base.json")
+        if file_path is None:
+            file_path = "knowledge_base.json"
         
         with open(file_path, 'r', encoding='utf-8') as f:
             self.knowledge_base = json.load(f)

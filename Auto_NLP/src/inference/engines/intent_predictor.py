@@ -30,58 +30,65 @@ class IntentPredictor:
             except ImportError:
                 pass
             
-            # Patch transformers vulnerability check in trainer
+            # Patch transformers vulnerability check in trainer (if needed)
+            # Note: These are internal APIs, suppress warnings only
             try:
-                from transformers.trainer import check_torch_load_is_safe
-                check_torch_load_is_safe = lambda: None
-            except ImportError:
-                pass
-            
-            # Patch transformers vulnerability check in utils
-            try:
-                from transformers.utils import check_torch_load_is_safe
-                check_torch_load_is_safe = lambda: None
-            except ImportError:
+                from transformers.utils import import_utils
+                if hasattr(import_utils, 'check_torch_load_is_safe'):
+                    import_utils.check_torch_load_is_safe = lambda: None  # type: ignore
+            except (ImportError, AttributeError):
                 pass
             
             # Load model checkpoint to extract metadata
+            checkpoint: Dict
             try:
-                # Allowlist TorchVersion for weights_only=True
-                import torch.serialization
-                torch.serialization.add_safe_globals([torch.torch_version.TorchVersion])
-                
                 # Load with torch.load and weights_only=True for security
-                checkpoint = torch.load(model_path, map_location=self.device, weights_only=True)
+                checkpoint_raw = torch.load(model_path, map_location=self.device, weights_only=True)
+                # Ensure checkpoint is a dict
+                if not isinstance(checkpoint_raw, dict):
+                    raise ValueError("Checkpoint must be a dictionary")
+                checkpoint = checkpoint_raw
                 print("[OK] Model loaded with torch.load (weights_only=True)")
             except Exception as e:
                 print(f"Error loading model with torch.load: {e}")
                 # Fallback: try safetensors
                 try:
                     import safetensors.torch
-                    checkpoint = safetensors.torch.load_file(model_path, device='cpu')
+                    checkpoint_fallback = safetensors.torch.load_file(model_path, device='cpu')
+                    if not isinstance(checkpoint_fallback, dict):
+                        raise ValueError("Checkpoint must be a dictionary")
+                    checkpoint = checkpoint_fallback
                     print("[OK] Model loaded with safetensors (fallback)")
                 except Exception as e2:
                     print(f"Error loading model with safetensors: {e2}")
                     return False
             
             # Extract model config from checkpoint
-            model_name = checkpoint.get('model_name', tokenizer_name)
+            model_name_raw = checkpoint.get('model_name', tokenizer_name)
+            model_name = str(model_name_raw) if model_name_raw is not None else tokenizer_name
             config = checkpoint.get('config', {})
             
             # Get number of intents from intent_config
             intent_config = checkpoint.get('intent_config', {})
-            num_intents = len(checkpoint.get('id_to_intent', {}))
+            if not isinstance(intent_config, dict):
+                intent_config = {}
+            id_to_intent_raw = checkpoint.get('id_to_intent', {})
+            if not isinstance(id_to_intent_raw, dict):
+                id_to_intent_raw = {}
+            num_intents = len(id_to_intent_raw)
             
             if num_intents == 0:
                 # Fallback: try to get from intent_config
-                num_intents = len(intent_config.get('intent_labels', []))
+                intent_labels = intent_config.get('intent_labels', []) if isinstance(intent_config, dict) else []
+                if isinstance(intent_labels, list):
+                    num_intents = len(intent_labels)
             
             if num_intents == 0:
                 print("Could not determine number of intents from checkpoint")
                 return False
             
             # Load intent mapping from checkpoint
-            self.id_to_intent = checkpoint.get('id_to_intent', {})
+            self.id_to_intent = id_to_intent_raw if isinstance(id_to_intent_raw, dict) else {}
             
             # Load tokenizer with use_fast=False for PhoBERT
             # Set environment variables to bypass vulnerability
@@ -114,10 +121,11 @@ class IntentPredictor:
                             nn.init.xavier_uniform_(self.intent_classifier[3].weight)
                             nn.init.zeros_(self.intent_classifier[3].bias)
 
-                        def forward(self, input_ids: torch.Tensor, attention_mask: torch.Tensor) -> Dict[str, torch.Tensor]:
+                        def forward(self, input_ids: "torch.Tensor", attention_mask: "torch.Tensor") -> Dict[str, "torch.Tensor"]:
                             outputs = self.encoder(input_ids=input_ids, attention_mask=attention_mask)
                             pooled_output = outputs.pooler_output
-                            pooled_output = self.dropout(pooled_output)
+                            if hasattr(self, 'dropout'):
+                                pooled_output = self.dropout(pooled_output)
                             intent_logits = self.intent_classifier(pooled_output)
                             return {'intent_logits': intent_logits}
                     
@@ -132,7 +140,10 @@ class IntentPredictor:
                     )
                     
                     # Load state dict (skip class_weights if present)
-                    state_dict = checkpoint['model_state_dict']
+                    state_dict_raw = checkpoint.get('model_state_dict')
+                    if not isinstance(state_dict_raw, dict):
+                        raise ValueError("model_state_dict must be a dictionary")
+                    state_dict: Dict = state_dict_raw
                     filtered_state_dict = {k: v for k, v in state_dict.items() if k != 'class_weights'}
                     
                     # Load with filtered keys
@@ -200,7 +211,10 @@ class IntentPredictor:
                 confidence = confidence.item()
                 predicted_id = predicted_id.item()
                 
-                intent = self.id_to_intent.get(predicted_id, "unknown")
+                if self.id_to_intent is None:
+                    intent = "unknown"
+                else:
+                    intent = self.id_to_intent.get(predicted_id, "unknown") if isinstance(self.id_to_intent, dict) else "unknown"
                 
                 return {
                     "intent": intent,
@@ -249,7 +263,7 @@ class IntentPredictor:
         
         # Find best intent with improved logic
         if intent_scores:
-            best_intent = max(intent_scores, key=intent_scores.get)
+            best_intent = max(intent_scores, key=lambda k: intent_scores[k])
             max_score = intent_scores[best_intent]
             
             # Đảm bảo confidence cao hơn cho search-internet

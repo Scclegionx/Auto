@@ -75,11 +75,11 @@ class ModelConfig:
     dropout = float(os.environ.get("DROPOUT", 0.1))
     entity_dropout = float(os.environ.get("ENTITY_DROPOUT", 0.2))
 
-    # Data paths
-    dataset_path = "src/data/raw/elderly_commands_master.json"
-    train_data_path = "src/data/processed/train.json"
-    val_data_path = "src/data/processed/val.json"
-    test_data_path = "src/data/processed/test.json"
+    # Data paths - có thể override qua biến môi trường
+    dataset_path = os.environ.get("DATASET_PATH", "src/data/raw/elderly_commands_master.json")
+    train_data_path = os.environ.get("TRAIN_DATA_PATH", "src/data/processed/train.json")
+    val_data_path = os.environ.get("VAL_DATA_PATH", "src/data/processed/val.json")
+    test_data_path = os.environ.get("TEST_DATA_PATH", "src/data/processed/test.json")
 
     # Output paths
     output_dir = os.environ.get("OUTPUT_DIR", "models/phobert_multitask")

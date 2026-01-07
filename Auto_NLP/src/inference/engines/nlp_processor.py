@@ -325,7 +325,8 @@ class NLPProcessor:
     def get_available_intents(self) -> List[str]:
         """Lấy danh sách intents có sẵn"""
         if self.intent_predictor.id_to_intent:
-            return list(self.intent_predictor.id_to_intent.values())
+            # Ensure all values are strings
+            return [str(v) for v in self.intent_predictor.id_to_intent.values()]
         return self.valid_commands
     
     def get_intent_to_command_mapping(self) -> Dict[str, str]:

@@ -333,15 +333,15 @@ async def get_config():
     """Get system configuration"""
     try:
         return {
-            "system_name": config.SYSTEM_NAME,
-            "version": config.VERSION,
-            "debug": config.DEBUG,
-            "model_path": str(config.MODEL_PATH),
-            "device": config.MODEL_DEVICE,
-            "api_host": config.API_HOST,
-            "api_port": config.API_PORT,
-            "confidence_threshold": config.CONFIDENCE_THRESHOLD,
-            "fallback_enabled": config.FALLBACK_ENABLED
+            "system_name": config.get("system_name", "Auto NLP Hybrid System"),
+            "version": config.get("version", "1.0.0"),
+            "debug": config.get("api_debug", False),
+            "model_path": config.get("model_dir", ""),
+            "device": config.get("model_device", "cuda"),
+            "api_host": config.get("api_host", "0.0.0.0"),
+            "api_port": config.get("api_port", 8000),
+            "confidence_threshold": config.get("confidence_threshold", 0.7),
+            "fallback_enabled": config.get("fallback_enabled", True)
         }
         
     except Exception as e:

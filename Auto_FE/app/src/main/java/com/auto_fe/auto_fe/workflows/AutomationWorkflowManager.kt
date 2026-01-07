@@ -6,6 +6,7 @@ import com.auto_fe.auto_fe.audio.STTManager
 import com.auto_fe.auto_fe.audio.TTSManager
 import com.auto_fe.auto_fe.base.AutomationState
 import com.auto_fe.auto_fe.base.AutomationTask
+import com.auto_fe.auto_fe.base.ConfirmationRequirement
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -72,6 +73,10 @@ class AutomationWorkflowManager(
                         
                         // Chuyển sang Success
                         currentState = AutomationState.Success(result)
+                    } catch (e: ConfirmationRequirement) {
+                        // Xử lý yêu cầu xác nhận
+                        Log.d(TAG, "Confirmation required: ${e.confirmationQuestion}")
+                        handleConfirmation(e)
                     } catch (e: Exception) {
                         Log.e(TAG, "Error processing task: ${e.message}", e)
                         currentState = AutomationState.Error(e.message ?: "Lỗi hệ thống")
@@ -141,6 +146,71 @@ class AutomationWorkflowManager(
         ttsManager.stopSpeaking()
         currentState = AutomationState.Error("Đã hủy")
         onStateChanged?.invoke(currentState)
+    }
+    
+    /**
+     * Xử lý yêu cầu xác nhận từ người dùng
+     */
+    private suspend fun handleConfirmation(requirement: ConfirmationRequirement) {
+        // 1. Nói câu hỏi xác nhận
+        Log.d(TAG, "Asking confirmation: ${requirement.confirmationQuestion}")
+        ttsManager.speak(requirement.confirmationQuestion)
+        delay(2000) // Đợi TTS hoàn thành
+        
+        // 2. Lắng nghe phản hồi từ người dùng
+        Log.d(TAG, "Listening for confirmation response...")
+        val response = listenToUser()
+        Log.d(TAG, "User response: $response")
+        
+        // 3. Phân tích phản hồi (có/đúng/rồi vs không/sai)
+        // QUAN TRỌNG: Kiểm tra từ phủ định TRƯỚC để tránh "không phải" bị match với "phải"
+        val normalizedResponse = response.lowercase().trim()
+        val isConfirmed = when {
+            // Kiểm tra từ phủ định TRƯỚC
+            normalizedResponse.contains("không phải") ||
+            normalizedResponse.contains("không") || 
+            normalizedResponse.contains("sai") || 
+            normalizedResponse.contains("no") ||
+            normalizedResponse == "không" -> {
+                Log.d(TAG, "User declined confirmation")
+                false
+            }
+            // Sau đó mới kiểm tra từ xác nhận
+            normalizedResponse.contains("có") || 
+            normalizedResponse.contains("đúng") || 
+            normalizedResponse.contains("rồi") || 
+            normalizedResponse.contains("phải") ||
+            normalizedResponse.contains("yes") ||
+            normalizedResponse.contains("ok") ||
+            normalizedResponse.contains("đồng ý") ||
+            normalizedResponse == "có" ||
+            normalizedResponse == "đúng" ||
+            normalizedResponse == "rồi" -> {
+                Log.d(TAG, "User confirmed")
+                true
+            }
+            else -> {
+                // Mặc định là không xác nhận nếu không rõ ràng
+                Log.w(TAG, "Unclear response: '$normalizedResponse', defaulting to not confirmed")
+                false
+            }
+        }
+        
+        if (isConfirmed) {
+            // 4. Nếu xác nhận, thực thi callback
+            Log.d(TAG, "User confirmed, executing action...")
+            try {
+                val result = requirement.onConfirmed()
+                currentState = AutomationState.Success(result)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error executing confirmed action: ${e.message}", e)
+                currentState = AutomationState.Error(e.message ?: "Lỗi thực thi")
+            }
+        } else {
+            // 5. Nếu không xác nhận, hủy luồng
+            Log.d(TAG, "User declined, cancelling workflow")
+            currentState = AutomationState.Error("Đã hủy lệnh")
+        }
     }
     
     /**

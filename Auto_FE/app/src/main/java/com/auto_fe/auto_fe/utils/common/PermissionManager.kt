@@ -88,5 +88,54 @@ class PermissionManager(private val context: Context) {
             ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED
         }
     }
+    
+    // ========== CAMERA PERMISSIONS ==========
+    
+    /**
+     * Kiểm tra xem có quyền camera không
+     */
+    fun hasCameraPermission(): Boolean {
+        return try {
+            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == 
+                PackageManager.PERMISSION_GRANTED
+        } catch (e: Exception) {
+            false
+        }
+    }
+    
+    /**
+     * Kiểm tra xem có quyền ghi storage không (để lưu ảnh/video)
+     */
+    fun hasStoragePermission(): Boolean {
+        return try {
+            val writePermission = ContextCompat.checkSelfPermission(
+                context, 
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            val readPermission = ContextCompat.checkSelfPermission(
+                context, 
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            
+            // Từ Android 10+, WRITE_EXTERNAL_STORAGE không cần thiết cho MediaStore
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                readPermission == PackageManager.PERMISSION_GRANTED
+            } else {
+                writePermission == PackageManager.PERMISSION_GRANTED
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+    
+    /**
+     * Kiểm tra tất cả quyền cần thiết cho camera
+     */
+    fun checkAllCameraPermissions(): Map<String, Boolean> {
+        return mapOf(
+            "camera" to hasCameraPermission(),
+            "storage" to hasStoragePermission()
+        )
+    }
 }
 

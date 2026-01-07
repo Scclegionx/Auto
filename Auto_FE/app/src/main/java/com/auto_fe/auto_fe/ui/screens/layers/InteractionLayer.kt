@@ -55,35 +55,35 @@ fun InteractionLayer(
     Box(modifier = modifier.fillMaxSize()) {
         // Sphere is now clickable - no separate mic button needed
 
-        // Secondary controls - bottom
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 32.dp)
-                .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SmoothSecondaryButton(
-                label = if (isDarkMode) "Sáng" else "Tối",
-                icon = if (isDarkMode) "☀️" else "🌙",
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onModeToggle()
-                }
-            )
-            
-            // Spacer(Modifier.width(20.dp))
-            
-            // SmoothSecondaryButton(
-            //     label = "",
-            //     icon = "📝",
-            //     onClick = {
-            //         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-            //         onTranscriptOpen()
-            //     }
-            // )
-        }
+        // Secondary controls - bottom (tạm thời ẩn nút sáng/tối)
+        // Row(
+        //     Modifier
+        //         .fillMaxWidth()
+        //         .padding(horizontal = 32.dp, vertical = 32.dp)
+        //         .align(Alignment.BottomCenter),
+        //     horizontalArrangement = Arrangement.SpaceBetween,
+        //     verticalAlignment = Alignment.CenterVertically
+        // ) {
+        //     SmoothSecondaryButton(
+        //         label = if (isDarkMode) "Sáng" else "Tối",
+        //         icon = if (isDarkMode) "☀️" else "🌙",
+        //         onClick = {
+        //             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        //             onModeToggle()
+        //         }
+        //     )
+        //     
+        //     // Spacer(Modifier.width(20.dp))
+        //     
+        //     // SmoothSecondaryButton(
+        //     //     label = "",
+        //     //     icon = "📝",
+        //     //     onClick = {
+        //     //         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        //     //         onTranscriptOpen()
+        //     //     }
+        //     // )
+        // }
     }
 }
 

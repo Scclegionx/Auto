@@ -23,7 +23,7 @@
     ]
   },
   {
-    "input": "ờ Thêm fiên 0925598558 dùm cái",
+    "input": "ờ Thêm liên hệ 0925598558 dùm cái",
     "command": "add-contacts",
     "intent": "add-contacts",
     "entities": [

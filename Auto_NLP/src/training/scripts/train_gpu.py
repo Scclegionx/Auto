@@ -16,6 +16,7 @@ import argparse
 import json
 import logging
 import os
+import sys
 import random
 from collections import Counter
 from pathlib import Path
@@ -26,8 +27,8 @@ import torch
 from torch.utils.data import WeightedRandomSampler
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-if str(PROJECT_ROOT) not in os.sys.path:
-    os.sys.path.append(str(PROJECT_ROOT))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.append(str(PROJECT_ROOT))
 
 from data.processed.data_processor import DataProcessor
 from models.base.multitask_model import MultiTaskModel
@@ -383,13 +384,15 @@ def main() -> None:
     else:
         logger.warning("Không tính được entity class weights - giữ nguyên CrossEntropyLoss mặc định.")
 
-    sampler_weights = compute_entity_density_sampler_weights(
-        train_samples, o_label_id
-    )
+    sampler_weights = compute_entity_density_sampler_weights(train_samples, o_label_id)
     train_sampler = None
     if sampler_weights is not None:
+        # PyTorch WeightedRandomSampler chấp nhận Tensor, nhưng type stub
+        # của basedpyright mong đợi Sequence[float]. Dùng .tolist()
+        # để vừa đúng kiểu tĩnh, vừa giữ nguyên hành vi runtime.
+        sampler_weight_list = sampler_weights.tolist()
         train_sampler = WeightedRandomSampler(
-            weights=sampler_weights,
+            weights=sampler_weight_list,
             num_samples=len(train_samples),
             replacement=False,
         )

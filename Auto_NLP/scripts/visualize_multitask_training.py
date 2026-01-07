@@ -66,6 +66,46 @@ def _plot_f1(history: List[Dict], out_dir: Path) -> None:
     plt.close()
 
 
+def _plot_intent_command_zoom(history: List[Dict], out_dir: Path) -> None:
+    """Biểu đồ zoom riêng cho Intent/Command để tránh bị dính sát trục 1.0."""
+    epochs = [item.get("epoch", i + 1) for i, item in enumerate(history)]
+
+    intent_f1 = [item.get("val_intent_macro_f1") for item in history]
+    command_f1 = [item.get("val_command_macro_f1") for item in history]
+
+    # Zoom quanh vùng giá trị cao (ví dụ 0.99–1.0)
+    plt.figure(figsize=(6, 4))
+    plt.plot(epochs, intent_f1, marker="o", label="Intent macro F1 (val)")
+    plt.plot(epochs, command_f1, marker="o", label="Command macro F1 (val)")
+    plt.xlabel("Epoch")
+    plt.ylabel("F1")
+    plt.ylim(0.99, 1.001)
+    plt.title("Intent / Command F1 (val) – zoom vùng 0.99–1.00")
+    plt.grid(True, linestyle="--", alpha=0.3)
+    plt.legend()
+    out_path = out_dir / "multitask_intent_command_f1_zoom.png"
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=200)
+    plt.close()
+
+    # Biểu đồ lỗi (1 - F1) để thấy rõ chênh lệch nhỏ
+    intent_err = [1.0 - (v or 0.0) for v in intent_f1]
+    command_err = [1.0 - (v or 0.0) for v in command_f1]
+
+    plt.figure(figsize=(6, 4))
+    plt.plot(epochs, intent_err, marker="o", label="1 - Intent macro F1 (val)")
+    plt.plot(epochs, command_err, marker="o", label="1 - Command macro F1 (val)")
+    plt.xlabel("Epoch")
+    plt.ylabel("Error (1 - F1)")
+    plt.title("Intent / Command – Sai số so với F1 = 1.0")
+    plt.grid(True, linestyle="--", alpha=0.3)
+    plt.legend()
+    out_path = out_dir / "multitask_intent_command_error.png"
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=200)
+    plt.close()
+
+
 def _plot_entity_density(history: List[Dict], out_dir: Path) -> None:
     # Các key này được trainer ghi trong evaluate()
     pred_key = "val_entity_pred_non_o_ratio"
@@ -171,6 +211,7 @@ def main() -> None:
 
     _plot_losses(history, output_dir)
     _plot_f1(history, output_dir)
+    _plot_intent_command_zoom(history, output_dir)
     _plot_entity_density(history, output_dir)
     _summarize_best(history, output_dir)
 

@@ -1,12 +1,10 @@
 import torch
 import torch.nn as nn
 from transformers import AutoModel
-from typing import Dict, Optional
+from typing import Dict
 
 
 class MultiTaskModel(nn.Module):
-    """PhoBERT-based multi-task model cho Intent + Entity + Command."""
-
     def __init__(
         self,
         model_name: str,
@@ -37,7 +35,7 @@ class MultiTaskModel(nn.Module):
         if not self.use_mean_pooling:
             return sequence_output[:, 0]
 
-        mask = attention_mask.unsqueeze(-1)  # [batch, seq_len, 1]
+        mask = attention_mask.unsqueeze(-1)
         masked_output = sequence_output * mask
         summed = masked_output.sum(dim=1)
         lengths = mask.sum(dim=1).clamp(min=1)
@@ -72,4 +70,3 @@ class MultiTaskModel(nn.Module):
         outputs["command_probabilities"] = torch.softmax(outputs["command_logits"], dim=-1)
         outputs["entity_probabilities"] = torch.softmax(outputs["entity_logits"], dim=-1)
         return outputs
-

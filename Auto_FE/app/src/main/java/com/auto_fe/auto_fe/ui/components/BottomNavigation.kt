@@ -68,14 +68,14 @@ fun CustomBottomNavigation(
                 modifier = Modifier.weight(1.1f)
             )
             
-            // Nút Hướng dẫn (giữa phải)
-            BottomNavItem(
-                icon = "📚",
-                label = "Hướng dẫn",
-                isSelected = selectedTab == 2,
-                onClick = { onTabSelected(2) },
-                modifier = Modifier.weight(1f)
-            )
+//            // Nút Hướng dẫn (giữa phải)
+//            BottomNavItem(
+//                icon = "📚",
+//                label = "Hướng dẫn",
+//                isSelected = selectedTab == 2,
+//                onClick = { onTabSelected(2) },
+//                modifier = Modifier.weight(1f)
+//            )
             
             // Nút Cài đặt (phải)
            BottomNavItem(

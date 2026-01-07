@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import com.auto_fe.auto_fe.automation.msg.SMSAutomation
+import com.auto_fe.auto_fe.utils.nlp.ContactUtils
 
 class WAAutomation(private val context: Context) {
     
@@ -23,12 +23,12 @@ class WAAutomation(private val context: Context) {
             Log.d("WAAutomation", "sendWA called with receiver: $receiver, message: $message")
             
             // Tìm số điện thoại từ tên liên hệ hoặc sử dụng trực tiếp nếu là số
-            val phoneNumber = if (isPhoneNumber(receiver)) {
+            val phoneNumber = if (ContactUtils.isPhoneNumber(receiver)) {
                 Log.d("WAAutomation", "Receiver is phone number: $receiver")
                 receiver
             } else {
                 Log.d("WAAutomation", "Looking up phone number for contact: $receiver")
-                val foundNumber = findPhoneNumberByName(receiver)
+                val foundNumber = ContactUtils.findPhoneNumberByName(context, receiver)
                 Log.d("WAAutomation", "Found phone number: $foundNumber")
                 foundNumber
             }
@@ -72,24 +72,6 @@ class WAAutomation(private val context: Context) {
             Log.e("WAAutomation", "Exception in sendWA: ${e.message}", e)
             callback.onError("Lỗi gửi WhatsApp: ${e.message}")
         }
-    }
-    
-    /**
-     * Kiểm tra xem chuỗi có phải là số điện thoại không
-     */
-    private fun isPhoneNumber(input: String): Boolean {
-        return input.matches(Regex("^[+]?[0-9\\s\\-\\(\\)]+$"))
-    }
-    
-    /**
-     * Tìm số điện thoại từ tên liên hệ (sử dụng lại logic từ SMSAutomation)
-     */
-    private fun findPhoneNumberByName(contactName: String): String {
-        Log.d("WAAutomation", "Searching for contact: $contactName")
-        
-        // Sử dụng SMSAutomation để tìm số điện thoại
-        val smsAutomation = SMSAutomation(context)
-        return smsAutomation.findPhoneNumberByName(contactName)
     }
     
     /**

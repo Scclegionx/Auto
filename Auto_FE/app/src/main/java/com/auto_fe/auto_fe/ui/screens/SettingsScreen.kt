@@ -27,11 +27,6 @@ import androidx.compose.ui.unit.sp
 fun SettingsScreen() {
     val context = LocalContext.current
     val settingsManager = remember { SettingsManager(context) }
-    var isVoiceEnabled by remember { mutableStateOf(true) }
-    var isNotificationEnabled by remember { mutableStateOf(true) }
-    var isAutoStartEnabled by remember { mutableStateOf(false) }
-    var selectedLanguage by remember { mutableStateOf("Tiếng Việt") }
-    var selectedTheme by remember { mutableStateOf("Tối") }
     var isSupportSpeakEnabled by remember { mutableStateOf(settingsManager.isSupportSpeakEnabled()) }
 
     Box(
@@ -90,106 +85,19 @@ fun SettingsScreen() {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    SettingsSection(title = "Âm thanh & Giọng nói")
+                    SettingsSection(title = "Cài đặt")
                 }
                 
-                item {
-                    SettingsItem(
-                        title = "Bật trợ lý giọng nói",
-                        subtitle = "Sử dụng giọng nói để điều khiển",
-                        isChecked = isVoiceEnabled,
-                        onCheckedChange = { isVoiceEnabled = it }
-                    )
-                }
-
-                // Toggle Hỗ trợ nói (không ảnh hưởng luồng ghi âm mở đầu)
+                // Toggle Hỗ trợ nói
                 item {
                     SettingsItem(
                         title = "Hỗ trợ nói",
-                        subtitle = "Chọn cách thực thi khi thêm liên hệ",
+                        subtitle = "Thêm bước xác nhận ở một số lệnh",
                         isChecked = isSupportSpeakEnabled,
                         onCheckedChange = {
                             isSupportSpeakEnabled = it
                             settingsManager.setSupportSpeakEnabled(it)
                         }
-                    )
-                }
-                
-                item {
-                    SettingsItem(
-                        title = "Thông báo âm thanh",
-                        subtitle = "Phát âm thanh khi có thông báo",
-                        isChecked = isNotificationEnabled,
-                        onCheckedChange = { isNotificationEnabled = it }
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SettingsSection(title = "Ứng dụng")
-                }
-                
-                item {
-                    SettingsItem(
-                        title = "Tự động khởi động",
-                        subtitle = "Mở ứng dụng khi khởi động điện thoại",
-                        isChecked = isAutoStartEnabled,
-                        onCheckedChange = { isAutoStartEnabled = it }
-                    )
-                }
-                
-                item {
-                    SettingsDropdown(
-                        title = "Ngôn ngữ",
-                        subtitle = "Chọn ngôn ngữ giao diện",
-                        selectedValue = selectedLanguage,
-                        options = listOf("Tiếng Việt", "English", "中文"),
-                        onValueChange = { selectedLanguage = it }
-                    )
-                }
-                
-                item {
-                    SettingsDropdown(
-                        title = "Giao diện",
-                        subtitle = "Chọn chủ đề giao diện",
-                        selectedValue = selectedTheme,
-                        options = listOf("Tối", "Sáng", "Tự động"),
-                        onValueChange = { selectedTheme = it }
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SettingsSection(title = "Thông tin")
-                }
-                
-                item {
-                    SettingsInfoItem(
-                        title = "Phiên bản",
-                        value = "1.0.0"
-                    )
-                }
-                
-                item {
-                    SettingsInfoItem(
-                        title = "Nhà phát triển",
-                        value = "Auto FE Team"
-                    )
-                }
-                
-                item {
-                    SettingsActionItem(
-                        title = "Đánh giá ứng dụng",
-                        subtitle = "Giúp chúng tôi cải thiện",
-                        onClick = { /* TODO: Open app store */ }
-                    )
-                }
-                
-                item {
-                    SettingsActionItem(
-                        title = "Chia sẻ ứng dụng",
-                        subtitle = "Giới thiệu cho bạn bè",
-                        onClick = { /* TODO: Share app */ }
                     )
                 }
             }

@@ -19,9 +19,8 @@ sys.path.insert(0, str(project_root))
 
 try:
     import torchvision
-    print("torchvision available")
 except ImportError:
-    print("torchvision not available - creating mock")
+    # Create mock torchvision module if not available (not required for this system)
     mock_tv = types.ModuleType("torchvision")
     transforms_mod = types.ModuleType("transforms")
 
@@ -380,7 +379,9 @@ class ModelFirstHybridSystem:
             # Sử dụng wrapper load_trained_model đã được chuẩn hoá cho multi-task
             self.logger.info("Loading multi-task model via TrainedModelInference (phobert_multitask)")
             # model_path chỉ dùng để log; TrainedModelInference tự chọn checkpoint/best_model.pt
-            self.model_inference = load_trained_model("phobert_multitask", device=self.device)
+            # Convert torch.device to string for load_trained_model
+            device_str = str(self.device) if self.device.type == "cpu" else self.device.type
+            self.model_inference = load_trained_model("phobert_multitask", device=device_str)
             self.enable_multi_task = True
             self.model_loaded = True
 

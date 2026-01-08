@@ -97,7 +97,7 @@ def select_training_config(hw: Dict[str, Any]) -> Dict[str, str]:
     cfg: Dict[str, str] = {
         "MODEL_NAME": "vinai/phobert-large",
         "MAX_LENGTH": "128",
-        "EPOCHS": "4",
+        "EPOCHS": "6",
         "BATCH_SIZE": "8",
         "GRAD_ACCUM": "4",
         "USE_MIXED_PRECISION": "1",
@@ -143,7 +143,7 @@ def select_training_config(hw: Dict[str, Any]) -> Dict[str, str]:
 
 
 def run_training(venv_python: Path, train_env: Dict[str, str]) -> None:
-    """Chạy script train_gpu.py với env đã cấu hình."""
+    """Chạy script train_gpu.py với env và arguments đã cấu hình."""
     train_script = PROJECT_ROOT / "src" / "training" / "scripts" / "train_gpu.py"
     if not train_script.exists():
         raise FileNotFoundError(f"Không tìm thấy script train: {train_script}")
@@ -151,27 +151,32 @@ def run_training(venv_python: Path, train_env: Dict[str, str]) -> None:
     env = os.environ.copy()
     env.update(train_env)
 
+    # Build command arguments from config
+    cmd = [str(venv_python), str(train_script)]
+    if "EPOCHS" in train_env:
+        cmd.extend(["--epochs", train_env["EPOCHS"]])
+    if "BATCH_SIZE" in train_env:
+        cmd.extend(["--batch-size", train_env["BATCH_SIZE"]])
+    if "GRAD_ACCUM" in train_env:
+        cmd.extend(["--grad-accum", train_env["GRAD_ACCUM"]])
+
     print("\n[INFO] Bắt đầu chạy train_gpu.py với cấu hình trên...")
-    run([str(venv_python), str(train_script)], env=env)
+    print(f"[INFO] Command: {' '.join(cmd)}")
+    run(cmd, env=env)
 
 
 def main() -> None:
     print("=== Auto_NLP Setup & Train Helper ===")
     print(f"Project root: {PROJECT_ROOT}")
 
-    # 1. Đảm bảo có virtualenv
     venv_python = ensure_venv()
 
-    # 2. Cài đặt requirements (an toàn để chạy lại nhiều lần)
     install_requirements(venv_python)
 
-    # 3. Kiểm tra cấu hình phần cứng
     hw_info = probe_hardware(venv_python)
 
-    # 4. Chọn cấu hình huấn luyện phù hợp
     train_cfg = select_training_config(hw_info)
 
-    # 5. Chạy huấn luyện full
     run_training(venv_python, train_cfg)
 
 

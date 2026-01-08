@@ -14,7 +14,8 @@ from seqeval.metrics import f1_score as seqeval_f1_score
 from seqeval.metrics import precision_score as seqeval_precision_score
 from seqeval.metrics import recall_score as seqeval_recall_score
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
-from torch.cuda.amp import GradScaler, autocast
+from torch.cuda.amp import GradScaler
+from torch.amp.autocast_mode import autocast
 from torch.optim import AdamW, Optimizer
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader
@@ -31,7 +32,6 @@ class TrainingOutcome:
 
 
 class MultitaskTrainer:
-    """Trainer đơn giản, tối ưu cho GPU 6GB (PhoBERT-large)."""
 
     def __init__(
         self,
@@ -269,7 +269,7 @@ class MultitaskTrainer:
         entity_labels = batch["entity_labels"].to(self.device)
         command_labels = batch["command_labels"].to(self.device)
 
-        with autocast(enabled=self.scaler is not None):
+        with autocast(device_type=self.autocast_device, enabled=self.scaler is not None):
             outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
             intent_logits = outputs["intent_logits"]
             entity_logits = outputs["entity_logits"]

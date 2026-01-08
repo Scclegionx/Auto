@@ -31,6 +31,7 @@
     <!-- Foreground service permissions -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" />
 
     <!-- Permissions for accessibility service -->
     <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
@@ -192,30 +193,13 @@
             </intent-filter>
         </service>
 
-        <!-- Incoming call observer -->
-        <receiver 
-            android:name=".automation.phone.CallReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
-            </intent-filter>
-        </receiver>
+        <!-- SMSReceiver is ContentObserver, not BroadcastReceiver, so it's registered in code, not here -->
 
-        <!-- Incoming SMS observer -->
-        <receiver android:name=".automation.msg.SMSReceiver"
-            android:exported="true"
-            android:permission="android.permission.BROADCAST_SMS">
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
-
-        <!-- Foreground service for unknown call alert -->
-        <service android:name=".service.nlp.CallAlertService"
-        android:foregroundServiceType="phoneCall" />
-
-        <!-- Foreground service for SMS reading -->
-        <service android:name=".service.nlp.SmsAlertService" />
+        <service 
+            android:name=".service.nlp.SmsAlertService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="shortService" />
     </application>
 
 </manifest>

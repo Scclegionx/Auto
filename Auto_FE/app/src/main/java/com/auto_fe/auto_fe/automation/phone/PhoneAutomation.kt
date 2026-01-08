@@ -37,7 +37,44 @@ class PhoneAutomation(private val context: Context) {
         val settingsManager = SettingsManager(context)
         val isSupportSpeakEnabled = settingsManager.isSupportSpeakEnabled()
 
-        // Routing logic: Gọi điện
+        // Tìm kiếm liên hệ: Thử exact match trước, nếu không có thì tìm fuzzy
+        if (!ContactUtils.isPhoneNumber(receiver)) {
+            val exactMatch = ContactUtils.smartFindContact(context, receiver)
+            
+            if (exactMatch == null) {
+                // Không tìm thấy exact match, thử tìm fuzzy
+                val similarContacts = ContactUtils.findSimilarContactsWithPhone(context, receiver)
+                
+                if (similarContacts.isNotEmpty()) {
+                    // Tìm thấy các liên hệ tương tự, cần xác nhận
+                    val confirmationQuestion = buildSimilarContactsQuestion(similarContacts, receiver)
+                    val isMultiple = similarContacts.size > 1
+                    throw ConfirmationRequirement(
+                        originalInput = originalInput,
+                        confirmationQuestion = confirmationQuestion,
+                        onConfirmed = {
+                            // Nếu chỉ có 1 liên hệ, sử dụng luôn
+                            if (!isMultiple) {
+                                makeCall(similarContacts[0].name, platform, requireConfirmation = true)
+                            } else {
+                                // Nếu có nhiều liên hệ, callback này sẽ không được gọi
+                                // Thay vào đó, handleConfirmation sẽ xử lý
+                                throw Exception("Multiple contacts - should be handled in handleConfirmation")
+                            }
+                        },
+                        isMultipleContacts = isMultiple,
+                        actionType = "phone",
+                        actionData = platform
+                    )
+                } else {
+                    // Không tìm thấy liên hệ nào
+                    throw Exception("Dạ, trong danh bạ chưa có tên này ạ. Bác vui lòng xem hướng dẫn thêm liên hệ tự động, sau đó hãy thử lại lệnh gọi điện nhé.")
+                }
+            }
+            // Nếu tìm thấy exact match, tiếp tục logic bình thường
+        }
+
+        // Routing logic: Gọi điện (chỉ chạy khi đã có exact match hoặc là số điện thoại)
         if (isSupportSpeakEnabled) {
             // Bật hỗ trợ nói: Cần xác nhận trước khi gọi
             val confirmationQuestion = "Dạ, có phải bác muốn $originalInput?"
@@ -45,7 +82,7 @@ class PhoneAutomation(private val context: Context) {
                 originalInput = originalInput,
                 confirmationQuestion = confirmationQuestion,
                 onConfirmed = {
-                    makeCall(receiver, platform)
+                    makeCall(receiver, platform, requireConfirmation = true)
                 }
             )
         } else {
@@ -53,15 +90,35 @@ class PhoneAutomation(private val context: Context) {
             return makeCall(receiver, platform, requireConfirmation = false)
         }
     }
+    
+    /**
+     * Xây dựng câu hỏi xác nhận khi tìm thấy các liên hệ tương tự
+     */
+    private fun buildSimilarContactsQuestion(similarContacts: List<ContactUtils.SimilarContact>, originalInput: String): String {
+        return if (similarContacts.size == 1) {
+            // 1 liên hệ: Hỏi xác nhận có/không
+            "Dạ, con tìm thấy liên hệ ${similarContacts[0].name}. Có phải bác muốn gọi liên hệ này không ạ?"
+        } else {
+            // Nhiều liên hệ: Hỏi tên cụ thể
+            val namesList = similarContacts.take(3).joinToString(", ") { it.name }
+            "Dạ, con tìm thấy ${similarContacts.size} liên hệ tương tự: $namesList. Bác muốn gọi liên hệ nào ạ?"
+        }
+    }
 
     /**
-     * Gọi điện sử dụng Android Intents API
-     * Thử nhiều phương pháp fallback để đảm bảo tương thích tối đa
+     * Gọi điện trực tiếp (public để có thể gọi từ AutomationWorkflowManager)
+     */
+    fun makeCallDirect(receiver: String, platform: String = "phone"): String {
+        return makeCall(receiver, platform, requireConfirmation = true)
+    }
+    
+    /**
+     * Gọi điện sử dụng Android Intents API (public để có thể gọi từ AutomationWorkflowManager)
      * @param receiver Tên người nhận hoặc số điện thoại
      * @param platform Platform để gọi điện (phone, zalo, etc.)
      * @param requireConfirmation Nếu true, sẽ gọi trực tiếp. Nếu false, chỉ mở dialer
      */
-    private fun makeCall(receiver: String, platform: String = "phone", requireConfirmation: Boolean = true): String {
+    fun makeCall(receiver: String, platform: String = "phone", requireConfirmation: Boolean = true): String {
         return try {
             Log.d(TAG, "makeCall called with receiver: $receiver, platform: $platform")
 
@@ -71,9 +128,17 @@ class PhoneAutomation(private val context: Context) {
                 receiver
             } else {
                 Log.d(TAG, "Looking up contact: $receiver")
-                val foundNumber = ContactUtils.findPhoneNumberByName(context, receiver)
-                Log.d(TAG, "Found phone number: $foundNumber")
-                foundNumber
+                // Thử tìm exact match trước
+                val exactMatch = ContactUtils.smartFindContact(context, receiver)
+                if (exactMatch != null) {
+                    Log.d(TAG, "Found exact match: ${exactMatch.first} with phone: ${exactMatch.second}")
+                    exactMatch.second
+                } else {
+                    // Thử tìm fuzzy
+                    val foundNumber = ContactUtils.findPhoneNumberByName(context, receiver)
+                    Log.d(TAG, "Found phone number (fuzzy): $foundNumber")
+                    foundNumber
+                }
             }
 
             if (phoneNumber.isEmpty()) {

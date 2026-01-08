@@ -9,6 +9,7 @@ import android.Manifest
 import android.content.ContentProviderOperation
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
+import com.auto_fe.auto_fe.base.ConfirmationRequirement
 import org.json.JSONObject
 
 class ContactAutomation(private val context: Context) {
@@ -18,43 +19,32 @@ class ContactAutomation(private val context: Context) {
     }
 
     /**
-     * Entry Point: Nhận JSON từ CommandDispatcher và điều phối logic
+     * Bắt đầu luồng thêm liên hệ tự động
+     * Hỏi tên liên hệ, sau đó hỏi số điện thoại, rồi mở màn hình thêm liên hệ
      */
-    suspend fun executeWithEntities(entities: JSONObject): String {
-        Log.d(TAG, "Executing contact with entities: $entities")
-
-        // Parse dữ liệu
-        val action = entities.optString("ACTION", "").lowercase()
-        val name = entities.optString("NAME", "")
-        val phone = entities.optString("PHONE", "")
-        val email = entities.optString("EMAIL", "")
-
-        // Routing logic: Dựa vào action để gọi đúng hàm
-        return when (action) {
-            "insert", "add", "thêm", "them" -> {
-                if (name.isEmpty()) {
-                    throw Exception("Dạ, con chưa nghe rõ tên liên hệ ạ. Bác vui lòng nói lại nhé.")
-                }
-                // Kiểm tra xem có dùng direct insert không
-                val useDirect = entities.optBoolean("DIRECT", false)
-                if (useDirect) {
-                    insertContactDirect(name, if (phone.isEmpty()) null else phone, if (email.isEmpty()) null else email)
-                } else {
-                    insertContact(name, if (phone.isEmpty()) null else phone, if (email.isEmpty()) null else email)
-                }
-            }
-            "pick", "chọn", "chon" -> {
-                pickContact()
-            }
-            "open", "mở", "mo" -> {
-                openContactsApp()
-            }
-            else -> {
-                throw Exception("Dạ, con không hiểu thao tác này với danh bạ ạ.")
-            }
-        }
+    suspend fun startAddContactFlow(): String {
+        Log.d(TAG, "Starting add contact flow")
+        
+        // Bắt đầu luồng thêm liên hệ tự động - hỏi tên trước
+        throw ConfirmationRequirement(
+            originalInput = "",
+            confirmationQuestion = "Dạ, hãy nói tên liên hệ ạ.",
+            onConfirmed = {
+                throw Exception("Contact name collection - should be handled in workflow")
+            },
+            isMultipleContacts = false,
+            actionType = "contact_add_name",
+            actionData = ""
+        )
     }
 
+    /**
+     * Thêm liên hệ với dữ liệu đã có (public để gọi từ AutomationWorkflowManager)
+     */
+    fun insertContactWithData(name: String, phone: String): String {
+        return insertContact(name, phone, null)
+    }
+    
     /**
      * Thêm liên hệ mới
      * @param name Tên liên hệ
@@ -81,7 +71,7 @@ class ContactAutomation(private val context: Context) {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
                 Log.d(TAG, "Contact insert intent started successfully")
-                "Dạ, đã mở màn hình thêm liên hệ $name ạ."
+                "Dạ, đã mở màn hình thêm liên hệ $name ạ. Bác hãy kiểm tra lại thông tin và bấm nút lưu"
             } else {
                 Log.e(TAG, "No app available to handle contact insert")
                 throw Exception("Dạ, con không tìm thấy ứng dụng để thêm danh bạ ạ.")

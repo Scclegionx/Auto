@@ -9,6 +9,6 @@ import lombok.*;
 @Builder
 public class GetUserSettingsRequest {
 
-    private Long userId; // null nếu là GUEST, có giá trị nếu đã đăng nhập
+    private Long userId;
 }
 

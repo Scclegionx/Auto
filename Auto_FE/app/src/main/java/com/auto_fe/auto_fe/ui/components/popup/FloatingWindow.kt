@@ -5,7 +5,6 @@ import android.graphics.PixelFormat
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
-import android.widget.Toast
 import com.auto_fe.auto_fe.R
 import com.auto_fe.auto_fe.base.callback.CommandProcessorCallback
 import com.auto_fe.auto_fe.core.CommandProcessor
@@ -30,6 +29,9 @@ class FloatingWindow(private val context: Context) {
 
     // 3. States
     private var isRecording = false
+    private var confirmationQuestion = ""
+    private var successMessage = ""
+    private var errorMessage = ""
 
     // Drag functionality variables
     private var initialX = 0
@@ -66,23 +68,60 @@ class FloatingWindow(private val context: Context) {
 
             // 1. Hiển thị Popup sóng âm
             voiceRecordingPopup?.show()
-            voiceRecordingPopup?.updateStatus("Đang khởi động...")
 
             // 2. Gọi CommandProcessor chạy Workflow
+            confirmationQuestion = ""
+            successMessage = ""
+            errorMessage = ""
+            
             commandProcessor.startVoiceControl(object : CommandProcessorCallback {
                 override fun onCommandExecuted(success: Boolean, message: String) {
                     Log.d("FloatingWindow", "Success: $message")
-                    // Show kết quả
-                    voiceRecordingPopup?.updateStatus(message)
+                    isRecording = false
+                    confirmationQuestion = ""
+                    successMessage = message
+                    errorMessage = ""
+                    voiceRecordingPopup?.updateStatus("")
+                    voiceRecordingPopup?.updateConfirmation("")
+                    voiceRecordingPopup?.updateSuccess(message)
+                    voiceRecordingPopup?.updateError("")
                     // Reset UI sau khi xong
-                    resetUI()
+                    scope.launch {
+                        delay(3000)
+                        successMessage = ""
+                        voiceRecordingPopup?.updateSuccess("")
+                        resetUI()
+                    }
                 }
 
                 override fun onError(error: String) {
                     Log.e("FloatingWindow", "Error: $error")
-                    voiceRecordingPopup?.updateStatus(error)
+                    isRecording = false
+                    errorMessage = error
+                    confirmationQuestion = ""
+                    successMessage = ""
+                    voiceRecordingPopup?.updateStatus("")
+                    voiceRecordingPopup?.updateConfirmation("")
+                    voiceRecordingPopup?.updateSuccess("")
+                    voiceRecordingPopup?.updateError(error)
                     // Reset UI
-                    resetUI()
+                    scope.launch {
+                        delay(3000)
+                        errorMessage = ""
+                        voiceRecordingPopup?.updateError("")
+                        resetUI()
+                    }
+                }
+
+                override fun onConfirmationRequired(question: String) {
+                    Log.d("FloatingWindow", "Confirmation: $question")
+                    confirmationQuestion = question
+                    successMessage = ""
+                    errorMessage = ""
+                    voiceRecordingPopup?.updateStatus("")
+                    voiceRecordingPopup?.updateConfirmation(question)
+                    voiceRecordingPopup?.updateSuccess("")
+                    voiceRecordingPopup?.updateError("")
                 }
 
                 override fun onVoiceLevelChanged(level: Int) {
@@ -94,7 +133,9 @@ class FloatingWindow(private val context: Context) {
             // --- HỦY BỎ ---
             Log.d("FloatingWindow", "Cancelling voice flow")
             commandProcessor.cancel()
-            Toast.makeText(context, "Đã hủy", Toast.LENGTH_SHORT).show()
+            confirmationQuestion = ""
+            successMessage = ""
+            errorMessage = ""
             resetUI()
         }
     }

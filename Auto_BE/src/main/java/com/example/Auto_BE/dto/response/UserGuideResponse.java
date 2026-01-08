@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 public class UserGuideResponse {
 
     private Long id;
-    private String title; // Tiêu đề hướng dẫn
-    private String description; // Mô tả chi tiết
-    private String videoUrl; // URL video trên Cloudinary
-    private String thumbnailUrl; // URL thumbnail (ảnh đại diện)
-    private EUserType userType; // ELDER hoặc SUPERVISOR
-    private Integer displayOrder; // Thứ tự hiển thị
+    private String title;
+    private String description;
+    private String videoUrl;
+    private String thumbnailUrl;
+    private EUserType userType;
+    private Integer displayOrder;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

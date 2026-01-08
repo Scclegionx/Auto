@@ -18,22 +18,22 @@ import lombok.experimental.Accessors;
 public class UserGuide extends BaseEntity {
     
     @Column(name = "title", nullable = false, length = 255)
-    private String title; // Tiêu đề hướng dẫn
+    private String title;
     
     @Column(name = "description", length = 1000)
-    private String description; // Mô tả chi tiết
+    private String description;
     
     @Column(name = "video_url", nullable = false, length = 500)
-    private String videoUrl; // URL video trên Cloudinary
+    private String videoUrl;
     
     @Column(name = "thumbnail_url", length = 500)
-    private String thumbnailUrl; // URL thumbnail (ảnh đại diện) - optional
+    private String thumbnailUrl;
     
     @Column(name = "user_type", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
-    private EUserType userType; // ELDER hoặc SUPERVISOR
+    private EUserType userType;
     
     @Column(name = "display_order")
-    private Integer displayOrder; // Thứ tự hiển thị (số nhỏ hơn hiển thị trước)
+    private Integer displayOrder;
 }
 

@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class UpdateMultipleUserSettingsRequest {
 
-    private Long userId; // null nếu là GUEST, có giá trị nếu đã đăng nhập
+    private Long userId;
     
     @NotEmpty(message = "Settings list cannot be empty")
     @Valid

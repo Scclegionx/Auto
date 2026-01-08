@@ -9,8 +9,8 @@ import lombok.*;
 @Builder
 public class UserSettingResponse {
 
-    private String settingKey; // "theme", "font_size", "voice_support"
-    private String value; // Giá trị hiện tại của user: "dark", "16", "off"
-    private String defaultValue; // Giá trị mặc định từ Settings
+    private String settingKey;
+    private String value;
+    private String defaultValue;
 }
 

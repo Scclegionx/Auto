@@ -11,14 +11,8 @@ import java.util.Optional;
 @Repository
 public interface UserGuideRepository extends JpaRepository<UserGuide, Long> {
     
-    /**
-     * Lấy tất cả user guides theo user type và sắp xếp theo displayOrder
-     */
     List<UserGuide> findByUserTypeOrderByDisplayOrderAsc(EUserType userType);
     
-    /**
-     * Lấy user guide theo ID và user type
-     */
     Optional<UserGuide> findByIdAndUserType(Long id, EUserType userType);
 }
 

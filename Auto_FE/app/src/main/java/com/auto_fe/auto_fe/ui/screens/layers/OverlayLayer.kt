@@ -57,7 +57,7 @@ fun OverlayLayer(
             verticalArrangement = Arrangement.Bottom,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 50.dp) // Khoảng cách từ bottom để tránh BottomNav
+                .padding(bottom = 10.dp) // Khoảng cách từ bottom để tránh BottomNav
         ) {
             // Smooth confirmation display (ưu tiên hiển thị trước)
             AnimatedVisibility(

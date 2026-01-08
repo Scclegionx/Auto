@@ -1,5 +1,5 @@
 """
-Entity Contracts: Define required and optional entities per intent/command
+Entity Contracts
 """
 
 # Entity whitelist per intent (only these entities are allowed)
@@ -80,16 +80,7 @@ def get_required_entities(intent: str) -> set:
 
 
 def filter_entities(intent: str, entities: dict) -> dict:
-    """
-    Filter entities to only keep allowed ones per intent whitelist.
-    
-    Args:
-        intent: The predicted intent/command
-        entities: Dictionary of extracted entities
-    
-    Returns:
-        Filtered dictionary with only allowed entities
-    """
+
     allowed = get_allowed_entities(intent)
     if not allowed:
         return {}
@@ -98,16 +89,6 @@ def filter_entities(intent: str, entities: dict) -> dict:
 
 
 def validate_entities(intent: str, entities: dict) -> tuple[bool, list[str]]:
-    """
-    Validate if all required entities are present.
-    
-    Args:
-        intent: The predicted intent/command
-        entities: Dictionary of extracted entities
-    
-    Returns:
-        Tuple of (is_valid, list_of_missing_entities)
-    """
     required = get_required_entities(intent)
     if not required:
         return True, []
@@ -117,18 +98,6 @@ def validate_entities(intent: str, entities: dict) -> tuple[bool, list[str]]:
 
 
 def calculate_entity_clarity_score(intent: str, entities: dict) -> float:
-    """
-    Calculate entity clarity score (0-1) based on:
-    - Required entities present: +0.6
-    - No unwanted entities: +0.4
-    
-    Args:
-        intent: The predicted intent/command
-        entities: Dictionary of extracted entities
-    
-    Returns:
-        Clarity score from 0.0 to 1.0
-    """
     score = 0.0
     
     # Check required entities (60% of score)

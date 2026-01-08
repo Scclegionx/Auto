@@ -1,14 +1,10 @@
 """
 Engines Package
-Các modules xử lý NLP: Intent, Entity, Reasoning
+Các modules xử lý NLP: Entity Extraction
 """
 
 from .entity_extractor import EntityExtractor
-from .intent_predictor import IntentPredictor
-from .nlp_processor import NLPProcessor
 
 __all__ = [
-    'EntityExtractor',
-    'IntentPredictor',
-    'NLPProcessor'
+    'EntityExtractor'
 ]

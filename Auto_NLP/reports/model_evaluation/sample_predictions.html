@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Predictions - Sample Results</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .sample {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .text {
+            font-size: 16px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 4px solid #007bff;
+        }
+        .prediction {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 10px 0;
+        }
+        .intent, .command {
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .correct {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .incorrect {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .entities {
+            margin: 10px 0;
+        }
+        .entity {
+            display: inline-block;
+            padding: 2px 8px;
+            margin: 2px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .entity-pred {
+            background: #cfe2ff;
+            border: 1px solid #0d6efd;
+        }
+        .entity-true {
+            background: #d1e7dd;
+            border: 1px solid #198754;
+        }
+    </style>
+</head>
+<body>
+    <h1>🤖 Model Predictions - Sample Results</h1>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> này điện cho Nguyễn Đình Yến giùm , nhớ giúp tôi gọi cho họ để bàn chuyện gia đình tối nay nhé, đừng bỏ sót giùm tôi nha.</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> giúp tôi mở Google rồi tìm chính sách ưu đãi người cao tuổi giùm , tôi muốn tìm càng chi tiết càng tốt để chuẩn bị trước, nhớ kiểm tra kỹ cho tôi nhé.</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>search-internet</strong></div>
+                <div>Pred: <strong>search-internet</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>search-internet</strong></div>
+                <div>Pred: <strong>search-internet</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ờ ừm nhắn tin nhắn cho Đặng Gia Phúc: tối nay về trễ nhé emem</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ừm gửi tin nhắn cho Đặng Gia Chi: ngày mai trên đường về giúp mình với ạ , nhớ ghi rõ như vậy để họ khỏi hiểu nhầm, tôi nhờ trợ lý giúp kỹ một chút nha.</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> này gửi tin nhắn cho Đỗ Văn Tùng: mai trên đường về nhé anh nhaanh nha giúp tôi</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> này cài chuông báo lúc 20h30 dùm cái</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>set-alarm</strong></div>
+                <div>Pred: <strong>set-alarm</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>set-alarm</strong></div>
+                <div>Pred: <strong>set-alarm</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> chụp camera trước hẹn giờ bảy giờ mười lăm dùm cái</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>open-cam</strong></div>
+                <div>Pred: <strong>open-cam</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>open-cam</strong></div>
+                <div>Pred: <strong>open-cam</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ừm đặt chuông báo lúc 12h12h50 dùm cái</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>set-alarm</strong></div>
+                <div>Pred: <strong>set-alarm</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>set-alarm</strong></div>
+                <div>Pred: <strong>set-alarm</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ê Gọi video không chín ba không bảy năm hai sáu bốn chín qua Viber giùm</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>make-video-call</strong></div>
+                <div>Pred: <strong>make-video-call</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>make-video-call</strong></div>
+                <div>Pred: <strong>make-video-call</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> 0981610253</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ờ mở camera trước hẹn giờ hai mươi hai giờ mười lăm phút nhé , giúp tôi chuyển sang chế độ quay rõ nét để tôi chụp hình gửi cho con cháu xem nhé.</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>open-cam</strong></div>
+                <div>Pred: <strong>open-cam</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>open-cam</strong></div>
+                <div>Pred: <strong>open-cam</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> này Cho tôi bấm máy Huỳnh Thu Hùng giúp tôi</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> quay camera hdr nha</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>open-cam</strong></div>
+                <div>Pred: <strong>open-cam</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>open-cam</strong></div>
+                <div>Pred: <strong>open-cam</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> sức khỏesức khỏe ban công ngày sáu tháng bảy đi</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>get-info</strong></div>
+                <div>Pred: <strong>get-info</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>get-info</strong></div>
+                <div>Pred: <strong>get-info</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ừm Cho tôi gọi Đỗ Văn Dũng đi</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> 0966177124 giúp tôi gọi cho họ để bàn chuyện gia đình tối nay nhé, đừng bỏ sót giùm tôi nha.</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ờ Cho tôi liên lạc Hoàng Thị Quỳnh với , nhớ giúp tôi gọi cho họ để bàn chuyện gia đình tối nay nhé, đừng bỏ sót giùm tôi nha.</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>call</strong></div>
+                <div>Pred: <strong>call</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ờ tin tức phòng khách ngày mười chín tháng một ạ</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>get-info</strong></div>
+                <div>Pred: <strong>get-info</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>get-info</strong></div>
+                <div>Pred: <strong>get-info</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ê chụp camera trước nhé</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>open-cam</strong></div>
+                <div>Pred: <strong>open-cam</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>open-cam</strong></div>
+                <div>Pred: <strong>open-cam</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> Thêm liên 0918388409 giùm</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>add-contacts</strong></div>
+                <div>Pred: <strong>add-contacts</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>add-contacts</strong></div>
+                <div>Pred: <strong>add-contacts</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ờ nhắn tin nhắn cho Vũ Thu Trung: đang ăn cơm nhé đi</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> này Thêm danh bạ Hồ Gia Yến 0960246589 ghi chú hàng xóm nha , nhớ lưu kỹ để mai mốt tôi gọi khỏi phải tìm lại mất công nữa đó nghe trợ lý.</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>add-contacts</strong></div>
+                <div>Pred: <strong>add-contacts</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>add-contacts</strong></div>
+                <div>Pred: <strong>add-contacts</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> Gọi video Đỗ Minh Dũng bằng Zalo đi</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>make-video-call</strong></div>
+                <div>Pred: <strong>make-video-call</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>make-video-call</strong></div>
+                <div>Pred: <strong>make-video-call</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> nhé ê Thêm liên 0998573721 ạ , nhớ lưu kỹ để mai mốt tôi gọi khỏi phải tìm lại mất công nữa đó nghe trợ lý.</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>add-contacts</strong></div>
+                <div>Pred: <strong>add-contacts</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>add-contacts</strong></div>
+                <div>Pred: <strong>add-contacts</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ờ đặt báo thức lúc 16 giờ 40 phút nhắc tập thể dục nha</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>set-alarm</strong></div>
+                <div>Pred: <strong>set-alarm</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>set-alarm</strong></div>
+                <div>Pred: <strong>set-alarm</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> nè Gọi video Lê Hải Trung bằng Viber</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>make-video-call</strong></div>
+                <div>Pred: <strong>make-video-call</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>make-video-call</strong></div>
+                <div>Pred: <strong>make-video-call</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> em ơi tìm giúp cách thanh toán tiền điện online trên Google giúp tôi trên điện thoại</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>search-internet</strong></div>
+                <div>Pred: <strong>search-internet</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>search-internet</strong></div>
+                <div>Pred: <strong>search-internet</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> ê Hỏi tài chính ngày hai tháng bốn giùmtài chính ngày hai tháng bốn giùm</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>get-info</strong></div>
+                <div>Pred: <strong>get-info</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>get-info</strong></div>
+                <div>Pred: <strong>get-info</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> này gửi sms cho Huỳnh Anh Khánh: vừa nhớ ăn uống nha dùm cái</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>send-mess</strong></div>
+                <div>Pred: <strong>send-mess</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sample">
+        <div class="text"><strong>Input:</strong> đóng rèm cửa ở tầng một tối đa nha ờ , bật nhẹ nhàng thôi vì tôi đang nghỉ ngơi, đừng làm ồn nha cho tôi dễ chịu.</div>
+        <div class="prediction">
+            <div class="intent correct">
+                <div class="label">Intent:</div>
+                <div>True: <strong>control-device</strong></div>
+                <div>Pred: <strong>control-device</strong></div>
+            </div>
+            <div class="command correct">
+                <div class="label">Command:</div>
+                <div>True: <strong>control-device</strong></div>
+                <div>Pred: <strong>control-device</strong></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

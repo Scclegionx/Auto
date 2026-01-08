@@ -14,7 +14,8 @@ from seqeval.metrics import f1_score as seqeval_f1_score
 from seqeval.metrics import precision_score as seqeval_precision_score
 from seqeval.metrics import recall_score as seqeval_recall_score
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
-from torch.cuda.amp import GradScaler, autocast
+from torch.cuda.amp import GradScaler
+from torch.amp.autocast_mode import autocast
 from torch.optim import AdamW, Optimizer
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader
@@ -57,9 +58,9 @@ class MultitaskTrainer:
         self.entity_label2id = processor.entity_label2id
 
         self.grad_accum = gradient_accumulation_steps or getattr(config, "gradient_accumulation_steps", 1)
-        self.lambda_intent = getattr(config, "LAMBDA_INTENT", 0.7)
-        self.lambda_entity = getattr(config, "LAMBDA_ENTITY", 0.2)
-        self.lambda_command = getattr(config, "LAMBDA_COMMAND", 0.1)
+        self.lambda_intent = getattr(config, "LAMBDA_INTENT", 0.45)
+        self.lambda_entity = getattr(config, "LAMBDA_ENTITY", 0.25)
+        self.lambda_command = getattr(config, "LAMBDA_COMMAND", 0.2)
         self.max_grad_norm = getattr(config, "max_grad_norm", 1.0)
 
         self.intent_criterion = nn.CrossEntropyLoss()
@@ -71,8 +72,14 @@ class MultitaskTrainer:
 
         self.scaler: Optional[GradScaler] = None
         self.autocast_device = "cuda" if self.device.type == "cuda" else "cpu"
-        if getattr(config, "use_mixed_precision", True) and self.device.type == "cuda":
+        use_mixed_precision = getattr(config, "use_mixed_precision", True)
+        if use_mixed_precision and self.device.type == "cuda":
             self.scaler = GradScaler()
+            self.logger.info("✅ Mixed Precision (FP16) enabled - using GradScaler")
+        elif self.device.type == "cuda":
+            self.logger.info("⚠️ Mixed Precision (FP16) disabled - using FP32")
+        else:
+            self.logger.info("ℹ️ CPU mode - Mixed Precision not available")
 
         self.freeze_encoder_epochs = max(0, freeze_encoder_epochs or getattr(config, "freeze_encoder_epochs", 0) or 0)
         self._encoder_frozen = False
@@ -142,7 +149,7 @@ class MultitaskTrainer:
         num_epochs: Optional[int] = None,
         evaluation_loader: Optional[DataLoader] = None,
     ) -> TrainingOutcome:
-        epochs = num_epochs or getattr(self.config, "num_epochs", 4)
+        epochs = num_epochs or getattr(self.config, "num_epochs", 6)
         optimizer = self._setup_optimizer()
         scheduler = self._build_scheduler(optimizer, train_loader, epochs)
 
@@ -269,7 +276,7 @@ class MultitaskTrainer:
         entity_labels = batch["entity_labels"].to(self.device)
         command_labels = batch["command_labels"].to(self.device)
 
-        with autocast(enabled=self.scaler is not None):
+        with autocast(device_type=self.autocast_device, enabled=self.scaler is not None):
             outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
             intent_logits = outputs["intent_logits"]
             entity_logits = outputs["entity_logits"]

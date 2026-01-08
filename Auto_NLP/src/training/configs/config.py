@@ -1,18 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-config.py - OPTIMIZED for RTX 2060 6GB GPU with VITEXT dataset
-Updated for normalized Vietnamese text and processed data
-"""
-
 import os
 import sys
 from pathlib import Path
 
 import torch
 
-# Đảm bảo có thể import được module `data.entity_schema`
-# Cấu trúc file hiện tại: <project_root>/src/training/configs/config.py
 _this_file = Path(__file__).resolve()
 _src_root = _this_file.parents[2]  # .../src
 _src_root_str = str(_src_root)
@@ -23,7 +14,6 @@ from data.entity_schema import ENTITY_BASE_NAMES, generate_entity_labels
 
 
 class ModelConfig:
-    """Hyper-parameters mặc định (có thể override qua biến môi trường)"""
 
     # Model settings - tự điều chỉnh theo VRAM
     model_name = os.environ.get("MODEL_NAME", "vinai/phobert-large")

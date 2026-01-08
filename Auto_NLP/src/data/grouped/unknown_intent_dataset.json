@@ -1,0 +1,9498 @@
+[
+  {
+    "input": "à ờ tôi quên mất rồi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "ờ",
+      "tôi",
+      "quên",
+      "mất",
+      "rồi"
+    ]
+  },
+  {
+    "input": "à xin lỗi nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "xin",
+      "lỗi",
+      "nha"
+    ]
+  },
+  {
+    "input": "nè cho tôi hỏi linh tinh thôi nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "cho",
+      "tôi",
+      "hỏi",
+      "linh",
+      "tinh",
+      "thôi",
+      "nha"
+    ]
+  },
+  {
+    "input": "ê ờ tôi đang lơ đãng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "ờ",
+      "tôi",
+      "đang",
+      "lơ",
+      "đãng"
+    ]
+  },
+  {
+    "input": "nè ừm tôi thấy buồn buồn ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "ừm",
+      "tôi",
+      "thấy",
+      "buồn",
+      "buồn",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ờ tôi hơi đau đầu ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "hơi",
+      "đau",
+      "đầu",
+      "ấy"
+    ]
+  },
+  {
+    "input": "nè tôi kể chuyện này nghe nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "tôi",
+      "kể",
+      "chuyện",
+      "này",
+      "nghe",
+      "nha"
+    ]
+  },
+  {
+    "input": "à tôi thấy khát vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "thấy",
+      "khát",
+      "vậy"
+    ]
+  },
+  {
+    "input": "ừm ờ tôi hơi đau đầu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ờ",
+      "tôi",
+      "hơi",
+      "đau",
+      "đầu"
+    ]
+  },
+  {
+    "input": "này ờ ừm tôi đang nghĩ chút nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "ờ",
+      "ừm",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "chút",
+      "nhé"
+    ]
+  },
+  {
+    "input": "à, tôi chỉ thử xem ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "tôi",
+      "chỉ",
+      "thử",
+      "xem",
+      "ha"
+    ]
+  },
+  {
+    "input": "nè ừm tôi đang nghĩ về công việc",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "ừm",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "về",
+      "công",
+      "việc"
+    ]
+  },
+  {
+    "input": "à, ừm tôi thấy vui nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "ừm",
+      "tôi",
+      "thấy",
+      "vui",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ờ tôi thấy đói",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "thấy",
+      "đói"
+    ]
+  },
+  {
+    "input": "ê à tôi muốn nói chuyện",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "à",
+      "tôi",
+      "muốn",
+      "nói",
+      "chuyện"
+    ]
+  },
+  {
+    "input": "ờ, ờ tôi đang lơ đãng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "ờ",
+      "tôi",
+      "đang",
+      "lơ",
+      "đãng"
+    ]
+  },
+  {
+    "input": "nè à tôi chỉ thử xem",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "à",
+      "tôi",
+      "chỉ",
+      "thử",
+      "xem"
+    ]
+  },
+  {
+    "input": "ê, à thôi nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê,",
+      "à",
+      "thôi",
+      "nha"
+    ]
+  },
+  {
+    "input": "à thôi không có gì đâu nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "thôi",
+      "không",
+      "có",
+      "gì",
+      "đâu",
+      "nha"
+    ]
+  },
+  {
+    "input": "ê à tôi đang nghĩ về gia đình",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "à",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "về",
+      "gia",
+      "đình"
+    ]
+  },
+  {
+    "input": "ừm ừm tôi nói linh tinh",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ừm",
+      "tôi",
+      "nói",
+      "linh",
+      "tinh"
+    ]
+  },
+  {
+    "input": "ê à nè hôm nay tôi hơi mệt",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "à",
+      "nè",
+      "hôm",
+      "nay",
+      "tôi",
+      "hơi",
+      "mệt"
+    ]
+  },
+  {
+    "input": "ừm tôi vừa ra ngoài thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "vừa",
+      "ra",
+      "ngoài",
+      "thôi"
+    ]
+  },
+  {
+    "input": "nè tôi kể chuyện này nghe nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "tôi",
+      "kể",
+      "chuyện",
+      "này",
+      "nghe",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ờ, tôi hơi đau đầu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "tôi",
+      "hơi",
+      "đau",
+      "đầu"
+    ]
+  },
+  {
+    "input": "à ừm tôi thấy vui",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "ừm",
+      "tôi",
+      "thấy",
+      "vui"
+    ]
+  },
+  {
+    "input": "nè, ừm tôi muốn nghỉ ngơi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè,",
+      "ừm",
+      "tôi",
+      "muốn",
+      "nghỉ",
+      "ngơi"
+    ]
+  },
+  {
+    "input": "nè, tôi thấy hơi khó chịu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè,",
+      "tôi",
+      "thấy",
+      "hơi",
+      "khó",
+      "chịu"
+    ]
+  },
+  {
+    "input": "ừm ờ tôi đang nhớ nhà",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ờ",
+      "tôi",
+      "đang",
+      "nhớ",
+      "nhà"
+    ]
+  },
+  {
+    "input": "ừm, à tôi đang sợ sệt",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "à",
+      "tôi",
+      "đang",
+      "sợ",
+      "sệt"
+    ]
+  },
+  {
+    "input": "nè nói chuyện chút thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "nói",
+      "chuyện",
+      "chút",
+      "thôi"
+    ]
+  },
+  {
+    "input": "à tôi thấy lạnh lạnh nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "thấy",
+      "lạnh",
+      "lạnh",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ờ tôi muốn nghỉ một lát ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "muốn",
+      "nghỉ",
+      "một",
+      "lát",
+      "ha"
+    ]
+  },
+  {
+    "input": "ê ờ tôi thấy nhớ bạn nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "ờ",
+      "tôi",
+      "thấy",
+      "nhớ",
+      "bạn",
+      "nha"
+    ]
+  },
+  {
+    "input": "này ừm tôi lỡ lời",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "ừm",
+      "tôi",
+      "lỡ",
+      "lời"
+    ]
+  },
+  {
+    "input": "nè ờ tôi không có yêu cầu gì",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "ờ",
+      "tôi",
+      "không",
+      "có",
+      "yêu",
+      "cầu",
+      "gì"
+    ]
+  },
+  {
+    "input": "ừ để tôi xem đã",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừ",
+      "để",
+      "tôi",
+      "xem",
+      "đã"
+    ]
+  },
+  {
+    "input": "ừm tôi đang thắc mắc chung chung",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "đang",
+      "thắc",
+      "mắc",
+      "chung",
+      "chung"
+    ]
+  },
+  {
+    "input": "ừm tôi muốn nghỉ ngơi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "muốn",
+      "nghỉ",
+      "ngơi"
+    ]
+  },
+  {
+    "input": "ờ tôi hơi đau đầu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "hơi",
+      "đau",
+      "đầu"
+    ]
+  },
+  {
+    "input": "ê à xin lỗi nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "à",
+      "xin",
+      "lỗi",
+      "nha"
+    ]
+  },
+  {
+    "input": "ừm tôi muốn nghỉ ngơi vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "muốn",
+      "nghỉ",
+      "ngơi",
+      "vậy"
+    ]
+  },
+  {
+    "input": "à tôi đang suy nghĩ",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "suy",
+      "nghĩ"
+    ]
+  },
+  {
+    "input": "ừm tôi thấy trống rỗng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "thấy",
+      "trống",
+      "rỗng"
+    ]
+  },
+  {
+    "input": "này à tôi chỉ thử xem ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "à",
+      "tôi",
+      "chỉ",
+      "thử",
+      "xem",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ừm, à tôi chỉ thử xem",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "à",
+      "tôi",
+      "chỉ",
+      "thử",
+      "xem"
+    ]
+  },
+  {
+    "input": "ê ừm để đó đã nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "ừm",
+      "để",
+      "đó",
+      "đã",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ờ tôi đang căng thẳng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "đang",
+      "căng",
+      "thẳng"
+    ]
+  },
+  {
+    "input": "ờ ừm tôi đang nghĩ chút",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ừm",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "chút"
+    ]
+  },
+  {
+    "input": "ờ tôi thấy đói ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "thấy",
+      "đói",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ừ tôi sợ làm phiền ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừ",
+      "tôi",
+      "sợ",
+      "làm",
+      "phiền",
+      "ấy"
+    ]
+  },
+  {
+    "input": "à tôi nói vậy thôi nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "nói",
+      "vậy",
+      "thôi",
+      "nha"
+    ]
+  },
+  {
+    "input": "ờ, chào bạn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "chào",
+      "bạn"
+    ]
+  },
+  {
+    "input": "à tôi thấy lạnh lạnh ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "thấy",
+      "lạnh",
+      "lạnh",
+      "ha"
+    ]
+  },
+  {
+    "input": "ờ, à tôi thấy lạnh lạnh",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "à",
+      "tôi",
+      "thấy",
+      "lạnh",
+      "lạnh"
+    ]
+  },
+  {
+    "input": "ờ tôi đang lơ đãng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "đang",
+      "lơ",
+      "đãng"
+    ]
+  },
+  {
+    "input": "ờ tôi mới về nhà đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "mới",
+      "về",
+      "nhà",
+      "đó"
+    ]
+  },
+  {
+    "input": "ờ để mai tính",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "để",
+      "mai",
+      "tính"
+    ]
+  },
+  {
+    "input": "ờ ờ tôi nói nhỏ thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ờ",
+      "tôi",
+      "nói",
+      "nhỏ",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ờ tôi nói nhỏ thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "nói",
+      "nhỏ",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừm ừm tôi thấy vui",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ừm",
+      "tôi",
+      "thấy",
+      "vui"
+    ]
+  },
+  {
+    "input": "à ờ tôi nói nhỏ thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "ờ",
+      "tôi",
+      "nói",
+      "nhỏ",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ê, ừm tôi đang thắc mắc chung chung",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê,",
+      "ừm",
+      "tôi",
+      "đang",
+      "thắc",
+      "mắc",
+      "chung",
+      "chung"
+    ]
+  },
+  {
+    "input": "ờ được rồi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "được",
+      "rồi"
+    ]
+  },
+  {
+    "input": "nè ừm ok nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "ừm",
+      "ok",
+      "nha"
+    ]
+  },
+  {
+    "input": "nè nói chuyện chút thôi thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "nói",
+      "chuyện",
+      "chút",
+      "thôi",
+      "thôi"
+    ]
+  },
+  {
+    "input": "này à xin lỗi nha ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "à",
+      "xin",
+      "lỗi",
+      "nha",
+      "ha"
+    ]
+  },
+  {
+    "input": "à tôi đang chán",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "chán"
+    ]
+  },
+  {
+    "input": "ê ừm ok nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "ừm",
+      "ok",
+      "nha"
+    ]
+  },
+  {
+    "input": "ờ cảm ơn nha thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "cảm",
+      "ơn",
+      "nha",
+      "thôi"
+    ]
+  },
+  {
+    "input": "này ừm tôi vừa ra ngoài nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "ừm",
+      "tôi",
+      "vừa",
+      "ra",
+      "ngoài",
+      "nha"
+    ]
+  },
+  {
+    "input": "này, à tạm biệt nha đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này,",
+      "à",
+      "tạm",
+      "biệt",
+      "nha",
+      "đó"
+    ]
+  },
+  {
+    "input": "ừm, tôi lỡ lời",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "tôi",
+      "lỡ",
+      "lời"
+    ]
+  },
+  {
+    "input": "ừm, ờ tôi thấy khó hiểu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "ờ",
+      "tôi",
+      "thấy",
+      "khó",
+      "hiểu"
+    ]
+  },
+  {
+    "input": "à tôi đang xem tivi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "xem",
+      "tivi"
+    ]
+  },
+  {
+    "input": "à ừm tôi đang rảnh nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "ừm",
+      "tôi",
+      "đang",
+      "rảnh",
+      "nhé"
+    ]
+  },
+  {
+    "input": "à, tôi đang bận một chút",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "tôi",
+      "đang",
+      "bận",
+      "một",
+      "chút"
+    ]
+  },
+  {
+    "input": "ờ, ừm tôi thấy vui thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "ừm",
+      "tôi",
+      "thấy",
+      "vui",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừm tôi vui quá",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "vui",
+      "quá"
+    ]
+  },
+  {
+    "input": "ờ thôi bỏ qua đi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "thôi",
+      "bỏ",
+      "qua",
+      "đi"
+    ]
+  },
+  {
+    "input": "à tôi thấy vui vui nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "thấy",
+      "vui",
+      "vui",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ừm ờ tôi đang nghe nhạc",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ờ",
+      "tôi",
+      "đang",
+      "nghe",
+      "nhạc"
+    ]
+  },
+  {
+    "input": "nè à tôi thấy hơi lạ",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "à",
+      "tôi",
+      "thấy",
+      "hơi",
+      "lạ"
+    ]
+  },
+  {
+    "input": "nè à tôi nói vậy thôi nha vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "à",
+      "tôi",
+      "nói",
+      "vậy",
+      "thôi",
+      "nha",
+      "vậy"
+    ]
+  },
+  {
+    "input": "ờ tôi chỉ hỏi cho vui",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "chỉ",
+      "hỏi",
+      "cho",
+      "vui"
+    ]
+  },
+  {
+    "input": "ừm tôi thấy vui",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "thấy",
+      "vui"
+    ]
+  },
+  {
+    "input": "ờ tôi hơi đau đầu đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "hơi",
+      "đau",
+      "đầu",
+      "đó"
+    ]
+  },
+  {
+    "input": "ờ ờ tôi đang căng thẳng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ờ",
+      "tôi",
+      "đang",
+      "căng",
+      "thẳng"
+    ]
+  },
+  {
+    "input": "ê à xin lỗi nha thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "à",
+      "xin",
+      "lỗi",
+      "nha",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừm ừm tôi muốn nghỉ ngơi vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ừm",
+      "tôi",
+      "muốn",
+      "nghỉ",
+      "ngơi",
+      "vậy"
+    ]
+  },
+  {
+    "input": "này nè nói chuyện chút thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "nè",
+      "nói",
+      "chuyện",
+      "chút",
+      "thôi"
+    ]
+  },
+  {
+    "input": "à tôi đang chán ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "chán",
+      "ha"
+    ]
+  },
+  {
+    "input": "ờ, tôi thấy bình yên",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "tôi",
+      "thấy",
+      "bình",
+      "yên"
+    ]
+  },
+  {
+    "input": "ừm ờ tôi mới về nhà",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ờ",
+      "tôi",
+      "mới",
+      "về",
+      "nhà"
+    ]
+  },
+  {
+    "input": "ừm, tôi đang phân vân",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "tôi",
+      "đang",
+      "phân",
+      "vân"
+    ]
+  },
+  {
+    "input": "nè à tôi đang ngồi một mình",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "à",
+      "tôi",
+      "đang",
+      "ngồi",
+      "một",
+      "mình"
+    ]
+  },
+  {
+    "input": "à ừm tôi vừa ra ngoài",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "ừm",
+      "tôi",
+      "vừa",
+      "ra",
+      "ngoài"
+    ]
+  },
+  {
+    "input": "này à tôi nói vậy thôi nha thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "à",
+      "tôi",
+      "nói",
+      "vậy",
+      "thôi",
+      "nha",
+      "thôi"
+    ]
+  },
+  {
+    "input": "nè nè tôi kể chuyện này nghe",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "nè",
+      "tôi",
+      "kể",
+      "chuyện",
+      "này",
+      "nghe"
+    ]
+  },
+  {
+    "input": "ừ tôi chưa rõ lắm",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừ",
+      "tôi",
+      "chưa",
+      "rõ",
+      "lắm"
+    ]
+  },
+  {
+    "input": "ừm tôi đang hồi hộp",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "đang",
+      "hồi",
+      "hộp"
+    ]
+  },
+  {
+    "input": "ờ, tôi hơi đau đầu ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "tôi",
+      "hơi",
+      "đau",
+      "đầu",
+      "ấy"
+    ]
+  },
+  {
+    "input": "à, tôi không biết nữa ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "tôi",
+      "không",
+      "biết",
+      "nữa",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ờ à thôi nha thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "à",
+      "thôi",
+      "nha",
+      "thôi"
+    ]
+  },
+  {
+    "input": "này à tôi đang sợ sệt đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "à",
+      "tôi",
+      "đang",
+      "sợ",
+      "sệt",
+      "đó"
+    ]
+  },
+  {
+    "input": "ừm ừm tôi đang nghĩ về công việc",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ừm",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "về",
+      "công",
+      "việc"
+    ]
+  },
+  {
+    "input": "ừ, tôi chưa rõ lắm đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừ,",
+      "tôi",
+      "chưa",
+      "rõ",
+      "lắm",
+      "đó"
+    ]
+  },
+  {
+    "input": "nè tôi kể chuyện này nghe",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "tôi",
+      "kể",
+      "chuyện",
+      "này",
+      "nghe"
+    ]
+  },
+  {
+    "input": "à tôi muốn nói chuyện",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "muốn",
+      "nói",
+      "chuyện"
+    ]
+  },
+  {
+    "input": "ờ ừm tôi đang rảnh",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ừm",
+      "tôi",
+      "đang",
+      "rảnh"
+    ]
+  },
+  {
+    "input": "ờ tôi đang bối rối",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "đang",
+      "bối",
+      "rối"
+    ]
+  },
+  {
+    "input": "này, ờ tôi đang bối rối thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này,",
+      "ờ",
+      "tôi",
+      "đang",
+      "bối",
+      "rối",
+      "thôi"
+    ]
+  },
+  {
+    "input": "à, tôi buồn buồn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "tôi",
+      "buồn",
+      "buồn"
+    ]
+  },
+  {
+    "input": "à à tôi đang thở dài",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "à",
+      "tôi",
+      "đang",
+      "thở",
+      "dài"
+    ]
+  },
+  {
+    "input": "à ờ tôi mới về nhà",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "ờ",
+      "tôi",
+      "mới",
+      "về",
+      "nhà"
+    ]
+  },
+  {
+    "input": "ừm chào nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "chào",
+      "nha"
+    ]
+  },
+  {
+    "input": "ê nè tôi kể chuyện này nghe ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "nè",
+      "tôi",
+      "kể",
+      "chuyện",
+      "này",
+      "nghe",
+      "ấy"
+    ]
+  },
+  {
+    "input": "này ừm chào nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "ừm",
+      "chào",
+      "nha"
+    ]
+  },
+  {
+    "input": "ừm, tôi đang đọc sách",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "tôi",
+      "đang",
+      "đọc",
+      "sách"
+    ]
+  },
+  {
+    "input": "ờ, tôi đang căng thẳng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "tôi",
+      "đang",
+      "căng",
+      "thẳng"
+    ]
+  },
+  {
+    "input": "ừm à tôi đang suy nghĩ",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "à",
+      "tôi",
+      "đang",
+      "suy",
+      "nghĩ"
+    ]
+  },
+  {
+    "input": "ừm tôi muốn nghỉ ngơi đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "muốn",
+      "nghỉ",
+      "ngơi",
+      "đó"
+    ]
+  },
+  {
+    "input": "à tôi vừa ngủ dậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "vừa",
+      "ngủ",
+      "dậy"
+    ]
+  },
+  {
+    "input": "à tự nhiên tôi nghĩ tới chuyện cũ",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tự",
+      "nhiên",
+      "tôi",
+      "nghĩ",
+      "tới",
+      "chuyện",
+      "cũ"
+    ]
+  },
+  {
+    "input": "ờ ờ tôi thấy bình yên",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ờ",
+      "tôi",
+      "thấy",
+      "bình",
+      "yên"
+    ]
+  },
+  {
+    "input": "nè, cho tôi hỏi linh tinh thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè,",
+      "cho",
+      "tôi",
+      "hỏi",
+      "linh",
+      "tinh",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừm tôi thấy bực thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "thấy",
+      "bực",
+      "thôi"
+    ]
+  },
+  {
+    "input": "nè tôi mới ăn xong",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "tôi",
+      "mới",
+      "ăn",
+      "xong"
+    ]
+  },
+  {
+    "input": "à tôi đang thở dài nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "thở",
+      "dài",
+      "nha"
+    ]
+  },
+  {
+    "input": "à tôi đang thở dài ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "thở",
+      "dài",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ê ừm ok nha đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "ừm",
+      "ok",
+      "nha",
+      "đó"
+    ]
+  },
+  {
+    "input": "ê, à tôi buồn buồn đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê,",
+      "à",
+      "tôi",
+      "buồn",
+      "buồn",
+      "đó"
+    ]
+  },
+  {
+    "input": "ờ à tôi đang nhớ một người",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "à",
+      "tôi",
+      "đang",
+      "nhớ",
+      "một",
+      "người"
+    ]
+  },
+  {
+    "input": "ờ tôi thấy khó hiểu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "thấy",
+      "khó",
+      "hiểu"
+    ]
+  },
+  {
+    "input": "ừm, bạn nghe tôi nói chút nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "bạn",
+      "nghe",
+      "tôi",
+      "nói",
+      "chút",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ừm tôi đang hồi hộp đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "đang",
+      "hồi",
+      "hộp",
+      "đó"
+    ]
+  },
+  {
+    "input": "ờ tôi đang nghe nhạc",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "đang",
+      "nghe",
+      "nhạc"
+    ]
+  },
+  {
+    "input": "nè tôi thấy bình thường",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "tôi",
+      "thấy",
+      "bình",
+      "thường"
+    ]
+  },
+  {
+    "input": "nè ừm tôi vừa ra ngoài",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "ừm",
+      "tôi",
+      "vừa",
+      "ra",
+      "ngoài"
+    ]
+  },
+  {
+    "input": "nè ừm tôi nói linh tinh",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "ừm",
+      "tôi",
+      "nói",
+      "linh",
+      "tinh"
+    ]
+  },
+  {
+    "input": "à tôi muốn nói chuyện thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "muốn",
+      "nói",
+      "chuyện",
+      "thôi"
+    ]
+  },
+  {
+    "input": "nè ừm tôi vui quá ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "ừm",
+      "tôi",
+      "vui",
+      "quá",
+      "ha"
+    ]
+  },
+  {
+    "input": "nè, à tôi vừa ngủ dậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè,",
+      "à",
+      "tôi",
+      "vừa",
+      "ngủ",
+      "dậy"
+    ]
+  },
+  {
+    "input": "ừm à tôi chỉ thử xem",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "à",
+      "tôi",
+      "chỉ",
+      "thử",
+      "xem"
+    ]
+  },
+  {
+    "input": "à tôi đang nhớ một người",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "nhớ",
+      "một",
+      "người"
+    ]
+  },
+  {
+    "input": "ừm ok nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ok",
+      "nha"
+    ]
+  },
+  {
+    "input": "ừm, tôi đang thắc mắc chung chung thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "tôi",
+      "đang",
+      "thắc",
+      "mắc",
+      "chung",
+      "chung",
+      "thôi"
+    ]
+  },
+  {
+    "input": "này à xin lỗi nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "à",
+      "xin",
+      "lỗi",
+      "nha"
+    ]
+  },
+  {
+    "input": "này à tôi đang suy nghĩ",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "à",
+      "tôi",
+      "đang",
+      "suy",
+      "nghĩ"
+    ]
+  },
+  {
+    "input": "ừm tôi vừa ra ngoài",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "vừa",
+      "ra",
+      "ngoài"
+    ]
+  },
+  {
+    "input": "ờ tôi thấy nhớ bạn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "thấy",
+      "nhớ",
+      "bạn"
+    ]
+  },
+  {
+    "input": "à, ờ tôi đang học bài",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "ờ",
+      "tôi",
+      "đang",
+      "học",
+      "bài"
+    ]
+  },
+  {
+    "input": "ờ tôi nói nhầm ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "nói",
+      "nhầm",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ờ tôi không có yêu cầu gì",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "không",
+      "có",
+      "yêu",
+      "cầu",
+      "gì"
+    ]
+  },
+  {
+    "input": "à ừm tôi thấy bực",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "ừm",
+      "tôi",
+      "thấy",
+      "bực"
+    ]
+  },
+  {
+    "input": "ừ tôi chưa rõ lắm vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừ",
+      "tôi",
+      "chưa",
+      "rõ",
+      "lắm",
+      "vậy"
+    ]
+  },
+  {
+    "input": "à tôi buồn buồn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "buồn",
+      "buồn"
+    ]
+  },
+  {
+    "input": "ừm ừ tôi sợ làm phiền",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ừ",
+      "tôi",
+      "sợ",
+      "làm",
+      "phiền"
+    ]
+  },
+  {
+    "input": "à tôi đang nghĩ về gia đình ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "về",
+      "gia",
+      "đình",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ờ, tôi thấy đói",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "tôi",
+      "thấy",
+      "đói"
+    ]
+  },
+  {
+    "input": "ờ ừ tôi sợ làm phiền đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ừ",
+      "tôi",
+      "sợ",
+      "làm",
+      "phiền",
+      "đó"
+    ]
+  },
+  {
+    "input": "ờ ừm ok nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ừm",
+      "ok",
+      "nha"
+    ]
+  },
+  {
+    "input": "ờ ừ tôi chỉ muốn tâm sự",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ừ",
+      "tôi",
+      "chỉ",
+      "muốn",
+      "tâm",
+      "sự"
+    ]
+  },
+  {
+    "input": "ừm tôi đang rảnh thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "đang",
+      "rảnh",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ờ ừm tôi đang nghĩ chút nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ừm",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "chút",
+      "nha"
+    ]
+  },
+  {
+    "input": "nè, nói chuyện chút thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè,",
+      "nói",
+      "chuyện",
+      "chút",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừ, tôi chỉ muốn tâm sự ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừ,",
+      "tôi",
+      "chỉ",
+      "muốn",
+      "tâm",
+      "sự",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ừm chào nha nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "chào",
+      "nha",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ờ à tôi thấy khát ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "à",
+      "tôi",
+      "thấy",
+      "khát",
+      "ha"
+    ]
+  },
+  {
+    "input": "ờ tôi đang chờ ai đó nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "đang",
+      "chờ",
+      "ai",
+      "đó",
+      "nhé"
+    ]
+  },
+  {
+    "input": "này à tôi thấy lạnh lạnh vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "à",
+      "tôi",
+      "thấy",
+      "lạnh",
+      "lạnh",
+      "vậy"
+    ]
+  },
+  {
+    "input": "này à hình như tôi nhầm thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "à",
+      "hình",
+      "như",
+      "tôi",
+      "nhầm",
+      "thôi"
+    ]
+  },
+  {
+    "input": "à ờ tôi không có yêu cầu gì nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "ờ",
+      "tôi",
+      "không",
+      "có",
+      "yêu",
+      "cầu",
+      "gì",
+      "nhé"
+    ]
+  },
+  {
+    "input": "à tôi đang xem tivi vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "xem",
+      "tivi",
+      "vậy"
+    ]
+  },
+  {
+    "input": "ờ ừm ok nha thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "ừm",
+      "ok",
+      "nha",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừm tôi thấy bực nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "thấy",
+      "bực",
+      "nhé"
+    ]
+  },
+  {
+    "input": "à tôi thấy hơi lạ nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "thấy",
+      "hơi",
+      "lạ",
+      "nha"
+    ]
+  },
+  {
+    "input": "ờ tôi đang bối rối nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "đang",
+      "bối",
+      "rối",
+      "nha"
+    ]
+  },
+  {
+    "input": "ê ừ để tôi xem đã ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "ừ",
+      "để",
+      "tôi",
+      "xem",
+      "đã",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ờ à thôi kệ đi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "à",
+      "thôi",
+      "kệ",
+      "đi"
+    ]
+  },
+  {
+    "input": "ờ, tôi quên mất rồi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "tôi",
+      "quên",
+      "mất",
+      "rồi"
+    ]
+  },
+  {
+    "input": "à, ờ tôi hơi đau đầu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "ờ",
+      "tôi",
+      "hơi",
+      "đau",
+      "đầu"
+    ]
+  },
+  {
+    "input": "à, ừm tôi nói linh tinh thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "ừm",
+      "tôi",
+      "nói",
+      "linh",
+      "tinh",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừ tôi chỉ muốn tâm sự",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừ",
+      "tôi",
+      "chỉ",
+      "muốn",
+      "tâm",
+      "sự"
+    ]
+  },
+  {
+    "input": "ừm ờ thôi bỏ qua đi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ờ",
+      "thôi",
+      "bỏ",
+      "qua",
+      "đi"
+    ]
+  },
+  {
+    "input": "ờ chào bạn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "chào",
+      "bạn"
+    ]
+  },
+  {
+    "input": "ê à tôi thấy lạnh lạnh",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "à",
+      "tôi",
+      "thấy",
+      "lạnh",
+      "lạnh"
+    ]
+  },
+  {
+    "input": "ờ à nè hôm nay tôi hơi mệt",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "à",
+      "nè",
+      "hôm",
+      "nay",
+      "tôi",
+      "hơi",
+      "mệt"
+    ]
+  },
+  {
+    "input": "ờ, tôi nói nhỏ thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "tôi",
+      "nói",
+      "nhỏ",
+      "thôi"
+    ]
+  },
+  {
+    "input": "này nè tôi kể chuyện này nghe",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "nè",
+      "tôi",
+      "kể",
+      "chuyện",
+      "này",
+      "nghe"
+    ]
+  },
+  {
+    "input": "ê ờ tôi không có yêu cầu gì vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "ờ",
+      "tôi",
+      "không",
+      "có",
+      "yêu",
+      "cầu",
+      "gì",
+      "vậy"
+    ]
+  },
+  {
+    "input": "à nè hôm nay tôi hơi mệt nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "nè",
+      "hôm",
+      "nay",
+      "tôi",
+      "hơi",
+      "mệt",
+      "nhé"
+    ]
+  },
+  {
+    "input": "à, tôi đang nghĩ về gia đình",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "về",
+      "gia",
+      "đình"
+    ]
+  },
+  {
+    "input": "ừm, nè nói chuyện chút thôi thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "nè",
+      "nói",
+      "chuyện",
+      "chút",
+      "thôi",
+      "thôi"
+    ]
+  },
+  {
+    "input": "à thôi kệ đi thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "thôi",
+      "kệ",
+      "đi",
+      "thôi"
+    ]
+  },
+  {
+    "input": "à tôi đang nhớ một người nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "nhớ",
+      "một",
+      "người",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ờ, tôi đang chờ ai đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "tôi",
+      "đang",
+      "chờ",
+      "ai",
+      "đó"
+    ]
+  },
+  {
+    "input": "ừm ok nha nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ok",
+      "nha",
+      "nha"
+    ]
+  },
+  {
+    "input": "nè tôi thấy hơi khó chịu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "tôi",
+      "thấy",
+      "hơi",
+      "khó",
+      "chịu"
+    ]
+  },
+  {
+    "input": "này à thôi kệ đi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "à",
+      "thôi",
+      "kệ",
+      "đi"
+    ]
+  },
+  {
+    "input": "à hình như tôi nhầm",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "hình",
+      "như",
+      "tôi",
+      "nhầm"
+    ]
+  },
+  {
+    "input": "ờ tôi nói vu vơ vậy thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "nói",
+      "vu",
+      "vơ",
+      "vậy",
+      "thôi"
+    ]
+  },
+  {
+    "input": "à tôi thấy hơi lạ nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "thấy",
+      "hơi",
+      "lạ",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ờ nè tôi thấy bình thường",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "nè",
+      "tôi",
+      "thấy",
+      "bình",
+      "thường"
+    ]
+  },
+  {
+    "input": "ê à tôi buồn buồn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "à",
+      "tôi",
+      "buồn",
+      "buồn"
+    ]
+  },
+  {
+    "input": "à tôi buồn buồn nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "tôi",
+      "buồn",
+      "buồn",
+      "nhé"
+    ]
+  },
+  {
+    "input": "à à tôi chỉ thử xem",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "à",
+      "tôi",
+      "chỉ",
+      "thử",
+      "xem"
+    ]
+  },
+  {
+    "input": "ờ, để mai tính",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ,",
+      "để",
+      "mai",
+      "tính"
+    ]
+  },
+  {
+    "input": "ê à tôi thấy hơi lạ ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "à",
+      "tôi",
+      "thấy",
+      "hơi",
+      "lạ",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ờ tôi đang lơ đãng ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "đang",
+      "lơ",
+      "đãng",
+      "ha"
+    ]
+  },
+  {
+    "input": "này ờ hôm nay tôi thấy ổn nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "ờ",
+      "hôm",
+      "nay",
+      "tôi",
+      "thấy",
+      "ổn",
+      "nha"
+    ]
+  },
+  {
+    "input": "ê ừm tôi thấy nóng nóng nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "ừm",
+      "tôi",
+      "thấy",
+      "nóng",
+      "nóng",
+      "nhé"
+    ]
+  },
+  {
+    "input": "à ừm tôi lỡ lời",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "ừm",
+      "tôi",
+      "lỡ",
+      "lời"
+    ]
+  },
+  {
+    "input": "nè ờ tôi đang căng thẳng ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "ờ",
+      "tôi",
+      "đang",
+      "căng",
+      "thẳng",
+      "ha"
+    ]
+  },
+  {
+    "input": "này ừm tôi mới đi bộ về",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "ừm",
+      "tôi",
+      "mới",
+      "đi",
+      "bộ",
+      "về"
+    ]
+  },
+  {
+    "input": "ừm ờ tôi nói nhỏ thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "ờ",
+      "tôi",
+      "nói",
+      "nhỏ",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừm, tôi muốn nghỉ ngơi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "tôi",
+      "muốn",
+      "nghỉ",
+      "ngơi"
+    ]
+  },
+  {
+    "input": "ừm, để đó đã nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "để",
+      "đó",
+      "đã",
+      "nhé"
+    ]
+  },
+  {
+    "input": "à thôi không có gì đâu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "thôi",
+      "không",
+      "có",
+      "gì",
+      "đâu"
+    ]
+  },
+  {
+    "input": "nè tôi kể chuyện này nghe ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "tôi",
+      "kể",
+      "chuyện",
+      "này",
+      "nghe",
+      "ấy"
+    ]
+  },
+  {
+    "input": "à à tôi nói vậy thôi nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "à",
+      "tôi",
+      "nói",
+      "vậy",
+      "thôi",
+      "nha"
+    ]
+  },
+  {
+    "input": "ê à tôi nói vậy thôi nha đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ê",
+      "à",
+      "tôi",
+      "nói",
+      "vậy",
+      "thôi",
+      "nha",
+      "đó"
+    ]
+  },
+  {
+    "input": "ừm, tôi đang lo lo",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm,",
+      "tôi",
+      "đang",
+      "lo",
+      "lo"
+    ]
+  },
+  {
+    "input": "ờ à tôi hơi ngại",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "à",
+      "tôi",
+      "hơi",
+      "ngại"
+    ]
+  },
+  {
+    "input": "ừm tôi đang lo lo ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "đang",
+      "lo",
+      "lo",
+      "ha"
+    ]
+  },
+  {
+    "input": "ừm hẹn gặp lại",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "hẹn",
+      "gặp",
+      "lại"
+    ]
+  },
+  {
+    "input": "ờ à tôi đang bận một chút thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "à",
+      "tôi",
+      "đang",
+      "bận",
+      "một",
+      "chút",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ờ chào bạn đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "chào",
+      "bạn",
+      "đó"
+    ]
+  },
+  {
+    "input": "à thôi nha ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à",
+      "thôi",
+      "nha",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ờ tôi đang chờ ai đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "đang",
+      "chờ",
+      "ai",
+      "đó"
+    ]
+  },
+  {
+    "input": "này nè cho tôi hỏi linh tinh thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "nè",
+      "cho",
+      "tôi",
+      "hỏi",
+      "linh",
+      "tinh",
+      "thôi"
+    ]
+  },
+  {
+    "input": "nè ờ thôi bỏ qua đi thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè",
+      "ờ",
+      "thôi",
+      "bỏ",
+      "qua",
+      "đi",
+      "thôi"
+    ]
+  },
+  {
+    "input": "nè, tôi thấy bình thường",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "nè,",
+      "tôi",
+      "thấy",
+      "bình",
+      "thường"
+    ]
+  },
+  {
+    "input": "ờ tôi quên mất rồi nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "quên",
+      "mất",
+      "rồi",
+      "nhé"
+    ]
+  },
+  {
+    "input": "à, tôi chỉ thử xem nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "à,",
+      "tôi",
+      "chỉ",
+      "thử",
+      "xem",
+      "nha"
+    ]
+  },
+  {
+    "input": "ừm tôi lỡ lời đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "lỡ",
+      "lời",
+      "đó"
+    ]
+  },
+  {
+    "input": "ừm tôi thấy buồn buồn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "thấy",
+      "buồn",
+      "buồn"
+    ]
+  },
+  {
+    "input": "này ừm tôi đang nghĩ về công việc ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "ừm",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "về",
+      "công",
+      "việc",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ừm nè tôi thấy bình thường nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "ừm",
+      "nè",
+      "tôi",
+      "thấy",
+      "bình",
+      "thường",
+      "nhé"
+    ]
+  },
+  {
+    "input": "này ờ tôi hơi đau đầu ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "train",
+    "tokens": [
+      "này",
+      "ờ",
+      "tôi",
+      "hơi",
+      "đau",
+      "đầu",
+      "ha"
+    ]
+  },
+  {
+    "input": "nè nè tôi thấy bình thường",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "nè",
+      "nè",
+      "tôi",
+      "thấy",
+      "bình",
+      "thường"
+    ]
+  },
+  {
+    "input": "này à tôi buồn buồn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "này",
+      "à",
+      "tôi",
+      "buồn",
+      "buồn"
+    ]
+  },
+  {
+    "input": "nè ừm tôi thấy vui",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "nè",
+      "ừm",
+      "tôi",
+      "thấy",
+      "vui"
+    ]
+  },
+  {
+    "input": "à à thôi không có gì đâu",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à",
+      "à",
+      "thôi",
+      "không",
+      "có",
+      "gì",
+      "đâu"
+    ]
+  },
+  {
+    "input": "à nè hôm nay tôi hơi mệt",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à",
+      "nè",
+      "hôm",
+      "nay",
+      "tôi",
+      "hơi",
+      "mệt"
+    ]
+  },
+  {
+    "input": "ê ờ được rồi vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ê",
+      "ờ",
+      "được",
+      "rồi",
+      "vậy"
+    ]
+  },
+  {
+    "input": "à, tôi đang nhớ một người",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à,",
+      "tôi",
+      "đang",
+      "nhớ",
+      "một",
+      "người"
+    ]
+  },
+  {
+    "input": "ừm, tôi thấy nóng nóng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ừm,",
+      "tôi",
+      "thấy",
+      "nóng",
+      "nóng"
+    ]
+  },
+  {
+    "input": "à tôi thấy vui vui",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à",
+      "tôi",
+      "thấy",
+      "vui",
+      "vui"
+    ]
+  },
+  {
+    "input": "ừ tôi sợ làm phiền ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ừ",
+      "tôi",
+      "sợ",
+      "làm",
+      "phiền",
+      "ha"
+    ]
+  },
+  {
+    "input": "ừm tôi lỡ lời",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "lỡ",
+      "lời"
+    ]
+  },
+  {
+    "input": "ừm bạn nghe tôi nói chút",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ừm",
+      "bạn",
+      "nghe",
+      "tôi",
+      "nói",
+      "chút"
+    ]
+  },
+  {
+    "input": "ừm tôi muốn nghỉ ngơi thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "muốn",
+      "nghỉ",
+      "ngơi",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừm à tôi đang thở dài thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ừm",
+      "à",
+      "tôi",
+      "đang",
+      "thở",
+      "dài",
+      "thôi"
+    ]
+  },
+  {
+    "input": "à tôi không biết nữa",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à",
+      "tôi",
+      "không",
+      "biết",
+      "nữa"
+    ]
+  },
+  {
+    "input": "à, thôi kệ đi thôi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à,",
+      "thôi",
+      "kệ",
+      "đi",
+      "thôi"
+    ]
+  },
+  {
+    "input": "ừ tôi sợ làm phiền",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ừ",
+      "tôi",
+      "sợ",
+      "làm",
+      "phiền"
+    ]
+  },
+  {
+    "input": "ờ ừm tôi thấy buồn buồn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ờ",
+      "ừm",
+      "tôi",
+      "thấy",
+      "buồn",
+      "buồn"
+    ]
+  },
+  {
+    "input": "ê à tôi không biết nữa",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ê",
+      "à",
+      "tôi",
+      "không",
+      "biết",
+      "nữa"
+    ]
+  },
+  {
+    "input": "à, tôi không biết nữa",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à,",
+      "tôi",
+      "không",
+      "biết",
+      "nữa"
+    ]
+  },
+  {
+    "input": "ừm tôi đang phân vân",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "đang",
+      "phân",
+      "vân"
+    ]
+  },
+  {
+    "input": "à tôi không biết nữa ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à",
+      "tôi",
+      "không",
+      "biết",
+      "nữa",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ê ờ tôi đang nghe nhạc vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ê",
+      "ờ",
+      "tôi",
+      "đang",
+      "nghe",
+      "nhạc",
+      "vậy"
+    ]
+  },
+  {
+    "input": "nè ừ để tôi xem đã",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "nè",
+      "ừ",
+      "để",
+      "tôi",
+      "xem",
+      "đã"
+    ]
+  },
+  {
+    "input": "à tôi thấy khát đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à",
+      "tôi",
+      "thấy",
+      "khát",
+      "đó"
+    ]
+  },
+  {
+    "input": "à tôi đang nghĩ về gia đình",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à",
+      "tôi",
+      "đang",
+      "nghĩ",
+      "về",
+      "gia",
+      "đình"
+    ]
+  },
+  {
+    "input": "à à tôi đang xem tivi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à",
+      "à",
+      "tôi",
+      "đang",
+      "xem",
+      "tivi"
+    ]
+  },
+  {
+    "input": "ừm tôi nói linh tinh",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "nói",
+      "linh",
+      "tinh"
+    ]
+  },
+  {
+    "input": "ờ, tôi nói nhầm",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "ờ,",
+      "tôi",
+      "nói",
+      "nhầm"
+    ]
+  },
+  {
+    "input": "à, ờ chào bạn ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "val",
+    "tokens": [
+      "à,",
+      "ờ",
+      "chào",
+      "bạn",
+      "ha"
+    ]
+  },
+  {
+    "input": "à, tự nhiên tôi nghĩ tới chuyện cũ ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "à,",
+      "tự",
+      "nhiên",
+      "tôi",
+      "nghĩ",
+      "tới",
+      "chuyện",
+      "cũ",
+      "ha"
+    ]
+  },
+  {
+    "input": "à tạm biệt nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "à",
+      "tạm",
+      "biệt",
+      "nha"
+    ]
+  },
+  {
+    "input": "ờ à tôi không biết nữa ha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ờ",
+      "à",
+      "tôi",
+      "không",
+      "biết",
+      "nữa",
+      "ha"
+    ]
+  },
+  {
+    "input": "ừm tôi thấy bực",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "thấy",
+      "bực"
+    ]
+  },
+  {
+    "input": "ờ hôm nay tôi thấy ổn đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ờ",
+      "hôm",
+      "nay",
+      "tôi",
+      "thấy",
+      "ổn",
+      "đó"
+    ]
+  },
+  {
+    "input": "ừm, ờ tôi đang căng thẳng ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ừm,",
+      "ờ",
+      "tôi",
+      "đang",
+      "căng",
+      "thẳng",
+      "ấy"
+    ]
+  },
+  {
+    "input": "à, tôi nói vậy thôi nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "à,",
+      "tôi",
+      "nói",
+      "vậy",
+      "thôi",
+      "nha"
+    ]
+  },
+  {
+    "input": "nè nè tôi mới ăn xong",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "nè",
+      "nè",
+      "tôi",
+      "mới",
+      "ăn",
+      "xong"
+    ]
+  },
+  {
+    "input": "ừ, để tôi xem đã",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ừ,",
+      "để",
+      "tôi",
+      "xem",
+      "đã"
+    ]
+  },
+  {
+    "input": "ừm à tôi buồn buồn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ừm",
+      "à",
+      "tôi",
+      "buồn",
+      "buồn"
+    ]
+  },
+  {
+    "input": "này, à thôi nha đó",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "này,",
+      "à",
+      "thôi",
+      "nha",
+      "đó"
+    ]
+  },
+  {
+    "input": "ừm tôi muốn im lặng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "muốn",
+      "im",
+      "lặng"
+    ]
+  },
+  {
+    "input": "à tôi chỉ thử xem",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "à",
+      "tôi",
+      "chỉ",
+      "thử",
+      "xem"
+    ]
+  },
+  {
+    "input": "ờ cảm ơn nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ờ",
+      "cảm",
+      "ơn",
+      "nha"
+    ]
+  },
+  {
+    "input": "à thôi kệ đi",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "à",
+      "thôi",
+      "kệ",
+      "đi"
+    ]
+  },
+  {
+    "input": "à thôi kệ đi ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "à",
+      "thôi",
+      "kệ",
+      "đi",
+      "ấy"
+    ]
+  },
+  {
+    "input": "ừm tôi thấy nóng nóng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "thấy",
+      "nóng",
+      "nóng"
+    ]
+  },
+  {
+    "input": "ờ ừ tôi sợ làm phiền",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ờ",
+      "ừ",
+      "tôi",
+      "sợ",
+      "làm",
+      "phiền"
+    ]
+  },
+  {
+    "input": "ê à thôi nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ê",
+      "à",
+      "thôi",
+      "nha"
+    ]
+  },
+  {
+    "input": "ừm tôi đang rảnh",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ừm",
+      "tôi",
+      "đang",
+      "rảnh"
+    ]
+  },
+  {
+    "input": "à, tôi chỉ thử xem ấy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "à,",
+      "tôi",
+      "chỉ",
+      "thử",
+      "xem",
+      "ấy"
+    ]
+  },
+  {
+    "input": "này à tôi buồn buồn vậy",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "này",
+      "à",
+      "tôi",
+      "buồn",
+      "buồn",
+      "vậy"
+    ]
+  },
+  {
+    "input": "này, ừ tôi chỉ muốn tâm sự",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "này,",
+      "ừ",
+      "tôi",
+      "chỉ",
+      "muốn",
+      "tâm",
+      "sự"
+    ]
+  },
+  {
+    "input": "ờ tôi đang học bài nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ờ",
+      "tôi",
+      "đang",
+      "học",
+      "bài",
+      "nha"
+    ]
+  },
+  {
+    "input": "ờ hôm nay tôi thấy ổn",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ờ",
+      "hôm",
+      "nay",
+      "tôi",
+      "thấy",
+      "ổn"
+    ]
+  },
+  {
+    "input": "ờ ừm bạn nghe tôi nói chút",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ờ",
+      "ừm",
+      "bạn",
+      "nghe",
+      "tôi",
+      "nói",
+      "chút"
+    ]
+  },
+  {
+    "input": "à ờ tôi đang lơ đãng",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "à",
+      "ờ",
+      "tôi",
+      "đang",
+      "lơ",
+      "đãng"
+    ]
+  },
+  {
+    "input": "ờ, để mai tính nhé",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ờ,",
+      "để",
+      "mai",
+      "tính",
+      "nhé"
+    ]
+  },
+  {
+    "input": "ê à tôi đang thở dài",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "ê",
+      "à",
+      "tôi",
+      "đang",
+      "thở",
+      "dài"
+    ]
+  },
+  {
+    "input": "nè ừm tôi đang phân vân nha",
+    "command": "unknown",
+    "intent": "unknown",
+    "entities": [],
+    "spans": [],
+    "bio_labels": [
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O",
+      "O"
+    ],
+    "meta": {
+      "source": "unknown_synthetic",
+      "base_id": null,
+      "ops": [
+        "filler",
+        "noise"
+      ]
+    },
+    "split": "test",
+    "tokens": [
+      "nè",
+      "ừm",
+      "tôi",
+      "đang",
+      "phân",
+      "vân",
+      "nha"
+    ]
+  }
+]

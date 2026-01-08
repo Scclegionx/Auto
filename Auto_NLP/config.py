@@ -22,12 +22,6 @@ API_HOST = "0.0.0.0"
 API_PORT = 8000
 API_DEBUG = True
 
-# Training configuration
-BATCH_SIZE = 16
-LEARNING_RATE = 2e-5
-MAX_EPOCHS = 10
-EARLY_STOPPING_PATIENCE = 3
-
 # Hybrid system configuration
 CONFIDENCE_THRESHOLD = 0.7
 REASONING_ENABLED = True
@@ -52,10 +46,6 @@ config = {
     "api_host": API_HOST,
     "api_port": API_PORT,
     "api_debug": API_DEBUG,
-    "batch_size": BATCH_SIZE,
-    "learning_rate": LEARNING_RATE,
-    "max_epochs": MAX_EPOCHS,
-    "early_stopping_patience": EARLY_STOPPING_PATIENCE,
     "confidence_threshold": CONFIDENCE_THRESHOLD,
     "reasoning_enabled": REASONING_ENABLED,
     "specialized_entity_extraction": SPECIALIZED_ENTITY_EXTRACTION,

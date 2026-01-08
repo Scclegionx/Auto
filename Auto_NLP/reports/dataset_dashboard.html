@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Dashboard - Auto NLP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .stat-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .image-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .image-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .image-card h4 {
+            margin-top: 10px;
+            color: #667eea;
+            text-align: center;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+        .badge-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Dataset Dashboard</h1>
+            <p>Auto NLP System - Dataset Analysis Report</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Generated: 2026-01-08 05:21:27</p>
+        </div>
+        
+        <div class="content">
+            <!-- Overview Statistics -->
+            <div class="section">
+                <h2 class="section-title">📈 Tổng quan</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>35,908</h3>
+                        <p>Total Samples (Master)</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>28,487</h3>
+                        <p>Train Samples</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>3,561</h3>
+                        <p>Validation Samples</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>3,561</h3>
+                        <p>Test Samples</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>11</h3>
+                        <p>Unique Intents</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>13</h3>
+                        <p>Entity Types</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>1.84</h3>
+                        <p>Avg Entities/Sample</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>10.1</h3>
+                        <p>Avg Sentence Length</p>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <h3 style="margin-bottom: 15px; color: #667eea;">Consistency Check</h3>
+                    <table>
+                        <tr>
+                            <th>Check</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>Master = Train+Val+Test</td>
+                            <td>35,908 = 35,609</td>
+                            <td>
+                                <span class="badge badge-warning">
+                                    ⚠️ Mismatch
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Train Ratio</td>
+                            <td>80.00%</td>
+                            <td><span class="badge badge-success">✅ OK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Val Ratio</td>
+                            <td>10.00%</td>
+                            <td><span class="badge badge-success">✅ OK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Test Ratio</td>
+                            <td>10.00%</td>
+                            <td><span class="badge badge-success">✅ OK</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Visualizations -->
+            <div class="section">
+                <h2 class="section-title">📊 Visualizations</h2>
+                <div class="image-grid">
+                    <div class="image-card">
+                        <img src="reports\dashboard_intent_bar.png" alt="Intent Distribution">
+                        <h4>Intent Distribution (Bar Chart)</h4>
+                    </div>
+                    <div class="image-card">
+                        <img src="reports\dashboard_intent_pie.png" alt="Intent Pie Chart">
+                        <h4>Intent Distribution (Pie Chart)</h4>
+                    </div>
+                    <div class="image-card">
+                        <img src="reports\dashboard_split.png" alt="Train/Val/Test Split">
+                        <h4>Train/Val/Test Split</h4>
+                    </div>
+                    <div class="image-card">
+                        <img src="reports\dashboard_entity_dist.png" alt="Entity Distribution">
+                        <h4>Entity Type Distribution</h4>
+                    </div>
+                    <div class="image-card">
+                        <img src="reports\dashboard_sentence_length.png" alt="Sentence Length">
+                        <h4>Sentence Length Distribution</h4>
+                    </div>
+                    <div class="image-card">
+                        <img src="reports\dashboard_entities_per_sample.png" alt="Entities per Sample">
+                        <h4>Entities per Sample</h4>
+                    </div>
+                    <div class="image-card" style="grid-column: 1 / -1;">
+                        <img src="reports\dashboard_entity_intent_heatmap.png" alt="Entity by Intent Heatmap">
+                        <h4>Entity Types by Intent (Heatmap)</h4>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Intent Distribution Table -->
+            <div class="section">
+                <h2 class="section-title">🎯 Intent Distribution</h2>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Intent</th>
+                            <th>Count</th>
+                            <th>Percentage</th>
+                        </tr>
+
+                        <tr>
+                            <td><strong>call</strong></td>
+                            <td>4,371</td>
+                            <td>12.17%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>send-mess</strong></td>
+                            <td>3,599</td>
+                            <td>10.02%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>set-alarm</strong></td>
+                            <td>3,538</td>
+                            <td>9.85%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>search-internet</strong></td>
+                            <td>3,518</td>
+                            <td>9.80%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>get-info</strong></td>
+                            <td>3,496</td>
+                            <td>9.74%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>search-youtube</strong></td>
+                            <td>3,481</td>
+                            <td>9.69%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>add-contacts</strong></td>
+                            <td>3,407</td>
+                            <td>9.49%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>open-cam</strong></td>
+                            <td>3,403</td>
+                            <td>9.48%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>make-video-call</strong></td>
+                            <td>3,399</td>
+                            <td>9.47%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>control-device</strong></td>
+                            <td>3,397</td>
+                            <td>9.46%</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>unknown</strong></td>
+                            <td>299</td>
+                            <td>0.83%</td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Entity Distribution Table -->
+            <div class="section">
+                <h2 class="section-title">🏷️ Top Entity Types</h2>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Entity Type</th>
+                            <th>Count</th>
+                        </tr>
+
+                        <tr>
+                            <td><strong>PLATFORM</strong></td>
+                            <td>13,997</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>QUERY</strong></td>
+                            <td>10,495</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>CONTACT_NAME</strong></td>
+                            <td>8,248</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>PHONE</strong></td>
+                            <td>6,336</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>MESSAGE</strong></td>
+                            <td>6,079</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>TIME</strong></td>
+                            <td>3,725</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>RECEIVER</strong></td>
+                            <td>3,599</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>DEVICE</strong></td>
+                            <td>3,397</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>VALUE</strong></td>
+                            <td>3,397</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>CAMERA_TYPE</strong></td>
+                            <td>2,355</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>DATE</strong></td>
+                            <td>2,249</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>MODE</strong></td>
+                            <td>2,024</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>CAMERA_MODE</strong></td>
+                            <td>142</td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Auto NLP System - Dataset Dashboard</p>
+            <p style="font-size: 0.85em; margin-top: 5px;">Generated automatically from dataset analysis</p>
+        </div>
+    </div>
+</body>
+</html>

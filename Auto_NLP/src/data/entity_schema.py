@@ -1,11 +1,9 @@
-"""Định nghĩa schema entity chuẩn và hỗ trợ chuyển đổi nhãn legacy."""
 
 from __future__ import annotations
 
 from typing import Dict, Iterable, List
 
 
-# Danh sách entity chuẩn (không prefix B-/I-)
 ENTITY_BASE_NAMES: List[str] = [
     "ACTION",
     "CAMERA_TYPE",

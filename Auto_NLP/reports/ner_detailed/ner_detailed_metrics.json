@@ -1,0 +1,140 @@
+{
+  "per_entity_type": {
+    "CAMERA_TYPE": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "accuracy": 1.0,
+      "support": 235,
+      "predicted": 235,
+      "true_positives": 235,
+      "false_positives": 0,
+      "false_negatives": 0
+    },
+    "PLATFORM": {
+      "precision": 0.9947643979057592,
+      "recall": 0.29850746268656714,
+      "f1": 0.45921450151057397,
+      "accuracy": 0.29850746268656714,
+      "support": 1273,
+      "predicted": 382,
+      "true_positives": 380,
+      "false_positives": 2,
+      "false_negatives": 893
+    },
+    "CONTACT_NAME": {
+      "precision": 0.9776876267748479,
+      "recall": 0.5565819861431871,
+      "f1": 0.7093451066961001,
+      "accuracy": 0.5565819861431871,
+      "support": 866,
+      "predicted": 493,
+      "true_positives": 482,
+      "false_positives": 11,
+      "false_negatives": 384
+    },
+    "MESSAGE": {
+      "precision": 0.7630522088353414,
+      "recall": 0.5277777777777778,
+      "f1": 0.6239737274220033,
+      "accuracy": 0.5277777777777778,
+      "support": 360,
+      "predicted": 249,
+      "true_positives": 190,
+      "false_positives": 59,
+      "false_negatives": 170
+    },
+    "PHONE": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0,
+      "support": 195,
+      "predicted": 36,
+      "true_positives": 0,
+      "false_positives": 36,
+      "false_negatives": 195
+    },
+    "MODE": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "accuracy": 1.0,
+      "support": 486,
+      "predicted": 486,
+      "true_positives": 486,
+      "false_positives": 0,
+      "false_negatives": 0
+    },
+    "DATE": {
+      "precision": 0.7164948453608248,
+      "recall": 0.3994252873563218,
+      "f1": 0.5129151291512916,
+      "accuracy": 0.3994252873563218,
+      "support": 348,
+      "predicted": 194,
+      "true_positives": 139,
+      "false_positives": 55,
+      "false_negatives": 209
+    },
+    "TIME": {
+      "precision": 0.6283185840707964,
+      "recall": 0.6016949152542372,
+      "f1": 0.6147186147186147,
+      "accuracy": 0.6016949152542372,
+      "support": 354,
+      "predicted": 339,
+      "true_positives": 213,
+      "false_positives": 126,
+      "false_negatives": 141
+    },
+    "DEVICE": {
+      "precision": 0.7935103244837758,
+      "recall": 0.7935103244837758,
+      "f1": 0.7935103244837757,
+      "accuracy": 0.7935103244837758,
+      "support": 339,
+      "predicted": 339,
+      "true_positives": 269,
+      "false_positives": 70,
+      "false_negatives": 70
+    },
+    "QUERY": {
+      "precision": 0.7712918660287081,
+      "recall": 0.5757142857142857,
+      "f1": 0.6593047034764826,
+      "accuracy": 0.5757142857142857,
+      "support": 1400,
+      "predicted": 1045,
+      "true_positives": 806,
+      "false_positives": 239,
+      "false_negatives": 594
+    },
+    "RECEIVER": {
+      "precision": 0.9878048780487805,
+      "recall": 0.3624161073825503,
+      "f1": 0.530278232405892,
+      "accuracy": 0.3624161073825503,
+      "support": 447,
+      "predicted": 164,
+      "true_positives": 162,
+      "false_positives": 2,
+      "false_negatives": 285
+    },
+    "ACTION": {
+      "precision": 1.0,
+      "recall": 0.4369369369369369,
+      "f1": 0.6081504702194357,
+      "accuracy": 0.4369369369369369,
+      "support": 444,
+      "predicted": 194,
+      "true_positives": 194,
+      "false_positives": 0,
+      "false_negatives": 250
+    }
+  },
+  "summary": {
+    "total_entity_types": 12,
+    "total_samples": 3561
+  }
+}

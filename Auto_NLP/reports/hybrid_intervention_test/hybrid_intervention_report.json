@@ -1,0 +1,48 @@
+{
+  "summary": {
+    "total_samples": 120,
+    "intent_changed": 8,
+    "intent_changed_percentage": 6.666666666666667,
+    "command_changed": 8,
+    "command_changed_percentage": 6.666666666666667,
+    "confidence_changed": 29,
+    "confidence_changed_percentage": 24.166666666666668,
+    "entities_changed": 85,
+    "entities_changed_percentage": 70.83333333333334
+  },
+  "improvements": {
+    "intent_improved": 5,
+    "intent_improved_percentage": 4.166666666666666,
+    "intent_degraded": 3,
+    "intent_degraded_percentage": 2.5,
+    "command_improved": 5,
+    "command_improved_percentage": 4.166666666666666,
+    "command_degraded": 3,
+    "command_degraded_percentage": 2.5
+  },
+  "accuracy": {
+    "raw_intent_accuracy": 0.8083333333333333,
+    "hybrid_intent_accuracy": 0.825,
+    "intent_accuracy_difference": 0.016666666666666607,
+    "raw_command_accuracy": 0.8083333333333333,
+    "hybrid_command_accuracy": 0.825,
+    "command_accuracy_difference": 0.016666666666666607
+  },
+  "decision_reasons": {
+    "high_model_confidence_with_specialized_entities": 79,
+    "reasoning_validation_override": 5,
+    "high_model_confidence_with_reasoning_enhancement": 19,
+    "medium_model_confidence": 3,
+    "video_call_override": 12,
+    "communication_guard_send_mess": 2
+  },
+  "method_distribution": {
+    "hybrid": 120
+  },
+  "confidence_statistics": {
+    "mean_diff": -0.05268338572604557,
+    "std_diff": 0.10211548511766136,
+    "min_diff": -0.25,
+    "max_diff": 0.10699172212722452
+  }
+}

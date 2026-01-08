@@ -6,6 +6,7 @@ Updated API Server sử dụng Model-First Hybrid System
 
 import sys
 from pathlib import Path
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -79,13 +80,37 @@ class StatsResponse(BaseModel):
     max_confidence: Optional[float] = None
     success_rate: float
 
-# Initialize FastAPI app
+# Global hybrid system instance
+hybrid_system: Optional[ModelFirstHybridSystem] = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan event handler for startup and shutdown"""
+    global hybrid_system
+    
+    # Startup
+    try:
+        logger.info("🚀 Initializing Hybrid System...")
+        hybrid_system = ModelFirstHybridSystem()
+        logger.info("✅ Hybrid System initialized successfully")
+    except Exception as e:
+        logger.error(f"❌ Failed to initialize hybrid system: {e}")
+        raise
+    
+    yield
+    
+    # Shutdown
+    hybrid_system = None
+    logger.info("🛑 Hybrid System shutdown")
+
+# Initialize FastAPI app with lifespan
 app = FastAPI(
     title="Auto NLP Hybrid System API",
     description="API cho hệ thống NLP Hybrid kết hợp trained model với reasoning engine",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Add CORS middleware
@@ -96,30 +121,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Global hybrid system instance
-hybrid_system: Optional[ModelFirstHybridSystem] = None
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize hybrid system on startup"""
-    global hybrid_system
-    
-    try:
-        logger.info("🚀 Initializing Hybrid System...")
-        hybrid_system = ModelFirstHybridSystem()
-        logger.info("✅ Hybrid System initialized successfully")
-        
-    except Exception as e:
-        logger.error(f"❌ Failed to initialize hybrid system: {e}")
-        raise
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on shutdown"""
-    global hybrid_system
-    hybrid_system = None
-    logger.info("🛑 Hybrid System shutdown")
 
 @app.get("/", response_model=Dict[str, str])
 async def root():

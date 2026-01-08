@@ -23,7 +23,7 @@ class YouTubeAutomation(private val context: Context) {
 
         // Validate
         if (query.isEmpty()) {
-            throw Exception("Cần chỉ định từ khóa tìm kiếm")
+            throw Exception("Dạ, con chưa nghe rõ từ khóa tìm kiếm ạ. Bác vui lòng nói lại nhé.")
         }
 
         // Routing logic: Tìm kiếm trên YouTube
@@ -49,7 +49,7 @@ class YouTubeAutomation(private val context: Context) {
             if (youtubeIntent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(youtubeIntent)
                 Log.d(TAG, "YouTube app opened with search: $query")
-                "Đã mở YouTube và tìm kiếm: $query"
+                "Dạ, đã mở YouTube và tìm kiếm: $query ạ."
             } else {
                 // Cách 2: Fallback - Mở YouTube trên web browser
                 Log.w(TAG, "YouTube app not found, opening web browser")
@@ -61,16 +61,16 @@ class YouTubeAutomation(private val context: Context) {
                 if (webIntent.resolveActivity(context.packageManager) != null) {
                     context.startActivity(webIntent)
                     Log.d(TAG, "YouTube web opened with search: $query")
-                    "Đã mở YouTube trên trình duyệt và tìm kiếm: $query"
+                    "Dạ, đã mở YouTube trên trình duyệt và tìm kiếm: $query ạ."
                 } else {
                     Log.e(TAG, "No app found to handle YouTube search")
-                    throw Exception("Không tìm thấy ứng dụng để mở YouTube")
+                    throw Exception("Dạ, con không tìm thấy ứng dụng để mở YouTube ạ.")
                 }
             }
             
         } catch (e: Exception) {
             Log.e(TAG, "Exception in searchYouTube: ${e.message}", e)
-            throw Exception("Lỗi tìm kiếm YouTube: ${e.message}")
+            throw Exception("Dạ, con không thể mở YouTube ạ.")
         }
     }
 }

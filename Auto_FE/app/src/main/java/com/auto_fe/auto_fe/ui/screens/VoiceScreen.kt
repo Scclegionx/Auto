@@ -1,18 +1,14 @@
 package com.auto_fe.auto_fe.ui.screens
 
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -35,7 +31,8 @@ fun VoiceScreen() {
     // UI States
     var isDarkMode by remember { mutableStateOf(true) }
     var isRecording by remember { mutableStateOf(false) }
-    var transcriptText by remember { mutableStateOf("") }
+    var confirmationQuestion by remember { mutableStateOf("") }
+    var successMessage by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
     
     // Animation States (Voice Level)
@@ -45,45 +42,22 @@ fun VoiceScreen() {
     // Khởi tạo CommandProcessor với scope của Composable để quản lý vòng đời
     val commandProcessor = remember { CommandProcessor(context, scope) }
 
-    // UI EFFECTS (Click, Ripple, Scale) 
-    var clickScale by remember { mutableStateOf(1f) }
-    var clickAlpha by remember { mutableStateOf(1f) }
-    var showClickRipple by remember { mutableStateOf(false) }
-    var clickRippleScale by remember { mutableStateOf(0f) }
+    // UI EFFECTS (Click, Opacity) 
+    var clickOpacity by remember { mutableStateOf(1f) }
 
     // Animations setup
-    val clickScaleAnimation by animateFloatAsState(
-        targetValue = clickScale,
-        animationSpec = tween(150, easing = FastOutSlowInEasing), label = "scale"
-    )
-    val clickAlphaAnimation by animateFloatAsState(
-        targetValue = clickAlpha,
-        animationSpec = tween(200, easing = FastOutSlowInEasing), label = "alpha"
-    )
-    val rippleScaleAnimation by animateFloatAsState(
-        targetValue = clickRippleScale,
-        animationSpec = tween(600, easing = FastOutSlowInEasing), label = "ripple"
+    val clickOpacityAnimation by animateFloatAsState(
+        targetValue = clickOpacity,
+        animationSpec = tween(100, easing = FastOutSlowInEasing), label = "opacity"
     )
 
     // Hàm trigger hiệu ứng khi nhấn
     fun triggerClickFeedback() {
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         
-        // Scale effect
-        clickScale = 0.95f
-        scope.launch { delay(100); clickScale = 1f }
-        
-        // Alpha effect
-        clickAlpha = 0.7f
-        scope.launch { delay(150); clickAlpha = 1f }
-        
-        // Ripple effect
-        showClickRipple = true
-        clickRippleScale = 0f
-        scope.launch {
-            delay(50); clickRippleScale = 1f
-            delay(600); showClickRipple = false
-        }
+        // Opacity pulse - nhẹ nhàng để có feedback
+        clickOpacity = 0.92f
+        scope.launch { delay(80); clickOpacity = 1f }
     }
 
     // MAIN LOGIC HANDLER 
@@ -93,21 +67,24 @@ fun VoiceScreen() {
         if (!isRecording) {
             // --- BẮT ĐẦU ---
             isRecording = true
+            confirmationQuestion = ""
+            successMessage = ""
             errorMessage = ""
-            transcriptText = "Đang lắng nghe..."
             
             // Gọi vào Core Logic
             commandProcessor.startVoiceControl(object : CommandProcessorCallback {
                 override fun onCommandExecuted(success: Boolean, message: String) {
                     // Update UI khi thành công
                     isRecording = false
-                    transcriptText = message
                     rawLevel = 0f
+                    confirmationQuestion = ""
+                    successMessage = message
+                    errorMessage = ""
                     
-                    // Tự động clear text sau 3s cho gọn
+                    // Tự động clear thông báo sau 3s
                     scope.launch {
                         delay(3000)
-                        transcriptText = ""
+                        successMessage = ""
                     }
                 }
 
@@ -115,6 +92,8 @@ fun VoiceScreen() {
                     // Update UI khi lỗi
                     isRecording = false
                     errorMessage = error
+                    confirmationQuestion = ""
+                    successMessage = ""
                     rawLevel = 0f
                     
                     // Tự động clear lỗi sau 3s
@@ -122,6 +101,12 @@ fun VoiceScreen() {
                         delay(3000)
                         errorMessage = ""
                     }
+                }
+
+                override fun onConfirmationRequired(question: String) {
+                    // Update UI khi cần xác nhận
+                    confirmationQuestion = question
+                    // Vẫn giữ isRecording = true vì đang chờ phản hồi từ người dùng
                 }
 
                 // Để Orb Sphere chuyển động theo giọng nói
@@ -135,13 +120,6 @@ fun VoiceScreen() {
         
             isRecording = false
             rawLevel = 0f
-            transcriptText = "Đã hủy"
-            
-            // Clear text sau 1s
-            scope.launch {
-                delay(1000)
-                transcriptText = ""
-            }
         }
     }
 
@@ -161,8 +139,7 @@ fun VoiceScreen() {
                     colors = listOf(Color.White, Color(0xFFFAFAFA), Color(0xFFF5F5F5))
                 )
             )
-            .scale(clickScaleAnimation)
-            .alpha(clickAlphaAnimation)
+            .alpha(clickOpacityAnimation)
             .clickable { 
                 // Xử lý click ở background cũng trigger mic
                 handleMicAction() 
@@ -192,37 +169,10 @@ fun VoiceScreen() {
         // Layer 3: Overlay - Text info
         OverlayLayer(
             isRecording = isRecording,
-            transcriptText = transcriptText,
+            confirmationQuestion = confirmationQuestion,
+            successMessage = successMessage,
             errorMessage = errorMessage,
             modifier = Modifier.fillMaxSize()
         )
-        
-        // Layer 4: Ripple Effect (Visual candy)
-        if (showClickRipple) {
-            RippleEffect(rippleScaleAnimation, isDarkMode)
-        }
-    }
-}
-
-// Ripple Composable
-@Composable
-private fun RippleEffect(scale: Float, isDarkMode: Boolean) {
-    Box(modifier = Modifier.fillMaxSize().alpha(0.3f)) {
-        Canvas(modifier = Modifier.fillMaxSize().scale(scale)) {
-            val center = Offset(size.width / 2f, size.height / 2f)
-            val rippleRadius = size.minDimension * 0.4f * scale
-            
-            for (i in 0..3) {
-                val alpha = (1f - scale) * (1f - i * 0.2f)
-                val radius = rippleRadius * (1f + i * 0.3f)
-                drawCircle(
-                    color = if (isDarkMode) Color.Yellow.copy(alpha = alpha * 0.6f) 
-                            else Color.Red.copy(alpha = alpha * 0.6f),
-                    radius = radius,
-                    center = center,
-                    style = Stroke(width = 4f)
-                )
-            }
-        }
     }
 }

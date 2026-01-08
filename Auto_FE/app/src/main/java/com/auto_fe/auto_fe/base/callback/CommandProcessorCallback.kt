@@ -4,4 +4,7 @@ interface CommandProcessorCallback {
     fun onCommandExecuted(success: Boolean, message: String)
     fun onError(error: String)
     fun onVoiceLevelChanged(level: Int)
+    fun onConfirmationRequired(question: String) {
+        // Default: không làm gì (cho backward compatibility)
+    }
 }

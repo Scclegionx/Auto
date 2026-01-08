@@ -34,7 +34,7 @@ class CameraAutomation(private val context: Context) {
                 captureVideo()
             }
             else -> {
-                throw Exception("Không hỗ trợ loại camera: $cameraType")
+                throw Exception("Dạ, con không hỗ trợ loại camera này ạ.")
             }
         }
     }
@@ -62,14 +62,14 @@ class CameraAutomation(private val context: Context) {
                     context.startActivity(takePictureIntent)
                     Log.d(TAG, "Photo capture intent started from background")
                 }
-                "Đã mở ứng dụng camera để chụp ảnh"
+                "Dạ, đã mở ứng dụng camera để chụp ảnh ạ."
             } else {
                 Log.e(TAG, "No camera app available")
-                throw Exception("Không tìm thấy ứng dụng camera")
+                throw Exception("Dạ, con không tìm thấy ứng dụng camera ạ.")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error capturing photo: ${e.message}", e)
-            throw Exception("Lỗi chụp ảnh: ${e.message}")
+            throw Exception("Dạ, con không thể mở camera ạ.")
         }
     }
 
@@ -93,14 +93,14 @@ class CameraAutomation(private val context: Context) {
                     context.startActivity(takeVideoIntent)
                     Log.d(TAG, "Video capture intent started from background")
                 }
-                "Đã mở ứng dụng camera để quay video"
+                "Dạ, đã mở ứng dụng camera để quay video ạ."
             } else {
                 Log.e(TAG, "No video camera app available")
-                throw Exception("Không tìm thấy ứng dụng camera quay video")
+                throw Exception("Dạ, con không tìm thấy ứng dụng camera quay video ạ.")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error capturing video: ${e.message}", e)
-            throw Exception("Lỗi quay video: ${e.message}")
+            throw Exception("Dạ, con không thể mở camera quay video ạ.")
         }
     }
 }

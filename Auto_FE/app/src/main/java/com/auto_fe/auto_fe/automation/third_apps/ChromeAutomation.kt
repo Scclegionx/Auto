@@ -23,7 +23,7 @@ class ChromeAutomation(private val context: Context) {
 
         // Validate
         if (query.isEmpty()) {
-            throw Exception("Cần chỉ định từ khóa tìm kiếm")
+            throw Exception("Dạ, con chưa nghe rõ từ khóa tìm kiếm ạ. Bác vui lòng nói lại nhé.")
         }
 
         // Routing logic: Tìm kiếm trên Chrome
@@ -49,7 +49,7 @@ class ChromeAutomation(private val context: Context) {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
                 Log.d(TAG, "Chrome app opened with search: $query")
-                "Đã mở Chrome và tìm kiếm: $query"
+                "Dạ, đã mở Chrome và tìm kiếm: $query ạ."
             } else {
                 // Fallback: Mở browser mặc định
                 Log.w(TAG, "Chrome app not found, opening default browser")
@@ -61,16 +61,16 @@ class ChromeAutomation(private val context: Context) {
                 if (fallbackIntent.resolveActivity(context.packageManager) != null) {
                     context.startActivity(fallbackIntent)
                     Log.d(TAG, "Default browser opened with search: $query")
-                    "Đã mở trình duyệt mặc định và tìm kiếm: $query"
+                    "Dạ, đã mở trình duyệt mặc định và tìm kiếm: $query ạ."
                 } else {
                     Log.e(TAG, "No browser found to handle search")
-                    throw Exception("Không tìm thấy trình duyệt để tìm kiếm")
+                    throw Exception("Dạ, con không tìm thấy trình duyệt để tìm kiếm ạ.")
                 }
             }
             
         } catch (e: Exception) {
             Log.e(TAG, "Exception in searchChrome: ${e.message}", e)
-            throw Exception("Lỗi tìm kiếm Chrome: ${e.message}")
+            throw Exception("Dạ, con không thể mở trình duyệt để tìm kiếm ạ.")
         }
     }
 }

@@ -16,61 +16,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
-import androidx.compose.animation.core.*
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.Spring.DampingRatioMediumBouncy
-import androidx.compose.animation.core.Spring.StiffnessLow
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
-import kotlin.math.roundToInt
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.isActive
 import com.auto_fe.auto_fe.ui.components.popup.FloatingWindow
 import com.auto_fe.auto_fe.ui.theme.Auto_FETheme
 import com.auto_fe.auto_fe.ui.screens.VoiceScreen
@@ -98,11 +51,13 @@ import com.auto_fe.auto_fe.utils.common.PermissionManager
 import com.auto_fe.auto_fe.network.ApiClient
 import android.util.Log
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
+import com.auto_fe.auto_fe.automation.msg.SMSReceiver
 
 class MainActivity : ComponentActivity() {
     private lateinit var permissionManager: PermissionManager
     private lateinit var floatingWindow: FloatingWindow
     private lateinit var sessionManager: SessionManager
+    private var smsReceiver: SMSReceiver? = null
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -144,6 +99,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         permissionManager = PermissionManager(this)
+        permissionManager.requestOverlayPermission(this)
         floatingWindow = FloatingWindow(this)
         sessionManager = SessionManager(this)
 
@@ -157,6 +113,19 @@ class MainActivity : ComponentActivity() {
         }
 
         checkPermissions()
+        
+        // Khởi tạo và bắt đầu SMSReceiver (ContentObserver)
+        initializeSMSReceiver()
+    }
+    
+    private fun initializeSMSReceiver() {
+        try {
+            smsReceiver = SMSReceiver(this)
+            smsReceiver?.startObserving()
+            Log.d("MainActivity", "SMSReceiver initialized and started observing")
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error initializing SMSReceiver: ${e.message}", e)
+        }
     }
 
     private fun requestNotificationPermission() {
@@ -201,6 +170,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        // Dừng SMSReceiver khi activity bị destroy
+        smsReceiver?.stopObserving()
+        smsReceiver = null
+        Log.d("MainActivity", "SMSReceiver stopped")
+        
         floatingWindow.hideFloatingWindow()
         // Giải phóng resources để tránh memory leak
         floatingWindow.release()

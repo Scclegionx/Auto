@@ -55,7 +55,7 @@ class CommandDispatcher(private val context: Context) : AutomationTask {
             }
             "add-contacts" -> {
                 val contact = ContactAutomation(context)
-                contact.executeWithEntities(entities)
+                contact.startAddContactFlow()
             }
             "search-internet" -> {
                 val chrome = ChromeAutomation(context)

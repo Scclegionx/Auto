@@ -98,7 +98,14 @@ class STTManager private constructor(private val context: Context) {
                 }
                 
                 override fun onEndOfSpeech() {
-                    Log.d(TAG, "End of speech")
+                    Log.d(TAG, "End of speech - stopping listening immediately")
+                    // Dừng lắng nghe ngay khi người dùng nói xong để giảm thời gian chờ
+                    try {
+                        speechRecognizer?.stopListening()
+                        isListening = false
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error stopping on end of speech: ${e.message}", e)
+                    }
                 }
                 
                 override fun onError(error: Int) {
@@ -146,6 +153,11 @@ class STTManager private constructor(private val context: Context) {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, "vi-VN")
                 putExtra(RecognizerIntent.EXTRA_PROMPT, "Hãy nói lệnh của bạn")
+                // Giảm thời gian chờ im lặng để phản hồi nhanh hơn
+                // Thời gian im lặng trước khi coi là nói xong (mặc định ~2000-3000ms, giảm xuống 1000ms)
+                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 1000L)
+                // Thời gian im lặng có thể hoàn thành (mặc định ~1500ms, giảm xuống 500ms)
+                putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 500L)
             }
             
             isListening = true

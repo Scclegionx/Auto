@@ -15,17 +15,17 @@ public class CreateUserGuideRequest {
 
     @NotBlank(message = "Title is required")
     @Size(max = 255, message = "Title too long")
-    private String title; // Tiêu đề hướng dẫn
+    private String title;
 
     @Size(max = 1000, message = "Description too long")
-    private String description; // Mô tả chi tiết
+    private String description;
 
     @NotNull(message = "User type is required")
-    private EUserType userType; // ELDER hoặc SUPERVISOR
+    private EUserType userType;
 
     @Size(max = 500, message = "Thumbnail URL too long")
-    private String thumbnailUrl; // URL thumbnail (optional)
+    private String thumbnailUrl;
 
-    private Integer displayOrder; // Thứ tự hiển thị (optional)
+    private Integer displayOrder;
 }
 

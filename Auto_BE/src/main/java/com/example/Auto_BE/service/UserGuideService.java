@@ -27,14 +27,10 @@ public class UserGuideService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
-    /**
-     * Tạo user guide mới (có upload video)
-     */
     public BaseResponse<UserGuideResponse> createUserGuide(
             CreateUserGuideRequest request, 
             MultipartFile videoFile) {
         try {
-            // Validate video file
             if (videoFile == null || videoFile.isEmpty()) {
                 return BaseResponse.<UserGuideResponse>builder()
                         .status("error")
@@ -43,7 +39,6 @@ public class UserGuideService {
                         .build();
             }
 
-            // Upload video lên Cloudinary
             String videoUrl;
             try {
                 videoUrl = cloudinaryService.uploadVideo(videoFile);
@@ -55,7 +50,6 @@ public class UserGuideService {
                         .build();
             }
 
-            // Tạo UserGuide entity
             UserGuide userGuide = new UserGuide();
             userGuide.setTitle(request.getTitle());
             userGuide.setDescription(request.getDescription());
@@ -64,10 +58,7 @@ public class UserGuideService {
             userGuide.setUserType(request.getUserType());
             userGuide.setDisplayOrder(request.getDisplayOrder() != null ? request.getDisplayOrder() : 0);
 
-            // Save
             UserGuide saved = userGuideRepository.save(userGuide);
-
-            // Convert to response
             UserGuideResponse response = convertToResponse(saved);
 
             return BaseResponse.<UserGuideResponse>builder()
@@ -87,9 +78,6 @@ public class UserGuideService {
         }
     }
 
-    /**
-     * Lấy user guide theo ID
-     */
     public BaseResponse<UserGuideResponse> getUserGuideById(Long id) {
         try {
             UserGuide userGuide = userGuideRepository.findById(id)
@@ -112,9 +100,6 @@ public class UserGuideService {
         }
     }
 
-    /**
-     * Lấy tất cả user guides của Elder
-     */
     public BaseResponse<List<UserGuideResponse>> getElderUserGuides() {
         try {
             List<UserGuide> userGuides = userGuideRepository
@@ -139,9 +124,6 @@ public class UserGuideService {
         }
     }
 
-    /**
-     * Lấy tất cả user guides của Supervisor
-     */
     public BaseResponse<List<UserGuideResponse>> getSupervisorUserGuides() {
         try {
             List<UserGuide> userGuides = userGuideRepository
@@ -166,9 +148,6 @@ public class UserGuideService {
         }
     }
 
-    /**
-     * Update user guide
-     */
     public BaseResponse<UserGuideResponse> updateUserGuide(
             Long id, 
             UpdateUserGuideRequest request,
@@ -177,7 +156,6 @@ public class UserGuideService {
             UserGuide userGuide = userGuideRepository.findById(id)
                     .orElseThrow(() -> new BaseException.EntityNotFoundException("Hướng dẫn sử dụng không tồn tại"));
 
-            // Update fields
             if (request.getTitle() != null) {
                 userGuide.setTitle(request.getTitle());
             }
@@ -194,14 +172,11 @@ public class UserGuideService {
                 userGuide.setDisplayOrder(request.getDisplayOrder());
             }
 
-            // Nếu có video file mới, upload và xóa video cũ
             if (videoFile != null && !videoFile.isEmpty()) {
                 try {
-                    // Xóa video cũ
                     if (userGuide.getVideoUrl() != null) {
                         cloudinaryService.deleteVideo(userGuide.getVideoUrl());
                     }
-                    // Upload video mới
                     String newVideoUrl = cloudinaryService.uploadVideo(videoFile);
                     userGuide.setVideoUrl(newVideoUrl);
                 } catch (IOException e) {
@@ -212,14 +187,10 @@ public class UserGuideService {
                             .build();
                 }
             } else if (request.getVideoUrl() != null) {
-                // Nếu chỉ update URL (trường hợp đặc biệt)
                 userGuide.setVideoUrl(request.getVideoUrl());
             }
 
-            // Save
             UserGuide updated = userGuideRepository.save(userGuide);
-
-            // Convert to response
             UserGuideResponse response = convertToResponse(updated);
 
             return BaseResponse.<UserGuideResponse>builder()
@@ -239,20 +210,15 @@ public class UserGuideService {
         }
     }
 
-    /**
-     * Xóa user guide
-     */
     public BaseResponse<String> deleteUserGuide(Long id) {
         try {
             UserGuide userGuide = userGuideRepository.findById(id)
                     .orElseThrow(() -> new BaseException.EntityNotFoundException("Hướng dẫn sử dụng không tồn tại"));
 
-            // Xóa video từ Cloudinary
             if (userGuide.getVideoUrl() != null) {
                 cloudinaryService.deleteVideo(userGuide.getVideoUrl());
             }
 
-            // Xóa từ database
             userGuideRepository.delete(userGuide);
 
             return BaseResponse.<String>builder()
@@ -271,8 +237,6 @@ public class UserGuideService {
                     .build();
         }
     }
-
-    // ===== HELPER METHODS =====
 
     private UserGuideResponse convertToResponse(UserGuide userGuide) {
         return UserGuideResponse.builder()

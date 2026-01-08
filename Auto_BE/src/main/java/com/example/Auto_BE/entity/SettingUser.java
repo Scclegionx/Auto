@@ -20,16 +20,13 @@ public class SettingUser extends BaseEntity {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "setting_id", nullable = false)
-    private Settings setting; // Loại setting
+    private Settings setting;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = true) // nullable = true cho GUEST
-    private User user; // User (null nếu là GUEST)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
     
     @Column(name = "value", nullable = false, length = 255)
-    private String value; // Giá trị setting của user: "dark", "16", "off"
-    
-    // Note: Nếu user = null, có thể dùng sessionId hoặc deviceId để phân biệt guest users
-    // Nhưng hiện tại chỉ cần lưu giá trị mặc định cho guest
+    private String value;
 }
 

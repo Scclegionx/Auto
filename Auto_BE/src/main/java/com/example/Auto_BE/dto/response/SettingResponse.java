@@ -1,5 +1,6 @@
 package com.example.Auto_BE.dto.response;
 
+import com.example.Auto_BE.entity.enums.ESettingType;
 import lombok.*;
 
 @Getter
@@ -10,11 +11,12 @@ import lombok.*;
 public class SettingResponse {
 
     private Long id;
-    private String settingKey; // "theme", "font_size", "voice_support"
-    private String name; // "Nền", "Font Size", "Hỗ trợ nói"
+    private String settingKey;
+    private String name;
     private String description;
-    private String defaultValue; // Giá trị mặc định
-    private String possibleValues; // Các giá trị có thể
+    private String defaultValue;
+    private String possibleValues;
     private Boolean isActive;
+    private ESettingType settingType;
 }
 

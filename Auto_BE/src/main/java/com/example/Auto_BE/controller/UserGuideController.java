@@ -22,19 +22,10 @@ public class UserGuideController {
         this.userGuideService = userGuideService;
     }
 
-    /**
-     * Tạo user guide mới (có upload video)
-     * POST /api/user-guides
-     * Content-Type: multipart/form-data
-     * Body: title, description, userType, thumbnailUrl (optional), displayOrder (optional), isActive (optional), videoFile
-     */
     @PostMapping
     public ResponseEntity<BaseResponse<UserGuideResponse>> createUserGuide(
             @RequestPart("request") @Valid CreateUserGuideRequest request,
             @RequestPart("videoFile") MultipartFile videoFile) {
-        
-        System.out.println("API: Create user guide - " + request.getTitle());
-        
         BaseResponse<UserGuideResponse> response = userGuideService.createUserGuide(request, videoFile);
         
         if ("success".equals(response.status)) {
@@ -44,15 +35,8 @@ public class UserGuideController {
         }
     }
 
-    /**
-     * Lấy user guide theo ID
-     * GET /api/user-guides/{id}
-     */
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<UserGuideResponse>> getUserGuide(@PathVariable Long id) {
-        
-        System.out.println("API: Get user guide - " + id);
-        
         BaseResponse<UserGuideResponse> response = userGuideService.getUserGuideById(id);
         
         if ("success".equals(response.status)) {
@@ -62,15 +46,8 @@ public class UserGuideController {
         }
     }
 
-    /**
-     * Lấy tất cả user guides của Elder (chỉ active)
-     * GET /api/user-guides/elder
-     */
     @GetMapping("/elder")
     public ResponseEntity<BaseResponse<List<UserGuideResponse>>> getElderUserGuides() {
-        
-        System.out.println("API: Get elder user guides");
-        
         BaseResponse<List<UserGuideResponse>> response = userGuideService.getElderUserGuides();
         
         if ("success".equals(response.status)) {
@@ -80,15 +57,8 @@ public class UserGuideController {
         }
     }
 
-    /**
-     * Lấy tất cả user guides của Supervisor (chỉ active)
-     * GET /api/user-guides/supervisor
-     */
     @GetMapping("/supervisor")
     public ResponseEntity<BaseResponse<List<UserGuideResponse>>> getSupervisorUserGuides() {
-        
-        System.out.println("API: Get supervisor user guides");
-        
         BaseResponse<List<UserGuideResponse>> response = userGuideService.getSupervisorUserGuides();
         
         if ("success".equals(response.status)) {
@@ -98,20 +68,11 @@ public class UserGuideController {
         }
     }
 
-    /**
-     * Update user guide
-     * PUT /api/user-guides/{id}
-     * Content-Type: multipart/form-data
-     * Body: request (UpdateUserGuideRequest), videoFile (optional - chỉ gửi khi muốn thay đổi video)
-     */
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<UserGuideResponse>> updateUserGuide(
             @PathVariable Long id,
             @RequestPart("request") @Valid UpdateUserGuideRequest request,
             @RequestPart(value = "videoFile", required = false) MultipartFile videoFile) {
-        
-        System.out.println("API: Update user guide - " + id);
-        
         BaseResponse<UserGuideResponse> response = userGuideService.updateUserGuide(id, request, videoFile);
         
         if ("success".equals(response.status)) {
@@ -121,15 +82,8 @@ public class UserGuideController {
         }
     }
 
-    /**
-     * Xóa user guide
-     * DELETE /api/user-guides/{id}
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<String>> deleteUserGuide(@PathVariable Long id) {
-        
-        System.out.println("API: Delete user guide - " + id);
-        
         BaseResponse<String> response = userGuideService.deleteUserGuide(id);
         
         if ("success".equals(response.status)) {

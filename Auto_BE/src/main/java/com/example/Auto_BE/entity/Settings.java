@@ -1,5 +1,6 @@
 package com.example.Auto_BE.entity;
 
+import com.example.Auto_BE.entity.enums.ESettingType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,21 +18,25 @@ import lombok.experimental.Accessors;
 public class Settings extends BaseEntity {
     
     @Column(name = "setting_key", nullable = false, unique = true, length = 100)
-    private String settingKey; // Key duy nhất: "theme", "font_size", "voice_support"
+    private String settingKey;
     
     @Column(name = "name", nullable = false, length = 255)
-    private String name; // Tên hiển thị: "Nền", "Font Size", "Hỗ trợ nói"
+    private String name;
     
     @Column(name = "description", length = 500)
-    private String description; // Mô tả chi tiết
+    private String description;
     
     @Column(name = "default_value", nullable = false, length = 255)
-    private String defaultValue; // Giá trị mặc định: "light", "14", "on"
+    private String defaultValue;
     
     @Column(name = "possible_values", length = 500)
-    private String possibleValues; // Các giá trị có thể: "light,dark" hoặc "10,12,14,16,18" hoặc "on,off"
+    private String possibleValues;
     
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true; // Trạng thái active/inactive
+    private Boolean isActive = true;
+
+    @Column(name = "setting_type", nullable = true)
+    @Enumerated(EnumType.STRING)
+    private ESettingType settingType;
 }
 

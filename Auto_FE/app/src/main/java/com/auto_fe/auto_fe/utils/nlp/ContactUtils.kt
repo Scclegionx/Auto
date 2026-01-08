@@ -63,6 +63,7 @@ object ContactUtils {
     /**
      * Tìm contact chính xác 100% và trả về phone number
      * Dùng cho State Machine khi đã có exact match
+     * Tìm cả case-insensitive và trim khoảng trắng
      */
     fun findExactContactWithPhone(context: Context, contactName: String): Pair<String, String>? {
         Log.d("ContactUtils", "Searching for exact contact: $contactName")
@@ -78,24 +79,28 @@ object ContactUtils {
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
         )
 
-        // Exact match với =
-        val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} = ?"
-        val selectionArgs = arrayOf(contactName)
-
+        // Tìm tất cả contacts và so sánh case-insensitive
         val cursor: Cursor? = context.contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             projection,
-            selection,
-            selectionArgs,
+            null,
+            null,
             null
         )
 
+        val normalizedSearchName = contactName.trim().lowercase()
+        
         cursor?.use {
-            if (it.moveToFirst()) {
-                val phoneNumber = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+            while (it.moveToNext()) {
                 val displayName = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-                Log.d("ContactUtils", "Found exact contact: $displayName with phone: $phoneNumber")
-                return Pair(displayName, phoneNumber)
+                val normalizedDisplayName = displayName.trim().lowercase()
+                
+                // So sánh exact match (case-insensitive, trim)
+                if (normalizedDisplayName == normalizedSearchName) {
+                    val phoneNumber = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                    Log.d("ContactUtils", "Found exact contact: $displayName with phone: $phoneNumber")
+                    return Pair(displayName, phoneNumber)
+                }
             }
         }
 
@@ -159,6 +164,97 @@ object ContactUtils {
         }
 
         return similarContacts.toList()
+    }
+    
+    /**
+     * Data class để đại diện cho một liên hệ tương tự
+     */
+    data class SimilarContact(
+        val name: String,
+        val phoneNumber: String
+    )
+    
+    /**
+     * Tìm kiếm fuzzy các liên hệ tương tự dựa trên input
+     * Tự động tách từ khóa (bỏ các từ như "cháu", "anh", v.v.) và tìm các liên hệ chứa từ khóa
+     * @param context Context
+     * @param input Tên liên hệ đầu vào (ví dụ: "cháu vương")
+     * @return Danh sách các liên hệ tương tự với số điện thoại, hoặc emptyList nếu không tìm thấy
+     */
+    fun findSimilarContactsWithPhone(context: Context, input: String): List<SimilarContact> {
+        Log.d("ContactUtils", "Finding similar contacts for input: $input")
+        
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+            != PackageManager.PERMISSION_GRANTED) {
+            Log.e("ContactUtils", "READ_CONTACTS permission not granted")
+            return emptyList()
+        }
+        
+        // Tách từ khóa từ input (bỏ các từ như "cháu", "anh", v.v.)
+        val searchWords = smartWordParsing(input)
+        
+        if (searchWords.isEmpty()) {
+            Log.d("ContactUtils", "No search words after parsing")
+            return emptyList()
+        }
+        
+        Log.d("ContactUtils", "Search words: $searchWords")
+        
+        // Tìm tất cả liên hệ chứa các từ khóa này
+        val similarContacts = mutableMapOf<String, String>() // Map<name, phoneNumber> để tránh duplicate
+        
+        for (word in searchWords) {
+            val projection = arrayOf(
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+            )
+            
+            val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?"
+            val selectionArgs = arrayOf("%$word%")
+            
+            val cursor: Cursor? = context.contentResolver.query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null
+            )
+            
+            cursor?.use {
+                while (it.moveToNext()) {
+                    val displayName = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                    val phoneNumber = it.getString(it.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                    // Dùng Map để đảm bảo mỗi tên chỉ xuất hiện một lần (lấy số điện thoại đầu tiên tìm thấy)
+                    if (!similarContacts.containsKey(displayName)) {
+                        similarContacts[displayName] = phoneNumber
+                    }
+                }
+            }
+        }
+        
+        val result = similarContacts.map { (name, phone) ->
+            SimilarContact(name, phone)
+        }
+        
+        Log.d("ContactUtils", "Found ${result.size} similar contacts: ${result.map { it.name }}")
+        return result
+    }
+    
+    /**
+     * Tìm kiếm thông minh: Thử tìm exact match trước, nếu không có thì tìm fuzzy
+     * @param context Context
+     * @param contactName Tên liên hệ cần tìm
+     * @return Pair<name, phoneNumber> nếu tìm thấy exact match, null nếu không
+     */
+    fun smartFindContact(context: Context, contactName: String): Pair<String, String>? {
+        // Thử tìm exact match trước
+        val exactMatch = findExactContactWithPhone(context, contactName)
+        if (exactMatch != null) {
+            return exactMatch
+        }
+        
+        // Nếu không có exact match, trả về null để caller có thể gọi findSimilarContactsWithPhone
+        return null
     }
 }
 

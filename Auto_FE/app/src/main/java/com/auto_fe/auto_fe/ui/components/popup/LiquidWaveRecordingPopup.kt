@@ -32,11 +32,21 @@ class LiquidWaveRecordingPopup(private val context: Context) {
 
     // UI components
     private var tvTimer: TextView? = null
-    private var tvTranscript: TextView? = null // Đổi tên biến cho khớp logic
     private var soundWaveContainer: LinearLayout? = null
     private var centerPulse: View? = null
-    private var btnStop: Button? = null // Đổi thành nút Stop cho rõ ràng
+    private var btnStop: Button? = null // Đổi thành nút X (hủy)
     private var ivMicrophone: ImageView? = null
+    
+    // Status and message cards
+    private var statusCard: android.view.View? = null
+    private var tvStatusIcon: TextView? = null
+    private var tvStatusText: TextView? = null
+    private var confirmationCard: android.view.View? = null
+    private var tvConfirmationText: TextView? = null
+    private var successCard: android.view.View? = null
+    private var tvSuccessText: TextView? = null
+    private var errorCard: android.view.View? = null
+    private var tvErrorText: TextView? = null
 
     // Animation Handler
     private val uiHandler = Handler(Looper.getMainLooper())
@@ -55,7 +65,6 @@ class LiquidWaveRecordingPopup(private val context: Context) {
 
     // Callbacks (Khớp với FloatingWindow)
     var onStopClick: (() -> Unit)? = null
-    var onStartClick: (() -> Unit)? = null // Để giữ tương thích dù không dùng nút start ở đây
 
     init {
         setupWindowManager()
@@ -73,19 +82,27 @@ class LiquidWaveRecordingPopup(private val context: Context) {
 
         // Initialize UI components
         tvTimer = popupView?.findViewById(R.id.tv_timer)
-        tvTranscript = popupView?.findViewById(R.id.tv_transcript)
         soundWaveContainer = popupView?.findViewById(R.id.sound_wave_container)
         centerPulse = popupView?.findViewById(R.id.center_pulse)
         ivMicrophone = popupView?.findViewById(R.id.iv_microphone)
 
-        // Setup Stop button
-        // Lưu ý: ID trong layout của bạn có thể là btn_toggle_record
+        // Status and message cards
+        statusCard = popupView?.findViewById(R.id.status_card)
+        tvStatusIcon = popupView?.findViewById(R.id.tv_status_icon)
+        tvStatusText = popupView?.findViewById(R.id.tv_status_text)
+        confirmationCard = popupView?.findViewById(R.id.confirmation_card)
+        tvConfirmationText = popupView?.findViewById(R.id.tv_confirmation_text)
+        successCard = popupView?.findViewById(R.id.success_card)
+        tvSuccessText = popupView?.findViewById(R.id.tv_success_text)
+        errorCard = popupView?.findViewById(R.id.error_card)
+        tvErrorText = popupView?.findViewById(R.id.tv_error_text)
+
+        // Setup Cancel button (X)
         btnStop = popupView?.findViewById(R.id.btn_toggle_record)
 
         btnStop?.setOnClickListener {
-            // Khi bấm nút này, ta coi như là STOP vì popup chỉ hiện khi đang ghi âm
+            // Khi bấm nút X, hủy lệnh và tắt popup
             onStopClick?.invoke()
-            // Không tự gọi hide() ở đây, để FloatingWindow quyết định
         }
 
         createLiquidWaveBars()
@@ -138,7 +155,10 @@ class LiquidWaveRecordingPopup(private val context: Context) {
             // Reset state
             smoothVoiceIntensity = 0f
             voiceIntensity = 0f
-            updateStatus("Đang khởi động...")
+            updateStatus("")
+            updateConfirmation("")
+            updateSuccess("")
+            updateError("")
 
             // Start animations
             startTimer()
@@ -166,11 +186,59 @@ class LiquidWaveRecordingPopup(private val context: Context) {
     }
 
     /**
-     * Hàm cập nhật trạng thái (Khớp tên với FloatingWindow gọi)
+     * Hàm cập nhật trạng thái (giống SmoothStatusCard)
      */
     fun updateStatus(text: String) {
         uiHandler.post {
-            tvTranscript?.text = if (text.isNotEmpty()) text else "Đang lắng nghe..."
+            if (text.isNotEmpty()) {
+                tvStatusText?.text = text
+                tvStatusIcon?.text = "🎤"
+                statusCard?.visibility = android.view.View.VISIBLE
+            } else {
+                statusCard?.visibility = android.view.View.GONE
+            }
+        }
+    }
+    
+    /**
+     * Hàm cập nhật confirmation question (giống SmoothConfirmationCard)
+     */
+    fun updateConfirmation(question: String) {
+        uiHandler.post {
+            if (question.isNotEmpty()) {
+                tvConfirmationText?.text = question
+                confirmationCard?.visibility = android.view.View.VISIBLE
+            } else {
+                confirmationCard?.visibility = android.view.View.GONE
+            }
+        }
+    }
+    
+    /**
+     * Hàm cập nhật success message (giống SmoothSuccessCard)
+     */
+    fun updateSuccess(message: String) {
+        uiHandler.post {
+            if (message.isNotEmpty()) {
+                tvSuccessText?.text = message
+                successCard?.visibility = android.view.View.VISIBLE
+            } else {
+                successCard?.visibility = android.view.View.GONE
+            }
+        }
+    }
+    
+    /**
+     * Hàm cập nhật error message (giống SmoothErrorCard)
+     */
+    fun updateError(error: String) {
+        uiHandler.post {
+            if (error.isNotEmpty()) {
+                tvErrorText?.text = error
+                errorCard?.visibility = android.view.View.VISIBLE
+            } else {
+                errorCard?.visibility = android.view.View.GONE
+            }
         }
     }
 
@@ -190,19 +258,10 @@ class LiquidWaveRecordingPopup(private val context: Context) {
             isLoudVoice = voiceIntensity >= 0.6f
             isSoftVoice = voiceIntensity <= 0.3f
 
-            // Chỉ cần update data, animation loop sẽ tự render frame tiếp theo
-            // Tuy nhiên với ValueAnimator trong startLiquidWaveAnimation,
-            // ta đang dùng biến global voiceIntensity nên không cần gọi hàm update riêng lẻ
-            // nếu animation đang chạy loop.
-
-            // Nhưng nếu cần trigger manual update:
             updateLiquidWaveBars()
             updateCenterPulse()
-            updateMicrophone()
         }
     }
-
-    // ... CÁC HÀM ANIMATION LOGIC GIỮ NGUYÊN NHƯ BẠN VIẾT ...
 
     private fun startTimer() {
         animationRunnable = object : Runnable {
@@ -222,7 +281,6 @@ class LiquidWaveRecordingPopup(private val context: Context) {
     }
 
     private fun startLiquidWaveAnimation() {
-        // ... (Giữ nguyên logic animation phức tạp của bạn)
         waveBars.forEachIndexed { index, bar ->
             val animatorSet = AnimatorSet()
 
@@ -245,7 +303,6 @@ class LiquidWaveRecordingPopup(private val context: Context) {
                 }
             }
 
-            // ... (Giữ nguyên các animator khác: alpha, rotation, scaleX)
             val alphaAnimator = ObjectAnimator.ofFloat(bar, "alpha", 0.3f, 1.0f).apply {
                 duration = (500 + (index * 60)).toLong()
                 repeatCount = ValueAnimator.INFINITE
@@ -274,7 +331,6 @@ class LiquidWaveRecordingPopup(private val context: Context) {
     }
 
     private fun startCenterPulseAnimation() {
-        // ... (Giữ nguyên logic animation của bạn)
         centerPulse?.let { pulse ->
             val animatorSet = AnimatorSet()
             val scaleX = ObjectAnimator.ofFloat(pulse, "scaleX", 1.0f, 3.0f).apply {
@@ -293,7 +349,6 @@ class LiquidWaveRecordingPopup(private val context: Context) {
     }
 
     private fun startMicrophoneBreathing() {
-        // ... (Giữ nguyên logic animation của bạn)
         ivMicrophone?.let { mic ->
             val animatorSet = AnimatorSet()
             val scaleX = ObjectAnimator.ofFloat(mic, "scaleX", 1.0f, 1.2f).apply {
@@ -318,8 +373,6 @@ class LiquidWaveRecordingPopup(private val context: Context) {
     }
 
     private fun updateLiquidWaveBars() {
-        // Logic này để update các thuộc tính tĩnh (scale, alpha) khi level thay đổi
-        // Nó sẽ cộng hưởng với animation loop đang chạy
         waveBars.forEachIndexed { index, bar ->
             val randomFactor = 0.8f + (Random.nextFloat() * 0.4f)
 
@@ -356,9 +409,6 @@ class LiquidWaveRecordingPopup(private val context: Context) {
         }
     }
 
-    private fun updateMicrophone() {
-        // Logic tương tự
-    }
 
     private fun dpToPx(dp: Int): Int {
         return (dp * context.resources.displayMetrics.density).toInt()

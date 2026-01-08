@@ -11,14 +11,14 @@ import lombok.*;
 @Builder
 public class UpdateUserSettingRequest {
 
-    private Long userId; // null nếu là GUEST, có giá trị nếu đã đăng nhập
+    private Long userId;
     
     @NotBlank(message = "Setting key is required")
     @Size(max = 100, message = "Setting key too long")
-    private String settingKey; // "theme", "font_size", "voice_support"
+    private String settingKey;
     
     @NotBlank(message = "Value is required")
     @Size(max = 255, message = "Value too long")
-    private String value; // "dark", "16", "off"
+    private String value;
 }
 

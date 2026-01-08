@@ -248,6 +248,10 @@ fun MainScreen(sessionManager: SessionManager) {
     // Callback để logout
     val onLogout: () -> Unit = {
         sessionManager.clearSession()
+        
+        val settingsManager = com.auto_fe.auto_fe.utils.common.SettingsManager(context)
+        settingsManager.resetAllSettingsToDefault()
+        
         isLoggedIn = false
         accessToken = null
         selectedPrescriptionId = null

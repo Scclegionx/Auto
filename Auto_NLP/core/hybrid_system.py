@@ -18,7 +18,7 @@ project_root = current_dir.parent
 sys.path.insert(0, str(project_root))
 
 try:
-    import torchvision
+    import torchvision  # noqa: F401
 except ImportError:
     # Create mock torchvision module if not available (not required for this system)
     mock_tv = types.ModuleType("torchvision")
@@ -39,9 +39,8 @@ try:
     from core.model_loader import TrainedModelInference, load_trained_model
     from src.inference.engines.entity_extractor import EntityExtractor as SpecializedEntityExtractor
     from core.entity_contracts import filter_entities, validate_entities, calculate_entity_clarity_score
-    print("Imported ReasoningEngine, SpecializedEntityExtractor, and EntityContracts")
 except ImportError as e:
-    print(f"Failed to import components: {e}")
+    logging.error(f"Failed to import components: {e}")
     sys.exit(1)
 
 class ModelFirstHybridSystem:
@@ -78,17 +77,9 @@ class ModelFirstHybridSystem:
             'confidence_scores': []
         }
         
-        # Initialize logging
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-        
-        # Initialize components
         self._initialize_components()
-        
-        print(f"Model-First Hybrid System initialized")
-        print(f"   Device: {self.device}")
-        print(f"   Trained model: {'OK' if self.model_loaded else 'FAILED'}")
-        print(f"   Reasoning engine: {'OK' if self.reasoning_loaded else 'FAILED'}")
     
     @staticmethod
     def _resolve_alarm_datetime(text: str) -> Dict[str, str]:
@@ -345,55 +336,35 @@ class ModelFirstHybridSystem:
 
     def _initialize_components(self):
         """Initialize all system components"""
-        print("Initializing model-first hybrid system...")
-        
-        # 1. Load trained model (PRIMARY)
         try:
             self._load_trained_model()
-            print("Trained model loaded as PRIMARY")
         except Exception as e:
-            print(f"Failed to load trained model: {e}")
+            self.logger.error(f"Failed to load trained model: {e}")
             self.model_loaded = False
         
-        # 2. Initialize reasoning engine (SECONDARY)
         try:
             self.reasoning_engine = ReasoningEngine()
             self.reasoning_loaded = True
-            print("Reasoning engine loaded as SECONDARY")
         except Exception as e:
-            print(f"Failed to initialize reasoning engine: {e}")
+            self.logger.error(f"Failed to initialize reasoning engine: {e}")
             self.reasoning_loaded = False
         
-        # 3. Initialize specialized entity extractor
         try:
             self.specialized_entity_extractor = SpecializedEntityExtractor()
             self.specialized_extractor_loaded = True
-            print("Specialized entity extractor loaded")
         except Exception as e:
-            print(f"Failed to initialize specialized entity extractor: {e}")
+            self.logger.error(f"Failed to initialize specialized entity extractor: {e}")
             self.specialized_extractor_loaded = False
     
     def _load_trained_model(self):
         """Load trained multi-task model (phobert_multitask) cho hybrid system."""
         try:
-            # Sử dụng wrapper load_trained_model đã được chuẩn hoá cho multi-task
-            self.logger.info("Loading multi-task model via TrainedModelInference (phobert_multitask)")
-            # model_path chỉ dùng để log; TrainedModelInference tự chọn checkpoint/best_model.pt
-            # Convert torch.device to string for load_trained_model
             device_str = str(self.device) if self.device.type == "cpu" else self.device.type
             self.model_inference = load_trained_model("phobert_multitask", device=device_str)
             self.enable_multi_task = True
             self.model_loaded = True
-
-            # Thông tin model (nếu cần log)
-            try:
-                info = self.model_inference.get_model_info()
-                self.logger.info(f"✅ Trained model loaded successfully: {info}")
-            except Exception:
-                self.logger.info("✅ Trained model loaded successfully (no extra info)")
-            
         except Exception as e:
-            self.logger.error(f"❌ Failed to load trained model: {e}")
+            self.logger.error(f"Failed to load trained model: {e}")
             self.model_loaded = False
             raise
     
@@ -411,26 +382,16 @@ class ModelFirstHybridSystem:
         self.stats['total_predictions'] += 1
         
         try:
-            # Reset conversation context per request to tránh rò rỉ ngữ cảnh giữa các call
             try:
                 if self.reasoning_engine and hasattr(self.reasoning_engine, 'conversation_context'):
                     self.reasoning_engine.conversation_context.reset()
             except Exception:
                 pass
 
-            # Step 1: Trained model prediction (PRIMARY)
             model_result = self._model_predict(text)
-            
-            # Step 2: Reasoning engine validation (SECONDARY)
             reasoning_result = self._reasoning_validate(text, context, model_result)
-            
-            # Step 3: Hybrid decision making
             final_result = self._hybrid_decision(model_result, reasoning_result, text, context)
-
-            # Step 3.1: Post-process for command->entity compliance (quick rules)
             final_result = self._postprocess_command_entities(text, final_result)
-            
-            # Step 4: Add metadata
             processing_time = time.time() - start_time
             final_result.update({
                 'timestamp': time.time(),
@@ -440,24 +401,15 @@ class ModelFirstHybridSystem:
                 'model_result': model_result,
                 'reasoning_result': reasoning_result
             })
-            
-            # Update stats
             self._update_stats(final_result, processing_time)
             
             return final_result
             
         except Exception as e:
-            self.logger.error(f"❌ Error in prediction: {e}")
+            self.logger.error(f"Error in prediction: {e}")
             return self._fallback_prediction(text, context)
 
     def _postprocess_command_entities(self, text: str, result: Dict[str, Any]) -> Dict[str, Any]:
-        """Lightweight post-processing to enforce command->entity mapping for common cases.
-        - control-device:
-          * ON/OFF: bật/mở/on → ACTION=mở, MODE=on; tắt/đóng/off → ACTION=tắt, MODE=off
-          * Volume/Brightness: +/tăng/lên → ACTION=tăng, MODE=up; -/giảm/xuống → ACTION=giảm, MODE=down
-          * DEVICE normalization: âm lượng/loa/âm thanh → "âm lượng"; độ sáng/sáng/brightness/ánh sáng → "độ sáng"
-          * Remove unrelated PLATFORM
-        """
         try:
             text_l = (text or "").lower()
             command = result.get("command") or result.get("intent") or "unknown"
@@ -468,14 +420,11 @@ class ModelFirstHybridSystem:
                 if hasattr(self, 'specialized_entity_extractor'):
                     try:
                         specialized_ents, conf = self.specialized_entity_extractor._extract_device_control_with_confidence(text, "control-device")
-                        # Merge with high confidence (>=0.85)
                         if conf >= 0.85:
                             entities.update(specialized_ents)
-                            self.logger.info(f"Mobile device control entities from specialized extractor (conf={conf:.2f}): {specialized_ents}")
                     except Exception as e:
                         self.logger.warning(f"Specialized device extractor failed: {e}")
                 
-                # Fallback: manual detection for mobile devices
                 if not entities.get("ACTION") or not entities.get("DEVICE"):
                     has_flash = any(w in text_l for w in ["đèn pin", "flash", "flashlight"])
                     has_wifi = any(w in text_l for w in ["wifi", "wi fi"])
@@ -516,24 +465,19 @@ class ModelFirstHybridSystem:
                 result["entities"] = entities
 
             if command == "set-alarm":
-                # Remove PLATFORM leakage
                 entities.pop("PLATFORM", None)
                 entities.pop("QUERY", None)
                 entities.pop("YT_QUERY", None)
                 
-                # Use specialized extractor for TIME/DATE/TIMESTAMP (Phase 1.2)
                 if hasattr(self, 'specialized_entity_extractor'):
                     try:
                         specialized_ents, conf = self.specialized_entity_extractor._extract_alarm_time_date_with_confidence(text, "set-alarm")
-                        # Merge specialized results
                         if specialized_ents:
                             entities.update(specialized_ents)
-                            self.logger.info(f"Set-alarm entities from specialized extractor (conf={conf:.2f}): {specialized_ents}")
                             result["entities"] = entities
                     except Exception as e:
                         self.logger.warning(f"Specialized alarm extractor failed: {e}")
                 
-                # Ensure default REMINDER_CONTENT if empty
                 if not entities.get("REMINDER_CONTENT"):
                     entities["REMINDER_CONTENT"] = "Nhắc nhở"
                 
@@ -581,31 +525,21 @@ class ModelFirstHybridSystem:
                 result["entities"] = entities
 
             if command == "send-mess":
-                # Bỏ bớt entity không liên quan tới nhắn tin
                 for k in ["QUERY", "DEVICE", "ACTION", "MODE", "LEVEL", "VALUE", "DATE", "DAYS_OF_WEEK", "TIMESTAMP", "REMINDER_CONTENT"]:
                     entities.pop(k, None)
 
-                # Use specialized extractor for MESSAGE/RECEIVER (Phase 1.1)
                 if hasattr(self, 'specialized_entity_extractor'):
                     try:
                         specialized_ents, conf = self.specialized_entity_extractor._extract_message_receiver_with_confidence(text, "send-mess")
-                        # Merge with high confidence (>=0.8) - ALWAYS override model predictions
                         if conf >= 0.8:
-                            # ALWAYS override RECEIVER with specialized result (more accurate)
                             if specialized_ents.get("RECEIVER"):
                                 entities["RECEIVER"] = specialized_ents["RECEIVER"]
-                                self.logger.info(f"✅ Specialized RECEIVER (conf={conf:.2f}): '{specialized_ents['RECEIVER']}'")
-                            # ALWAYS override MESSAGE with specialized result (more accurate)
                             if specialized_ents.get("MESSAGE"):
                                 entities["MESSAGE"] = specialized_ents["MESSAGE"]
-                                self.logger.info(f"✅ Specialized MESSAGE (conf={conf:.2f}): '{specialized_ents['MESSAGE']}'")
-                            # Update PLATFORM if found
                             if specialized_ents.get("PLATFORM"):
                                 entities["PLATFORM"] = specialized_ents["PLATFORM"]
-                            self.logger.info(f"Send-mess entities from specialized extractor (conf={conf:.2f}): {specialized_ents}")
                     except Exception as e:
                         self.logger.warning(f"Specialized message/receiver extractor failed: {e}")
-                        # Fallback to old logic
                         parsed = self._extract_message_receiver(text)
                         if parsed.get("RECEIVER") and not entities.get("RECEIVER"):
                             entities["RECEIVER"] = parsed["RECEIVER"]
@@ -614,13 +548,11 @@ class ModelFirstHybridSystem:
                             if not existing_msg or len(parsed["MESSAGE"]) > len(existing_msg):
                                 entities["MESSAGE"] = parsed["MESSAGE"]
 
-                # PLATFORM: chỉ giữ nếu thực sự có tín hiệu trong text
                 platform_in_text = any(
                     kw in text.lower()
                     for kw in ["zalo", "sms", "messenger", "facebook", "fb", "viber", "telegram"]
                 )
                 if not platform_in_text and "PLATFORM" in entities and entities["PLATFORM"] == "sms":
-                    # sms mặc định bị loại nếu không thấy từ khóa
                     entities.pop("PLATFORM", None)
 
                 result["entities"] = entities
@@ -650,22 +582,15 @@ class ModelFirstHybridSystem:
                     entities["PLATFORM"] = platform_guess or "zalo"
                 result["entities"] = entities
 
-            # PHASE 3: Apply entity whitelist filtering
-            # Filter entities using entity_contracts to ensure clean output for FE
             filtered_entities = filter_entities(command, entities)
             result["entities"] = filtered_entities
             
-            # Validate required entities and log warnings
             is_valid, missing = validate_entities(command, filtered_entities)
             if not is_valid:
                 self.logger.warning(f"Command '{command}' missing required entities: {missing}")
             
-            # Calculate entity clarity score for metrics
             clarity_score = calculate_entity_clarity_score(command, filtered_entities)
             result["entity_clarity_score"] = round(clarity_score, 2)
-            
-            if clarity_score < 0.7:
-                self.logger.info(f"Low entity clarity ({clarity_score:.2f}) for command '{command}': {filtered_entities}")
 
             return result
         except Exception as e:
@@ -752,7 +677,7 @@ class ModelFirstHybridSystem:
             }
             
         except Exception as e:
-            self.logger.error(f"❌ Model prediction error: {e}")
+            self.logger.error(f"Model prediction error: {e}")
             return {
                 "intent": "unknown",
                 "confidence": 0.0,
@@ -763,17 +688,12 @@ class ModelFirstHybridSystem:
             }
     
     def _rule_based_model_prediction(self, text: str) -> Dict[str, Any]:
-        """
-        Rule-based prediction using patterns learned from trained model
-        This simulates the trained model behavior using rule-based approach
-        """
+        """Rule-based prediction using patterns learned from trained model"""
         text_lower = text.lower().strip()
         
-        # Intent patterns based on training data
         intent_patterns = {
             'call': ['gọi', 'call', 'phone', 'điện thoại', 'facetime', 'video call'],
             'control-device': ['bật', 'tắt', 'điều chỉnh', 'turn', 'on', 'off', 'đèn', 'quạt', 'điều hòa'],
-            # tách youtube khỏi search-internet để giảm nhập nhằng
             'search-internet': ['tìm', 'search', 'kiếm', 'google', 'internet'],
             'search-youtube': ['youtube', 'yt', 'trên youtube', 'tìm youtube', 'tìm trên youtube', 'xem trên youtube'],
             'set-alarm': ['báo thức', 'alarm', 'nhắc', 'đặt', 'set'],
@@ -784,7 +704,6 @@ class ModelFirstHybridSystem:
             'get-info': ['hỏi', 'kiểm tra', 'thông tin', 'info', 'time', 'pin']
         }
         
-        # Score each intent
         intent_scores: Dict[str, int] = {}
         for intent, patterns in intent_patterns.items():
             score = 0
@@ -794,16 +713,13 @@ class ModelFirstHybridSystem:
             if score > 0:
                 intent_scores[intent] = score
         
-        # Get best intent
         if intent_scores:
-            # Dùng max trên items để type checker hiểu rõ kiểu key/value
             best_intent = max(intent_scores.items(), key=lambda kv: kv[1])[0]
             confidence = min(0.9, 0.5 + (intent_scores[best_intent] * 0.1))
         else:
             best_intent = "unknown"
             confidence = 0.0
         
-        # Extract entities based on intent
         entities = self._extract_entities_by_intent(text, best_intent)
         
         return {
@@ -819,7 +735,6 @@ class ModelFirstHybridSystem:
         text_lower = text.lower()
         
         if intent == 'call':
-            # Extract contact names
             if 'mẹ' in text_lower:
                 entities['CONTACT_NAME'] = 'mẹ'
             elif 'bố' in text_lower:
@@ -827,7 +742,6 @@ class ModelFirstHybridSystem:
             elif 'bạn' in text_lower:
                 entities['CONTACT_NAME'] = 'bạn'
             
-            # Extract phone numbers
             import re
             phone_pattern = r'\b\d{10,11}\b'
             phone_match = re.search(phone_pattern, text)
@@ -835,7 +749,6 @@ class ModelFirstHybridSystem:
                 entities['PHONE'] = phone_match.group()
         
         elif intent == 'control-device':
-            # Extract device names
             if 'đèn' in text_lower:
                 entities['DEVICE'] = 'đèn'
             elif 'quạt' in text_lower:
@@ -843,14 +756,12 @@ class ModelFirstHybridSystem:
             elif 'điều hòa' in text_lower:
                 entities['DEVICE'] = 'điều hòa'
             
-            # Extract locations
             if 'phòng khách' in text_lower:
                 entities['LOCATION'] = 'phòng khách'
             elif 'phòng ngủ' in text_lower:
                 entities['LOCATION'] = 'phòng ngủ'
         
         elif intent == 'set-alarm':
-            # Extract time
             import re
             time_pattern = r'(\d{1,2})[h:]\s*(\d{0,2})'
             time_match = re.search(time_pattern, text)
@@ -860,7 +771,6 @@ class ModelFirstHybridSystem:
                 entities['TIME'] = f"{hour}:{minute}"
         
         elif intent == 'send-mess':
-            # Extract receiver
             if 'mẹ' in text_lower:
                 entities['RECEIVER'] = 'mẹ'
             elif 'bố' in text_lower:
@@ -869,27 +779,21 @@ class ModelFirstHybridSystem:
                 entities['RECEIVER'] = 'bạn'
 
         elif intent == 'open-cam':
-            # Chuẩn hoá entity cho open-cam
-            # CAMERA_TYPE
             if any(k in text_lower for k in ['chụp', 'ảnh', 'hình']):
                 entities['CAMERA_TYPE'] = 'image'
             elif 'quay' in text_lower or 'video' in text_lower:
                 entities['CAMERA_TYPE'] = 'video'
-            # ACTION
             if any(k in text_lower for k in ['mở', 'bật']):
                 entities['ACTION'] = 'mở'
             elif any(k in text_lower for k in ['tắt', 'đóng']):
                 entities['ACTION'] = 'tắt'
-            # MODE
             if 'trước' in text_lower:
                 entities['MODE'] = 'trước'
             elif 'sau' in text_lower:
                 entities['MODE'] = 'sau'
-            # Không để PLATFORM rò rỉ sang
             entities.pop('PLATFORM', None)
 
         elif intent == 'search-youtube':
-            # PLATFORM cứng là youtube, trích QUERY heuristic
             entities['PLATFORM'] = 'youtube'
             try:
                 import re
@@ -943,7 +847,7 @@ class ModelFirstHybridSystem:
             }
             
         except Exception as e:
-            self.logger.error(f"❌ Reasoning validation error: {e}")
+            self.logger.error(f"Reasoning validation error: {e}")
             return {
                 "intent": "unknown",
                 "confidence": 0.0,
@@ -958,7 +862,6 @@ class ModelFirstHybridSystem:
         try:
             self.stats['hybrid_predictions'] += 1
             
-            # Extract key information
             model_intent = model_result.get('intent', 'unknown')
             model_confidence = model_result.get('confidence', 0.0)
             model_entities = model_result.get('entities', {})
@@ -967,7 +870,6 @@ class ModelFirstHybridSystem:
             reasoning_confidence = reasoning_result.get('confidence', 0.0)
             reasoning_entities = reasoning_result.get('entities', {})
             
-            # Step 1: Use specialized entity extractor for enhanced entities
             specialized_entities = {}
             if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
                 try:
@@ -975,58 +877,46 @@ class ModelFirstHybridSystem:
                 except Exception as e:
                     self.logger.warning(f"Specialized entity extraction failed: {e}")
             
-            # Decision logic - Model-first approach
             if model_confidence >= 0.7:
-                # High confidence from model - use it as primary
                 final_intent = model_intent
                 final_confidence = model_confidence
                 final_entities = model_entities.copy()
                 decision_reason = "high_model_confidence"
                 
-                # Enhance with specialized entities first
                 if specialized_entities:
                     final_entities.update(specialized_entities)
                     decision_reason = "high_model_confidence_with_specialized_entities"
                 
-                # Then enhance with reasoning if available
                 if reasoning_intent != "unknown" and reasoning_confidence > 0.5:
                     final_entities.update(reasoning_entities)
                     decision_reason = "high_model_confidence_with_reasoning_enhancement"
                 
             elif model_confidence >= 0.4:
-                # Medium confidence from model - use with reasoning validation
                 if reasoning_intent != "unknown" and reasoning_confidence > 0.6:
-                    # Reasoning has higher confidence - use reasoning
                     final_intent = reasoning_intent
                     final_confidence = reasoning_confidence
                     final_entities = reasoning_entities.copy()
                     decision_reason = "reasoning_validation_override"
                 else:
-                    # Use model result
                     final_intent = model_intent
                     final_confidence = model_confidence
                     final_entities = model_entities.copy()
                     decision_reason = "medium_model_confidence"
                 
             else:
-                # Low confidence from model - use reasoning as fallback
                 if reasoning_intent != "unknown" and reasoning_confidence > 0.3:
                     final_intent = reasoning_intent
                     final_confidence = reasoning_confidence
                     final_entities = reasoning_entities.copy()
                     decision_reason = "reasoning_fallback"
                 else:
-                    # Both failed - use model result anyway
                     final_intent = model_intent
                     final_confidence = model_confidence
                     final_entities = model_entities.copy()
                     decision_reason = "model_fallback"
             
-            # Always enhance with specialized entities if available (final merge)
             if specialized_entities:
                 final_entities.update(specialized_entities)
-
-            # Heuristic override: explicit video call keywords → make-video-call
             try:
                 text_l = (text or "").lower()
                 video_keywords = ["gọi video", "goi video", "video call", "facetime", "videochat", "video chat"]
@@ -1036,7 +926,6 @@ class ModelFirstHybridSystem:
             except Exception:
                 pass
 
-            # Heuristic override: if TIME present or strong time keywords → prefer set-alarm
             try:
                 text_l = (text or "").lower()
                 text_norm = self._normalize_text(text_l)
@@ -1060,7 +949,6 @@ class ModelFirstHybridSystem:
                     "tới", "đến", "toi", "den"
                 ]
                 is_communication = any(w in text_l for w in comm_keywords) or any(k in text_l for k in receiver_keywords)
-                # Ưu tiên giữ/ép về send-mess nếu là ngữ cảnh giao tiếp (trừ call/video call)
                 if is_communication and final_intent not in ["send-mess", "call", "make-video-call"]:
                     final_intent = "send-mess"
                     decision_reason = "communication_guard_send_mess"
@@ -1070,15 +958,12 @@ class ModelFirstHybridSystem:
             except Exception:
                 pass
 
-            # Heuristic override for contacts first (to avoid conflicts)
             try:
                 text_l = (text or "").lower()
                 text_norm = self._normalize_text(text_l)
-                # add-contacts: keywords + presence of phone hint
                 contact_keywords_vn = ["liên hệ", "liên lạc", "danh bạ", "thêm số", "lưu số", "thêm liên hệ", "tạo liên hệ"]
                 contact_keywords_ascii = ["lien he", "lien lac", "danh ba", "them so", "luu so", "them lien he", "tao lien he", "add contact"]
                 has_contact_kw = any(k in text_l for k in contact_keywords_vn) or any(k in text_norm for k in contact_keywords_ascii)
-                # phone hints: explicit digits or number words
                 has_digits_phone = bool(re.search(r"\b\d{9,11}\b", text_l))
                 has_word_phone = bool(re.search(r"\b(không|một|hai|ba|bốn|năm|sáu|bảy|tám|chín)\b", text_l)) or bool(re.search(r"\b(khong|mot|hai|ba|bon|nam|sau|bay|tam|chin)\b", text_norm))
                 if has_contact_kw and (has_digits_phone or has_word_phone):
@@ -1086,12 +971,10 @@ class ModelFirstHybridSystem:
             except Exception:
                 pass
 
-            # Heuristic override for search-youtube (must run before media/view)
             try:
                 text_l = (text or "").lower()
                 if any(w in text_l for w in ["youtube", "yt"]):
                     final_intent = "search-youtube"
-                    # pull entities via extractor
                     if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
                         try:
                             se = self.specialized_entity_extractor._extract_youtube_search_entities(text)  # noqa: SLF001
@@ -1102,7 +985,6 @@ class ModelFirstHybridSystem:
             except Exception:
                 pass
 
-            # Heuristic override for search-internet (guard before control-device)
             try:
                 text_l = (text or "").lower()
                 text_norm = self._normalize_text(text_l)
@@ -1114,7 +996,6 @@ class ModelFirstHybridSystem:
                 has_device_kw = any(k in text_l for k in device_keywords_vn) or any(k in text_norm for k in device_keywords_ascii)
                 if has_search_kw and not has_device_kw and final_intent not in ["search-youtube", "add-contacts", "call", "make-video-call", "send-mess"] and not any(tok in text_l for tok in ["youtube", "yt"]):
                     final_intent = "search-internet"
-                    # Try to enrich query from extractor
                     try:
                         if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
                             se = self.specialized_entity_extractor.extract_search_entities(text)  # type: ignore[attr-defined]
@@ -1125,10 +1006,8 @@ class ModelFirstHybridSystem:
             except Exception:
                 pass
 
-            # Heuristic override for control-device (mobile devices: flash, wifi, bluetooth, data, brightness, volume)
             try:
                 text_l = (text or "").lower()
-                # Flash (đèn pin)
                 if any(w in text_l for w in ["đèn pin", "den pin", "flash", "flashlight"]):
                     final_intent = "control-device"
                     final_entities["DEVICE"] = "flash"
@@ -1136,7 +1015,6 @@ class ModelFirstHybridSystem:
                         final_entities["ACTION"] = "ON"
                     elif any(w in text_l for w in ["tắt", "đóng", "off"]):
                         final_entities["ACTION"] = "OFF"
-                # WiFi
                 elif any(w in text_l for w in ["wifi", "wi fi", "wi-fi", "wiai phai", "wai phai"]):
                     final_intent = "control-device"
                     final_entities["DEVICE"] = "wifi"
@@ -1144,7 +1022,6 @@ class ModelFirstHybridSystem:
                         final_entities["ACTION"] = "ON"
                     elif any(w in text_l for w in ["tắt", "đóng", "off"]):
                         final_entities["ACTION"] = "OFF"
-                # Bluetooth
                 elif any(w in text_l for w in ["bluetooth", "blue tooth", "blutooth"]):
                     final_intent = "control-device"
                     final_entities["DEVICE"] = "bluetooth"
@@ -1152,7 +1029,6 @@ class ModelFirstHybridSystem:
                         final_entities["ACTION"] = "ON"
                     elif any(w in text_l for w in ["tắt", "đóng", "off"]):
                         final_entities["ACTION"] = "OFF"
-                # Mobile Data
                 elif any(w in text_l for w in ["data", "3g", "4g", "5g", "dữ liệu", "du lieu"]):
                     final_intent = "control-device"
                     final_entities["DEVICE"] = "mobile_data"
@@ -1160,7 +1036,6 @@ class ModelFirstHybridSystem:
                         final_entities["ACTION"] = "ON"
                     elif any(w in text_l for w in ["tắt", "đóng", "off"]):
                         final_entities["ACTION"] = "OFF"
-                # Brightness (chỉ bắt "độ sáng" hoặc "brightness", KHÔNG bắt "sáng" đơn thuần)
                 elif any(w in text_l for w in ["độ sáng", "brightness"]):
                     final_intent = "control-device"
                     final_entities["DEVICE"] = "brightness"
@@ -1168,7 +1043,6 @@ class ModelFirstHybridSystem:
                         final_entities["ACTION"] = "ON"
                     elif any(w in text_l for w in ["tắt", "đóng", "off"]):
                         final_entities["ACTION"] = "OFF"
-                # Volume
                 elif any(w in text_l for w in ["âm lượng", "volume", "âm thanh", "tiếng"]):
                     final_intent = "control-device"
                     final_entities["DEVICE"] = "volume"
@@ -1179,13 +1053,11 @@ class ModelFirstHybridSystem:
             except Exception:
                 pass
 
-            # Second-pass entity extraction using final_intent (to ensure correct entities like DATE/TIMESTAMP for set-alarm)
             try:
                 if hasattr(self, 'specialized_extractor_loaded') and self.specialized_extractor_loaded:
                     refined_entities = self.specialized_entity_extractor.extract_all_entities(text, final_intent)
                     if refined_entities:
                         final_entities.update(refined_entities)
-                    # Ensure set-alarm resolver (TIME/DATE/TIMESTAMP) is fully applied
                     if final_intent == "set-alarm":
                         try:
                             alarm_entities = self.specialized_entity_extractor._extract_alarm_entities(text)  # noqa: SLF001
@@ -1196,7 +1068,6 @@ class ModelFirstHybridSystem:
             except Exception as e:
                 self.logger.warning(f"Refined entity extraction failed: {e}")
 
-            # Ensure RECEIVER is preserved for communication intents from reasoning
             try:
                 if final_intent in ["call", "make-video-call"]:
                     if "RECEIVER" not in final_entities and "RECEIVER" in reasoning_entities:
@@ -1206,7 +1077,6 @@ class ModelFirstHybridSystem:
             except Exception:
                 pass
 
-            # Unknown threshold & lời nhắc lịch sự cho FE
             nlp_response = None
             unknown_threshold = 0.35
             if final_confidence < unknown_threshold or final_intent == "unknown":
@@ -1215,8 +1085,6 @@ class ModelFirstHybridSystem:
                 final_confidence = max(final_confidence, 0.0)
                 decision_reason = f"fallback_unknown_threshold_{unknown_threshold}"
                 nlp_response = "Hệ thống chưa đủ chắc chắn, vui lòng nói rõ hơn hoặc nhắc lại giúp."
-
-            # Determine command
             valid_commands = getattr(self, "valid_commands", None)
             if valid_commands:
                 final_command = final_intent if final_intent in valid_commands else "unknown"
@@ -1235,8 +1103,8 @@ class ModelFirstHybridSystem:
             }
             
         except Exception as e:
-            self.logger.error(f"❌ Hybrid decision error: {e}")
-            return model_result  # Fallback to model result
+            self.logger.error(f"Hybrid decision error: {e}")
+            return model_result
     
     def _fallback_prediction(self, text: str, context: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Fallback prediction when all else fails"""
@@ -1257,27 +1125,23 @@ class ModelFirstHybridSystem:
     def _update_stats(self, result: Dict[str, Any], processing_time: float):
         """Update performance statistics"""
         try:
-            # Update average processing time
             total_predictions = self.stats['total_predictions']
             current_avg = self.stats['avg_processing_time']
             self.stats['avg_processing_time'] = (current_avg * (total_predictions - 1) + processing_time) / total_predictions
             
-            # Track confidence scores
             confidence = result.get('confidence', 0.0)
             self.stats['confidence_scores'].append(confidence)
             
-            # Keep only last 100 confidence scores
             if len(self.stats['confidence_scores']) > 100:
                 self.stats['confidence_scores'] = self.stats['confidence_scores'][-100:]
                 
         except Exception as e:
-            self.logger.error(f"⚠️ Stats update error: {e}")
+            self.logger.error(f"Stats update error: {e}")
     
     def get_stats(self) -> Dict[str, Any]:
         """Get system performance statistics"""
         stats = self.stats.copy()
         
-        # Calculate additional metrics
         if stats['confidence_scores']:
             stats['avg_confidence'] = sum(stats['confidence_scores']) / len(stats['confidence_scores'])
             stats['min_confidence'] = min(stats['confidence_scores'])
@@ -1291,16 +1155,13 @@ class ModelFirstHybridSystem:
         """Test the hybrid system with multiple test cases"""
         results = []
         
-        for i, test_case in enumerate(test_cases):
-            print(f"🧪 Testing case {i+1}/{len(test_cases)}: {test_case}")
-            
+        for test_case in test_cases:
             result = self.predict(test_case)
             results.append({
                 "input": test_case,
                 "result": result
             })
         
-        # Analyze results
         analysis = {
             "total_tests": len(test_cases),
             "successful_predictions": len([r for r in results if r["result"]["intent"] != "unknown"]),
@@ -1310,181 +1171,3 @@ class ModelFirstHybridSystem:
         }
         
         return analysis
-
-def test_model_first_hybrid():
-    """Test model-first hybrid system"""
-    print("🚀 TESTING MODEL-FIRST HYBRID SYSTEM")
-    print("=" * 60)
-    
-    # Initialize system
-    print("🔧 Initializing model-first hybrid system...")
-    hybrid_system = ModelFirstHybridSystem()
-    
-    # Test cases
-    test_cases = [
-        # Call intent
-        "gọi điện cho mẹ",
-        "gọi cho bố",
-        "gọi số 0123456789",
-        
-        # Control device intent
-        "bật đèn phòng khách",
-        "tắt quạt",
-        "điều chỉnh nhiệt độ điều hòa",
-        
-        # Play media intent
-        "phát nhạc",
-        "bật video",
-        "chơi nhạc buồn",
-        
-        # Search intent
-        "tìm kiếm nhạc trên youtube",
-        "tìm thông tin về thời tiết",
-        "search google",
-        
-        # Alarm intent
-        "đặt báo thức 7 giờ sáng",
-        "báo thức 6h30",
-        "nhắc nhở lúc 8 giờ",
-        
-        # Message intent
-        "gửi tin nhắn cho bạn",
-        "nhắn tin cho mẹ",
-        "gửi sms",
-        
-        # Camera intent
-        "mở camera",
-        "chụp ảnh",
-        "quay video",
-        
-        # Calendar intent
-        "thêm sự kiện vào lịch",
-        "đặt lịch hẹn",
-        "nhắc nhở cuộc họp",
-        
-        # Video call intent
-        "gọi video cho bạn",
-        "video call mẹ",
-        "gọi facetime",
-        
-        # Add contacts intent
-        "thêm số điện thoại",
-        "lưu danh bạ",
-        "add contact",
-        
-        # View content intent
-        "xem ảnh",
-        "mở thư viện",
-        "xem video đã lưu",
-        
-        # Get info intent
-        "hỏi thời gian",
-        "kiểm tra pin",
-        "thông tin thiết bị"
-    ]
-    
-    print(f"\n🧪 Testing with {len(test_cases)} test cases...")
-    print("=" * 60)
-    
-    # Run tests
-    start_time = time.time()
-    test_results = hybrid_system.test_system(test_cases)
-    total_time = time.time() - start_time
-    
-    # Print summary results
-    print(f"\n📊 TEST SUMMARY:")
-    print("=" * 60)
-    print(f"Total tests: {test_results['total_tests']}")
-    print(f"Successful predictions: {test_results['successful_predictions']}")
-    print(f"Success rate: {test_results['successful_predictions']/test_results['total_tests']*100:.1f}%")
-    print(f"Average confidence: {test_results['avg_confidence']:.3f}")
-    print(f"Average processing time: {test_results['avg_processing_time']:.3f}s")
-    print(f"Total test time: {total_time:.2f}s")
-    
-    # Print detailed results
-    print(f"\n📋 DETAILED RESULTS:")
-    print("=" * 60)
-    
-    for i, result in enumerate(test_results['results']):
-        print(f"\n{i+1:2d}. Input: '{result['input']}'")
-        print(f"    Intent: {result['result']['intent']}")
-        print(f"    Confidence: {result['result']['confidence']:.3f}")
-        print(f"    Method: {result['result']['method']}")
-        print(f"    Command: {result['result']['command']}")
-        
-        # Show entities if any
-        entities = result['result'].get('entities', {})
-        if entities:
-            print(f"    Entities: {entities}")
-        
-        # Show decision reason
-        decision_reason = result['result'].get('decision_reason', 'unknown')
-        print(f"    Decision: {decision_reason}")
-        
-        # Show primary source
-        primary_source = result['result'].get('primary_source', 'unknown')
-        print(f"    Primary: {primary_source}")
-    
-    # Print system statistics
-    print(f"\n📈 SYSTEM STATISTICS:")
-    print("=" * 60)
-    stats = hybrid_system.get_stats()
-    
-    print(f"Total predictions: {stats['total_predictions']}")
-    print(f"Model predictions: {stats['model_predictions']}")
-    print(f"Reasoning predictions: {stats['reasoning_predictions']}")
-    print(f"Hybrid predictions: {stats['hybrid_predictions']}")
-    print(f"Fallback predictions: {stats['fallback_predictions']}")
-    print(f"Average processing time: {stats['avg_processing_time']:.3f}s")
-    
-    if 'avg_confidence' in stats:
-        print(f"Average confidence: {stats['avg_confidence']:.3f}")
-        print(f"Min confidence: {stats['min_confidence']:.3f}")
-        print(f"Max confidence: {stats['max_confidence']:.3f}")
-    
-    print(f"Success rate: {stats['success_rate']:.3f}")
-    
-    # Analyze by intent
-    print(f"\n🎯 INTENT ANALYSIS:")
-    print("=" * 60)
-    
-    intent_counts = {}
-    intent_confidences = {}
-    
-    for result in test_results['results']:
-        intent = result['result']['intent']
-        confidence = result['result']['confidence']
-        
-        if intent not in intent_counts:
-            intent_counts[intent] = 0
-            intent_confidences[intent] = []
-        
-        intent_counts[intent] += 1
-        intent_confidences[intent].append(confidence)
-    
-    for intent, count in sorted(intent_counts.items(), key=lambda x: x[1], reverse=True):
-        avg_conf = sum(intent_confidences[intent]) / len(intent_confidences[intent])
-        print(f"{intent:20s}: {count:2d} samples, avg confidence: {avg_conf:.3f}")
-    
-    # Save results to file
-    results_file = "model_first_hybrid_test_results.json"
-    try:
-        with open(results_file, 'w', encoding='utf-8') as f:
-            json.dump(test_results, f, ensure_ascii=False, indent=2)
-        print(f"\n💾 Results saved to: {results_file}")
-    except Exception as e:
-        print(f"⚠️ Failed to save results: {e}")
-    
-    print(f"\n✅ Model-first hybrid system testing completed!")
-    return test_results
-
-if __name__ == "__main__":
-    try:
-        test_model_first_hybrid()
-        print(f"\n🎉 All tests completed successfully!")
-        
-    except Exception as e:
-        print(f"❌ Test failed: {e}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)

@@ -1,6 +1,3 @@
-"""
-Utilities cho dự án PhoBERT_SAM
-"""
 
 import torch
 import numpy as np
@@ -126,7 +123,7 @@ def calculate_metrics_for_entity_extraction(y_true: List[List[int]], y_pred: Lis
     from sklearn.metrics import precision_recall_fscore_support
     
     precision, recall, f1, support = precision_recall_fscore_support(
-        all_true, all_pred, average='weighted', zero_division=0
+        all_true, all_pred, average='weighted', zero_division='0'
     )
     
     accuracy = sum(1 for t, p in zip(all_true, all_pred) if t == p) / len(all_true) if all_true else 0

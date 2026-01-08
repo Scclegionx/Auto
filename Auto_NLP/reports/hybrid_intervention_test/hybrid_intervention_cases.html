@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid System Intervention Analysis</title>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {{
+            color: #333;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }}
+        h2 {{
+            color: #2c3e50;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }}
+        .case {{
+            background: white;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }}
+        .text {{
+            font-size: 16px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 4px solid #007bff;
+        }}
+        .comparison {{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 10px 0;
+        }}
+        .raw, .hybrid {{
+            padding: 10px;
+            border-radius: 4px;
+        }}
+        .raw {{
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }}
+        .hybrid {{
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+        }}
+        .improved {{
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }}
+        .degraded {{
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }}
+        .label {{
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #495057;
+        }}
+        .value {{
+            margin: 3px 0;
+        }}
+        .decision-reason {{
+            padding: 5px 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 5px 0;
+            font-size: 12px;
+        }}
+        .stats {{
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }}
+        .stat-item {{
+            display: inline-block;
+            margin: 10px 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }}
+        .stat-value {{
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }}
+        .stat-label {{
+            font-size: 12px;
+            color: #6c757d;
+        }}
+    </style>
+</head>
+<body>
+    <h1>Hybrid System Intervention Analysis</h1>
+    
+    <div class="stats">
+        <h2>Summary Statistics</h2>
+        <div class="stat-item">
+            <div class="stat-value">120</div>
+            <div class="stat-label">Total Cases</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">8</div>
+            <div class="stat-label">Intent Changed</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Improved Cases</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Degraded Cases</div>
+        </div>
+    </div>
+    
+    <h2>Improved Cases (Hybrid System Corrected Model Errors)</h2>
+
+    <div class="case improved">
+        <div class="text"><strong>Input:</strong> với gọi điện cho số 0977111222 qua Viber với</div>
+        <div class="comparison">
+            <div class="raw">
+                <div class="label">[RAW] Raw Model:</div>
+                <div class="value">Intent: <strong>make-video-call</strong> (Confidence: 0.655)</div>
+                <div class="value">Command: <strong>make-video-call</strong></div>
+                <div class="value">Correct: [X]</div>
+            </div>
+            <div class="hybrid">
+                <div class="label">[HYBRID] Hybrid System:</div>
+                <div class="value">Intent: <strong>call</strong> (Confidence: 0.680)</div>
+                <div class="value">Command: <strong>call</strong></div>
+                <div class="value">Correct: [OK]</div>
+            </div>
+        </div>
+        <div class="decision-reason">Decision: reasoning_validation_override</div>
+        <div class="decision-reason">Method: hybrid</div>
+    </div>
+
+    <div class="case improved">
+        <div class="text"><strong>Input:</strong> ờm gọi điện cho số 0333444555 qua Messenger với</div>
+        <div class="comparison">
+            <div class="raw">
+                <div class="label">[RAW] Raw Model:</div>
+                <div class="value">Intent: <strong>make-video-call</strong> (Confidence: 0.682)</div>
+                <div class="value">Command: <strong>make-video-call</strong></div>
+                <div class="value">Correct: [X]</div>
+            </div>
+            <div class="hybrid">
+                <div class="label">[HYBRID] Hybrid System:</div>
+                <div class="value">Intent: <strong>call</strong> (Confidence: 0.789)</div>
+                <div class="value">Command: <strong>call</strong></div>
+                <div class="value">Correct: [OK]</div>
+            </div>
+        </div>
+        <div class="decision-reason">Decision: reasoning_validation_override</div>
+        <div class="decision-reason">Method: hybrid</div>
+    </div>
+
+    <div class="case improved">
+        <div class="text"><strong>Input:</strong> ờm gọi điện cho số 0333444555 qua Messenger giùm</div>
+        <div class="comparison">
+            <div class="raw">
+                <div class="label">[RAW] Raw Model:</div>
+                <div class="value">Intent: <strong>make-video-call</strong> (Confidence: 0.837)</div>
+                <div class="value">Command: <strong>make-video-call</strong></div>
+                <div class="value">Correct: [X]</div>
+            </div>
+            <div class="hybrid">
+                <div class="label">[HYBRID] Hybrid System:</div>
+                <div class="value">Intent: <strong>call</strong> (Confidence: 0.675)</div>
+                <div class="value">Command: <strong>call</strong></div>
+                <div class="value">Correct: [OK]</div>
+            </div>
+        </div>
+        <div class="decision-reason">Decision: reasoning_validation_override</div>
+        <div class="decision-reason">Method: hybrid</div>
+    </div>
+
+    <div class="case improved">
+        <div class="text"><strong>Input:</strong> nhé gọi điện cho số 0912345678 qua WhatsApp với</div>
+        <div class="comparison">
+            <div class="raw">
+                <div class="label">[RAW] Raw Model:</div>
+                <div class="value">Intent: <strong>make-video-call</strong> (Confidence: 0.921)</div>
+                <div class="value">Command: <strong>make-video-call</strong></div>
+                <div class="value">Correct: [X]</div>
+            </div>
+            <div class="hybrid">
+                <div class="label">[HYBRID] Hybrid System:</div>
+                <div class="value">Intent: <strong>call</strong> (Confidence: 0.790)</div>
+                <div class="value">Command: <strong>call</strong></div>
+                <div class="value">Correct: [OK]</div>
+            </div>
+        </div>
+        <div class="decision-reason">Decision: reasoning_validation_override</div>
+        <div class="decision-reason">Method: hybrid</div>
+    </div>
+
+    <div class="case improved">
+        <div class="text"><strong>Input:</strong> à gọi điện cho số 0912345678 qua Messenger</div>
+        <div class="comparison">
+            <div class="raw">
+                <div class="label">[RAW] Raw Model:</div>
+                <div class="value">Intent: <strong>make-video-call</strong> (Confidence: 0.911)</div>
+                <div class="value">Command: <strong>make-video-call</strong></div>
+                <div class="value">Correct: [X]</div>
+            </div>
+            <div class="hybrid">
+                <div class="label">[HYBRID] Hybrid System:</div>
+                <div class="value">Intent: <strong>call</strong> (Confidence: 0.797)</div>
+                <div class="value">Command: <strong>call</strong></div>
+                <div class="value">Correct: [OK]</div>
+            </div>
+        </div>
+        <div class="decision-reason">Decision: reasoning_validation_override</div>
+        <div class="decision-reason">Method: hybrid</div>
+    </div>
+
+    <h2>Degraded Cases (Hybrid System Made Errors)</h2>
+
+    <div class="case degraded">
+        <div class="text"><strong>Input:</strong> giùm giảm điều hoà</div>
+        <div class="comparison">
+            <div class="raw">
+                <div class="label">[OK] Raw Model:</div>
+                <div class="value">Intent: <strong>control-device</strong> (Confidence: 0.999)</div>
+                <div class="value">Command: <strong>control-device</strong></div>
+                <div class="value">Correct: [OK]</div>
+            </div>
+            <div class="hybrid">
+                <div class="label">[X] Hybrid System:</div>
+                <div class="value">Intent: <strong>search-internet</strong> (Confidence: 0.999)</div>
+                <div class="value">Command: <strong>search-internet</strong></div>
+                <div class="value">Correct: [X]</div>
+            </div>
+        </div>
+        <div class="decision-reason">Decision: high_model_confidence_with_specialized_entities</div>
+        <div class="decision-reason">Method: hybrid</div>
+    </div>
+
+    <div class="case degraded">
+        <div class="text"><strong>Input:</strong> ờ mở camera trước và quay video nhé</div>
+        <div class="comparison">
+            <div class="raw">
+                <div class="label">[OK] Raw Model:</div>
+                <div class="value">Intent: <strong>open-cam</strong> (Confidence: 0.999)</div>
+                <div class="value">Command: <strong>open-cam</strong></div>
+                <div class="value">Correct: [OK]</div>
+            </div>
+            <div class="hybrid">
+                <div class="label">[X] Hybrid System:</div>
+                <div class="value">Intent: <strong>send-mess</strong> (Confidence: 1.000)</div>
+                <div class="value">Command: <strong>send-mess</strong></div>
+                <div class="value">Correct: [X]</div>
+            </div>
+        </div>
+        <div class="decision-reason">Decision: communication_guard_send_mess</div>
+        <div class="decision-reason">Method: hybrid</div>
+    </div>
+
+    <div class="case degraded">
+        <div class="text"><strong>Input:</strong> này mở camera trước và quay video giùm</div>
+        <div class="comparison">
+            <div class="raw">
+                <div class="label">[OK] Raw Model:</div>
+                <div class="value">Intent: <strong>open-cam</strong> (Confidence: 0.999)</div>
+                <div class="value">Command: <strong>open-cam</strong></div>
+                <div class="value">Correct: [OK]</div>
+            </div>
+            <div class="hybrid">
+                <div class="label">[X] Hybrid System:</div>
+                <div class="value">Intent: <strong>send-mess</strong> (Confidence: 1.000)</div>
+                <div class="value">Command: <strong>send-mess</strong></div>
+                <div class="value">Correct: [X]</div>
+            </div>
+        </div>
+        <div class="decision-reason">Decision: communication_guard_send_mess</div>
+        <div class="decision-reason">Method: hybrid</div>
+    </div>
+
+</body>
+</html>

@@ -33,12 +33,6 @@ class TrainedModelInference:
         self.model_path = model_dir
 
     def predict(self, text: str) -> Dict[str, Any]:
-        """
-        Gọi multi-task model và hậu xử lý entity cho hybrid system.
-        - Loại bỏ entity rác từ special tokens (<s>, </s>, [PAD], ...)
-        - Gom MESSAGE thành một chuỗi duy nhất (ghép các mảnh)
-        - Lọc PLATFORM theo whitelist (zalo, messenger, viber, youtube, ...)
-        """
         result = self._inference.predict(text)
 
         raw_entities: List[Dict[str, Any]] = result.get("entities", [])

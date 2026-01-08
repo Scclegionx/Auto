@@ -1,21 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-train_gpu.py - Huấn luyện PhoBERT đa tác vụ (intent/entity/command) trên GPU.
-
-Kiến trúc tuân theo pipeline chuẩn hóa:
-    • DataProcessor (src/data/processed/data_processor.py) chuẩn hóa & sinh tensor.
-    • MultiTaskDataset (src/training/datasets) tạo Dataset/DataLoader nhất quán.
-    • MultiTaskModel (src/models/base/multitask_model.py) gồm encoder PhoBERT + 3 head.
-    • MultitaskTrainer (src/training/pipeline/trainer.py) quản lý training loop, AMP, checkpoint.
-"""
-
 from __future__ import annotations
 
 import argparse
 import json
 import logging
-import os
 import sys
 import random
 from collections import Counter
@@ -223,7 +210,6 @@ def compute_entity_class_weights(
     counts[~valid_mask] = min_positive
 
     total = counts.sum()
-    # Dùng căn bậc hai để tránh weight quá cực đoan giữa nhãn phổ biến và hiếm
     weights = np.sqrt(total / (len(counts) * counts))
     weights = np.clip(weights, min_weight, max_weight)
     weights = weights / weights.mean()
@@ -323,17 +309,17 @@ def main() -> None:
     command_cfg = CommandConfig()
 
     if args.batch_size is not None:
-        config.batch_size = args.batch_size  # type: ignore[attr-defined]
+        config.batch_size = args.batch_size
     if args.epochs is not None:
-        config.num_epochs = args.epochs  # type: ignore[attr-defined]
+        config.num_epochs = args.epochs
     if args.grad_accum is not None:
-        config.gradient_accumulation_steps = args.grad_accum  # type: ignore[attr-defined]
+        config.gradient_accumulation_steps = args.grad_accum
     if args.output_dir is not None:
-        config.output_dir = args.output_dir  # type: ignore[attr-defined]
+        config.output_dir = args.output_dir
     if args.seed is not None:
-        config.seed = args.seed  # type: ignore[attr-defined]
+        config.seed = args.seed
     if args.freeze_epochs is not None:
-        config.freeze_encoder_epochs = max(0, args.freeze_epochs)  # type: ignore[attr-defined]
+        config.freeze_encoder_epochs = max(0, args.freeze_epochs)
 
     set_seed(getattr(config, "seed", 42))
     output_dir = Path(config.output_dir)
@@ -387,9 +373,6 @@ def main() -> None:
     sampler_weights = compute_entity_density_sampler_weights(train_samples, o_label_id)
     train_sampler = None
     if sampler_weights is not None:
-        # PyTorch WeightedRandomSampler chấp nhận Tensor, nhưng type stub
-        # của basedpyright mong đợi Sequence[float]. Dùng .tolist()
-        # để vừa đúng kiểu tĩnh, vừa giữ nguyên hành vi runtime.
         sampler_weight_list = sampler_weights.tolist()
         train_sampler = WeightedRandomSampler(
             weights=sampler_weight_list,

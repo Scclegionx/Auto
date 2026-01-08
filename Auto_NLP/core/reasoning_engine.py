@@ -104,7 +104,7 @@ class FuzzyMatcher:
         return [(text, idx) for text, score, idx in results]
     
     def contains_fuzzy(self, text: str, keywords: List[str], threshold: Optional[int] = None) -> List[Tuple[str, int]]:
-        """Kiểm tra xem text có chứa bất kỳ keyword nào không (fuzzy matching)"""
+        """Kiểm tra xem text có chứa bất kỳ keyword nào không bằng rapidfuzz (fuzzy matching)"""
         match_threshold = threshold if threshold is not None else self.threshold
         matches = []
         
@@ -159,7 +159,7 @@ class VectorStore:
         self.text_mapping = []
 
 class ConversationContext:
-    """Quản lý ngữ cảnh hội thoại"""
+    """Quản lý ngữ cảnh hội thoại Nhiệm vụ: hỗ trợ multi-turn (ví dụ turn trước đang set-alarm, turn sau chỉ nói “7 giờ”)."""
     
     def __init__(self, max_history: int = 5):
         self.history = deque(maxlen=max_history)
@@ -183,7 +183,6 @@ class ConversationContext:
             if system_response.get("entities"):
                 self.current_entities.update(system_response["entities"])
         else:
-            # Nếu system_response là string, log warning
             logger.warning(f"system_response is not a dict: {type(system_response)} - {system_response}")
     
     def get_last_n_turns(self, n: int = 3) -> List[Dict[str, Any]]:
@@ -225,19 +224,17 @@ class EntityExtractor:
                 "keywords": ["giờ", "phút", "sáng", "trưa", "chiều", "tối", "đêm", 
                              "hôm nay", "ngày mai", "hôm qua", "tuần", "tháng"]
             },
-            "person": {
+                "person": {
                 "patterns": [
-                    # Pattern chính xác cho RECEIVER - lấy đầy đủ tên người
                     r"(?:cho|tới|đến|với)\s+((?:ba|bố|mẹ|anh|chị|em|cô|chú|bác|ông|bà)\s+[\w\s]+?)(?:\s+rằng|\s+là|\s+nói|\s+nhắn|\s+gửi|\s+lúc|\s+tại|\s+ở|\s+vào|\s+ngày|\s+giờ|$)",
-                    # Pattern backup cho các từ quan hệ đơn giản
                     r"(mẹ|ba|bố|bạn|anh|chị|em|cô|chú|bác|ông|bà)\s*(của|tôi|tui|mình)?",
                 ],
                 "keywords": ["mẹ", "ba", "bố", "bạn", "anh", "chị", "em", "cô", "chú", "bác", "ông", "bà"]
             },
-            "location": {
+                "location": {
                 "patterns": [
-                    r"(?:tại|ở)\s+([^lúc]*?)(?:\s+lúc|\s+giờ|\s+vào|\s+ngày|$)",  # tại/ở + location (loại bỏ thời gian)
-                    r"(bệnh viện|trường|công viên|nhà|công ty|văn phòng|phòng)\s+([\w\s]+?)(?:\s+lúc|\s+giờ|\s+vào|\s+ngày|,|$)",  # bệnh viện + tên
+                    r"(?:tại|ở)\s+([^lúc]*?)(?:\s+lúc|\s+giờ|\s+vào|\s+ngày|$)",
+                    r"(bệnh viện|trường|công viên|nhà|công ty|văn phòng|phòng)\s+([\w\s]+?)(?:\s+lúc|\s+giờ|\s+vào|\s+ngày|,|$)",
                     r"(nhà|công ty|văn phòng|bệnh viện|trường|phòng|công viên)",
                 ],
                 "keywords": ["nhà", "công ty", "văn phòng", "bệnh viện", "trường", "phòng", "quán", "công viên", "tại", "ở"]
@@ -253,12 +250,10 @@ class EntityExtractor:
                 matches = re.findall(pattern, text, re.IGNORECASE)
                 if matches:
                     for match in matches:
-                        if isinstance(match, tuple):  # Group captures
+                        if isinstance(match, tuple):
                             entity_value = " ".join([m for m in match if m])
                             if entity_value:
-                                # Làm sạch entity value
                                 entity_value = entity_value.strip()
-                                # Loại bỏ các từ không cần thiết
                                 entity_value = self._clean_entity_value(entity_type, entity_value)
                                 if entity_value:
                                     entities[entity_type].append(entity_value)
@@ -268,7 +263,6 @@ class EntityExtractor:
                             if entity_value:
                                 entities[entity_type].append(entity_value)
             
-            # Fuzzy matching chỉ dùng khi không có pattern match
             if not entities[entity_type]:
                 fuzzy_matches = self.fuzzy_matcher.contains_fuzzy(text, patterns_data["keywords"])
                 for keyword, _ in fuzzy_matches:
@@ -284,7 +278,6 @@ class EntityExtractor:
                         if phrase and phrase not in entities[entity_type]:
                             entities[entity_type].append(phrase)
         
-        # Loại bỏ duplicates và sắp xếp theo độ dài (ngắn nhất trước)
         for entity_type in entities:
             entities[entity_type] = list(set(entities[entity_type]))
             entities[entity_type].sort(key=len)
@@ -296,20 +289,14 @@ class EntityExtractor:
         if not value:
             return ""
         
-        # Loại bỏ các từ không cần thiết
         stop_words = ["rằng", "là", "nói", "nhắn", "gửi", "cho", "tới", "đến", "với"]
         words = value.split()
         cleaned_words = [word for word in words if word.lower() not in stop_words]
         
-        # Xử lý đặc biệt cho từng loại entity
         if entity_type == "person":
-            # Giữ nguyên cụm đầy đủ nếu có tên sau quan hệ
-            # Pattern đã match: ((?:ba|bố|mẹ|...)\s+[\w\s]+?) - giữ nguyên
             if len(cleaned_words) > 1:
-                # Có từ quan hệ + tên riêng, giữ nguyên
                 return " ".join(cleaned_words)
             else:
-                # Chỉ có từ quan hệ, giữ lại
                 person_words = []
                 for word in cleaned_words:
                     if word.lower() in ["mẹ", "ba", "bố", "bạn", "anh", "chị", "em", "cô", "chú", "bác", "ông", "bà", "tôi", "tui", "mình"]:
@@ -317,7 +304,6 @@ class EntityExtractor:
                 return " ".join(person_words)
         
         elif entity_type == "time":
-            # Liệt kê tất cả thông tin thời gian
             time_parts = []
             for word in cleaned_words:
                 if word.lower() in ["giờ", "phút", "sáng", "trưa", "chiều", "tối", "đêm", "hôm nay", "ngày mai", "hôm qua", "tuần", "tháng"] or word.isdigit():
@@ -325,15 +311,12 @@ class EntityExtractor:
             return " ".join(time_parts)
         
         elif entity_type == "location":
-            # Loại bỏ thông tin thời gian khỏi location nhưng giữ tên địa điểm đầy đủ
             time_words = ["lúc", "giờ", "vào", "ngày", "sáng", "chiều", "tối", "đêm"]
             location_words = [word for word in cleaned_words if word.lower() not in time_words]
             
-            # Nếu có từ địa điểm chung thì lấy cả tên sau nó
             location_types = ["công viên", "bệnh viện", "trường", "nhà", "công ty", "văn phòng", "phòng"]
             for loc_type in location_types:
                 if loc_type in value.lower():
-                    # Tìm từ địa điểm và lấy tất cả từ sau nó (trước thời gian)
                     words = value.split()
                     loc_index = -1
                     for i, word in enumerate(words):
@@ -342,7 +325,6 @@ class EntityExtractor:
                             break
                     
                     if loc_index >= 0:
-                        # Lấy từ địa điểm và các từ sau nó cho đến khi gặp từ thời gian hoặc dấu phẩy
                         location_parts = [words[loc_index]]
                         for i in range(loc_index + 1, len(words)):
                             if words[i].lower() in time_words or words[i] in [",", ".", "!"]:
@@ -355,10 +337,9 @@ class EntityExtractor:
         return " ".join(cleaned_words)
     
     def _convert_words_to_numbers(self, text: str) -> str:
-        """Convert số từ chữ sang số - Simplified version"""
+        """Convert số từ chữ sang số"""
         result = text.lower()
         
-        # Mapping cơ bản cho số từ chữ
         number_words = {
             'không': '0', 'một': '1', 'hai': '2', 'ba': '3', 'bốn': '4',
             'năm': '5', 'sáu': '6', 'bảy': '7', 'tám': '8', 'chín': '9',
@@ -373,7 +354,6 @@ class EntityExtractor:
             'zê rô': '0', 'zero': '0', 'ze ro': '0', 'khong': '0',
         }
         
-        # Replace từ dài trước để tránh conflict
         for word, number in sorted(number_words.items(), key=lambda x: len(x[0]), reverse=True):
             result = result.replace(word, number)
         
@@ -410,12 +390,9 @@ class ReasoningEngine:
                     local_files_only=True
                 )
                 self.model.eval()
-                logger.info("Model loaded successfully from local cache")
             except Exception:
-                # Fallback: try with specific snapshot path
                 snapshots_dir = os.path.join(cache_dir, "models--vinai--phobert-large", "snapshots")
                 if os.path.exists(snapshots_dir):
-                    # Find the snapshot with model.safetensors
                     snapshot_dirs = [d for d in os.listdir(snapshots_dir) if os.path.isdir(os.path.join(snapshots_dir, d))]
                     model_path = None
                     for snapshot_dir in snapshot_dirs:
@@ -425,8 +402,6 @@ class ReasoningEngine:
                             break
                     
                     if model_path:
-                        logger.info(f"Trying to load from snapshot: {model_path}")
-                        # Try to load tokenizer from model name (download if needed)
                         try:
                             self.tokenizer = AutoTokenizer.from_pretrained(
                                 model_name, 
@@ -435,7 +410,6 @@ class ReasoningEngine:
                                 local_files_only=False  # Allow download for tokenizer
                             )
                         except:
-                            # Fallback: try to load from snapshot
                             self.tokenizer = AutoTokenizer.from_pretrained(
                                 model_path, 
                                 use_fast=False,
@@ -449,13 +423,11 @@ class ReasoningEngine:
                             local_files_only=True
                         )
                         self.model.eval()
-                        logger.info("Model loaded successfully from snapshot path")
                     else:
                         raise Exception("No snapshot with model.safetensors found in cache")
                 else:
                     raise Exception("Model not found in cache")
         except Exception as e:
-            # Fallback: try with different settings
             try:
                 self.tokenizer = AutoTokenizer.from_pretrained(
                     model_name, 
@@ -471,35 +443,27 @@ class ReasoningEngine:
                     local_files_only=False
                 )
                 self.model.eval()
-                logger.info("Model loaded successfully with download fallback")
             except Exception as e2:
                 logger.error(f"Error loading model: {e2}")
-                # Final fallback: disable model-based features but keep reasoning engine working
                 self.tokenizer = None
                 self.model = None
                 logger.warning("Using fallback embedding mode - reasoning engine will work with reduced accuracy")
         
         self.fuzzy_matcher = FuzzyMatcher(threshold=self.config.get("fuzzy_threshold", 75))
         
-        # Chỉ khởi tạo vector store nếu model đã load thành công
         try:
             if self.model is not None:
                 self.vector_store = VectorStore(vector_dim=self.model.config.hidden_size)
             else:
-                # Fallback: tạo vector store với dimension mặc định
-                self.vector_store = VectorStore(vector_dim=768)  # PhoBERT hidden size
+                self.vector_store = VectorStore(vector_dim=768)
         except Exception as e:
             logger.warning(f"Vector store initialization failed: {e}")
-            # Disable vector store for stability
             self.vector_store = None
         
-        # Sử dụng SpecializedEntityExtractor thay vì EntityExtractor cơ bản
         try:
             from src.inference.engines.entity_extractor import EntityExtractor as SpecializedEntityExtractor
             self.entity_extractor = SpecializedEntityExtractor()
-            logger.info("Using SpecializedEntityExtractor in reasoning engine")
         except ImportError:
-            # Fallback to basic EntityExtractor
             self.entity_extractor = EntityExtractor(self.fuzzy_matcher)
             logger.warning("Using basic EntityExtractor as fallback")
         
@@ -517,7 +481,6 @@ class ReasoningEngine:
             os.path.join(os.path.dirname(__file__), "context_rules.json")
         )
         
-        # Khởi tạo intent fallback config
         self.intent_fallback = self._load_intent_fallback(
             self.config.get("fallback_path", os.path.join(os.path.dirname(__file__), "intent_fallback.json"))
         )
@@ -526,9 +489,7 @@ class ReasoningEngine:
         
         self.similarity_threshold = self.config.get("similarity_threshold", 0.6)
         
-        # Bảng normalize intent cũ → bộ command rút gọn
         self.normalize_intent = {
-            # Giữ nguyên command rút gọn
             "call": "call",
             "send-mess": "send-mess", 
             "make-video-call": "make-video-call",
@@ -540,15 +501,12 @@ class ReasoningEngine:
             "control-device": "control-device",
             "add-contacts": "add-contacts",
             "unknown": "unknown",
-            # Map từ intent cũ → command mới
             "check-weather": "get-info",
             "read-news": "get-info", 
             "check-health-status": "get-info",
             "general-conversation": "unknown",
             "help": "unknown"
         }
-        
-        logger.info("ReasoningEngine đã được khởi tạo thành công")
     
     def _load_config(self, config_path: Optional[str]) -> Dict[str, Any]:
         """Load config từ file"""
@@ -645,16 +603,13 @@ class ReasoningEngine:
                         else:
                             default_kb[key] = value
                     
-                    logger.info(f"Đã load knowledge base từ {file_path}")
             except Exception as e:
                 logger.error(f"Lỗi khi load knowledge base: {str(e)}")
         else:
-            logger.warning(f"File knowledge base không tồn tại: {file_path}. Sử dụng mặc định.")
             if file_path and os.path.dirname(file_path):
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump(default_kb, f, ensure_ascii=False, indent=2)
-                logger.info(f"Đã tạo file knowledge base mặc định: {file_path}")
         
         return default_kb
     
@@ -720,17 +675,13 @@ class ReasoningEngine:
                     loaded_patterns = json.load(f)
                     for key, value in loaded_patterns.items():
                         default_patterns[key] = value
-                    
-                    logger.info(f"Đã load semantic patterns từ {file_path}")
             except Exception as e:
                 logger.error(f"Lỗi khi load semantic patterns: {str(e)}")
         else:
-            logger.warning(f"File semantic patterns không tồn tại: {file_path}. Sử dụng mặc định.")
             if file_path and os.path.dirname(file_path):
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump(default_patterns, f, ensure_ascii=False, indent=2)
-                logger.info(f"Đã tạo file semantic patterns mặc định: {file_path}")
         
         return default_patterns
     
@@ -764,29 +715,19 @@ class ReasoningEngine:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     loaded_rules = json.load(f)
                     for key, value in loaded_rules.items():
-                        # Kiểm tra value là list dict
                         if isinstance(value, list):
-                            # Kiểm tra từng item trong list
                             valid_rules = []
                             for rule in value:
                                 if isinstance(rule, dict):
                                     valid_rules.append(rule)
-                                else:
-                                    logger.warning(f"Rule is not a dict: {type(rule)} - {rule}")
                             default_rules[key] = valid_rules
-                        else:
-                            logger.warning(f"Context rules value is not a list: {type(value)} - {value}")
-                    
-                    logger.info(f"Đã load context rules từ {file_path}")
             except Exception as e:
                 logger.error(f"Lỗi khi load context rules: {str(e)}")
         else:
-            logger.warning(f"File context rules không tồn tại: {file_path}. Sử dụng mặc định.")
             if file_path and os.path.dirname(file_path):
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump(default_rules, f, ensure_ascii=False, indent=2)
-                logger.info(f"Đã tạo file context rules mặc định: {file_path}")
         
         return default_rules
     
@@ -824,31 +765,23 @@ class ReasoningEngine:
                             default_fallback[key].update(value)
                         else:
                             default_fallback[key] = value
-                    
-                    logger.info(f"Đã load intent fallback từ {file_path}")
             except Exception as e:
                 logger.error(f"Lỗi khi load intent fallback: {str(e)}")
         else:
-            logger.warning(f"File intent fallback không tồn tại: {file_path}. Sử dụng mặc định.")
             if file_path and os.path.dirname(file_path):
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump(default_fallback, f, ensure_ascii=False, indent=2)
-                logger.info(f"Đã tạo file intent fallback mặc định: {file_path}")
         
         return default_fallback
     
     def _initialize_vector_store(self) -> None:
         """Khởi tạo vector store với intent synonyms"""
         if not self.config.get("enable_vectorstore", True):
-            logger.info("Vector store đã bị tắt trong config")
             return
             
         if self.vector_store is None:
-            logger.warning("Vector store not available, skipping initialization")
             return
-        
-        logger.info("Đang khởi tạo vector store...")
         all_texts = []
         all_intent_mapping = {}
         
@@ -866,12 +799,9 @@ class ReasoningEngine:
                 embeddings.extend(batch_embeddings)
             
             embeddings_array = np.array(embeddings, dtype=np.float32)
-            
             self.vector_store.add_vectors(all_texts, embeddings_array)
-            logger.info(f"Vector store đã được khởi tạo với {len(all_texts)} vectors")
         except Exception as e:
             logger.warning(f"Vector store initialization failed: {e}")
-            # Continue without vector store
     
     def _batch_encode_texts(self, texts: List[str]) -> List[np.ndarray]:
         """Encode một batch các texts thành embeddings"""
@@ -891,10 +821,8 @@ class ReasoningEngine:
     
     def get_text_embedding(self, text: str) -> np.ndarray:
         """Lấy embedding của text sử dụng PhoBERT"""
-        # Nếu model không có, trả về embedding giả
         if self.model is None or self.tokenizer is None:
-            logger.warning("Model not available, using fallback embedding")
-            return np.zeros(768, dtype=np.float32)  # Fallback embedding for PhoBERT-base
+            return np.zeros(768, dtype=np.float32)
             
         cached_embedding = self.cache.get_embedding(text)
         if cached_embedding is not None and self.config.get("enable_cache", True):
@@ -910,8 +838,6 @@ class ReasoningEngine:
             )
             
             outputs = self.model(**inputs)
-            
-            # Chọn pooling strategy theo config
             pooling_strategy = self.config.get("pooling_strategy", "mean")
             
             if pooling_strategy == "cls":
@@ -939,9 +865,7 @@ class ReasoningEngine:
     
     def calculate_semantic_similarity(self, text1: str, text2: str) -> float:
         """Tính semantic similarity giữa 2 text"""
-        # Fallback nếu model không có
         if self.model is None or self.tokenizer is None:
-            logger.warning("Model not available, using fallback similarity")
             return 0.0
             
         cache_key = (text1, text2)
@@ -971,9 +895,7 @@ class ReasoningEngine:
     
     def find_similar_intents(self, text: str, top_k: int = 3) -> List[Tuple[str, float]]:
         """Tìm các intent tương tự dựa trên semantic similarity"""
-        # Fallback nếu vector store không có
         if self.vector_store is None:
-            logger.warning("Vector store not available, using fallback similarity")
             return [("call", 0.0)]
             
         cached_result = self.cache.get_result(text)
@@ -986,7 +908,7 @@ class ReasoningEngine:
         if self.config.get("enable_vectorstore", True):
             try:
                 text_embedding = self.get_text_embedding(text)
-                similar_texts = self.vector_store.search(text_embedding, top_k * 2)  # Lấy nhiều hơn để đảm bảo đủ intent
+                similar_texts = self.vector_store.search(text_embedding, top_k * 2)
                 
                 intent_scores = defaultdict(float)
                 for synonym, score in similar_texts:
@@ -1046,12 +968,9 @@ class ReasoningEngine:
                     features[f"has_{category}"] = True
                     features[f"{category}_keywords"] = found_keywords
         
-        # Sử dụng SpecializedEntityExtractor nếu có
         if hasattr(self.entity_extractor, 'extract_all_entities'):
-            # SpecializedEntityExtractor - cần intent để extract chính xác
-            entities = self.entity_extractor.extract_all_entities(text, "call")  # type: ignore  # Default intent
+            entities = self.entity_extractor.extract_all_entities(text, "call")  # type: ignore
         else:
-            # Legacy EntityExtractor - fallback to empty dict if method doesn't exist
             entities = getattr(self.entity_extractor, 'extract_entities', lambda x: {})(text)  # type: ignore
         
         for entity_type, values in entities.items():
@@ -1082,7 +1001,6 @@ class ReasoningEngine:
                 continue
                 
             for rule in rules:
-                # Kiểm tra rule là dict, không phải string
                 if not isinstance(rule, dict):
                     logger.warning(f"Rule is not a dict: {type(rule)} - {rule}")
                     continue
@@ -1093,7 +1011,6 @@ class ReasoningEngine:
                         if any(kw in text.lower() for kw in keywords):
                             adjusted_intent = rule.get("intent", adjusted_intent)
                             adjusted_confidence += rule.get("confidence_boost", 0)
-                            logger.debug(f"Applied multi-turn rule: {rule}")
                             break
                 
                 elif rule_category == "intent_disambiguation":
@@ -1105,8 +1022,7 @@ class ReasoningEngine:
                             if intent_to_use:
                                 adjusted_intent = intent_to_use
                                 adjusted_confidence += rule.get("confidence_boost", 0)
-                                logger.debug(f"Applied disambiguation rule: {rule}")
-                                break
+                            break
                 
                 else:
                     keywords = rule.get("keywords", [])
@@ -1136,29 +1052,22 @@ class ReasoningEngine:
                                 if base_similarity < 0.5:
                                     adjusted_intent = rule_intent
                                     adjusted_confidence = base_confidence + confidence_boost
-                                    logger.debug(f"Changed intent based on context rule: {base_intent} -> {rule_intent}")
                             else:
                                 adjusted_confidence += confidence_boost
-                                logger.debug(f"Boosted confidence for {base_intent} by {confidence_boost}")
         
         if context_features.get("has_time") and adjusted_intent in ["set-alarm"]:
             adjusted_confidence += 0.1
-            logger.debug(f"Boosted confidence for {adjusted_intent} due to time entity")
         
         if context_features.get("has_person") and adjusted_intent in ["call", "send-mess"]:
             adjusted_confidence += 0.1
-            logger.debug(f"Boosted confidence for {adjusted_intent} due to person entity")
         
-        # Special rule for video call detection
         if "video call" in text.lower() or "video" in text.lower():
             if adjusted_intent == "call":
                 adjusted_intent = "make-video-call"
                 adjusted_confidence += 0.2
-                logger.debug(f"Changed intent from call to make-video-call due to video call keyword")
         
         adjusted_confidence = min(adjusted_confidence, 1.0)
         
-        # Ensure adjusted_intent is always a string
         if adjusted_intent is None:
             adjusted_intent = "unknown"
         
@@ -1170,10 +1079,10 @@ class ReasoningEngine:
         pattern_scores = []
         
         for pattern_type, patterns in self.semantic_patterns.items():
-            intent = pattern_type.split("_")[0]  # Lấy tên intent từ tên pattern
+            intent = pattern_type.split("_")[0]
             
             if pattern_type.endswith("_patterns"):
-                intent = pattern_type[:-9]  # Remove "_patterns" suffix
+                intent = pattern_type[:-9]
             
             intent_mapping = {
                 "alarm": "set-alarm",
@@ -1187,13 +1096,12 @@ class ReasoningEngine:
             if intent in intent_mapping:
                 intent = intent_mapping[intent]
             
-            # Đặc biệt xử lý cho message patterns
             if intent == "send-mess":
                 for pattern in patterns:
                     if re.search(pattern, text_lower):
-                        pattern_scores.append((intent, 0.8))  
+                        pattern_scores.append((intent, 0.8))
                         break
-                continue  
+                continue
             
             max_score = 0
             for pattern in patterns:
@@ -1213,10 +1121,10 @@ class ReasoningEngine:
                         
                         if plain_pattern and len(plain_pattern) > 3:
                             fuzzy_ratio = fuzz.token_set_ratio(plain_pattern, text_lower)
-                            fuzzy_score = fuzzy_ratio / 100.0 * 0.4  # Scale và giảm weight so với exact match
+                            fuzzy_score = fuzzy_ratio / 100.0 * 0.4
                             max_score = max(max_score, fuzzy_score)
                     except:
-                        pass  # Skip nếu không thể xử lý pattern
+                        pass
                 else:
                     matches = re.findall(pattern, text_lower)
                     if matches:
@@ -1255,7 +1163,7 @@ class ReasoningEngine:
             
             if score > 0:
                 intents = multi_intent.split(",")
-                best_intent = intents[0]  # Default to first
+                best_intent = intents[0]
                 best_intent_score = 0
                 
                 for intent in intents:
@@ -1276,16 +1184,13 @@ class ReasoningEngine:
             score = 0
             matched_indicators = []
             
-            # Đặc biệt xử lý cho send-mess intent
             if intent == "send-mess":
-                # Tăng score cho các từ khóa nhắn tin
                 message_keywords = ["nhắn", "tin", "gửi", "soạn", "tin nhắn", "nhắn tin"]
                 for keyword in message_keywords:
                     if keyword in text_lower:
-                        score += 0.3  # Higher score for message keywords
+                        score += 0.3
                         matched_indicators.append(keyword)
                         
-                        # Bonus score nếu từ khóa ở đầu câu
                         if text_lower.startswith(keyword) or text_lower.find(f" {keyword}") < len(text_lower) // 3:
                             score += 0.2
                 
@@ -1323,51 +1228,37 @@ class ReasoningEngine:
     def reasoning_predict(self, text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Predict intent sử dụng reasoning engine"""
         start_time = time.time()
-        logger.info(f"REASONING ENGINE: Phan tich text: '{text}'")
         
         cached_result = self.cache.get_result(text)
         if cached_result is not None and self.config.get("enable_cache", True):
-            logger.info(f"Đã tìm thấy kết quả trong cache cho: '{text}'")
             return cached_result
         
         if context:
             self.conversation_context.session_data.update(context)
         
         semantic_results = self.find_similar_intents(text)
-        logger.info(f"Semantic similarity results: {semantic_results}")
-        
         pattern_results = self.pattern_matching(text)
-        logger.info(f"Pattern matching results: {pattern_results}")
-        
         keyword_results = self.keyword_matching(text)
-        logger.info(f"Keyword matching results: {keyword_results}")
         
         try:
-            # Sử dụng SpecializedEntityExtractor nếu có
             if hasattr(self.entity_extractor, 'extract_all_entities'):
-                # SpecializedEntityExtractor - cần intent để extract chính xác
-                entities = self.entity_extractor.extract_all_entities(text, "call")  # type: ignore  # Default intent
+                entities = self.entity_extractor.extract_all_entities(text, "call")  # type: ignore
             else:
-                # Legacy EntityExtractor - fallback to empty dict if method doesn't exist
                 entities = getattr(self.entity_extractor, 'extract_entities', lambda x: {})(text)  # type: ignore
             
-            # Ensure entities is a dict
             if not isinstance(entities, dict):
                 entities = {}
-            logger.info(f"Extracted entities: {entities}")
         except Exception as e:
-            logger.error(f"ERROR Error extracting entities: {e}")
+            logger.error(f"Error extracting entities: {e}")
             entities = {}
         
         context_features = self.extract_context_features(text)
-        logger.info(f"Context features: {context_features}")
         
         combined_scores = defaultdict(float)
         
-        # Cộng dồn scores từ các phương pháp với weights từ config
-        semantic_weight = self.config.get("semantic_weight", 0.15)  # Giảm semantic weight
-        pattern_weight = self.config.get("pattern_weight", 0.55)    # Tăng pattern weight
-        keyword_weight = self.config.get("keyword_weight", 0.30)    # Giữ nguyên keyword weight
+        semantic_weight = self.config.get("semantic_weight", 0.15)
+        pattern_weight = self.config.get("pattern_weight", 0.55)
+        keyword_weight = self.config.get("keyword_weight", 0.30)
         
         for intent, score in semantic_results:
             combined_scores[intent] += score * semantic_weight
@@ -1386,12 +1277,8 @@ class ReasoningEngine:
                 text, base_intent, base_confidence, context_features
             )
             
-            # Normalize intent về 13 command chuẩn
             adjusted_intent = self.normalize_intent.get(adjusted_intent, adjusted_intent)
             
-            logger.info(f"Context adjustment: {base_intent} ({base_confidence:.3f}) -> {adjusted_intent} ({adjusted_confidence:.3f})")
-            
-            # Ensure entities is Dict[str, List[str]]
             entities_normalized: Dict[str, List[str]] = {}
             if isinstance(entities, dict):
                 for key, value in entities.items():
@@ -1486,9 +1373,9 @@ class ReasoningEngine:
         
         intent_entity_requirements = {
             "call": ["person"],
-            "send-mess": ["person"],                 # message text là optional
+            "send-mess": ["person"],
             "set-alarm": ["time"],
-            "get-info": [],                          # location/time optional
+            "get-info": [],
             "search-internet": [], 
             "search-youtube": [],
             "make-video-call": ["person"],
@@ -1537,7 +1424,6 @@ class ReasoningEngine:
     def apply_fallback_strategy(self, text: str, validation: Dict[str, Any], 
                               semantic_results: List[Tuple[str, float]]) -> Dict[str, Any]:
         """Áp dụng fallback strategy dựa trên confidence và validation"""
-        # Kiểm tra validation là dict
         if not isinstance(validation, dict):
             logger.warning(f"validation is not a dict: {type(validation)} - {validation}")
             return {
@@ -1554,7 +1440,6 @@ class ReasoningEngine:
             "confidence": confidence
         }
         
-        # Lấy thresholds từ config
         thresholds = self.intent_fallback["confidence_thresholds"]
         
         if confidence < thresholds["very_low"]:
@@ -1624,7 +1509,6 @@ class ReasoningEngine:
         """Tạo explanation cho kết quả reasoning"""
         explanation_parts = []
         
-        # Kiểm tra validation là dict và có key 'confidence'
         if isinstance(validation, dict) and 'confidence' in validation:
             confidence = validation['confidence']
             if isinstance(confidence, (int, float)):
@@ -1638,7 +1522,6 @@ class ReasoningEngine:
             entity_explanations = []
             for entity_type, values in entities.items():
                 if values:
-                    # Chuyển values sang string nếu không phải list string
                     if isinstance(values, list):
                         values_str = [str(v) for v in values]
                         entity_explanations.append(f"{entity_type}: {', '.join(values_str)}")
@@ -1704,8 +1587,6 @@ class ReasoningEngine:
         
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(self.knowledge_base, f, ensure_ascii=False, indent=2)
-        
-        logger.info(f"Đã lưu knowledge base vào {file_path}")
     
     def load_knowledge_base(self, file_path: Optional[str] = None):
         """Load knowledge base"""
@@ -1719,162 +1600,11 @@ class ReasoningEngine:
         
         if self.config.get("enable_vectorstore", True):
             self._initialize_vector_store()
-        
-        logger.info(f"Đã load knowledge base từ {file_path}")
     
     def reset_conversation_context(self):
         """Reset conversation context"""
         self.conversation_context.reset()
-        logger.info("Đã reset conversation context")
     
     def clear_cache(self):
         """Clear cache"""
         self.cache.clear()
-        logger.info("Đã clear cache")
-
-def test_reasoning_engine():
-    """Test reasoning engine"""
-    print("🧪 TESTING REASONING ENGINE")
-    print("=" * 50)
-    
-    # Khởi tạo engine với config mặc định
-    engine = ReasoningEngine()
-    
-    test_cases = [
-        "kết nối với mẹ tôi qua điện thoại",
-        "nhắc tôi uống thuốc lúc 8 giờ sáng mai",
-        "dự báo thời tiết hôm nay thế nào",
-        "bật nhạc bolero cho tôi nghe",
-        "cập nhật tin tức mới nhất",
-        "soạn tin nhắn gửi cho con trai",
-        "đặt chuông báo thức 6 giờ sáng mai",
-        "kiểm tra chỉ số huyết áp của tôi",
-        "chào bạn, hôm nay bạn thế nào",
-        "kết nối internet cho tôi",
-        "tìm kiếm thông tin về bệnh tiểu đường",
-        "đặt lịch hẹn với bác sĩ",
-        "goi dien cho me toi",  # Thiếu dấu "gọi điện cho mẹ tôi"
-        "dat bao thuc 6h sang",  # Thiếu dấu "đặt báo thức 6h sáng"
-        "nhan tin cho ban toi",  # Thiếu dấu "nhắn tin cho bạn tôi"
-        "đặt báo thức",  # Turn 1
-        "8 giờ sáng mai",  # Turn 2 - should understand this is related to previous alarm intent
-        "gọi điện",  # Turn 1
-        "cho mẹ tôi",  # Turn 2 - should understand this is related to previous call intent
-        "nhắc tôi gọi điện cho bác sĩ vào ngày mai",  # Both reminder and call
-        "gửi tin nhắn cho mẹ tôi nhắc bà uống thuốc"  # Both message and reminder
-    ]
-    
-    print("\n🔄 TESTING MULTI-TURN CONVERSATIONS")
-    print("-" * 40)
-    
-    print("\n📱 Conversation 1: Setting an alarm")
-    engine.reset_conversation_context()
-    
-    turn1 = "đặt báo thức"
-    print(f"\nUser: {turn1}")
-    result1 = engine.reasoning_predict(turn1)
-    print(f"🤖 Intent: {result1['intent']} (Confidence: {result1['confidence']:.3f})")
-    if result1.get('suggestions'):
-        print(f"💡 Suggestion: {result1['suggestions'][0]}")
-    
-    turn2 = "8 giờ sáng mai"
-    print(f"\nUser: {turn2}")
-    result2 = engine.reasoning_predict(turn2)
-    print(f"🤖 Intent: {result2['intent']} (Confidence: {result2['confidence']:.3f})")
-        
-    print("\n📱 Conversation 2: Making a call")
-    engine.reset_conversation_context()
-    
-    turn1 = "gọi điện"
-    print(f"\nUser: {turn1}")
-    result1 = engine.reasoning_predict(turn1)
-    print(f"🤖 Intent: {result1['intent']} (Confidence: {result1['confidence']:.3f})")
-    if result1.get('suggestions'):
-        print(f"💡 Suggestion: {result1['suggestions'][0]}")
-    
-    turn2 = "cho mẹ tôi"
-    print(f"\nUser: {turn2}")
-    result2 = engine.reasoning_predict(turn2)
-    print(f"🤖 Intent: {result2['intent']} (Confidence: {result2['confidence']:.3f})")
-        
-    print("\n🔍 TESTING INDIVIDUAL CASES")
-    print("-" * 40)
-    
-    for i, text in enumerate(test_cases[:12], 1):  # Test first 12 cases
-        print(f"\n📝 Test case {i}: '{text}'")
-        print("-" * 40)
-        
-        result = engine.reasoning_predict(text)
-        
-        print(f"🎯 Intent: {result['intent']}")
-        if result.get('entities'):
-            print(f"👤 Entities: {result['entities']}")
-        print(f"💡 Explanation: {result['explanation']}")
-        
-        if result.get('suggestions'):
-            print(f"💭 Suggestions: {result['suggestions']}")
-        
-        if result.get('validation') and result['validation'].get('warnings'):
-            print(f"⚠️  Warnings: {result['validation']['warnings']}")
-    
-    print("\n🔤 TESTING FUZZY MATCHING")
-    print("-" * 40)
-    
-    for i, text in enumerate(test_cases[12:15], 1):
-        print(f"\n📝 Fuzzy test {i}: '{text}'")
-        print("-" * 40)
-        
-        result = engine.reasoning_predict(text)
-        
-        print(f"🎯 Intent: {result['intent']}")
-        if result.get('entities'):
-            print(f"👤 Entities: {result['entities']}")
-        print(f"💡 Explanation: {result['explanation']}")
-        
-        if result.get('suggestions'):
-            print(f"💭 Suggestions: {result['suggestions']}")
-    
-    print("\n🤔 TESTING AMBIGUOUS INTENTS")
-    print("-" * 40)
-    
-    for i, text in enumerate(test_cases[-2:], 1):
-        print(f"\n📝 Ambiguous test {i}: '{text}'")
-        print("-" * 40)
-        
-        result = engine.reasoning_predict(text)
-        
-        print(f"🎯 Intent: {result['intent']}")
-        if result.get('entities'):
-            print(f"👤 Entities: {result['entities']}")
-        print(f"💡 Explanation: {result['explanation']}")
-        
-        if result.get('suggestions'):
-            print(f"💭 Suggestions: {result['suggestions']}")
-    
-    print("\n⏱️ TESTING PERFORMANCE")
-    print("-" * 40)
-    
-    engine.clear_cache()
-    
-    start_time = time.time()
-    for _ in range(3):  # Run a few iterations to measure performance
-        for text in test_cases[:5]:  # Use first 5 test cases
-            _ = engine.reasoning_predict(text)
-    
-    total_time = time.time() - start_time
-    avg_time = total_time / (3 * 5)
-    print(f"Average processing time per request: {avg_time:.4f} seconds")
-    
-    start_time = time.time()
-    for _ in range(3):  # Run with cache
-        for text in test_cases[:5]:  # Use first 5 test cases
-            _ = engine.reasoning_predict(text)
-    
-    cache_time = time.time() - start_time
-    print(f"Average processing time with cache: {cache_time/15:.4f} seconds")
-    print(f"Cache speedup: {total_time/cache_time:.2f}x")
-    
-    print("\n🎉 REASONING ENGINE TEST COMPLETED!")
-
-if __name__ == "__main__":
-    test_reasoning_engine()

@@ -1,0 +1,589 @@
+{
+  "metadata": {
+    "master_file": "src\\data\\raw\\elderly_commands_master.json",
+    "train_file": "src\\data\\processed\\train.json",
+    "val_file": "src\\data\\processed\\val.json",
+    "test_file": "src\\data\\processed\\test.json"
+  },
+  "consistency_check": {
+    "master_count": 35908,
+    "split_total": 35609,
+    "matches": false,
+    "train_ratio": 80.0,
+    "val_ratio": 10.0,
+    "test_ratio": 10.0
+  },
+  "master": {
+    "split": "master",
+    "total_samples": 35908,
+    "intent_distribution": {
+      "call": 4371,
+      "control-device": 3397,
+      "get-info": 3496,
+      "send-mess": 3599,
+      "search-internet": 3518,
+      "make-video-call": 3399,
+      "set-alarm": 3538,
+      "search-youtube": 3481,
+      "open-cam": 3403,
+      "add-contacts": 3407,
+      "unknown": 299
+    },
+    "command_distribution": {
+      "call": 4371,
+      "control-device": 3397,
+      "get-info": 3496,
+      "send-mess": 3599,
+      "search-internet": 3518,
+      "make-video-call": 3399,
+      "set-alarm": 3538,
+      "search-youtube": 3481,
+      "open-cam": 3403,
+      "add-contacts": 3407,
+      "unknown": 299
+    },
+    "entity_distribution": {
+      "PLATFORM": 13997,
+      "QUERY": 10495,
+      "CONTACT_NAME": 8248,
+      "PHONE": 6336,
+      "MESSAGE": 6079,
+      "TIME": 3725,
+      "RECEIVER": 3599,
+      "DEVICE": 3397,
+      "VALUE": 3397,
+      "CAMERA_TYPE": 2355,
+      "DATE": 2249,
+      "MODE": 2024,
+      "CAMERA_MODE": 142
+    },
+    "entity_type_distribution": {
+      "PLATFORM": 13997,
+      "QUERY": 10495,
+      "CONTACT_NAME": 8248,
+      "PHONE": 6336,
+      "MESSAGE": 6079,
+      "TIME": 3725,
+      "RECEIVER": 3599,
+      "DEVICE": 3397,
+      "VALUE": 3397,
+      "CAMERA_TYPE": 2355,
+      "DATE": 2249,
+      "MODE": 2024,
+      "CAMERA_MODE": 142
+    },
+    "statistics": {
+      "avg_entities_per_sample": 1.84,
+      "max_entities_per_sample": 3,
+      "min_entities_per_sample": 0,
+      "avg_sentence_length": 10.09,
+      "min_sentence_length": 2,
+      "max_sentence_length": 21
+    },
+    "entities_by_intent": {
+      "call": {
+        "PHONE": 1793,
+        "CONTACT_NAME": 2578
+      },
+      "control-device": {
+        "DEVICE": 3397,
+        "VALUE": 3397
+      },
+      "get-info": {
+        "QUERY": 3496
+      },
+      "send-mess": {
+        "PLATFORM": 3599,
+        "RECEIVER": 3599,
+        "MESSAGE": 3599
+      },
+      "search-internet": {
+        "QUERY": 3518,
+        "PLATFORM": 3518
+      },
+      "make-video-call": {
+        "CONTACT_NAME": 2263,
+        "PLATFORM": 3399,
+        "PHONE": 1136
+      },
+      "set-alarm": {
+        "DATE": 2249,
+        "TIME": 3538,
+        "MESSAGE": 2480
+      },
+      "search-youtube": {
+        "PLATFORM": 3481,
+        "QUERY": 3481
+      },
+      "open-cam": {
+        "MODE": 2024,
+        "CAMERA_TYPE": 2355,
+        "CAMERA_MODE": 142,
+        "TIME": 187
+      },
+      "add-contacts": {
+        "CONTACT_NAME": 3407,
+        "PHONE": 3407
+      }
+    }
+  },
+  "train": {
+    "split": "train",
+    "total_samples": 28487,
+    "intent_distribution": {
+      "search-youtube": 2785,
+      "make-video-call": 2719,
+      "add-contacts": 2726,
+      "control-device": 2718,
+      "open-cam": 2722,
+      "get-info": 2797,
+      "search-internet": 2814,
+      "call": 3497,
+      "set-alarm": 2830,
+      "send-mess": 2879
+    },
+    "command_distribution": {
+      "search-youtube": 2785,
+      "make-video-call": 2719,
+      "add-contacts": 2726,
+      "control-device": 2718,
+      "open-cam": 2722,
+      "get-info": 2797,
+      "search-internet": 2814,
+      "call": 3497,
+      "set-alarm": 2830,
+      "send-mess": 2879
+    },
+    "entity_distribution": {
+      "QUERY": 11193,
+      "PLATFORM": 10200,
+      "CONTACT_NAME": 7027,
+      "MODE": 3728,
+      "ACTION": 3672,
+      "RECEIVER": 3539,
+      "MESSAGE": 2875,
+      "TIME": 2822,
+      "DATE": 2783,
+      "DEVICE": 2718,
+      "CAMERA_TYPE": 1768,
+      "PHONE": 1507,
+      "FREQUENCY": 12
+    },
+    "entity_type_distribution": {
+      "QUERY": 11193,
+      "PLATFORM": 10200,
+      "CONTACT_NAME": 7027,
+      "MODE": 3728,
+      "ACTION": 3672,
+      "RECEIVER": 3539,
+      "MESSAGE": 2875,
+      "TIME": 2822,
+      "DATE": 2783,
+      "DEVICE": 2718,
+      "CAMERA_TYPE": 1768,
+      "PHONE": 1507,
+      "FREQUENCY": 12
+    },
+    "statistics": {
+      "avg_entities_per_sample": 1.89,
+      "max_entities_per_sample": 3,
+      "min_entities_per_sample": 0,
+      "avg_sentence_length": 14.34,
+      "min_sentence_length": 1,
+      "max_sentence_length": 43
+    },
+    "entities_by_intent": {
+      "search-youtube": {
+        "PLATFORM": 2785,
+        "QUERY": 2785
+      },
+      "make-video-call": {
+        "CONTACT_NAME": 2719,
+        "PLATFORM": 2719,
+        "RECEIVER": 663
+      },
+      "control-device": {
+        "ACTION": 2718,
+        "MODE": 1958,
+        "DEVICE": 2718
+      },
+      "open-cam": {
+        "CAMERA_TYPE": 1768,
+        "MODE": 1770,
+        "ACTION": 954
+      },
+      "add-contacts": {
+        "CONTACT_NAME": 2105,
+        "PHONE": 731
+      },
+      "get-info": {
+        "QUERY": 5594
+      },
+      "search-internet": {
+        "QUERY": 2814,
+        "PLATFORM": 1821
+      },
+      "call": {
+        "CONTACT_NAME": 2203,
+        "PHONE": 776,
+        "RECEIVER": 1
+      },
+      "set-alarm": {
+        "TIME": 2822,
+        "DATE": 2783,
+        "FREQUENCY": 8
+      },
+      "send-mess": {
+        "PLATFORM": 2875,
+        "RECEIVER": 2875,
+        "MESSAGE": 2875,
+        "FREQUENCY": 4
+      }
+    }
+  },
+  "val": {
+    "split": "val",
+    "total_samples": 3561,
+    "intent_distribution": {
+      "call": 437,
+      "search-internet": 352,
+      "add-contacts": 340,
+      "search-youtube": 348,
+      "get-info": 349,
+      "open-cam": 341,
+      "set-alarm": 354,
+      "make-video-call": 340,
+      "send-mess": 360,
+      "control-device": 340
+    },
+    "command_distribution": {
+      "call": 437,
+      "search-internet": 352,
+      "add-contacts": 340,
+      "search-youtube": 348,
+      "get-info": 349,
+      "open-cam": 341,
+      "set-alarm": 354,
+      "make-video-call": 340,
+      "send-mess": 360,
+      "control-device": 340
+    },
+    "entity_distribution": {
+      "QUERY": 1398,
+      "PLATFORM": 1265,
+      "CONTACT_NAME": 864,
+      "MODE": 474,
+      "ACTION": 470,
+      "RECEIVER": 450,
+      "MESSAGE": 360,
+      "TIME": 354,
+      "DATE": 352,
+      "DEVICE": 340,
+      "PHONE": 214,
+      "CAMERA_TYPE": 211
+    },
+    "entity_type_distribution": {
+      "QUERY": 1398,
+      "PLATFORM": 1265,
+      "CONTACT_NAME": 864,
+      "MODE": 474,
+      "ACTION": 470,
+      "RECEIVER": 450,
+      "MESSAGE": 360,
+      "TIME": 354,
+      "DATE": 352,
+      "DEVICE": 340,
+      "PHONE": 214,
+      "CAMERA_TYPE": 211
+    },
+    "statistics": {
+      "avg_entities_per_sample": 1.9,
+      "max_entities_per_sample": 3,
+      "min_entities_per_sample": 0,
+      "avg_sentence_length": 14.59,
+      "min_sentence_length": 1,
+      "max_sentence_length": 43
+    },
+    "entities_by_intent": {
+      "call": {
+        "CONTACT_NAME": 266,
+        "PHONE": 119
+      },
+      "search-internet": {
+        "PLATFORM": 217,
+        "QUERY": 352
+      },
+      "add-contacts": {
+        "CONTACT_NAME": 258,
+        "PHONE": 95
+      },
+      "search-youtube": {
+        "PLATFORM": 348,
+        "QUERY": 348
+      },
+      "get-info": {
+        "QUERY": 698
+      },
+      "open-cam": {
+        "CAMERA_TYPE": 211,
+        "MODE": 227,
+        "ACTION": 130
+      },
+      "set-alarm": {
+        "DATE": 352,
+        "TIME": 354
+      },
+      "make-video-call": {
+        "CONTACT_NAME": 340,
+        "RECEIVER": 90,
+        "PLATFORM": 340
+      },
+      "send-mess": {
+        "PLATFORM": 360,
+        "RECEIVER": 360,
+        "MESSAGE": 360
+      },
+      "control-device": {
+        "ACTION": 340,
+        "MODE": 247,
+        "DEVICE": 340
+      }
+    }
+  },
+  "test": {
+    "split": "test",
+    "total_samples": 3561,
+    "intent_distribution": {
+      "call": 437,
+      "search-internet": 352,
+      "send-mess": 360,
+      "set-alarm": 354,
+      "open-cam": 340,
+      "make-video-call": 340,
+      "get-info": 350,
+      "add-contacts": 341,
+      "control-device": 339,
+      "search-youtube": 348
+    },
+    "command_distribution": {
+      "call": 437,
+      "search-internet": 352,
+      "send-mess": 360,
+      "set-alarm": 354,
+      "open-cam": 340,
+      "make-video-call": 340,
+      "get-info": 350,
+      "add-contacts": 341,
+      "control-device": 339,
+      "search-youtube": 348
+    },
+    "entity_distribution": {
+      "QUERY": 1400,
+      "PLATFORM": 1273,
+      "CONTACT_NAME": 866,
+      "MODE": 486,
+      "RECEIVER": 447,
+      "ACTION": 444,
+      "MESSAGE": 360,
+      "TIME": 354,
+      "DATE": 348,
+      "DEVICE": 339,
+      "CAMERA_TYPE": 235,
+      "PHONE": 195
+    },
+    "entity_type_distribution": {
+      "QUERY": 1400,
+      "PLATFORM": 1273,
+      "CONTACT_NAME": 866,
+      "MODE": 486,
+      "RECEIVER": 447,
+      "ACTION": 444,
+      "MESSAGE": 360,
+      "TIME": 354,
+      "DATE": 348,
+      "DEVICE": 339,
+      "CAMERA_TYPE": 235,
+      "PHONE": 195
+    },
+    "statistics": {
+      "avg_entities_per_sample": 1.89,
+      "max_entities_per_sample": 3,
+      "min_entities_per_sample": 0,
+      "avg_sentence_length": 14.26,
+      "min_sentence_length": 1,
+      "max_sentence_length": 43
+    },
+    "entities_by_intent": {
+      "call": {
+        "CONTACT_NAME": 267,
+        "PHONE": 110,
+        "RECEIVER": 1
+      },
+      "search-internet": {
+        "PLATFORM": 225,
+        "QUERY": 352
+      },
+      "send-mess": {
+        "PLATFORM": 360,
+        "MESSAGE": 360,
+        "RECEIVER": 360
+      },
+      "set-alarm": {
+        "DATE": 348,
+        "TIME": 354
+      },
+      "open-cam": {
+        "CAMERA_TYPE": 235,
+        "MODE": 236,
+        "ACTION": 105
+      },
+      "make-video-call": {
+        "CONTACT_NAME": 340,
+        "RECEIVER": 86,
+        "PLATFORM": 340
+      },
+      "get-info": {
+        "QUERY": 700
+      },
+      "add-contacts": {
+        "CONTACT_NAME": 259,
+        "PHONE": 85
+      },
+      "control-device": {
+        "ACTION": 339,
+        "DEVICE": 339,
+        "MODE": 250
+      },
+      "search-youtube": {
+        "PLATFORM": 348,
+        "QUERY": 348
+      }
+    }
+  },
+  "combined": {
+    "split": "combined",
+    "total_samples": 35609,
+    "intent_distribution": {
+      "search-youtube": 3481,
+      "make-video-call": 3399,
+      "add-contacts": 3407,
+      "control-device": 3397,
+      "open-cam": 3403,
+      "get-info": 3496,
+      "search-internet": 3518,
+      "call": 4371,
+      "set-alarm": 3538,
+      "send-mess": 3599
+    },
+    "command_distribution": {
+      "search-youtube": 3481,
+      "make-video-call": 3399,
+      "add-contacts": 3407,
+      "control-device": 3397,
+      "open-cam": 3403,
+      "get-info": 3496,
+      "search-internet": 3518,
+      "call": 4371,
+      "set-alarm": 3538,
+      "send-mess": 3599
+    },
+    "entity_distribution": {
+      "QUERY": 13991,
+      "PLATFORM": 12738,
+      "CONTACT_NAME": 8757,
+      "MODE": 4688,
+      "ACTION": 4586,
+      "RECEIVER": 4436,
+      "MESSAGE": 3595,
+      "TIME": 3530,
+      "DATE": 3483,
+      "DEVICE": 3397,
+      "CAMERA_TYPE": 2214,
+      "PHONE": 1916,
+      "FREQUENCY": 12
+    },
+    "entity_type_distribution": {
+      "QUERY": 13991,
+      "PLATFORM": 12738,
+      "CONTACT_NAME": 8757,
+      "MODE": 4688,
+      "ACTION": 4586,
+      "RECEIVER": 4436,
+      "MESSAGE": 3595,
+      "TIME": 3530,
+      "DATE": 3483,
+      "DEVICE": 3397,
+      "CAMERA_TYPE": 2214,
+      "PHONE": 1916,
+      "FREQUENCY": 12
+    },
+    "statistics": {
+      "avg_entities_per_sample": 1.89,
+      "max_entities_per_sample": 3,
+      "min_entities_per_sample": 0,
+      "avg_sentence_length": 14.35,
+      "min_sentence_length": 1,
+      "max_sentence_length": 43
+    },
+    "entities_by_intent": {
+      "search-youtube": {
+        "PLATFORM": 3481,
+        "QUERY": 3481
+      },
+      "make-video-call": {
+        "CONTACT_NAME": 3399,
+        "PLATFORM": 3399,
+        "RECEIVER": 839
+      },
+      "control-device": {
+        "ACTION": 3397,
+        "MODE": 2455,
+        "DEVICE": 3397
+      },
+      "open-cam": {
+        "CAMERA_TYPE": 2214,
+        "MODE": 2233,
+        "ACTION": 1189
+      },
+      "add-contacts": {
+        "CONTACT_NAME": 2622,
+        "PHONE": 911
+      },
+      "get-info": {
+        "QUERY": 6992
+      },
+      "search-internet": {
+        "QUERY": 3518,
+        "PLATFORM": 2263
+      },
+      "call": {
+        "CONTACT_NAME": 2736,
+        "PHONE": 1005,
+        "RECEIVER": 2
+      },
+      "set-alarm": {
+        "TIME": 3530,
+        "DATE": 3483,
+        "FREQUENCY": 8
+      },
+      "send-mess": {
+        "PLATFORM": 3595,
+        "RECEIVER": 3595,
+        "MESSAGE": 3595,
+        "FREQUENCY": 4
+      }
+    }
+  },
+  "summary": {
+    "total_samples": {
+      "master": 35908,
+      "train": 28487,
+      "val": 3561,
+      "test": 3561,
+      "total_splits": 35609
+    },
+    "unique_intents": 11,
+    "unique_commands": 11,
+    "unique_entity_types": 13
+  }
+}

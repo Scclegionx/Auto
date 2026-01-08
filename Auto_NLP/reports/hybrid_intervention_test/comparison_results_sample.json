@@ -1,0 +1,6034 @@
+[
+  {
+    "id": "TC001",
+    "text": "giúp tôi lưu liên hệ Hùng số 0985383569 nhé",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Hùng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0985383569",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {},
+    "raw_confidence": 0.9997624754905701,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE_NUMBER": "0985383569",
+      "CONTACT_NAME": "Hùng nhé",
+      "PHONE": "0985383569"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 0,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC002",
+    "text": "nhé lưu liên hệ Hùng số 0333444555",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Hùng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0333444555",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {},
+    "raw_confidence": 0.9997537732124329,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE_NUMBER": "0333444555",
+      "CONTACT_NAME": "Hùng",
+      "PHONE": "0333444555"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 0,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC003",
+    "text": "này lưu liên hệ Mẹ số 0977111222 giùm",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Mẹ",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0977111222",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {},
+    "raw_confidence": 0.9995249509811401,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE_NUMBER": "0977111222",
+      "CONTACT_NAME": "Mẹ giùm",
+      "PHONE": "0977111222"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 0,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC004",
+    "text": "giúp tôi lưu liên hệ Chị Thảo số 0909123123 nhé",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Chị Thảo",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0909123123",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {
+      "CONTACT_NAME": "Chị",
+      "PHONE": "123 123"
+    },
+    "raw_confidence": 0.9987855553627014,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "CONTACT_NAME": "Chị Thảo nhé",
+      "PHONE": "0909123123",
+      "PHONE_NUMBER": "0909123123"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER"
+      ],
+      "removed": [],
+      "modified": [
+        "CONTACT_NAME",
+        "PHONE"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC005",
+    "text": "giúp tôi lưu liên hệ Ông Sơn số 0909123123",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Ông Sơn",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0909123123",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {
+      "CONTACT_NAME": "Ông"
+    },
+    "raw_confidence": 0.9994551539421082,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "CONTACT_NAME": "Ông Sơn",
+      "PHONE_NUMBER": "0909123123",
+      "PHONE": "0909123123"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [
+        "CONTACT_NAME"
+      ],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC006",
+    "text": "làm ơn lưu liên hệ Mẹ số 0909123123 nhé",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Mẹ",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0909123123",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {
+      "PHONE": "123 123"
+    },
+    "raw_confidence": 0.9981254935264587,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE": "0909123123",
+      "PHONE_NUMBER": "0909123123",
+      "CONTACT_NAME": "Mẹ nhé"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME"
+      ],
+      "removed": [],
+      "modified": [
+        "PHONE"
+      ],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC007",
+    "text": "giúp tôi lưu liên hệ Hùng số 0977111222 giùm",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Hùng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0977111222",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {},
+    "raw_confidence": 0.9997543692588806,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE_NUMBER": "0977111222",
+      "CONTACT_NAME": "Hùng giùm",
+      "PHONE": "0977111222"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 0,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC008",
+    "text": "ờm lưu liên hệ Bà Hạnh số 0985383569 nhé",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Bà Hạnh",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0985383569",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {
+      "PHONE": "35 69"
+    },
+    "raw_confidence": 0.9982885718345642,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE": "0985383569",
+      "PHONE_NUMBER": "0985383569",
+      "CONTACT_NAME": "Bà Hạnh nhé"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME"
+      ],
+      "removed": [],
+      "modified": [
+        "PHONE"
+      ],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC009",
+    "text": "làm ơn lưu liên hệ Mẹ số 0912345678",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Mẹ",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0912345678",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {},
+    "raw_confidence": 0.9954884648323059,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE_NUMBER": "0912345678",
+      "CONTACT_NAME": "Mẹ",
+      "PHONE": "0912345678"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 0,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC010",
+    "text": "này lưu liên hệ Bố số 0909123123 giùm",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Bố",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0909123123",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {},
+    "raw_confidence": 0.999653697013855,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE_NUMBER": "0909123123",
+      "CONTACT_NAME": "Bố giùm",
+      "PHONE": "0909123123"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 0,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC011",
+    "text": "giùm lưu liên hệ Nam số 0333444555 với",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Nam",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0333444555",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {},
+    "raw_confidence": 0.9997488856315613,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE_NUMBER": "0333444555",
+      "CONTACT_NAME": "Nam với",
+      "PHONE": "0333444555"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 0,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC012",
+    "text": "với lưu liên hệ Mai số 0333444555",
+    "true_intent": "add-contacts",
+    "true_command": "add-contacts",
+    "true_entities": [
+      {
+        "label": "CONTACT_NAME",
+        "text": "Mai",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PHONE",
+        "text": "0333444555",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "add-contacts",
+    "raw_command": "add-contacts",
+    "raw_entities": {
+      "PHONE": "0 33 34 4 45 55"
+    },
+    "raw_confidence": 0.9911108016967773,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "add-contacts",
+    "hybrid_command": "add-contacts",
+    "hybrid_entities": {
+      "PHONE": "0333444555",
+      "PHONE_NUMBER": "0333444555",
+      "CONTACT_NAME": "Mai"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "add-contacts",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PHONE_NUMBER",
+        "CONTACT_NAME"
+      ],
+      "removed": [],
+      "modified": [
+        "PHONE"
+      ],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC013",
+    "text": "với gọi điện cho số 0977111222 qua Viber với",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0977111222",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PHONE": "11 12",
+      "PLATFORM": "Viber"
+    },
+    "raw_confidence": 0.6550577282905579,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "call",
+    "hybrid_command": "call",
+    "hybrid_entities": {
+      "RECEIVER": "0977111222"
+    },
+    "hybrid_confidence": 0.68,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.40505772829055786,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.68,
+    "intent_changed": true,
+    "command_changed": true,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [
+        "PLATFORM",
+        "PHONE"
+      ],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 1
+    },
+    "decision_reason": "reasoning_validation_override",
+    "method": "hybrid",
+    "intent_improved": true,
+    "intent_degraded": false,
+    "command_improved": true,
+    "command_degraded": false
+  },
+  {
+    "id": "TC014",
+    "text": "à gọi điện cho Mai qua Viber với",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Mai",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PLATFORM": "Viber"
+    },
+    "raw_confidence": 0.9942899942398071,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "PLATFORM": "viber",
+      "RECEIVER": "Điện Cho",
+      "CONTACT_NAME": "Điện Cho"
+    },
+    "hybrid_confidence": 0.7442899942398071,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7442899942398071,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.8,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER",
+        "CONTACT_NAME"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC015",
+    "text": "ờm gọi điện cho số 0333444555 qua Messenger với",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0333444555",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PLATFORM": "Messenger"
+    },
+    "raw_confidence": 0.6823787689208984,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "call",
+    "hybrid_command": "call",
+    "hybrid_entities": {
+      "RECEIVER": "0333444555"
+    },
+    "hybrid_confidence": 0.789370491048123,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.43237876892089844,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.789370491048123,
+    "intent_changed": true,
+    "command_changed": true,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [
+        "PLATFORM"
+      ],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "reasoning_validation_override",
+    "method": "hybrid",
+    "intent_improved": true,
+    "intent_degraded": false,
+    "command_improved": true,
+    "command_degraded": false
+  },
+  {
+    "id": "TC016",
+    "text": "giúp tôi gọi điện cho Hùng qua WhatsApp nhé",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Hùng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "WhatsApp",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {},
+    "raw_confidence": 0.9968224763870239,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "RECEIVER": "Hùng",
+      "PLATFORM": "whatsapp",
+      "CONTACT_NAME": "Hùng"
+    },
+    "hybrid_confidence": 0.7468224763870239,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7468224763870239,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.7948268549941306,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER",
+        "PLATFORM",
+        "CONTACT_NAME"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 0,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC017",
+    "text": "ờm gọi điện cho số 0333444555 qua Messenger giùm",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0333444555",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PLATFORM": "Messenger"
+    },
+    "raw_confidence": 0.8368725776672363,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "call",
+    "hybrid_command": "call",
+    "hybrid_entities": {
+      "RECEIVER": "0333444555"
+    },
+    "hybrid_confidence": 0.675,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.5868725776672363,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.675,
+    "intent_changed": true,
+    "command_changed": true,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [
+        "PLATFORM"
+      ],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "reasoning_validation_override",
+    "method": "hybrid",
+    "intent_improved": true,
+    "intent_degraded": false,
+    "command_improved": true,
+    "command_degraded": false
+  },
+  {
+    "id": "TC018",
+    "text": "nhé gọi điện cho số 0912345678 qua WhatsApp với",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0912345678",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "WhatsApp",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PHONE": "123"
+    },
+    "raw_confidence": 0.9206354022026062,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "call",
+    "hybrid_command": "call",
+    "hybrid_entities": {
+      "RECEIVER": "0912345678"
+    },
+    "hybrid_confidence": 0.7897776503765837,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.6706354022026062,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.7897776503765837,
+    "intent_changed": true,
+    "command_changed": true,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [
+        "PHONE"
+      ],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "reasoning_validation_override",
+    "method": "hybrid",
+    "intent_improved": true,
+    "intent_degraded": false,
+    "command_improved": true,
+    "command_degraded": false
+  },
+  {
+    "id": "TC019",
+    "text": "à gọi điện cho số 0912345678 qua Messenger",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0912345678",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PLATFORM": "Messenger"
+    },
+    "raw_confidence": 0.9112237095832825,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "call",
+    "hybrid_command": "call",
+    "hybrid_entities": {
+      "RECEIVER": "0912345678"
+    },
+    "hybrid_confidence": 0.7965350045476641,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.6612237095832825,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.7965350045476641,
+    "intent_changed": true,
+    "command_changed": true,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [
+        "PLATFORM"
+      ],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "reasoning_validation_override",
+    "method": "hybrid",
+    "intent_improved": true,
+    "intent_degraded": false,
+    "command_improved": true,
+    "command_degraded": false
+  },
+  {
+    "id": "TC020",
+    "text": "với gọi điện cho Mẹ qua Messenger nhé",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Mẹ",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "RECEIVER": "Mẹ",
+      "PLATFORM": "Messenger"
+    },
+    "raw_confidence": 0.9987471103668213,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "CONTACT_NAME": "mẹ",
+      "RECEIVER": "Mẹ",
+      "PLATFORM": "messenger"
+    },
+    "hybrid_confidence": 0.7487471103668213,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7487471103668213,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.8,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CONTACT_NAME"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC021",
+    "text": "à gọi điện cho Chị Thảo qua Viber",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Chị Thảo",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "CONTACT_NAME": "Chị",
+      "PLATFORM": "Viber"
+    },
+    "raw_confidence": 0.993893027305603,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "CONTACT_NAME": "Chị",
+      "PLATFORM": "viber",
+      "RECEIVER": "Chị Thảo"
+    },
+    "hybrid_confidence": 0.743893027305603,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.743893027305603,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.78,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC022",
+    "text": "nhé gọi điện cho Anh Tuấn qua Messenger nhé",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Anh Tuấn",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "CONTACT_NAME": "Anh",
+      "PLATFORM": "Messenger"
+    },
+    "raw_confidence": 0.9924150109291077,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "CONTACT_NAME": "Anh",
+      "PLATFORM": "messenger",
+      "RECEIVER": "Anh Tuấn"
+    },
+    "hybrid_confidence": 0.7424150109291077,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7424150109291077,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.7613953488372093,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC023",
+    "text": "ờ gọi điện cho Mẹ qua Zalo nhé",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Mẹ",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Zalo",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "RECEIVER": "Mẹ",
+      "PLATFORM": "Zalo"
+    },
+    "raw_confidence": 0.9978329539299011,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "CONTACT_NAME": "mẹ",
+      "RECEIVER": "Mẹ",
+      "PLATFORM": "zalo"
+    },
+    "hybrid_confidence": 0.7478329539299011,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7478329539299011,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.7080000000000001,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CONTACT_NAME"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC024",
+    "text": "nhé gọi điện cho Chị Thảo qua Zalo với",
+    "true_intent": "call",
+    "true_command": "call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Chị Thảo",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Zalo",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "CONTACT_NAME": "Chị",
+      "PLATFORM": "Zalo"
+    },
+    "raw_confidence": 0.9663420915603638,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "CONTACT_NAME": "Chị",
+      "PLATFORM": "zalo",
+      "RECEIVER": "Với"
+    },
+    "hybrid_confidence": 0.7163420915603638,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7163420915603638,
+    "reasoning_intent": "call",
+    "reasoning_confidence": 0.8,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC025",
+    "text": "giùm tăng đèn ngủ 70% nhé",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "đèn ngủ",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "tăng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LEVEL",
+        "text": "70%",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "tăng",
+      "DEVICE": "đèn"
+    },
+    "raw_confidence": 0.9988718628883362,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "đèn pin",
+      "ACTION": "tăng"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [
+        "DEVICE"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC026",
+    "text": "này mở đèn phòng khách 28 độ",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "đèn phòng khách",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "mở",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LEVEL",
+        "text": "28 độ",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "im lặng",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "ACTION": "mở",
+      "DEVICE": "đèn"
+    },
+    "raw_confidence": 0.9975560903549194,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "đèn pin",
+      "ACTION": "bật"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [],
+      "removed": [],
+      "modified": [
+        "DEVICE",
+        "ACTION"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC027",
+    "text": "giúp tôi tăng máy lọc không khí giùm",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "máy lọc không khí",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "tăng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "mạnh",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "tăng",
+      "DEVICE": "máy lọc không khí"
+    },
+    "raw_confidence": 0.9984183311462402,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "máy lọc không khí",
+      "ACTION": "tăng"
+    },
+    "hybrid_confidence": 0.9984183311462402,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 0.9984183311462402,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC028",
+    "text": "giùm bật đèn phòng khách ở phòng ngủ 70% với",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "đèn phòng khách",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "bật",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LEVEL",
+        "text": "70%",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "phòng ngủ",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "bật",
+      "DEVICE": "đèn phòng"
+    },
+    "raw_confidence": 0.9995611310005188,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "đèn pin",
+      "ACTION": "bật"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [
+        "DEVICE"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC029",
+    "text": "giùm giảm điều hoà",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "điều hoà",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "giảm",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "giảm",
+      "DEVICE": "điều hoà"
+    },
+    "raw_confidence": 0.9988874793052673,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {},
+    "hybrid_confidence": 0.9988874793052673,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 0.9988874793052673,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": true,
+    "command_changed": true,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [],
+      "removed": [
+        "MODE",
+        "DEVICE"
+      ],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 0
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": true,
+    "command_improved": false,
+    "command_degraded": true
+  },
+  {
+    "id": "TC030",
+    "text": "này tắt đèn phòng khách ở bếp mức 1 với",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "đèn phòng khách",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "tắt",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LEVEL",
+        "text": "mức 1",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "bếp",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "tắt",
+      "DEVICE": "đèn phòng"
+    },
+    "raw_confidence": 0.9994045495986938,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "đèn pin",
+      "ACTION": "tắt"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [
+        "DEVICE"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC031",
+    "text": "giúp tôi tăng tivi ở ban công",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "tivi",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "tăng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "ban công",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "tăng",
+      "DEVICE": "tivi"
+    },
+    "raw_confidence": 0.9992836117744446,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "tivi",
+      "ACTION": "tăng"
+    },
+    "hybrid_confidence": 0.9992836117744446,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 0.9992836117744446,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC032",
+    "text": "à tắt quạt",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "quạt",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "tắt",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "tắt",
+      "DEVICE": "quạt"
+    },
+    "raw_confidence": 0.9979398846626282,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "quạt",
+      "ACTION": "tắt"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC033",
+    "text": "à bật máy lọc không khí ở phòng ngủ với",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "máy lọc không khí",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "bật",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "phòng ngủ",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "bật",
+      "DEVICE": "máy lọc không khí"
+    },
+    "raw_confidence": 0.9991637468338013,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "máy lọc không khí",
+      "ACTION": "bật"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC034",
+    "text": "giùm tăng đèn phòng khách mức 2 giùm",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "đèn phòng khách",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "tăng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LEVEL",
+        "text": "mức 2",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "tăng",
+      "DEVICE": "đèn"
+    },
+    "raw_confidence": 0.9994043111801147,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "đèn pin",
+      "ACTION": "tăng"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [
+        "DEVICE"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC035",
+    "text": "này bật tivi mức 3 với",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "tivi",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "bật",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LEVEL",
+        "text": "mức 3",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "bật",
+      "DEVICE": "tivi"
+    },
+    "raw_confidence": 0.9975321292877197,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "tivi",
+      "ACTION": "bật"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC036",
+    "text": "này giảm đèn phòng khách 28 độ nhé",
+    "true_intent": "control-device",
+    "true_command": "control-device",
+    "true_entities": [
+      {
+        "label": "DEVICE",
+        "text": "đèn phòng khách",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "ACTION",
+        "text": "giảm",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LEVEL",
+        "text": "28 độ",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "control-device",
+    "raw_command": "control-device",
+    "raw_entities": {
+      "MODE": "giảm",
+      "DEVICE": "đèn"
+    },
+    "raw_confidence": 0.9988142251968384,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "control-device",
+    "hybrid_command": "control-device",
+    "hybrid_entities": {
+      "DEVICE": "đèn pin",
+      "ACTION": "giảm"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "control-device",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "ACTION"
+      ],
+      "removed": [
+        "MODE"
+      ],
+      "modified": [
+        "DEVICE"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC037",
+    "text": "giúp tôi cho tôi biết thời tiết Hà Nội với",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "thời tiết Hà Nội",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "raw_confidence": 0.989498496055603,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "hybrid_confidence": 0.989498496055603,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.989498496055603,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC038",
+    "text": "ờ cho tôi biết cách nấu phở ở Hà Nội với",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "cách nấu phở",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "Hà Nội",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "cách nấu phở ở Hà Nội"
+    },
+    "raw_confidence": 0.9973214268684387,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "cách nấu phở ở Hà Nội"
+    },
+    "hybrid_confidence": 0.9973214268684387,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.9973214268684387,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC039",
+    "text": "làm ơn cho tôi biết thời tiết Hà Nội với",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "thời tiết Hà Nội",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "raw_confidence": 0.9864429235458374,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "hybrid_confidence": 0.9864429235458374,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.9864429235458374,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC040",
+    "text": "à cho tôi biết tỷ giá đô la ở TP.HCM nhé",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tỷ giá đô la",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "TP.HCM",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "tỷ giá đô la ở"
+    },
+    "raw_confidence": 0.987250030040741,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "tỷ giá đô la ở"
+    },
+    "hybrid_confidence": 0.987250030040741,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.987250030040741,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC041",
+    "text": "giùm cho tôi biết kết quả xổ số ở TP.HCM với",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "kết quả xổ số",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "TP.HCM",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "kết quả xổ số ở"
+    },
+    "raw_confidence": 0.988431990146637,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "kết quả xổ số ở"
+    },
+    "hybrid_confidence": 0.988431990146637,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.988431990146637,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC042",
+    "text": "ờm cho tôi biết lịch âm hôm nay với",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "lịch âm hôm nay",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "get-info",
+    "raw_command": "get-info",
+    "raw_entities": {
+      "QUERY": "lịch âm hôm nay"
+    },
+    "raw_confidence": 0.6868953108787537,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "get-info",
+    "hybrid_command": "get-info",
+    "hybrid_entities": {
+      "QUERY": "lịch âm hôm nay"
+    },
+    "hybrid_confidence": 0.6868953108787537,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "get-info",
+    "model_confidence_before": 0.6868953108787537,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "medium_model_confidence",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC043",
+    "text": "làm ơn cho tôi biết giá vàng hôm nay ở Đà Nẵng giùm",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "giá vàng hôm nay",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "Đà Nẵng",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "giá vàng hôm nay ở Nẵng"
+    },
+    "raw_confidence": 0.9377115368843079,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "giá vàng hôm nay ở Nẵng"
+    },
+    "hybrid_confidence": 0.9377115368843079,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.9377115368843079,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC044",
+    "text": "ờm cho tôi biết kết quả xổ số",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "kết quả xổ số",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "kết quả xổ số"
+    },
+    "raw_confidence": 0.9810346961021423,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "kết quả xổ số"
+    },
+    "hybrid_confidence": 0.9810346961021423,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.9810346961021423,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC045",
+    "text": "này cho tôi biết thời tiết Hà Nội với",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "thời tiết Hà Nội",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "raw_confidence": 0.9762150645256042,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "hybrid_confidence": 0.9762150645256042,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.9762150645256042,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC046",
+    "text": "ờ cho tôi biết tin tức bóng đá giùm",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tin tức bóng đá",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "tin tức bóng đá"
+    },
+    "raw_confidence": 0.6026777029037476,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "tin tức bóng đá"
+    },
+    "hybrid_confidence": 0.47767770290374756,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.47767770290374756,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "medium_model_confidence",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC047",
+    "text": "à cho tôi biết tin tức bóng đá ở Hà Nội",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tin tức bóng đá",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "Hà Nội",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "tin tức bóng đá ở Hà Nội"
+    },
+    "raw_confidence": 0.8857327103614807,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "tin tức bóng đá ở Hà Nội"
+    },
+    "hybrid_confidence": 0.6357327103614807,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.6357327103614807,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "medium_model_confidence",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC048",
+    "text": "với cho tôi biết kết quả xổ số ở Hà Nội với",
+    "true_intent": "get-info",
+    "true_command": "get-info",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "kết quả xổ số",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "LOCATION",
+        "text": "Hà Nội",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "kết quả xổ số ở Hà Nội"
+    },
+    "raw_confidence": 0.9847186207771301,
+    "raw_intent_correct": false,
+    "raw_command_correct": false,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "kết quả xổ số ở Hà Nội"
+    },
+    "hybrid_confidence": 0.9847186207771301,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 0.9847186207771301,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC049",
+    "text": "này gọi video cho số 0909123123 trên Viber với",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0909123123",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PLATFORM": "Viber"
+    },
+    "raw_confidence": 0.9969413876533508,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "PHONE": "0909123123",
+      "PLATFORM": "viber",
+      "RECEIVER": "0909123123"
+    },
+    "hybrid_confidence": 0.7469413876533508,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7469413876533508,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.8,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC050",
+    "text": "nhé gọi video cho Mai trên Messenger nhé",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Mai",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PLATFORM": "Messenger"
+    },
+    "raw_confidence": 0.9995786547660828,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "PLATFORM": "messenger",
+      "RECEIVER": "video cho Mai trên Messenger",
+      "CONTACT_NAME": "video cho Mai trên Messenger"
+    },
+    "hybrid_confidence": 0.7495786547660828,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7495786547660828,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.7315,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER",
+        "CONTACT_NAME"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC051",
+    "text": "à gọi video cho Chị Thảo trên Viber giùm",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Chị Thảo",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "CONTACT_NAME": "Chị",
+      "PLATFORM": "Viber"
+    },
+    "raw_confidence": 0.9993509650230408,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "CONTACT_NAME": "Chị",
+      "PLATFORM": "viber",
+      "RECEIVER": "Chị Thảo"
+    },
+    "hybrid_confidence": 0.7493509650230408,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7493509650230408,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.8,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC052",
+    "text": "với gọi video cho số 0977111222 trên Messenger nhé",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0977111222",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PHONE": "12",
+      "PLATFORM": "Messenger"
+    },
+    "raw_confidence": 0.9953796863555908,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "PHONE": "12",
+      "PLATFORM": "messenger",
+      "RECEIVER": "0977111222"
+    },
+    "hybrid_confidence": 0.7453796863555908,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7453796863555908,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.7172000000000001,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC053",
+    "text": "giùm gọi video cho số 0977111222 trên Messenger",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0977111222",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PHONE": "12",
+      "PLATFORM": "Messenger"
+    },
+    "raw_confidence": 0.9923372864723206,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "PHONE": "12",
+      "PLATFORM": "messenger",
+      "RECEIVER": "0977111222"
+    },
+    "hybrid_confidence": 0.7423372864723206,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7423372864723206,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.7208510638297873,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC054",
+    "text": "nhé gọi video cho Chị Thảo trên WhatsApp với",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Chị Thảo",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "WhatsApp",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "CONTACT_NAME": "Chị"
+    },
+    "raw_confidence": 0.9993589520454407,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "CONTACT_NAME": "Chị",
+      "RECEIVER": "Chị Thảo",
+      "PLATFORM": "whatsapp"
+    },
+    "hybrid_confidence": 0.7493589520454407,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7493589520454407,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.8,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER",
+        "PLATFORM"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC055",
+    "text": "à gọi video cho Hùng trên Zalo nhé",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Hùng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Zalo",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PLATFORM": "Zalo"
+    },
+    "raw_confidence": 0.9995275735855103,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "PLATFORM": "zalo",
+      "RECEIVER": "Hùng",
+      "CONTACT_NAME": "Hùng"
+    },
+    "hybrid_confidence": 0.7495275735855103,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7495275735855103,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.7441176470588236,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER",
+        "CONTACT_NAME"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC056",
+    "text": "ờm gọi video cho Bà Hạnh trên WhatsApp",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Bà Hạnh",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "WhatsApp",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "CONTACT_NAME": "Bà"
+    },
+    "raw_confidence": 0.9992927312850952,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "CONTACT_NAME": "Bà",
+      "RECEIVER": "Bà Hạnh",
+      "PLATFORM": "whatsapp"
+    },
+    "hybrid_confidence": 0.7492927312850952,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7492927312850952,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.735263157894737,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER",
+        "PLATFORM"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC057",
+    "text": "này gọi video cho số 0977111222 trên Viber",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0977111222",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PHONE": "12",
+      "PLATFORM": "Viber"
+    },
+    "raw_confidence": 0.991809070110321,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "PHONE": "12",
+      "PLATFORM": "viber",
+      "RECEIVER": "0977111222"
+    },
+    "hybrid_confidence": 0.741809070110321,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.741809070110321,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.7280952380952382,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC058",
+    "text": "làm ơn gọi video cho số 0985383569 trên Zalo giùm",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0985383569",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Zalo",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PLATFORM": "Zalo"
+    },
+    "raw_confidence": 0.9930095672607422,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "PHONE": "0985383569",
+      "PLATFORM": "zalo",
+      "RECEIVER": "0985383569"
+    },
+    "hybrid_confidence": 0.7430095672607422,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7430095672607422,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.7183673469387755,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER",
+        "PHONE"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC059",
+    "text": "nhé gọi video cho số 0977111222 trên Messenger nhé",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "PHONE",
+        "text": "0977111222",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "PHONE": "12",
+      "PLATFORM": "Messenger"
+    },
+    "raw_confidence": 0.9949958324432373,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "PHONE": "12",
+      "PLATFORM": "messenger",
+      "RECEIVER": "0977111222"
+    },
+    "hybrid_confidence": 0.7449958324432373,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.7449958324432373,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.7172000000000001,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [],
+      "modified": [
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC060",
+    "text": "làm ơn gọi video cho Chị Thảo trên WhatsApp nhé",
+    "true_intent": "make-video-call",
+    "true_command": "make-video-call",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Chị Thảo",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "WhatsApp",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "make-video-call",
+    "raw_command": "make-video-call",
+    "raw_entities": {
+      "CONTACT_NAME": "Chị"
+    },
+    "raw_confidence": 0.999382495880127,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "make-video-call",
+    "hybrid_command": "make-video-call",
+    "hybrid_entities": {
+      "CONTACT_NAME": "Chị",
+      "RECEIVER": "Chị Thảo",
+      "PLATFORM": "whatsapp"
+    },
+    "hybrid_confidence": 0.749382495880127,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "make-video-call",
+    "model_confidence_before": 0.749382495880127,
+    "reasoning_intent": "make-video-call",
+    "reasoning_confidence": 0.8,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER",
+        "PLATFORM"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 3
+    },
+    "decision_reason": "video_call_override",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC061",
+    "text": "à mở camera sau và chế độ chân dung giùm",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera sau",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chế độ chân dung",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "raw_confidence": 0.9996312856674194,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "ACTION": "mở",
+      "MODE": "sau",
+      "CAMERA_TYPE": "image"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC062",
+    "text": "ờ mở camera trước và quay video nhé",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera trước",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "quay video",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "trước"
+    },
+    "raw_confidence": 0.9992086291313171,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "send-mess",
+    "hybrid_command": "send-mess",
+    "hybrid_entities": {
+      "PLATFORM": "sms"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": true,
+    "command_changed": true,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PLATFORM"
+      ],
+      "removed": [
+        "MODE",
+        "ACTION"
+      ],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 1
+    },
+    "decision_reason": "communication_guard_send_mess",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": true,
+    "command_improved": false,
+    "command_degraded": true
+  },
+  {
+    "id": "TC063",
+    "text": "với mở camera sau và chế độ ban đêm",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera sau",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chế độ ban đêm",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "raw_confidence": 0.9996170997619629,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "ACTION": "mở",
+      "MODE": "sau",
+      "CAMERA_TYPE": "image"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC064",
+    "text": "giùm mở camera sau và chế độ ban đêm với",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera sau",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chế độ ban đêm",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "raw_confidence": 0.9996606111526489,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "ACTION": "mở",
+      "MODE": "sau",
+      "CAMERA_TYPE": "image"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC065",
+    "text": "giúp tôi mở camera sau và chế độ chân dung với",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera sau",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chế độ chân dung",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "raw_confidence": 0.9996575117111206,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "ACTION": "mở",
+      "MODE": "sau",
+      "CAMERA_TYPE": "image"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC066",
+    "text": "này mở camera trước và quay video giùm",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera trước",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "quay video",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "trước"
+    },
+    "raw_confidence": 0.9992502331733704,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "send-mess",
+    "hybrid_command": "send-mess",
+    "hybrid_entities": {
+      "PLATFORM": "sms"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": false,
+    "hybrid_command_correct": false,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": true,
+    "command_changed": true,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "PLATFORM"
+      ],
+      "removed": [
+        "MODE",
+        "ACTION"
+      ],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 1
+    },
+    "decision_reason": "communication_guard_send_mess",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": true,
+    "command_improved": false,
+    "command_degraded": true
+  },
+  {
+    "id": "TC067",
+    "text": "này mở camera sau và chụp ảnh với",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera sau",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chụp ảnh",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "raw_confidence": 0.9994545578956604,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "CAMERA_TYPE": "image",
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC068",
+    "text": "à mở camera sau và chụp ảnh với",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera sau",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chụp ảnh",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "raw_confidence": 0.999458372592926,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "CAMERA_TYPE": "image",
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC069",
+    "text": "với mở camera sau và chế độ ban đêm với",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera sau",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chế độ ban đêm",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "raw_confidence": 0.9996578693389893,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "ACTION": "mở",
+      "MODE": "sau",
+      "CAMERA_TYPE": "image"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC070",
+    "text": "ờm mở camera trước và chụp ảnh nhé",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera trước",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chụp ảnh",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "trước"
+    },
+    "raw_confidence": 0.9994140863418579,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "CAMERA_TYPE": "image",
+      "ACTION": "mở",
+      "MODE": "trước"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC071",
+    "text": "này mở camera trước và chế độ ban đêm giùm",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera trước",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chế độ ban đêm",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "trước"
+    },
+    "raw_confidence": 0.9996262788772583,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "ACTION": "mở",
+      "MODE": "trước",
+      "CAMERA_TYPE": "image"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC072",
+    "text": "à mở camera sau và chế độ chân dung",
+    "true_intent": "open-cam",
+    "true_command": "open-cam",
+    "true_entities": [
+      {
+        "label": "CAMERA_TYPE",
+        "text": "camera sau",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MODE",
+        "text": "chế độ chân dung",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "open-cam",
+    "raw_command": "open-cam",
+    "raw_entities": {
+      "ACTION": "mở",
+      "MODE": "sau"
+    },
+    "raw_confidence": 0.9995954632759094,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "open-cam",
+    "hybrid_command": "open-cam",
+    "hybrid_entities": {
+      "ACTION": "mở",
+      "MODE": "sau",
+      "CAMERA_TYPE": "image"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "open-cam",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "CAMERA_TYPE"
+      ],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC073",
+    "text": "à tìm trên mạng giá vàng hôm nay giùm",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "giá vàng hôm nay",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "giá vàng hôm nay"
+    },
+    "raw_confidence": 0.999441921710968,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "giá vàng hôm nay"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC074",
+    "text": "giúp tôi tìm trên mạng giá vàng hôm nay với",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "giá vàng hôm nay",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "giá vàng hôm nay"
+    },
+    "raw_confidence": 0.9994902610778809,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "giá vàng hôm nay"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC075",
+    "text": "này tìm trên mạng tỷ giá đô la giùm",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tỷ giá đô la",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "tỷ giá đô la"
+    },
+    "raw_confidence": 0.9995648264884949,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "tỷ giá đô la"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC076",
+    "text": "à tìm trên mạng thời tiết Hà Nội nhé",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "thời tiết Hà Nội",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "raw_confidence": 0.9995430707931519,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC077",
+    "text": "với tìm trên mạng tỷ giá đô la",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tỷ giá đô la",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "tỷ giá đô la"
+    },
+    "raw_confidence": 0.9995707869529724,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "tỷ giá đô la"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC078",
+    "text": "với tìm trên mạng tin tức bóng đá",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tin tức bóng đá",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "tin tức bóng đá"
+    },
+    "raw_confidence": 0.9994888305664062,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "tin tức bóng đá"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC079",
+    "text": "giúp tôi tìm trên mạng cách nấu phở",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "cách nấu phở",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "cách nấu phở"
+    },
+    "raw_confidence": 0.9995099306106567,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "cách nấu phở"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC080",
+    "text": "à tìm trên mạng cách nấu phở với",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "cách nấu phở",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "cách nấu phở"
+    },
+    "raw_confidence": 0.9994757771492004,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "cách nấu phở"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC081",
+    "text": "ờm tìm trên mạng tỷ giá đô la giùm",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tỷ giá đô la",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "tỷ giá đô la"
+    },
+    "raw_confidence": 0.9995418787002563,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "tỷ giá đô la"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC082",
+    "text": "làm ơn tìm trên mạng tin tức bóng đá với",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tin tức bóng đá",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "tin tức bóng đá"
+    },
+    "raw_confidence": 0.9995249509811401,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "tin tức bóng đá"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC083",
+    "text": "với tìm trên mạng lịch âm hôm nay với",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "lịch âm hôm nay",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "lịch âm hôm nay"
+    },
+    "raw_confidence": 0.9995005130767822,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "lịch âm hôm nay"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC084",
+    "text": "với tìm trên mạng thời tiết Hà Nội",
+    "true_intent": "search-internet",
+    "true_command": "search-internet",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "thời tiết Hà Nội",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-internet",
+    "raw_command": "search-internet",
+    "raw_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "raw_confidence": 0.9995265007019043,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-internet",
+    "hybrid_command": "search-internet",
+    "hybrid_entities": {
+      "QUERY": "thời tiết Hà Nội"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-internet",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 1,
+      "hybrid_count": 1
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC085",
+    "text": "với tìm youtube phim hoạt hình thiếu nhi giùm",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "phim hoạt hình thiếu nhi",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "phim hoạt hình thiếu nhi"
+    },
+    "raw_confidence": 0.9993634819984436,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "phim hoạt hình thiếu nhi"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC086",
+    "text": "với tìm youtube tin tức công nghệ",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tin tức công nghệ",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "tin tức công nghệ"
+    },
+    "raw_confidence": 0.9993342757225037,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "tin tức công nghệ"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC087",
+    "text": "với tìm youtube tin tức công nghệ",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tin tức công nghệ",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "tin tức công nghệ"
+    },
+    "raw_confidence": 0.9993342757225037,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "tin tức công nghệ"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC088",
+    "text": "giúp tôi tìm youtube bài tập yoga cho người cao tuổi",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "bài tập yoga cho người cao tuổi",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "bài tập yoga cho người cao tuổi"
+    },
+    "raw_confidence": 0.9993583559989929,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "bài tập yoga cho người cao tuổi"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC089",
+    "text": "với tìm youtube bài tập yoga cho người cao tuổi với",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "bài tập yoga cho người cao tuổi",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "bài tập yoga cho người cao tuổi"
+    },
+    "raw_confidence": 0.9993089437484741,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "bài tập yoga cho người cao tuổi"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC090",
+    "text": "này tìm youtube tin tức công nghệ nhé",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tin tức công nghệ",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "tin tức công nghệ"
+    },
+    "raw_confidence": 0.9994284510612488,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "tin tức công nghệ"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC091",
+    "text": "với tìm youtube cách làm bánh flan nhé",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "cách làm bánh flan",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "cách làm bánh f lan"
+    },
+    "raw_confidence": 0.999396800994873,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "cách làm bánh flan"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [],
+      "removed": [],
+      "modified": [
+        "QUERY"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC092",
+    "text": "nhé tìm youtube phim hoạt hình thiếu nhi giùm",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "phim hoạt hình thiếu nhi",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "phim hoạt hình thiếu nhi"
+    },
+    "raw_confidence": 0.9993767142295837,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "phim hoạt hình thiếu nhi"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC093",
+    "text": "nhé tìm youtube tin tức công nghệ giùm",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "tin tức công nghệ",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "tin tức công nghệ"
+    },
+    "raw_confidence": 0.999427318572998,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "tin tức công nghệ"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC094",
+    "text": "ờ tìm youtube bài tập yoga cho người cao tuổi giùm",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "bài tập yoga cho người cao tuổi",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "bài tập yoga cho người cao tuổi"
+    },
+    "raw_confidence": 0.9993484616279602,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "bài tập yoga cho người cao tuổi"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.4,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC095",
+    "text": "nhé tìm youtube phim hoạt hình thiếu nhi với",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "phim hoạt hình thiếu nhi",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "phim hoạt hình thiếu nhi"
+    },
+    "raw_confidence": 0.9993746876716614,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "phim hoạt hình thiếu nhi"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC096",
+    "text": "à tìm youtube phim hoạt hình thiếu nhi",
+    "true_intent": "search-youtube",
+    "true_command": "search-youtube",
+    "true_entities": [
+      {
+        "label": "QUERY",
+        "text": "phim hoạt hình thiếu nhi",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "search-youtube",
+    "raw_command": "search-youtube",
+    "raw_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "phim hoạt hình thiếu nhi"
+    },
+    "raw_confidence": 0.9993128776550293,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "search-youtube",
+    "hybrid_command": "search-youtube",
+    "hybrid_entities": {
+      "PLATFORM": "youtube",
+      "QUERY": "phim hoạt hình thiếu nhi"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "search-youtube",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "unknown",
+    "reasoning_confidence": 0.5,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": false,
+      "added": [],
+      "removed": [],
+      "modified": [],
+      "raw_count": 2,
+      "hybrid_count": 2
+    },
+    "decision_reason": "high_model_confidence_with_specialized_entities",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC097",
+    "text": "ờ nhắn Viber cho Hùng: tối nay con về muộn nhé giùm",
+    "true_intent": "send-mess",
+    "true_command": "send-mess",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Hùng",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MESSAGE",
+        "text": "tối nay con về muộn nhé",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "send-mess",
+    "raw_command": "send-mess",
+    "raw_entities": {
+      "PLATFORM": "Viber",
+      "RECEIVER": "con",
+      "MESSAGE": ": tối nay về muộn nhé giùm"
+    },
+    "raw_confidence": 0.9991550445556641,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "send-mess",
+    "hybrid_command": "send-mess",
+    "hybrid_entities": {
+      "PLATFORM": "viber",
+      "RECEIVER": "hùng",
+      "MESSAGE": "tối nay con về muộn nhé giùm"
+    },
+    "hybrid_confidence": 0.7491550445556641,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "send-mess",
+    "model_confidence_before": 0.7491550445556641,
+    "reasoning_intent": "send-mess",
+    "reasoning_confidence": 0.8,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [],
+      "removed": [],
+      "modified": [
+        "RECEIVER",
+        "MESSAGE",
+        "PLATFORM"
+      ],
+      "raw_count": 3,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC098",
+    "text": "nhé nhắn Messenger cho Mai: đang kẹt xe, đợi em chút nhé",
+    "true_intent": "send-mess",
+    "true_command": "send-mess",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Mai",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Messenger",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MESSAGE",
+        "text": "đang kẹt xe, đợi em chút",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "send-mess",
+    "raw_command": "send-mess",
+    "raw_entities": {
+      "PLATFORM": "Messenger",
+      "MESSAGE": "em"
+    },
+    "raw_confidence": 0.9994935989379883,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "send-mess",
+    "hybrid_command": "send-mess",
+    "hybrid_entities": {
+      "PLATFORM": "messenger",
+      "MESSAGE": "đang kẹt xe, đợi em chút nhé",
+      "RECEIVER": "mai"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "send-mess",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "send-mess",
+    "reasoning_confidence": 0.7440000000000001,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [
+        "RECEIVER"
+      ],
+      "removed": [],
+      "modified": [
+        "MESSAGE",
+        "PLATFORM"
+      ],
+      "raw_count": 2,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC099",
+    "text": "à nhắn Viber cho Bà Hạnh: mai mình gặp nhau lúc 8 giờ giùm",
+    "true_intent": "send-mess",
+    "true_command": "send-mess",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Bà Hạnh",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MESSAGE",
+        "text": "mai mình gặp nhau lúc 8 giờ",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "send-mess",
+    "raw_command": "send-mess",
+    "raw_entities": {
+      "PLATFORM": "Viber",
+      "RECEIVER": "Bà",
+      "TIME": "8 giờ",
+      "MESSAGE": ": mai mình gặp nhau lúc giùm"
+    },
+    "raw_confidence": 0.9970191717147827,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "send-mess",
+    "hybrid_command": "send-mess",
+    "hybrid_entities": {
+      "PLATFORM": "viber",
+      "RECEIVER": "bà hạnh",
+      "MESSAGE": "mai mình gặp nhau lúc 8 giờ giùm"
+    },
+    "hybrid_confidence": 1.0,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "send-mess",
+    "model_confidence_before": 1.0,
+    "reasoning_intent": "send-mess",
+    "reasoning_confidence": 0.7440000000000001,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": false,
+    "entities_changed": {
+      "changed": true,
+      "added": [],
+      "removed": [
+        "TIME"
+      ],
+      "modified": [
+        "RECEIVER",
+        "MESSAGE",
+        "PLATFORM"
+      ],
+      "raw_count": 4,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  },
+  {
+    "id": "TC100",
+    "text": "này nhắn Viber cho Chị Thảo: tối nay con về muộn nhé giùm",
+    "true_intent": "send-mess",
+    "true_command": "send-mess",
+    "true_entities": [
+      {
+        "label": "RECEIVER",
+        "text": "Chị Thảo",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "PLATFORM",
+        "text": "Viber",
+        "start": -1,
+        "end": -1
+      },
+      {
+        "label": "MESSAGE",
+        "text": "tối nay con về muộn nhé",
+        "start": -1,
+        "end": -1
+      }
+    ],
+    "raw_intent": "send-mess",
+    "raw_command": "send-mess",
+    "raw_entities": {
+      "PLATFORM": "Viber",
+      "RECEIVER": "Chị",
+      "MESSAGE": ": tối nay con về muộn nhé giùm"
+    },
+    "raw_confidence": 0.9988231062889099,
+    "raw_intent_correct": true,
+    "raw_command_correct": true,
+    "hybrid_intent": "send-mess",
+    "hybrid_command": "send-mess",
+    "hybrid_entities": {
+      "PLATFORM": "viber",
+      "RECEIVER": "chị thảo",
+      "MESSAGE": "tối nay con về muộn nhé giùm"
+    },
+    "hybrid_confidence": 0.7488231062889099,
+    "hybrid_intent_correct": true,
+    "hybrid_command_correct": true,
+    "model_intent_before": "send-mess",
+    "model_confidence_before": 0.7488231062889099,
+    "reasoning_intent": "send-mess",
+    "reasoning_confidence": 0.8,
+    "intent_changed": false,
+    "command_changed": false,
+    "confidence_changed": true,
+    "entities_changed": {
+      "changed": true,
+      "added": [],
+      "removed": [],
+      "modified": [
+        "RECEIVER",
+        "MESSAGE",
+        "PLATFORM"
+      ],
+      "raw_count": 3,
+      "hybrid_count": 3
+    },
+    "decision_reason": "high_model_confidence_with_reasoning_enhancement",
+    "method": "hybrid",
+    "intent_improved": false,
+    "intent_degraded": false,
+    "command_improved": false,
+    "command_degraded": false
+  }
+]

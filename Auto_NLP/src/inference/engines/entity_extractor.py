@@ -1,8 +1,3 @@
-"""
-Entity Extractor Module cho hệ thống gọi điện/nhắn tin
-Tập trung vào RECEIVER, TIME, MESSAGE, PLATFORM extraction
-"""
-
 import re
 from typing import Dict, List, Optional, Tuple
 

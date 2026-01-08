@@ -40,7 +40,7 @@ class PhoneAutomation(private val context: Context) {
         // Routing logic: Gọi điện
         if (isSupportSpeakEnabled) {
             // Bật hỗ trợ nói: Cần xác nhận trước khi gọi
-            val confirmationQuestion = "Có phải bạn muốn $originalInput?"
+            val confirmationQuestion = "Dạ, có phải bác muốn $originalInput?"
             throw ConfirmationRequirement(
                 originalInput = originalInput,
                 confirmationQuestion = confirmationQuestion,
@@ -78,7 +78,7 @@ class PhoneAutomation(private val context: Context) {
 
             if (phoneNumber.isEmpty()) {
                 Log.e(TAG, "No phone number found for: $receiver")
-                throw Exception("Không tìm thấy số điện thoại cho $receiver")
+                throw Exception("Dạ, trong danh bạ chưa có tên này ạ. Bác vui lòng xem hướng dẫn thêm liên hệ tự động, sau đó hãy thử lại lệnh gọi điện nhé.")
             }
 
             Log.d(TAG, "Attempting to call: $phoneNumber")
@@ -93,7 +93,7 @@ class PhoneAutomation(private val context: Context) {
                     if (dialIntent.resolveActivity(context.packageManager) != null) {
                         context.startActivity(dialIntent)
                         Log.d(TAG, "ACTION_DIAL started (support speak off)")
-                        return "Đã mở màn hình quay số, bạn hãy kiểm tra lại số điện thoại và bấm gọi"
+                        return "Dạ, đã mở màn hình quay số. Bác kiểm tra lại số điện thoại và bấm gọi nhé."
                     } else {
                         Log.e(TAG, "No app available to handle ACTION_DIAL")
                         throw Exception("Không tìm thấy ứng dụng gọi điện")
@@ -136,7 +136,7 @@ class PhoneAutomation(private val context: Context) {
                     if (callIntent.resolveActivity(context.packageManager) != null) {
                         context.startActivity(callIntent)
                         Log.d(TAG, "ACTION_CALL successful - calling directly")
-                        return "Đang gọi $receiver"
+                        return "Dạ, đang thực hiện cuộc gọi ạ."
                     } else {
                         Log.w(TAG, "ACTION_CALL resolveActivity returned null for platform: $platform")
                         throw Exception("Không tìm thấy ứng dụng gọi điện cho platform: $platform")
@@ -156,7 +156,7 @@ class PhoneAutomation(private val context: Context) {
                     if (dialIntent.resolveActivity(context.packageManager) != null) {
                         context.startActivity(dialIntent)
                         Log.d(TAG, "ACTION_DIAL started as fallback")
-                        return "Đã mở màn hình quay số cho $receiver (cần quyền để gọi trực tiếp)"
+                        return "Dạ, đã mở màn hình quay số. Bác kiểm tra lại số điện thoại và bấm gọi nhé."
                     } else {
                         throw Exception("Không tìm thấy ứng dụng gọi điện")
                     }

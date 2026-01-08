@@ -56,18 +56,18 @@ class ControlDeviceAutomation(private val context: Context) {
                 when (action) {
                     "bật" -> enableFlash()
                     "tắt" -> disableFlash()
-                    else -> throw Exception("Không hiểu thao tác với đèn pin: $action")
+                    else -> throw Exception("Dạ, con không hiểu thao tác này với đèn pin ạ.")
                 }
             }
             "âm lượng" -> {
                 when (action) {
                     "tăng" -> increaseVolume()
                     "giảm" -> decreaseVolume()
-                    else -> throw Exception("Không hiểu thao tác với âm lượng: $action")
+                    else -> throw Exception("Dạ, con không hiểu thao tác này với âm lượng ạ.")
                 }
             }
             else -> {
-                throw Exception("Không hỗ trợ điều khiển thiết bị: $device")
+                throw Exception("Dạ, con không hỗ trợ điều khiển thiết bị này ạ.")
             }
         }
     }
@@ -89,14 +89,14 @@ class ControlDeviceAutomation(private val context: Context) {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
                 val percentage = DeviceControlUtils.getCurrentVolumePercentage(context)
                 Log.d(TAG, "Volume increased from $currentVolume to $newVolume")
-                "Đã tăng âm lượng lên $percentage%"
+                "Dạ, đã tăng âm lượng lên $percentage% ạ."
             } else {
                 Log.d(TAG, "Volume is already at maximum")
-                "Âm lượng đã ở mức tối đa"
+                "Dạ, âm lượng đã ở mức tối đa rồi ạ."
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error increasing volume: ${e.message}", e)
-            throw Exception("Lỗi tăng âm lượng: ${e.message}")
+            throw Exception("Dạ, con không thể tăng âm lượng ạ.")
         }
     }
 
@@ -114,14 +114,14 @@ class ControlDeviceAutomation(private val context: Context) {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
                 val percentage = DeviceControlUtils.getCurrentVolumePercentage(context)
                 Log.d(TAG, "Volume decreased from $currentVolume to $newVolume")
-                "Đã giảm âm lượng xuống $percentage%"
+                "Dạ, đã giảm âm lượng xuống $percentage% ạ."
             } else {
                 Log.d(TAG, "Volume is already at minimum")
-                "Âm lượng đã ở mức tối thiểu"
+                "Dạ, âm lượng đã ở mức tối thiểu rồi ạ."
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error decreasing volume: ${e.message}", e)
-            throw Exception("Lỗi giảm âm lượng: ${e.message}")
+            throw Exception("Dạ, con không thể giảm âm lượng ạ.")
         }
     }
 
@@ -138,14 +138,14 @@ class ControlDeviceAutomation(private val context: Context) {
                 cameraManager?.setTorchMode(cameraId!!, true)
                 isFlashOn = true
                 Log.d(TAG, "Flash enabled successfully")
-                "Đã bật đèn flash"
+                "Dạ, đã bật đèn flash ạ."
             } else {
                 Log.e(TAG, "No camera with flash available")
-                throw Exception("Thiết bị không có đèn flash")
+                throw Exception("Dạ, thiết bị không có đèn flash ạ.")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error enabling flash: ${e.message}", e)
-            throw Exception("Lỗi bật đèn flash: ${e.message}")
+            throw Exception("Dạ, con không thể bật đèn flash ạ.")
         }
     }
 
@@ -160,14 +160,14 @@ class ControlDeviceAutomation(private val context: Context) {
                 cameraManager?.setTorchMode(cameraId!!, false)
                 isFlashOn = false
                 Log.d(TAG, "Flash disabled successfully")
-                "Đã tắt đèn flash"
+                "Dạ, đã tắt đèn flash ạ."
             } else {
                 Log.e(TAG, "No camera with flash available")
-                throw Exception("Thiết bị không có đèn flash")
+                throw Exception("Dạ, thiết bị không có đèn flash ạ.")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error disabling flash: ${e.message}", e)
-            throw Exception("Lỗi tắt đèn flash: ${e.message}")
+            throw Exception("Dạ, con không thể tắt đèn flash ạ.")
         }
     }
 }

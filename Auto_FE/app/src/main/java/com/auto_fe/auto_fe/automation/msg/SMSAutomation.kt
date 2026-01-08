@@ -31,10 +31,10 @@ class SMSAutomation(private val context: Context) {
 
         // Validate
         if (receiver.isEmpty()) {
-            throw Exception("Cần chỉ định người nhận tin nhắn")
+            throw Exception("Dạ, con chưa nghe rõ tên người cần gửi tin nhắn ạ. Bác vui lòng nói lại nhé.")
         }
         if (message.isEmpty()) {
-            throw Exception("Cần chỉ định nội dung tin nhắn")
+            throw Exception("Dạ, con chưa nghe rõ nội dung tin nhắn ạ. Bác vui lòng nói lại nhé.")
         }
 
         // Kiểm tra setting hỗ trợ nói
@@ -44,7 +44,7 @@ class SMSAutomation(private val context: Context) {
         // Routing logic: Gửi trực tiếp hay mở hộp thoại soạn tin
         if (isSupportSpeakEnabled) {
             // Bật hỗ trợ nói: Cần xác nhận trước khi gửi
-            val confirmationQuestion = "Có phải bạn muốn $originalInput?"
+            val confirmationQuestion = "Dạ, có phải bác muốn $originalInput?"
             throw ConfirmationRequirement(
                 originalInput = originalInput,
                 confirmationQuestion = confirmationQuestion,
@@ -77,7 +77,7 @@ class SMSAutomation(private val context: Context) {
 
             if (phoneNumber.isEmpty()) {
                 Log.e(TAG, "No phone number found for: $receiver")
-                throw Exception("Không tìm thấy số điện thoại cho: $receiver")
+                throw Exception("Dạ, trong danh bạ chưa có tên này ạ. Bác vui lòng xem hướng dẫn thêm liên hệ tự động, sau đó hãy thử lại lệnh gửi tin nhắn nhé.")
             }
 
             Log.d(TAG, "Using phone number: $phoneNumber")
@@ -86,15 +86,15 @@ class SMSAutomation(private val context: Context) {
                 val smsManager = SmsManager.getDefault()
                 smsManager.sendTextMessage(phoneNumber, null, message, null, null)
                 Log.d(TAG, "SMS sent successfully via SmsManager")
-                "Đã gửi tin nhắn đến $receiver"
+                "Dạ, đã gửi tin nhắn đến $receiver ạ."
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to send SMS via SmsManager: ${e.message}")
-                throw Exception("Không thể gửi tin nhắn: ${e.message}")
+                throw Exception("Dạ, con không thể gửi tin nhắn ạ.")
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "Exception in sendSMS: ${e.message}", e)
-            throw Exception("Lỗi gửi SMS: ${e.message}")
+            throw Exception("Dạ, con không thể gửi tin nhắn ạ.")
         }
     }
 
@@ -112,7 +112,7 @@ class SMSAutomation(private val context: Context) {
             }
             
             if (phoneNumber.isEmpty()) {
-                throw Exception("Không tìm thấy số điện thoại cho: $receiver")
+                throw Exception("Dạ, trong danh bạ chưa có tên này ạ. Bác vui lòng xem hướng dẫn thêm liên hệ tự động, sau đó hãy thử lại lệnh gửi tin nhắn nhé.")
             }
 
             val intent = Intent(Intent.ACTION_SENDTO).apply {
@@ -124,14 +124,14 @@ class SMSAutomation(private val context: Context) {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
                 Log.d(TAG, "Opened SMS compose UI successfully")
-                "Đã soạn tin nhắn, bạn hãy kiểm tra lại nội dung tin nhắn và bấm gửi"
+                "Dạ, đã mở màn hình soạn tin nhắn. Bác kiểm tra lại nội dung và bấm gửi nhé."
             } else {
                 Log.e(TAG, "No app available to handle SMS compose")
-                throw Exception("Không tìm thấy ứng dụng nhắn tin")
+                throw Exception("Dạ, con không tìm thấy ứng dụng nhắn tin ạ.")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Exception in openSmsCompose: ${e.message}", e)
-            throw Exception("Lỗi mở hộp thoại SMS: ${e.message}")
+            throw Exception("Dạ, con không thể mở màn hình soạn tin nhắn ạ.")
         }
     }
 }

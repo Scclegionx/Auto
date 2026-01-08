@@ -76,11 +76,20 @@ class AutomationWorkflowManager(
                     } catch (e: ConfirmationRequirement) {
                         // Xử lý yêu cầu xác nhận
                         Log.d(TAG, "Confirmation required: ${e.confirmationQuestion}")
+                        // Chuyển sang Confirmation state để UI hiển thị
+                        currentState = AutomationState.Confirmation(e.confirmationQuestion)
+                        onStateChanged?.invoke(currentState)
                         handleConfirmation(e)
                     } catch (e: Exception) {
                         Log.e(TAG, "Error processing task: ${e.message}", e)
                         currentState = AutomationState.Error(e.message ?: "Lỗi hệ thống")
                     }
+                }
+                
+                is AutomationState.Confirmation -> {
+                    // State này chỉ để UI hiển thị, logic xử lý đã ở handleConfirmation()
+                    // Không cần làm gì ở đây vì handleConfirmation() đã xử lý xong
+                    Log.d(TAG, "Confirmation state: ${state.question}")
                 }
                 
                 is AutomationState.Success -> {
@@ -169,8 +178,6 @@ class AutomationWorkflowManager(
             // Kiểm tra từ phủ định TRƯỚC
             normalizedResponse.contains("không phải") ||
             normalizedResponse.contains("không") || 
-            normalizedResponse.contains("sai") || 
-            normalizedResponse.contains("no") ||
             normalizedResponse == "không" -> {
                 Log.d(TAG, "User declined confirmation")
                 false
@@ -178,14 +185,10 @@ class AutomationWorkflowManager(
             // Sau đó mới kiểm tra từ xác nhận
             normalizedResponse.contains("có") || 
             normalizedResponse.contains("đúng") || 
-            normalizedResponse.contains("rồi") || 
-            normalizedResponse.contains("phải") ||
-            normalizedResponse.contains("yes") ||
-            normalizedResponse.contains("ok") ||
-            normalizedResponse.contains("đồng ý") ||
+            normalizedResponse.contains("đúng rồi") || 
             normalizedResponse == "có" ||
             normalizedResponse == "đúng" ||
-            normalizedResponse == "rồi" -> {
+            normalizedResponse == "đúng rồi" -> {
                 Log.d(TAG, "User confirmed")
                 true
             }
@@ -209,7 +212,7 @@ class AutomationWorkflowManager(
         } else {
             // 5. Nếu không xác nhận, hủy luồng
             Log.d(TAG, "User declined, cancelling workflow")
-            currentState = AutomationState.Error("Đã hủy lệnh")
+            currentState = AutomationState.Success("Dạ, con đã hủy lệnh rồi ạ.")
         }
     }
     

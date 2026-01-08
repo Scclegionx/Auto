@@ -70,7 +70,7 @@ class CommandDispatcher(private val context: Context) : AutomationTask {
                 alarm.executeWithEntities(entities)
             }
             else -> {
-                throw Exception("Tôi hiểu bạn nói '$input' nhưng chưa hỗ trợ lệnh này")
+                throw Exception("Dạ, con hiểu bác nói '$input' nhưng chưa hỗ trợ lệnh này ạ.")
             }
         }
     }

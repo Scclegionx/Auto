@@ -33,7 +33,7 @@ class ContactAutomation(private val context: Context) {
         return when (action) {
             "insert", "add", "thêm", "them" -> {
                 if (name.isEmpty()) {
-                    throw Exception("Cần chỉ định tên liên hệ")
+                    throw Exception("Dạ, con chưa nghe rõ tên liên hệ ạ. Bác vui lòng nói lại nhé.")
                 }
                 // Kiểm tra xem có dùng direct insert không
                 val useDirect = entities.optBoolean("DIRECT", false)
@@ -50,7 +50,7 @@ class ContactAutomation(private val context: Context) {
                 openContactsApp()
             }
             else -> {
-                throw Exception("Không hỗ trợ thao tác với danh bạ: $action")
+                throw Exception("Dạ, con không hiểu thao tác này với danh bạ ạ.")
             }
         }
     }
@@ -81,15 +81,15 @@ class ContactAutomation(private val context: Context) {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
                 Log.d(TAG, "Contact insert intent started successfully")
-                "Đã mở màn hình thêm liên hệ: $name"
+                "Dạ, đã mở màn hình thêm liên hệ $name ạ."
             } else {
                 Log.e(TAG, "No app available to handle contact insert")
-                throw Exception("Không tìm thấy ứng dụng để thêm danh bạ")
+                throw Exception("Dạ, con không tìm thấy ứng dụng để thêm danh bạ ạ.")
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "Error inserting contact: ${e.message}", e)
-            throw Exception("Lỗi thêm danh bạ: ${e.message}")
+            throw Exception("Dạ, con không thể mở màn hình thêm danh bạ ạ.")
         }
     }
 
@@ -107,15 +107,15 @@ class ContactAutomation(private val context: Context) {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
                 Log.d(TAG, "Contact pick intent started successfully")
-                "Đã mở danh sách liên hệ để chọn"
+                "Dạ, đã mở danh sách liên hệ để chọn ạ."
             } else {
                 Log.e(TAG, "No app available to handle contact pick")
-                throw Exception("Không tìm thấy ứng dụng để chọn danh bạ")
+                throw Exception("Dạ, con không tìm thấy ứng dụng để chọn danh bạ ạ.")
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "Error picking contact: ${e.message}", e)
-            throw Exception("Lỗi chọn danh bạ: ${e.message}")
+            throw Exception("Dạ, con không thể mở danh sách liên hệ ạ.")
         }
     }
 
@@ -133,15 +133,15 @@ class ContactAutomation(private val context: Context) {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
                 Log.d(TAG, "Contacts app opened successfully")
-                "Đã mở ứng dụng danh bạ"
+                "Dạ, đã mở ứng dụng danh bạ ạ."
             } else {
                 Log.e(TAG, "No contacts app available")
-                throw Exception("Không tìm thấy ứng dụng danh bạ")
+                throw Exception("Dạ, con không tìm thấy ứng dụng danh bạ ạ.")
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "Error opening contacts app: ${e.message}", e)
-            throw Exception("Lỗi mở ứng dụng danh bạ: ${e.message}")
+            throw Exception("Dạ, con không thể mở ứng dụng danh bạ ạ.")
         }
     }
 
@@ -155,7 +155,7 @@ class ContactAutomation(private val context: Context) {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
                 Log.e(TAG, "WRITE_CONTACTS permission not granted")
-                throw Exception("Cần cấp quyền WRITE_CONTACTS để thêm liên hệ tự động")
+                throw Exception("Dạ, con cần quyền thêm liên hệ để thực hiện lệnh này ạ.")
             }
 
             val operations = ArrayList<ContentProviderOperation>()
@@ -204,10 +204,10 @@ class ContactAutomation(private val context: Context) {
             // Apply batch
             context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
             Log.d(TAG, "Contact inserted successfully via ContentProvider")
-            "Đã thêm liên hệ $name vào danh bạ"
+            "Dạ, đã thêm liên hệ $name vào danh bạ ạ."
         } catch (e: Exception) {
             Log.e(TAG, "Error inserting contact directly: ${e.message}", e)
-            throw Exception("Lỗi thêm liên hệ: ${e.message}")
+            throw Exception("Dạ, con không thể thêm liên hệ ạ.")
         }
     }
 }

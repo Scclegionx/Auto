@@ -35,7 +35,7 @@ class WAAutomation(private val context: Context) {
             
             if (phoneNumber.isEmpty()) {
                 Log.e("WAAutomation", "No phone number found for: $receiver")
-                callback.onError("Không tìm thấy số điện thoại cho: $receiver")
+                callback.onError("Dạ, trong danh bạ chưa có tên này ạ. Bác vui lòng xem hướng dẫn thêm liên hệ tự động, sau đó hãy thử lại nhé.")
                 return
             }
             
@@ -61,16 +61,16 @@ class WAAutomation(private val context: Context) {
                     callback.onSuccess()
                 } else {
                     Log.e("WAAutomation", "WhatsApp not installed")
-                    callback.onError("WhatsApp chưa được cài đặt")
+                    callback.onError("Dạ, WhatsApp chưa được cài đặt ạ.")
                 }
             } catch (e: Exception) {
                 Log.e("WAAutomation", "Failed to open WhatsApp: ${e.message}")
-                callback.onError("Không thể mở WhatsApp: ${e.message}")
+                callback.onError("Dạ, con không thể mở WhatsApp ạ.")
             }
             
         } catch (e: Exception) {
             Log.e("WAAutomation", "Exception in sendWA: ${e.message}", e)
-            callback.onError("Lỗi gửi WhatsApp: ${e.message}")
+            callback.onError("Dạ, con không thể gửi tin nhắn WhatsApp ạ.")
         }
     }
     

@@ -22,7 +22,7 @@ class CommandProcessor(
                 val workflow = AutomationWorkflowManager(
                     context,
                     dispatcher,
-                    "Bạn cần tôi trợ giúp điều gì?"
+                    "Dạ, bác cần con giúp điều gì ạ?"
                 )
 
                 currentWorkflow = workflow
@@ -35,8 +35,11 @@ class CommandProcessor(
                         is AutomationState.Error -> {
                             callback.onError(state.message)
                         }
+                        is AutomationState.Confirmation -> {
+                            callback.onConfirmationRequired(state.question)
+                        }
                         else -> {
-                            // TODO: Handle other states
+                            // Các state khác (Speaking, Listening, Processing) không cần handle
                         }
                     }
                 }
@@ -51,8 +54,9 @@ class CommandProcessor(
                 callback.onError("Lỗi hệ thống: ${e.message}")
             } finally {
                 // Cleanup khi xong
-                if (currentWorkflow?.getCurrentState() is AutomationState.Success || 
-                    currentWorkflow?.getCurrentState() is AutomationState.Error) {
+                val finalState = currentWorkflow?.getCurrentState()
+                if (finalState is AutomationState.Success || 
+                    finalState is AutomationState.Error) {
                     currentWorkflow = null
                 }
             }

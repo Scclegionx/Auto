@@ -27,14 +27,14 @@ class AlarmAutomation(private val context: Context) {
 
         // Validate Time
         val timeData = parseTimeFromString(time)
-            ?: throw Exception("Tôi không hiểu thời gian báo thức. Vui lòng nói rõ giờ phút.")
+            ?: throw Exception("Dạ, con không hiểu thời gian báo thức ạ. Bác vui lòng nói rõ giờ phút nhé.")
 
         val (hour, minute) = timeData
 
         // Routing logic: Có ngày hay không có ngày
         return if (date.isNotEmpty()) {
             val dateData = parseDateIso(date) 
-                ?: throw Exception("Định dạng ngày không hợp lệ.")
+                ?: throw Exception("Dạ, con không hiểu định dạng ngày ạ. Bác vui lòng nói lại nhé.")
             
             createAlarmOnDate(
                 year = dateData.first,
@@ -79,11 +79,11 @@ class AlarmAutomation(private val context: Context) {
             context.startActivity(intent)
             
             // Trả về thông báo thành công
-            "Đã đặt báo thức lúc $hour:$minute với nội dung: $message"
+            "Dạ, đã đặt báo thức lúc $hour:$minute với nội dung: $message ạ."
 
         } catch (e: Exception) {
             Log.e(TAG, "Error creating alarm", e)
-            throw Exception("Không thể mở ứng dụng đồng hồ: ${e.message}")
+            throw Exception("Dạ, con không thể mở ứng dụng đồng hồ ạ.")
         }
     }
 
@@ -100,6 +100,6 @@ class AlarmAutomation(private val context: Context) {
         val resultMsg = createAlarm(hour, minute, emptyList(), enhancedMessage)
         
         // Override lại câu thông báo cho chi tiết hơn
-        return "Đã đặt báo thức lúc $hour:$minute ngày $dateSuffix"
+        return "Dạ, đã đặt báo thức lúc $hour:$minute ngày $dateSuffix ạ."
     }
 }

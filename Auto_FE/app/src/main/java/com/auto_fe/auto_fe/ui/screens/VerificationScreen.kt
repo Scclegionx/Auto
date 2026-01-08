@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.auto_fe.auto_fe.ui.service.AuthService
+import com.auto_fe.auto_fe.service.be.AuthService
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

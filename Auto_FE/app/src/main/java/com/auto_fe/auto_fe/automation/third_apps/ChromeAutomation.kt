@@ -4,17 +4,39 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import org.json.JSONObject
 
 class ChromeAutomation(private val context: Context) {
     
-    interface ChromeCallback {
-        fun onSuccess()
-        fun onError(error: String)
+    companion object {
+        private const val TAG = "ChromeAutomation"
     }
     
-    fun searchChrome(query: String, callback: ChromeCallback) {
-        try {
-            Log.d("ChromeAutomation", "Searching Chrome for: $query")
+    /**
+     * Entry Point: Nhận JSON từ CommandDispatcher và điều phối logic
+     */
+    suspend fun executeWithEntities(entities: JSONObject): String {
+        Log.d(TAG, "Executing Chrome search with entities: $entities")
+
+        // Parse dữ liệu
+        val query = entities.optString("QUERY", "")
+
+        // Validate
+        if (query.isEmpty()) {
+            throw Exception("Dạ, con chưa nghe rõ từ khóa tìm kiếm ạ. Bác vui lòng nói lại nhé.")
+        }
+
+        // Routing logic: Tìm kiếm trên Chrome
+        return searchChrome(query)
+    }
+    
+    /**
+     * Tìm kiếm trên Chrome
+     * @param query Từ khóa tìm kiếm
+     */
+    private fun searchChrome(query: String): String {
+        return try {
+            Log.d(TAG, "Searching Chrome for: $query")
             
             // Tạo intent để mở Chrome với query tìm kiếm
             val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -26,11 +48,11 @@ class ChromeAutomation(private val context: Context) {
             // Kiểm tra xem Chrome app có cài đặt không
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
-                Log.d("ChromeAutomation", "Chrome app opened with search: $query")
-                callback.onSuccess()
+                Log.d(TAG, "Chrome app opened with search: $query")
+                "Dạ, đã mở Chrome và tìm kiếm: $query ạ."
             } else {
                 // Fallback: Mở browser mặc định
-                Log.w("ChromeAutomation", "Chrome app not found, opening default browser")
+                Log.w(TAG, "Chrome app not found, opening default browser")
                 val fallbackIntent = Intent(Intent.ACTION_VIEW).apply {
                     data = Uri.parse("https://www.google.com/search?q=${Uri.encode(query)}")
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -38,22 +60,17 @@ class ChromeAutomation(private val context: Context) {
                 
                 if (fallbackIntent.resolveActivity(context.packageManager) != null) {
                     context.startActivity(fallbackIntent)
-                    Log.d("ChromeAutomation", "Default browser opened with search: $query")
-                    callback.onSuccess()
+                    Log.d(TAG, "Default browser opened with search: $query")
+                    "Dạ, đã mở trình duyệt mặc định và tìm kiếm: $query ạ."
                 } else {
-                    Log.e("ChromeAutomation", "No browser found to handle search")
-                    callback.onError("Không tìm thấy trình duyệt để tìm kiếm")
+                    Log.e(TAG, "No browser found to handle search")
+                    throw Exception("Dạ, con không tìm thấy trình duyệt để tìm kiếm ạ.")
                 }
             }
             
         } catch (e: Exception) {
-            Log.e("ChromeAutomation", "Exception in searchChrome: ${e.message}", e)
-            callback.onError("Lỗi tìm kiếm Chrome: ${e.message}")
+            Log.e(TAG, "Exception in searchChrome: ${e.message}", e)
+            throw Exception("Dạ, con không thể mở trình duyệt để tìm kiếm ạ.")
         }
-    }
-    
-    fun searchDefault(callback: ChromeCallback) {
-        // Tìm kiếm mặc định: "nhạc sơn tùng MTP"
-        searchChrome("nhạc sơn tùng MTP", callback)
     }
 }

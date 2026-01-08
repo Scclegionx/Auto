@@ -1,6 +1,7 @@
 package com.example.Auto_BE.controller;
 
 import com.example.Auto_BE.dto.BaseResponse;
+import com.example.Auto_BE.dto.MedicationLogDTO;
 import com.example.Auto_BE.entity.ElderUser;
 import com.example.Auto_BE.entity.MedicationLog;
 import com.example.Auto_BE.entity.User;
@@ -28,8 +29,28 @@ public class MedicationLogController {
     private final UserRepository userRepository;
     private final SupervisorAlertService supervisorAlertService;
 
+    // Helper method to convert Entity to DTO
+    private MedicationLogDTO toDTO(MedicationLog log) {
+        return MedicationLogDTO.builder()
+                .id(log.getId())
+                .elderUserId(log.getElderUser() != null ? log.getElderUser().getId() : null)
+                .medicationIds(log.getMedicationIds())
+                .medicationNames(log.getMedicationNames())
+                .medicationCount(log.getMedicationCount())
+                .reminderTime(log.getReminderTime())
+                .actualTakenTime(log.getActualTakenTime())
+                .status(log.getStatus())
+                .minutesLate(log.getMinutesLate())
+                .note(log.getNote())
+                .fcmSent(log.getFcmSent())
+                .fcmSentTime(log.getFcmSentTime())
+                .createdAt(log.getCreatedAt())
+                .updatedAt(log.getUpdatedAt())
+                .build();
+    }
+
     @PostMapping("/{logId}/confirm")
-    public ResponseEntity<BaseResponse<MedicationLog>> confirmMedicationTaken(
+    public ResponseEntity<BaseResponse<MedicationLogDTO>> confirmMedicationTaken(
             @PathVariable Long logId,
             @RequestParam Long userId,
             @RequestBody(required = false) Map<String, String> body
@@ -40,7 +61,7 @@ public class MedicationLogController {
             
             if (!(user instanceof ElderUser)) {
                 return ResponseEntity.badRequest().body(
-                        BaseResponse.<MedicationLog>builder()
+                        BaseResponse.<MedicationLogDTO>builder()
                                 .status("error")
                                 .message("Only Elder can confirm medication")
                                 .build()
@@ -54,7 +75,7 @@ public class MedicationLogController {
             
             if (!medicationLog.getElderUser().getId().equals(elderUser.getId())) {
                 return ResponseEntity.badRequest().body(
-                        BaseResponse.<MedicationLog>builder()
+                        BaseResponse.<MedicationLogDTO>builder()
                                 .status("error")
                                 .message("MedicationLog does not belong to user")
                                 .build()
@@ -75,24 +96,24 @@ public class MedicationLogController {
                 medicationLog.setNote(body.get("note"));
             }
             
-            medicationLogRepository.save(medicationLog);
+            MedicationLog savedLog = medicationLogRepository.save(medicationLog);
             
             String message = minutesDiff > 15 
                     ? "Đã ghi nhận (trễ " + minutesDiff + " phút)"
                     : "Đã uống đúng giờ!";
             
             return ResponseEntity.ok(
-                    BaseResponse.<MedicationLog>builder()
+                    BaseResponse.<MedicationLogDTO>builder()
                             .status("success")
                             .message(message)
-                            .data(medicationLog)
+                            .data(toDTO(savedLog))
                             .build()
             );
             
         } catch (Exception e) {
             log.error("Error confirming medication taken", e);
             return ResponseEntity.internalServerError().body(
-                    BaseResponse.<MedicationLog>builder()
+                    BaseResponse.<MedicationLogDTO>builder()
                             .status("error")
                             .message("Failed to confirm: " + e.getMessage())
                             .build()
@@ -175,12 +196,24 @@ public class MedicationLogController {
             @RequestParam(defaultValue = "7") int days
     ) {
         try {
-            LocalDateTime startDate = LocalDateTime.now().minusDays(days);
-            LocalDateTime endDate = LocalDateTime.now();
+            log.info("Getting medication history for elderId: {}, days: {}", elderId, days);
+            
+            // Lấy từ 00:00 của N ngày trước đến 23:59 của hôm nay (bao gồm cả log PENDING tương lai trong ngày)
+            LocalDateTime startDate = LocalDateTime.now().minusDays(days).withHour(0).withMinute(0).withSecond(0).withNano(0);
+            LocalDateTime endDate = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+            
+            log.info("Date range: {} to {}", startDate, endDate);
             
             List<MedicationLog> logs = medicationLogRepository.findByElderUserIdAndReminderTimeBetween(
                     elderId, startDate, endDate
             );
+            
+            log.info("Found {} medication logs", logs.size());
+            
+            // Convert to DTOs
+            List<MedicationLogDTO> logDTOs = logs.stream()
+                    .map(this::toDTO)
+                    .toList();
             
             long totalCount = logs.size();
             long takenCount = logs.stream()
@@ -203,7 +236,7 @@ public class MedicationLogController {
             statistics.put("onTimeRate", takenCount > 0 ? (onTimeCount * 100.0 / takenCount) : 0);
             
             Map<String, Object> result = new HashMap<>();
-            result.put("logs", logs);
+            result.put("logs", logDTOs);  // Use DTOs instead of entities
             result.put("statistics", statistics);
             
             return ResponseEntity.ok(
@@ -226,7 +259,7 @@ public class MedicationLogController {
     }
     
     @GetMapping("/{logId}")
-    public ResponseEntity<BaseResponse<MedicationLog>> getMedicationLogDetail(
+    public ResponseEntity<BaseResponse<MedicationLogDTO>> getMedicationLogDetail(
             @PathVariable Long logId
     ) {
         try {
@@ -234,17 +267,17 @@ public class MedicationLogController {
                     .orElseThrow(() -> new RuntimeException("MedicationLog not found"));
             
             return ResponseEntity.ok(
-                    BaseResponse.<MedicationLog>builder()
+                    BaseResponse.<MedicationLogDTO>builder()
                             .status("success")
                             .message("Log retrieved")
-                            .data(medicationLog)
+                            .data(toDTO(medicationLog))
                             .build()
             );
             
         } catch (Exception e) {
             log.error("Error getting medication log detail", e);
             return ResponseEntity.internalServerError().body(
-                    BaseResponse.<MedicationLog>builder()
+                    BaseResponse.<MedicationLogDTO>builder()
                             .status("error")
                             .message("Failed to get log: " + e.getMessage())
                             .build()

@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.auto_fe.auto_fe.ui.service.EmergencyContactService
+import com.auto_fe.auto_fe.service.be.EmergencyContactService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 

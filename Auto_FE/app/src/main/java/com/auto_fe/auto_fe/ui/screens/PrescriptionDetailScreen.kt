@@ -25,10 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.auto_fe.auto_fe.ui.service.PrescriptionService
+import com.auto_fe.auto_fe.service.be.PrescriptionService
 import com.auto_fe.auto_fe.ui.theme.*
 import com.auto_fe.auto_fe.ui.theme.AppTextSize
-import com.auto_fe.auto_fe.ui.utils.formatDaysOfWeek
+import com.auto_fe.auto_fe.utils.common.formatDaysOfWeek
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -43,6 +43,9 @@ public class RelationshipRequestResponse {
     private String requestMessage; // Lời nhắn khi gửi
     private String responseMessage; // Lời nhắn khi accept/reject
     
+    private Boolean canViewMedications; // Quyền xem thuốc
+    private Boolean canUpdateMedications; // Quyền sửa thuốc
+    
     private Instant respondedAt;
     private Instant createdAt;
 }

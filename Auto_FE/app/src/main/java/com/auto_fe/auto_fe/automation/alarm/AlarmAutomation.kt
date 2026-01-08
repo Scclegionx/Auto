@@ -1,68 +1,105 @@
 package com.auto_fe.auto_fe.automation.alarm
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.provider.AlarmClock
 import android.util.Log
-import android.widget.Toast
-import java.util.Calendar
+import com.auto_fe.auto_fe.utils.common.parseDateIso
+import com.auto_fe.auto_fe.utils.common.parseTimeFromString
+import org.json.JSONObject
 
 class AlarmAutomation(private val context: Context) {
 
-    interface AlarmCallback {
-        fun onSuccess()
-        fun onError(error: String)
+    companion object {
+        private const val TAG = "AlarmAutomation"
     }
 
-    fun createAlarm(hour: Int, minute: Int, daysOfWeek: List<Int>, message: String, callback: AlarmCallback) {
-        try {
-            Log.d("AlarmAutomation", "Creating alarm: $hour:$minute, days: $daysOfWeek, message: $message")
+    /**
+     * Entry Point: Nhận JSON từ CommandDispatcher và điều phối logic
+     */
+    suspend fun executeWithEntities(entities: JSONObject): String {
+        Log.d(TAG, "Executing alarm with entities: $entities")
 
-            // Sử dụng cách đơn giản như bạn đề xuất
+        // Parse dữ liệu
+        val time = entities.optString("TIME", "")
+        val date = entities.optString("DATE", "")
+        val message = entities.optString("MESSAGE", "Báo thức")
+
+        // Validate Time
+        val timeData = parseTimeFromString(time)
+            ?: throw Exception("Dạ, con không hiểu thời gian báo thức ạ. Bác vui lòng nói rõ giờ phút nhé.")
+
+        val (hour, minute) = timeData
+
+        // Routing logic: Có ngày hay không có ngày
+        return if (date.isNotEmpty()) {
+            val dateData = parseDateIso(date) 
+                ?: throw Exception("Dạ, con không hiểu định dạng ngày ạ. Bác vui lòng nói lại nhé.")
+            
+            createAlarmOnDate(
+                year = dateData.first,
+                month = dateData.second,
+                day = dateData.third,
+                hour = hour,
+                minute = minute,
+                message = message
+            )
+        } else {
+            createAlarm(
+                hour = hour,
+                minute = minute,
+                daysOfWeek = emptyList(),
+                message = message
+            )
+        }
+    }
+    private fun createAlarm(
+        hour: Int, 
+        minute: Int, 
+        daysOfWeek: List<Int>, 
+        message: String
+    ): String {
+        return try {
+            Log.d(TAG, "Creating alarm: $hour:$minute, days: $daysOfWeek")
+
             val intent = Intent(AlarmClock.ACTION_SET_ALARM).apply {
                 putExtra(AlarmClock.EXTRA_MESSAGE, message)
                 putExtra(AlarmClock.EXTRA_HOUR, hour)
                 putExtra(AlarmClock.EXTRA_MINUTES, minute)
+                putExtra(AlarmClock.EXTRA_SKIP_UI, true) // Tự động set
+                
+                // Xử lý lặp lại ngày (nếu có)
+                if (daysOfWeek.isNotEmpty()) {
+                    putExtra(AlarmClock.EXTRA_DAYS, ArrayList(daysOfWeek))
+                }
+                
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
 
-            if (intent.resolveActivity(context.packageManager) != null) {
-                context.startActivity(intent)
-                Log.d("AlarmAutomation", "Alarm created successfully")
-                callback.onSuccess()
-            } else {
-                Log.e("AlarmAutomation", "No app found to handle alarm intent")
-                callback.onError("Không tìm thấy ứng dụng đồng hồ để tạo báo thức")
-            }
+            context.startActivity(intent)
+            
+            // Trả về thông báo thành công
+            "Dạ, đã đặt báo thức lúc $hour:$minute với nội dung: $message ạ."
 
         } catch (e: Exception) {
-            Log.e("AlarmAutomation", "Exception in createAlarm: ${e.message}", e)
-            callback.onError("Lỗi tạo báo thức: ${e.message}")
+            Log.e(TAG, "Error creating alarm", e)
+            throw Exception("Dạ, con không thể mở ứng dụng đồng hồ ạ.")
         }
     }
 
-    /**
-     * Tạo báo thức kèm thông tin ngày (best-effort qua app Đồng hồ)
-     * Lưu ý: Nhiều ứng dụng Đồng hồ không hỗ trợ chọn NGÀY cụ thể qua Intent,
-     * nên chúng tôi sẽ chèn ngày vào message để người dùng xác nhận.
-     */
-    fun createAlarmOnDate(year: Int, month: Int, day: Int, hour: Int, minute: Int, message: String, callback: AlarmCallback) {
+    private fun createAlarmOnDate(
+        year: Int, month: Int, day: Int, 
+        hour: Int, minute: Int, 
+        message: String
+    ): String {
+        // Format ngày tháng để gắn vào message
         val dateSuffix = String.format("%02d/%02d/%04d", day, month, year)
-        val enhancedMessage = if (message.isNotEmpty()) "$message - $dateSuffix" else dateSuffix
-        createAlarm(hour, minute, emptyList(), enhancedMessage, callback)
+        val enhancedMessage = if (message.isNotEmpty()) "$message ($dateSuffix)" else dateSuffix
+        
+        // Gọi lại hàm cốt lõi
+        val resultMsg = createAlarm(hour, minute, emptyList(), enhancedMessage)
+        
+        // Override lại câu thông báo cho chi tiết hơn
+        return "Dạ, đã đặt báo thức lúc $hour:$minute ngày $dateSuffix ạ."
     }
-
-    fun createDefaultAlarm(callback: AlarmCallback) {
-        // Tạo alarm mặc định: 9h sáng thứ 2 hàng tuần
-        val hour = 9
-        val minute = 0
-        val daysOfWeek = listOf(2) // Thứ 2 (Calendar.MONDAY = 2)
-        val message = "Báo thức hàng tuần"
-
-        // Chỉ sử dụng intent để tạo alarm trong app Clock
-        createAlarm(hour, minute, daysOfWeek, message, callback)
-    }
-
 }

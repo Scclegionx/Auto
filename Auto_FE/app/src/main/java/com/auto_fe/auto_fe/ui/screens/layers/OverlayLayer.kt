@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlin.math.*
@@ -33,52 +32,83 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun OverlayLayer(
     isRecording: Boolean,
-    transcriptText: String,
+    confirmationQuestion: String,
+    successMessage: String,
     errorMessage: String,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Box(
         modifier = modifier.fillMaxSize()
     ) {
-        // Smooth status indicator
-        SmoothStatusCard(
-            isRecording = isRecording,
-            modifier = Modifier.padding(top = 60.dp, bottom = 20.dp)
-        )
-
-        // Smooth transcript display
-        AnimatedVisibility(
-            visible = transcriptText.isNotEmpty(),
-            enter = fadeIn(animationSpec = tween(400, easing = EaseOutCubic)) +
-                    slideInVertically(
-                        animationSpec = tween(400, easing = EaseOutCubic),
-                        initialOffsetY = { -it / 2 }
-                    ),
-            exit = fadeOut(animationSpec = tween(300, easing = EaseInCubic)) +
-                   slideOutVertically(
-                       animationSpec = tween(300, easing = EaseInCubic),
-                       targetOffsetY = { -it / 2 }
-                   )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
         ) {
-            SmoothTranscriptCard(text = transcriptText)
+            // Smooth status indicator
+            SmoothStatusCard(
+                isRecording = isRecording,
+                modifier = Modifier.padding(top = 60.dp, bottom = 20.dp)
+            )
         }
-
-        // Smooth error display
-        AnimatedVisibility(
-            visible = errorMessage.isNotEmpty(),
-            enter = fadeIn(animationSpec = tween(400, easing = EaseOutCubic)) +
-                    slideInVertically(
-                        animationSpec = tween(400, easing = EaseOutCubic),
-                        initialOffsetY = { it / 2 }
-                    ),
-            exit = fadeOut(animationSpec = tween(300, easing = EaseInCubic)) +
-                   slideOutVertically(
-                       animationSpec = tween(300, easing = EaseInCubic),
-                       targetOffsetY = { it / 2 }
-                   )
+        
+        // Success/Error/Confirmation messages ở gần bottom (phía trên BottomNav)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 10.dp) // Khoảng cách từ bottom để tránh BottomNav
         ) {
-            SmoothErrorCard(message = errorMessage)
+            // Smooth confirmation display (ưu tiên hiển thị trước)
+            AnimatedVisibility(
+                visible = confirmationQuestion.isNotEmpty(),
+                enter = fadeIn(animationSpec = tween(400, easing = EaseOutCubic)) +
+                        slideInVertically(
+                            animationSpec = tween(400, easing = EaseOutCubic),
+                            initialOffsetY = { it / 2 }
+                        ),
+                exit = fadeOut(animationSpec = tween(300, easing = EaseInCubic)) +
+                       slideOutVertically(
+                           animationSpec = tween(300, easing = EaseInCubic),
+                           targetOffsetY = { it / 2 }
+                       )
+            ) {
+                SmoothConfirmationCard(question = confirmationQuestion)
+            }
+
+            // Smooth success display
+            AnimatedVisibility(
+                visible = successMessage.isNotEmpty() && confirmationQuestion.isEmpty(),
+                enter = fadeIn(animationSpec = tween(400, easing = EaseOutCubic)) +
+                        slideInVertically(
+                            animationSpec = tween(400, easing = EaseOutCubic),
+                            initialOffsetY = { it / 2 }
+                        ),
+                exit = fadeOut(animationSpec = tween(300, easing = EaseInCubic)) +
+                       slideOutVertically(
+                           animationSpec = tween(300, easing = EaseInCubic),
+                           targetOffsetY = { it / 2 }
+                       )
+            ) {
+                SmoothSuccessCard(message = successMessage)
+            }
+
+            // Smooth error display
+            AnimatedVisibility(
+                visible = errorMessage.isNotEmpty() && confirmationQuestion.isEmpty(),
+                enter = fadeIn(animationSpec = tween(400, easing = EaseOutCubic)) +
+                        slideInVertically(
+                            animationSpec = tween(400, easing = EaseOutCubic),
+                            initialOffsetY = { it / 2 }
+                        ),
+                exit = fadeOut(animationSpec = tween(300, easing = EaseInCubic)) +
+                       slideOutVertically(
+                           animationSpec = tween(300, easing = EaseInCubic),
+                           targetOffsetY = { it / 2 }
+                       )
+            ) {
+                SmoothErrorCard(message = errorMessage)
+            }
         }
     }
 }
@@ -141,12 +171,12 @@ private fun SmoothStatusCard(
 }
 
 @Composable
-private fun SmoothTranscriptCard(
-    text: String
+private fun SmoothConfirmationCard(
+    question: String
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = GlassBackground.copy(alpha = 0.92f)
+            containerColor = AIWarning.copy(alpha = 0.15f)
         ),
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
@@ -154,13 +184,53 @@ private fun SmoothTranscriptCard(
             .padding(horizontal = 32.dp, vertical = 12.dp)
             .fillMaxWidth(0.9f)
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp, lineHeight = 28.sp),
-            color = AITextPrimary,
-            textAlign = TextAlign.Center,
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 28.dp, vertical = 20.dp)
-        )
+        ) {
+            Text(
+                text = "❓",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = question,
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp, lineHeight = 28.sp),
+                color = AIWarning
+            )
+        }
+    }
+}
+
+@Composable
+private fun SmoothSuccessCard(
+    message: String
+) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = AISuccess.copy(alpha = 0.15f)
+        ),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        modifier = Modifier
+            .padding(horizontal = 32.dp, vertical = 12.dp)
+            .fillMaxWidth(0.9f)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 28.dp, vertical = 20.dp)
+        ) {
+            Text(
+                text = "✓",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp, lineHeight = 28.sp),
+                color = AISuccess
+            )
+        }
     }
 }
 

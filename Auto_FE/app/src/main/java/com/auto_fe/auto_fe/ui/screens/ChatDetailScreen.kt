@@ -39,8 +39,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.auto_fe.auto_fe.models.ChatMessage
-import com.auto_fe.auto_fe.ui.service.ChatService
-import com.auto_fe.auto_fe.ui.service.WebSocketManager
+import com.auto_fe.auto_fe.service.be.ChatService
+import com.auto_fe.auto_fe.service.be.WebSocketManager
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 

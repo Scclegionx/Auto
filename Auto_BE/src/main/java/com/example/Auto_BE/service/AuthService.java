@@ -45,6 +45,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final VerificationRepository verificationRepository;
+    private final SettingService settingService;
 
     public BaseResponse<LoginResponse> login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail())
@@ -230,6 +231,14 @@ public class AuthService {
         // Xóa tất cả verification của user
         verificationRepository.deleteAllByUser(user);
 
+        // Khởi tạo settings mặc định cho user mới
+        try {
+            settingService.initializeUserSettings(user);
+        } catch (Exception e) {
+            log.error("Failed to initialize user settings: {}", e.getMessage());
+            // Không throw exception để không ảnh hưởng đến quá trình verify
+        }
+
         return BaseResponse.<Void>builder()
                 .status(SUCCESS)
                 .message(EMAIL_VERIFIED)
@@ -264,6 +273,15 @@ public class AuthService {
 
         // Xóa tất cả verification token cũ của user (bao gồm token hiện tại)
         verificationRepository.deleteAllByUser(user);
+        
+        // Khởi tạo settings mặc định cho user mới
+        try {
+            settingService.initializeUserSettings(user);
+        } catch (Exception e) {
+            log.error("Failed to initialize user settings: {}", e.getMessage());
+            // Không throw exception để không ảnh hưởng đến quá trình verify
+        }
+        
         return BaseResponse.<Void>builder()
                 .status(SUCCESS)
                 .message(EMAIL_VERIFIED)

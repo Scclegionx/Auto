@@ -9,75 +9,54 @@ import android.Manifest
 import android.content.ContentProviderOperation
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
+import com.auto_fe.auto_fe.base.ConfirmationRequirement
+import org.json.JSONObject
 
 class ContactAutomation(private val context: Context) {
-
-    interface ContactCallback {
-        fun onSuccess()
-        fun onError(error: String)
-    }
 
     companion object {
         private const val TAG = "ContactAutomation"
     }
 
     /**
-     * Chỉnh sửa liên hệ hiện có
-     * @param contactUri URI của liên hệ cần chỉnh sửa
-     * @param name Tên mới (optional)
-     * @param phone Số điện thoại mới (optional)
-     * @param email Email mới (optional)
-     * @param callback Callback để nhận kết quả
+     * Bắt đầu luồng thêm liên hệ tự động
+     * Hỏi tên liên hệ, sau đó hỏi số điện thoại, rồi mở màn hình thêm liên hệ
      */
-    fun editContact(
-        contactUri: Uri,
-        name: String? = null,
-        phone: String? = null,
-        email: String? = null,
-        callback: ContactCallback
-    ) {
-        try {
-            Log.d(TAG, "editContact called with URI: $contactUri")
-            Log.d(TAG, "Edit data - name: $name, phone: $phone, email: $email")
-
-            val intent = Intent(Intent.ACTION_EDIT).apply {
-                data = contactUri
-                
-                // Thêm thông tin cần chỉnh sửa vào extras
-                name?.let { putExtra(ContactsContract.Intents.Insert.NAME, it) }
-                phone?.let { putExtra(ContactsContract.Intents.Insert.PHONE, it) }
-                email?.let { putExtra(ContactsContract.Intents.Insert.EMAIL, it) }
-            }
-
-            if (intent.resolveActivity(context.packageManager) != null) {
-                context.startActivity(intent)
-                Log.d(TAG, "Contact edit intent started successfully")
-                callback.onSuccess()
-            } else {
-                Log.e(TAG, "No app available to handle contact edit")
-                callback.onError("Không tìm thấy ứng dụng để chỉnh sửa danh bạ")
-            }
-
-        } catch (e: Exception) {
-            Log.e(TAG, "Error editing contact: ${e.message}", e)
-            callback.onError("Lỗi chỉnh sửa danh bạ: ${e.message}")
-        }
+    suspend fun startAddContactFlow(): String {
+        Log.d(TAG, "Starting add contact flow")
+        
+        // Bắt đầu luồng thêm liên hệ tự động - hỏi tên trước
+        throw ConfirmationRequirement(
+            originalInput = "",
+            confirmationQuestion = "Dạ, hãy nói tên liên hệ ạ.",
+            onConfirmed = {
+                throw Exception("Contact name collection - should be handled in workflow")
+            },
+            isMultipleContacts = false,
+            actionType = "contact_add_name",
+            actionData = ""
+        )
     }
 
+    /**
+     * Thêm liên hệ với dữ liệu đã có (public để gọi từ AutomationWorkflowManager)
+     */
+    fun insertContactWithData(name: String, phone: String): String {
+        return insertContact(name, phone, null)
+    }
+    
     /**
      * Thêm liên hệ mới
      * @param name Tên liên hệ
      * @param phone Số điện thoại (optional)
      * @param email Email (optional)
-     * @param callback Callback để nhận kết quả
      */
-    fun insertContact(
+    private fun insertContact(
         name: String,
         phone: String? = null,
-        email: String? = null,
-        callback: ContactCallback
-    ) {
-        try {
+        email: String? = null
+    ): String {
+        return try {
             Log.d(TAG, "insertContact called with name: $name, phone: $phone, email: $email")
 
             val intent = Intent(Intent.ACTION_INSERT).apply {
@@ -92,24 +71,23 @@ class ContactAutomation(private val context: Context) {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
                 Log.d(TAG, "Contact insert intent started successfully")
-                callback.onSuccess()
+                "Dạ, đã mở màn hình thêm liên hệ $name ạ. Bác hãy kiểm tra lại thông tin và bấm nút lưu"
             } else {
                 Log.e(TAG, "No app available to handle contact insert")
-                callback.onError("Không tìm thấy ứng dụng để thêm danh bạ")
+                throw Exception("Dạ, con không tìm thấy ứng dụng để thêm danh bạ ạ.")
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "Error inserting contact: ${e.message}", e)
-            callback.onError("Lỗi thêm danh bạ: ${e.message}")
+            throw Exception("Dạ, con không thể mở màn hình thêm danh bạ ạ.")
         }
     }
 
     /**
      * Mở danh sách liên hệ để chọn (ACTION_PICK)
-     * @param callback Callback để nhận kết quả
      */
-    fun pickContact(callback: ContactCallback) {
-        try {
+    private fun pickContact(): String {
+        return try {
             Log.d(TAG, "pickContact called")
 
             val intent = Intent(Intent.ACTION_PICK).apply {
@@ -119,24 +97,23 @@ class ContactAutomation(private val context: Context) {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
                 Log.d(TAG, "Contact pick intent started successfully")
-                callback.onSuccess()
+                "Dạ, đã mở danh sách liên hệ để chọn ạ."
             } else {
                 Log.e(TAG, "No app available to handle contact pick")
-                callback.onError("Không tìm thấy ứng dụng để chọn danh bạ")
+                throw Exception("Dạ, con không tìm thấy ứng dụng để chọn danh bạ ạ.")
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "Error picking contact: ${e.message}", e)
-            callback.onError("Lỗi chọn danh bạ: ${e.message}")
+            throw Exception("Dạ, con không thể mở danh sách liên hệ ạ.")
         }
     }
 
     /**
      * Mở ứng dụng danh bạ mặc định
-     * @param callback Callback để nhận kết quả
      */
-    fun openContactsApp(callback: ContactCallback) {
-        try {
+    private fun openContactsApp(): String {
+        return try {
             Log.d(TAG, "openContactsApp called")
 
             val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -146,57 +123,29 @@ class ContactAutomation(private val context: Context) {
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
                 Log.d(TAG, "Contacts app opened successfully")
-                callback.onSuccess()
+                "Dạ, đã mở ứng dụng danh bạ ạ."
             } else {
                 Log.e(TAG, "No contacts app available")
-                callback.onError("Không tìm thấy ứng dụng danh bạ")
+                throw Exception("Dạ, con không tìm thấy ứng dụng danh bạ ạ.")
             }
 
         } catch (e: Exception) {
             Log.e(TAG, "Error opening contacts app: ${e.message}", e)
-            callback.onError("Lỗi mở ứng dụng danh bạ: ${e.message}")
+            throw Exception("Dạ, con không thể mở ứng dụng danh bạ ạ.")
         }
-    }
-
-    /**
-     * Kiểm tra xem có ứng dụng nào có thể xử lý danh bạ không
-     */
-    fun isContactsAppAvailable(): Boolean {
-        return try {
-            val intent = Intent(Intent.ACTION_INSERT).apply {
-                type = ContactsContract.Contacts.CONTENT_TYPE
-            }
-            intent.resolveActivity(context.packageManager) != null
-        } catch (e: Exception) {
-            Log.e(TAG, "Error checking contacts app availability: ${e.message}")
-            false
-        }
-    }
-
-    /**
-     * Lấy thông tin chi tiết về khả năng quản lý danh bạ
-     */
-    fun getContactsInfo(): Map<String, Any> {
-        return mapOf(
-            "contacts_app_available" to isContactsAppAvailable(),
-            "can_insert_contact" to isContactsAppAvailable(),
-            "can_edit_contact" to isContactsAppAvailable(),
-            "can_pick_contact" to isContactsAppAvailable()
-        )
     }
 
     /**
      * Thêm liên hệ trực tiếp không cần UI (yêu cầu quyền WRITE_CONTACTS)
      */
-    fun insertContactDirect(name: String, phone: String?, email: String?, callback: ContactCallback) {
-        try {
+    private fun insertContactDirect(name: String, phone: String?, email: String?): String {
+        return try {
             Log.d(TAG, "insertContactDirect called with name: $name, phone: $phone, email: $email")
 
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
                 Log.e(TAG, "WRITE_CONTACTS permission not granted")
-                callback.onError("Cần cấp quyền WRITE_CONTACTS để thêm liên hệ tự động")
-                return
+                throw Exception("Dạ, con cần quyền thêm liên hệ để thực hiện lệnh này ạ.")
             }
 
             val operations = ArrayList<ContentProviderOperation>()
@@ -245,10 +194,10 @@ class ContactAutomation(private val context: Context) {
             // Apply batch
             context.contentResolver.applyBatch(ContactsContract.AUTHORITY, operations)
             Log.d(TAG, "Contact inserted successfully via ContentProvider")
-            callback.onSuccess()
+            "Dạ, đã thêm liên hệ $name vào danh bạ ạ."
         } catch (e: Exception) {
             Log.e(TAG, "Error inserting contact directly: ${e.message}", e)
-            callback.onError("Lỗi thêm liên hệ: ${e.message}")
+            throw Exception("Dạ, con không thể thêm liên hệ ạ.")
         }
     }
 }

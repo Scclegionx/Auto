@@ -26,8 +26,14 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/quartz/**").permitAll() // Public endpoints
-                        // WebSocket endpoints - cho phép tất cả SockJS paths
+                        .requestMatchers("/api/quartz/**").permitAll()
+                        .requestMatchers("/api/settings").permitAll()
+                        .requestMatchers("/api/settings/type/**").permitAll()
+                        .requestMatchers("/api/settings/user").authenticated()
+                        .requestMatchers("/api/settings/user/**").authenticated()
+                        .requestMatchers("/api/user-guides").permitAll()
+                        .requestMatchers("/api/user-guides/**").permitAll()
+                        // WebSocket endpoints
                         .requestMatchers("/ws/**").permitAll()
                         // Swagger/OpenAPI endpoints
                         .requestMatchers("/swagger-ui/**").permitAll()

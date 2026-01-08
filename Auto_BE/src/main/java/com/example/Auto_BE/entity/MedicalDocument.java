@@ -24,7 +24,7 @@ public class MedicalDocument extends BaseEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "medicalDocument")
+    @OneToMany(mappedBy = "medicalDocument", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MedicalDocumentFile> files; // Danh sách các tệp đính kèm liên quan đến tài liệu y tế
 
     @ManyToOne(fetch = FetchType.LAZY)

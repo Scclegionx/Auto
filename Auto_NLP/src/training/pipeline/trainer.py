@@ -32,7 +32,6 @@ class TrainingOutcome:
 
 
 class MultitaskTrainer:
-    """Trainer đơn giản, tối ưu cho GPU 6GB (PhoBERT-large)."""
 
     def __init__(
         self,

@@ -7,12 +7,14 @@ import com.example.Auto_BE.dto.response.MedicationResponse;
 import com.example.Auto_BE.entity.ElderUser;
 import com.example.Auto_BE.entity.MedicationReminder;
 import com.example.Auto_BE.entity.Prescriptions;
+import com.example.Auto_BE.entity.SupervisorUser;
 import com.example.Auto_BE.entity.enums.ETypeMedication;
 import com.example.Auto_BE.exception.BaseException;
 import com.example.Auto_BE.repository.ElderSupervisorRepository;
 import com.example.Auto_BE.repository.ElderUserRepository;
 import com.example.Auto_BE.repository.MedicationReminderRepository;
 import com.example.Auto_BE.repository.PrescriptionRepository;
+import com.example.Auto_BE.repository.SupervisorUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,9 @@ public class MedicationService {
     private ElderUserRepository elderUserRepository;
     
     @Autowired
+    private SupervisorUserRepository supervisorUserRepository;
+    
+    @Autowired
     private PrescriptionRepository prescriptionRepository;
     
     @Autowired
@@ -48,31 +53,42 @@ public class MedicationService {
      */
     public BaseResponse<List<MedicationResponse>> createMedication(CreateMedicationRequest request, Authentication authentication) {
         try {
-            System.out.println("Creating medication: " + request.getName());
+            System.out.println("Creating medication: " + request.getName() + ", ElderUserId from request: " + request.getElderUserId() + ", Auth email: " + authentication.getName());
 
             // Nếu có elderUserId → Supervisor tạo cho Elder
             ElderUser elderUser;
             if (request.getElderUserId() != null) {
+                System.out.println("Supervisor mode - Finding elder by ID: " + request.getElderUserId());
                 elderUser = elderUserRepository.findById(request.getElderUserId())
-                        .orElseThrow(() -> new BaseException.EntityNotFoundException("Elder user không tồn tại"));
+                        .orElseThrow(() -> new BaseException.EntityNotFoundException("Elder user không tồn tại với ID: " + request.getElderUserId()));
+                
+                System.out.println("Found elder user: " + elderUser.getEmail() + " (ID: " + elderUser.getId() + ")");
                 
                 // Verify Supervisor permission
-                ElderUser supervisorUser = elderUserRepository.findByEmail(authentication.getName())
-                        .orElseThrow(() -> new BaseException.EntityNotFoundException("User không tồn tại"));
+                System.out.println("Finding supervisor by email: " + authentication.getName());
+                SupervisorUser supervisorUser = supervisorUserRepository.findByEmail(authentication.getName())
+                        .orElseThrow(() -> new BaseException.EntityNotFoundException("User không tồn tại: " + authentication.getName()));
 
+                System.out.println("Found supervisor user: " + supervisorUser.getEmail() + " (ID: " + supervisorUser.getId() + ")");
+                
+                System.out.println("Checking permission: supervisor ID " + supervisorUser.getId() + " for elder ID " + elderUser.getId());
                 boolean hasPermission = elderSupervisorRepository
                         .findActiveWithUpdatePermission(supervisorUser.getId(), elderUser.getId())
                         .isPresent();
 
+                System.out.println("Has permission: " + hasPermission);
+                
                 if (!hasPermission) {
                     throw new BaseException.BadRequestException("Không có quyền tạo medication cho Elder này");
                 }
                 
                 System.out.println("Supervisor " + supervisorUser.getId() + " creating medication for Elder " + elderUser.getId());
             } else {
+                System.out.println("Elder mode - Finding elder by email: " + authentication.getName());
                 // Elder tự tạo cho mình
                 elderUser = elderUserRepository.findByEmail(authentication.getName())
-                        .orElseThrow(() -> new RuntimeException("Elder user không tồn tại"));
+                        .orElseThrow(() -> new RuntimeException("Elder user không tồn tại: " + authentication.getName()));
+                System.out.println("Found elder user: " + elderUser.getEmail() + " (ID: " + elderUser.getId() + ")");
             }
 
             // Validate prescription exists (optional)
@@ -277,16 +293,33 @@ public class MedicationService {
      */
     public BaseResponse<MedicationResponse> updateMedication(Long medicationId, UpdateMedicationRequest request, Authentication authentication) {
         try {
-            System.out.println("Updating medication: " + medicationId);
+            System.out.println("Updating medication ID: " + medicationId + ", Auth email: " + authentication.getName());
 
             MedicationReminder medication = medicationReminderRepository.findById(medicationId)
                     .orElseThrow(() -> new RuntimeException("Medication không tồn tại"));
 
-            // Verify user owns this medication
-            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new RuntimeException("User không tồn tại"));
-            
-            if (!medication.getElderUser().getId().equals(elderUser.getId())) {
+            System.out.println("Found medication owned by elder ID: " + medication.getElderUser().getId());
+
+            // Verify permission (Elder owner or Supervisor with permission)
+            ElderUser authUserAsElder = elderUserRepository.findByEmail(authentication.getName()).orElse(null);
+            SupervisorUser authUserAsSupervisor = supervisorUserRepository.findByEmail(authentication.getName()).orElse(null);
+
+            boolean isOwner = false;
+            boolean isSupervisorWithPermission = false;
+
+            if (authUserAsElder != null) {
+                isOwner = medication.getElderUser().getId().equals(authUserAsElder.getId());
+                System.out.println("Is owner (Elder): " + isOwner);
+            }
+
+            if (authUserAsSupervisor != null) {
+                isSupervisorWithPermission = elderSupervisorRepository
+                        .findActiveWithUpdatePermission(authUserAsSupervisor.getId(), medication.getElderUser().getId())
+                        .isPresent();
+                System.out.println("Is supervisor with permission: " + isSupervisorWithPermission);
+            }
+
+            if (!isOwner && !isSupervisorWithPermission) {
                 return BaseResponse.<MedicationResponse>builder()
                         .status("error")
                         .message("Không có quyền update medication này")
@@ -325,9 +358,10 @@ public class MedicationService {
             System.out.println("Medication updated: " + updatedMedication.getId());
 
             // Auto reschedule TIME-BASED reminders
+            Long elderUserId = medication.getElderUser().getId();
             try {
-                simpleTimeBasedScheduler.scheduleUserReminders(elderUser.getId());
-                System.out.println("Auto-rescheduled TIME-BASED reminders for user: " + elderUser.getId());
+                simpleTimeBasedScheduler.scheduleUserReminders(elderUserId);
+                System.out.println("Auto-rescheduled TIME-BASED reminders for user: " + elderUserId);
             } catch (Exception e) {
                 System.err.println("Medication updated but rescheduling failed: " + e.getMessage());
             }
@@ -357,16 +391,34 @@ public class MedicationService {
      */
     public BaseResponse<String> deleteMedication(Long medicationId, Authentication authentication) {
         try {
-            System.out.println("Deleting medication: " + medicationId);
+            System.out.println("Deleting medication ID: " + medicationId + ", Auth email: " + authentication.getName());
 
             MedicationReminder medication = medicationReminderRepository.findById(medicationId)
                     .orElseThrow(() -> new RuntimeException("Medication không tồn tại"));
 
-            // Verify user owns this medication
-            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new RuntimeException("User không tồn tại"));
-            
-            if (!medication.getElderUser().getId().equals(elderUser.getId())) {
+            System.out.println("Found medication owned by elder ID: " + medication.getElderUser().getId());
+
+            // Verify permission (Elder owner or Supervisor with permission)
+            ElderUser authUserAsElder = elderUserRepository.findByEmail(authentication.getName()).orElse(null);
+            SupervisorUser authUserAsSupervisor = supervisorUserRepository.findByEmail(authentication.getName()).orElse(null);
+
+            boolean isOwner = false;
+            boolean isSupervisorWithPermission = false;
+            Long elderUserId = medication.getElderUser().getId();
+
+            if (authUserAsElder != null) {
+                isOwner = elderUserId.equals(authUserAsElder.getId());
+                System.out.println("Is owner (Elder): " + isOwner);
+            }
+
+            if (authUserAsSupervisor != null) {
+                isSupervisorWithPermission = elderSupervisorRepository
+                        .findActiveWithUpdatePermission(authUserAsSupervisor.getId(), elderUserId)
+                        .isPresent();
+                System.out.println("Is supervisor with permission: " + isSupervisorWithPermission);
+            }
+
+            if (!isOwner && !isSupervisorWithPermission) {
                 return BaseResponse.<String>builder()
                         .status("error")
                         .message("Không có quyền xóa medication này")
@@ -380,8 +432,8 @@ public class MedicationService {
 
             // Auto reschedule TIME-BASED reminders (cho medications còn lại)
             try {
-                simpleTimeBasedScheduler.scheduleUserReminders(elderUser.getId());
-                System.out.println("Auto-rescheduled remaining TIME-BASED reminders for user: " + elderUser.getId());
+                simpleTimeBasedScheduler.scheduleUserReminders(elderUserId);
+                System.out.println("Auto-rescheduled remaining TIME-BASED reminders for user: " + elderUserId);
             } catch (Exception e) {
                 System.err.println("Medication deleted but rescheduling failed: " + e.getMessage());
             }
@@ -408,18 +460,35 @@ public class MedicationService {
      */
     public BaseResponse<MedicationResponse> toggleMedicationStatus(Long medicationId, Authentication authentication) {
         try {
-            System.out.println("Toggling medication status: " + medicationId);
-
-            // Get user from authentication
-            ElderUser elderUser = elderUserRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+            System.out.println("Toggling medication status ID: " + medicationId + ", Auth email: " + authentication.getName());
 
             // Find medication
             MedicationReminder medication = medicationReminderRepository.findById(medicationId)
                     .orElseThrow(() -> new RuntimeException("Medication không tồn tại"));
 
-            // Check authorization
-            if (!medication.getElderUser().getId().equals(elderUser.getId())) {
+            System.out.println("Found medication owned by elder ID: " + medication.getElderUser().getId());
+
+            // Check authorization (Elder owner or Supervisor with permission)
+            ElderUser authUserAsElder = elderUserRepository.findByEmail(authentication.getName()).orElse(null);
+            SupervisorUser authUserAsSupervisor = supervisorUserRepository.findByEmail(authentication.getName()).orElse(null);
+
+            boolean isOwner = false;
+            boolean isSupervisorWithPermission = false;
+            Long elderUserId = medication.getElderUser().getId();
+
+            if (authUserAsElder != null) {
+                isOwner = elderUserId.equals(authUserAsElder.getId());
+                System.out.println("Is owner (Elder): " + isOwner);
+            }
+
+            if (authUserAsSupervisor != null) {
+                isSupervisorWithPermission = elderSupervisorRepository
+                        .findActiveWithUpdatePermission(authUserAsSupervisor.getId(), elderUserId)
+                        .isPresent();
+                System.out.println("Is supervisor with permission: " + isSupervisorWithPermission);
+            }
+
+            if (!isOwner && !isSupervisorWithPermission) {
                 throw new RuntimeException("Không có quyền thao tác medication này");
             }
 
@@ -431,8 +500,8 @@ public class MedicationService {
 
             // Auto reschedule reminders
             try {
-                simpleTimeBasedScheduler.scheduleUserReminders(elderUser.getId());
-                System.out.println("Auto-rescheduled TIME-BASED reminders for user: " + elderUser.getId());
+                simpleTimeBasedScheduler.scheduleUserReminders(elderUserId);
+                System.out.println("Auto-rescheduled TIME-BASED reminders for user: " + elderUserId);
             } catch (Exception e) {
                 System.err.println("Status toggled but rescheduling failed: " + e.getMessage());
             }
@@ -459,10 +528,10 @@ public class MedicationService {
 
     // ===== HELPER METHODS =====
 
-    private ElderUser getUserById(Long userId) {
-        Optional<ElderUser> userOpt = elderUserRepository.findById(userId);
-        return userOpt.orElse(null);
-    }
+//    private ElderUser getUserById(Long userId) {
+//        Optional<ElderUser> userOpt = elderUserRepository.findById(userId);
+//        return userOpt.orElse(null);
+//    }
 
     /**
      * Không gom medications, chỉ return đúng medication được tạo

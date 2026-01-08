@@ -35,12 +35,12 @@ class CalendarAutomation(private val context: Context) {
                 callback.onSuccess()
             } else {
                 Log.e("CalendarAutomation", "Failed to create event")
-                callback.onError("Không thể tạo sự kiện")
+                callback.onError("Dạ, con không thể tạo sự kiện ạ.")
             }
 
         } catch (e: Exception) {
             Log.e("CalendarAutomation", "Exception in addEvent: ${e.message}", e)
-            callback.onError("Lỗi tạo sự kiện: ${e.message}")
+            callback.onError("Dạ, con không thể tạo sự kiện ạ.")
         }
     }
 

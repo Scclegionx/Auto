@@ -18,8 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.auto_fe.auto_fe.ui.service.RelationshipService
-import com.auto_fe.auto_fe.ui.service.UserService
+import com.auto_fe.auto_fe.service.be.RelationshipService
+import com.auto_fe.auto_fe.service.be.UserService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -192,7 +192,9 @@ fun ManageConnectionsScreen(
                     when (selectedTab) {
                         0 -> ConnectedSupervisorsTab(
                             supervisors = connectedSupervisors,
-                            onSearchClick = onSearchUserClick
+                            onSearchClick = onSearchUserClick,
+                            accessToken = accessToken,
+                            onPermissionsUpdated = { loadData() } // Reload sau khi cập nhật
                         )
                         1 -> PendingRequestsTab(
                             requests = pendingRequests,
@@ -321,7 +323,9 @@ fun ManageConnectionsScreen(
 @Composable
 fun ConnectedSupervisorsTab(
     supervisors: List<RelationshipService.RelationshipRequest>,
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    accessToken: String,
+    onPermissionsUpdated: () -> Unit = {}
 ) {
     if (supervisors.isEmpty()) {
         // Empty state
@@ -358,14 +362,28 @@ fun ConnectedSupervisorsTab(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(supervisors) { relationship ->
-                SupervisorCard(relationship)
+                SupervisorCard(
+                    relationship = relationship,
+                    accessToken = accessToken,
+                    onPermissionsUpdated = onPermissionsUpdated
+                )
             }
         }
     }
 }
 
 @Composable
-fun SupervisorCard(relationship: RelationshipService.RelationshipRequest) {
+fun SupervisorCard(
+    relationship: RelationshipService.RelationshipRequest,
+    accessToken: String,
+    onPermissionsUpdated: () -> Unit = {}
+) {
+    val scope = rememberCoroutineScope()
+    val relationshipService = remember { RelationshipService() }
+    var showEditPermissionsDialog by remember { mutableStateOf(false) }
+    var isUpdating by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -529,8 +547,258 @@ fun SupervisorCard(relationship: RelationshipService.RelationshipRequest) {
                         )
                     }
                 }
+                
+                // Permission badges
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    // View permission badge
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = if (relationship.canViewMedications) 
+                            Color(0xFF2196F3).copy(alpha = 0.15f) 
+                        else 
+                            DarkError.copy(alpha = 0.15f)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                if (relationship.canViewMedications) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                contentDescription = null,
+                                tint = if (relationship.canViewMedications) Color(0xFF2196F3) else DarkError,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Text(
+                                if (relationship.canViewMedications) "Xem thuốc" else "Không xem",
+                                fontSize = AppTextSize.labelSmall,
+                                color = if (relationship.canViewMedications) Color(0xFF2196F3) else DarkError,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                    
+                    // Update permission badge
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = if (relationship.canUpdateMedications) 
+                            Color(0xFF4CAF50).copy(alpha = 0.15f) 
+                        else 
+                            DarkError.copy(alpha = 0.15f)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                if (relationship.canUpdateMedications) Icons.Default.Edit else Icons.Default.Block,
+                                contentDescription = null,
+                                tint = if (relationship.canUpdateMedications) Color(0xFF4CAF50) else DarkError,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Text(
+                                if (relationship.canUpdateMedications) "Chỉnh sửa" else "Không sửa",
+                                fontSize = AppTextSize.labelSmall,
+                                color = if (relationship.canUpdateMedications) Color(0xFF4CAF50) else DarkError,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                }
+                
+                // Edit permissions button
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = { showEditPermissionsDialog = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = DarkPrimary
+                    )
+                ) {
+                    Icon(
+                        Icons.Default.Settings,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text("Chỉnh sửa quyền", fontSize = AppTextSize.bodySmall)
+                }
             }
         }
+    }
+    
+    // Edit Permissions Dialog
+    if (showEditPermissionsDialog) {
+        var canView by remember { mutableStateOf(relationship.canViewMedications) }
+        var canUpdate by remember { mutableStateOf(relationship.canUpdateMedications) }
+        
+        AlertDialog(
+            onDismissRequest = { showEditPermissionsDialog = false },
+            title = { 
+                Text(
+                    "Chỉnh sửa quyền",
+                    fontSize = AppTextSize.titleMedium,
+                    fontWeight = FontWeight.Bold
+                ) 
+            },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        "Cập nhật quyền truy cập của ${relationship.supervisorUserName}",
+                        fontSize = AppTextSize.bodyMedium,
+                        color = DarkOnSurface.copy(alpha = 0.8f)
+                    )
+                    
+                    HorizontalDivider()
+                    
+                    // Quyền xem thuốc
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                "Xem thông tin thuốc",
+                                fontSize = AppTextSize.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = DarkOnSurface
+                            )
+                            Text(
+                                "Cho phép xem đơn thuốc và lịch sử uống thuốc",
+                                fontSize = AppTextSize.bodySmall,
+                                color = DarkOnSurface.copy(alpha = 0.6f)
+                            )
+                        }
+                        Switch(
+                            checked = canView,
+                            onCheckedChange = { canView = it }
+                        )
+                    }
+                    
+                    HorizontalDivider()
+                    
+                    // Quyền chỉnh sửa thuốc
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                "Chỉnh sửa thuốc",
+                                fontSize = AppTextSize.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                                color = DarkOnSurface
+                            )
+                            Text(
+                                "Cho phép thêm, sửa, xóa đơn thuốc",
+                                fontSize = AppTextSize.bodySmall,
+                                color = DarkOnSurface.copy(alpha = 0.6f)
+                            )
+                        }
+                        Switch(
+                            checked = canUpdate,
+                            onCheckedChange = { canUpdate = it }
+                        )
+                    }
+                    
+                    // Warning nếu tắt quyền xem
+                    if (!canView) {
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = DarkError.copy(alpha = 0.1f)
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Warning,
+                                    contentDescription = null,
+                                    tint = DarkError,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Text(
+                                    "Tắt quyền xem sẽ tự động tắt quyền chỉnh sửa",
+                                    fontSize = AppTextSize.bodySmall,
+                                    color = DarkError
+                                )
+                            }
+                        }
+                    }
+                    
+                    // Error message
+                    errorMessage?.let { error ->
+                        Text(
+                            error,
+                            fontSize = AppTextSize.bodySmall,
+                            color = DarkError
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        isUpdating = true
+                        errorMessage = null
+                        
+                        // Nếu tắt quyền xem thì tự động tắt quyền sửa
+                        val finalCanUpdate = if (!canView) false else canUpdate
+                        
+                        scope.launch {
+                            relationshipService.updatePermissions(
+                                accessToken = accessToken,
+                                supervisorId = relationship.supervisorUserId,
+                                canViewMedications = canView,
+                                canUpdateMedications = finalCanUpdate
+                            ).fold(
+                                onSuccess = {
+                                    showEditPermissionsDialog = false
+                                    isUpdating = false
+                                    onPermissionsUpdated() // Reload danh sách
+                                },
+                                onFailure = { error ->
+                                    errorMessage = error.message
+                                    isUpdating = false
+                                }
+                            )
+                        }
+                    },
+                    enabled = !isUpdating
+                ) {
+                    if (isUpdating) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            color = DarkOnPrimary
+                        )
+                    } else {
+                        Text("Lưu")
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showEditPermissionsDialog = false },
+                    enabled = !isUpdating
+                ) {
+                    Text("Hủy")
+                }
+            }
+        )
     }
 }
 

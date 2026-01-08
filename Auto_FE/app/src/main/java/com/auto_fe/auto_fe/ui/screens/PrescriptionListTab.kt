@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.auto_fe.auto_fe.ui.service.PrescriptionService
+import com.auto_fe.auto_fe.service.be.PrescriptionService
 import com.auto_fe.auto_fe.ui.theme.*
 import kotlinx.coroutines.launch
 

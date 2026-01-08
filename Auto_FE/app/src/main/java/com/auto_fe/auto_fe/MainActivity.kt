@@ -16,62 +16,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
-import androidx.compose.animation.core.*
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.Spring.DampingRatioMediumBouncy
-import androidx.compose.animation.core.Spring.StiffnessLow
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
-import kotlin.math.roundToInt
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.isActive
-import com.auto_fe.auto_fe.ui.FloatingWindow
+import com.auto_fe.auto_fe.ui.components.popup.FloatingWindow
 import com.auto_fe.auto_fe.ui.theme.Auto_FETheme
 import com.auto_fe.auto_fe.ui.screens.VoiceScreen
 import com.auto_fe.auto_fe.ui.screens.AuthScreen
@@ -92,16 +45,19 @@ import com.auto_fe.auto_fe.ui.screens.NotificationScreen
 import com.auto_fe.auto_fe.ui.screens.EmergencyContactScreen
 import com.auto_fe.auto_fe.ui.screens.ChatListScreen
 import com.auto_fe.auto_fe.ui.screens.SearchUserScreen
-import com.auto_fe.auto_fe.utils.SessionManager
-import com.auto_fe.auto_fe.utils.PermissionManager
+import com.auto_fe.auto_fe.ui.screens.MedicalDocumentsScreen
+import com.auto_fe.auto_fe.utils.be.SessionManager
+import com.auto_fe.auto_fe.utils.common.PermissionManager
 import com.auto_fe.auto_fe.network.ApiClient
 import android.util.Log
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
+import com.auto_fe.auto_fe.automation.msg.SMSReceiver
 
 class MainActivity : ComponentActivity() {
     private lateinit var permissionManager: PermissionManager
     private lateinit var floatingWindow: FloatingWindow
     private lateinit var sessionManager: SessionManager
+    private var smsReceiver: SMSReceiver? = null
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -143,6 +99,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         permissionManager = PermissionManager(this)
+        permissionManager.requestOverlayPermission(this)
         floatingWindow = FloatingWindow(this)
         sessionManager = SessionManager(this)
 
@@ -156,6 +113,19 @@ class MainActivity : ComponentActivity() {
         }
 
         checkPermissions()
+        
+        // Khởi tạo và bắt đầu SMSReceiver (ContentObserver)
+        initializeSMSReceiver()
+    }
+    
+    private fun initializeSMSReceiver() {
+        try {
+            smsReceiver = SMSReceiver(this)
+            smsReceiver?.startObserving()
+            Log.d("MainActivity", "SMSReceiver initialized and started observing")
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error initializing SMSReceiver: ${e.message}", e)
+        }
     }
 
     private fun requestNotificationPermission() {
@@ -200,6 +170,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        // Dừng SMSReceiver khi activity bị destroy
+        smsReceiver?.stopObserving()
+        smsReceiver = null
+        Log.d("MainActivity", "SMSReceiver stopped")
+        
         floatingWindow.hideFloatingWindow()
         // Giải phóng resources để tránh memory leak
         floatingWindow.release()
@@ -229,6 +204,7 @@ fun MainScreen(sessionManager: SessionManager) {
     var showSearchUser by remember { mutableStateOf(false) }  // Thêm state cho search user (cho chat)
     var showSearchConnection by remember { mutableStateOf(false) }  //  Thêm state cho search connection
     var showChatDetail by remember { mutableStateOf(false) }  // Thêm state cho chat detail
+    var showMedicalDocuments by remember { mutableStateOf(false) }  // Thêm state cho medical documents
     var selectedChatId by remember { mutableStateOf<Long?>(null) }  //  Chat ID đã tồn tại
     var selectedReceiverId by remember { mutableStateOf<Long?>(null) }  //  Receiver ID cho chat mới
     var selectedChatName by remember { mutableStateOf<String?>(null) }  //  Tên người nhận
@@ -236,6 +212,8 @@ fun MainScreen(sessionManager: SessionManager) {
     var selectedUserName by remember { mutableStateOf<String?>(null) }  //  State để lưu tên user
     var selectedElderUserId by remember { mutableStateOf<Long?>(null) }  //  State cho Supervisor xem Elder
     var selectedElderUserName by remember { mutableStateOf<String?>(null) }  // Tên Elder
+    var supervisorCanView by remember { mutableStateOf(true) }  // Quyền xem của Supervisor
+    var supervisorCanUpdate by remember { mutableStateOf(true) }  // Quyền sửa của Supervisor
     var verificationEmail by remember { mutableStateOf("") }
     var verificationPassword by remember { mutableStateOf("") }
     var verifiedEmail by remember { mutableStateOf<String?>(null) }
@@ -244,6 +222,10 @@ fun MainScreen(sessionManager: SessionManager) {
     // Callback để logout
     val onLogout: () -> Unit = {
         sessionManager.clearSession()
+        
+        val settingsManager = com.auto_fe.auto_fe.utils.common.SettingsManager(context)
+        settingsManager.resetAllSettingsToDefault()
+        
         isLoggedIn = false
         accessToken = null
         selectedPrescriptionId = null
@@ -289,7 +271,7 @@ fun MainScreen(sessionManager: SessionManager) {
         selectedUserId?.let { userId ->
             selectedUserName?.let { userName ->
                 try {
-                    val chatService = com.auto_fe.auto_fe.ui.service.ChatService()
+                    val chatService = com.auto_fe.auto_fe.service.be.ChatService()
                     val result = chatService.getOrCreateChatWithUser(userId, accessToken ?: "")
                     result.onSuccess { chatId ->
                         // Navigate đến ChatDetailScreen với chatId
@@ -320,7 +302,7 @@ fun MainScreen(sessionManager: SessionManager) {
     }
 
     // BackHandler để xử lý nút back
-    BackHandler(enabled = selectedElderUserId != null || selectedPrescriptionId != null || showCreatePrescription || showCreateStandaloneMedication || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory || showEmergencyContact || showChatList || showSearchUser || showSearchConnection || showChatDetail) {
+    BackHandler(enabled = selectedElderUserId != null || selectedPrescriptionId != null || showCreatePrescription || showCreateStandaloneMedication || showVerification || showProfile || showForgotPassword || showChangePassword || showNotificationHistory || showEmergencyContact || showMedicalDocuments || showChatList || showSearchUser || showSearchConnection || showChatDetail) {
         when {
             //  PRIORITY 1: Handle detail/create screens first (highest priority overlays)
             showCreatePrescription -> {
@@ -361,6 +343,11 @@ fun MainScreen(sessionManager: SessionManager) {
             // Nếu đang ở màn emergency contact → quay về danh sách
             showEmergencyContact -> {
                 showEmergencyContact = false
+            }
+            // Nếu đang ở màn medical documents → quay về profile
+            showMedicalDocuments -> {
+                showMedicalDocuments = false
+                showProfile = true
             }
             // Nếu đang ở màn notification history → quay về danh sách
             showNotificationHistory -> {
@@ -442,11 +429,14 @@ fun MainScreen(sessionManager: SessionManager) {
         selectedElderUserId != null && accessToken != null -> {
             MedicationTabScreen(
                 accessToken = accessToken!!,
+                currentUserId = sessionManager.getUserId(),  // Add current user ID
                 userName = sessionManager.getUserName() ?: "Supervisor",
                 userEmail = sessionManager.getUserEmail() ?: "",
                 userAvatar = sessionManager.getUserAvatar(),
                 elderUserId = selectedElderUserId,  //  Pass elderUserId để load thuốc của Elder
                 elderUserName = selectedElderUserName,
+                canViewMedications = supervisorCanView,  // Pass quyền xem
+                canUpdateMedications = supervisorCanUpdate,  // Pass quyền sửa
                 onPrescriptionClick = { prescriptionId ->
                     selectedPrescriptionId = prescriptionId
                 },
@@ -560,6 +550,10 @@ fun MainScreen(sessionManager: SessionManager) {
                 onChangePasswordClick = {
                     showProfile = false
                     showChangePassword = true
+                },
+                onMedicalDocumentsClick = {
+                    showProfile = false
+                    showMedicalDocuments = true
                 }
             )
         }
@@ -611,6 +605,16 @@ fun MainScreen(sessionManager: SessionManager) {
                 EmergencyContactScreen(
                     accessToken = token,
                     onBackClick = { showEmergencyContact = false }
+                )
+            }
+        }
+        // Màn hình Medical Documents (fullscreen)
+        showMedicalDocuments && accessToken != null -> {
+            val token = accessToken // Smart cast fix
+            if (token != null) {
+                MedicalDocumentsScreen(
+                    accessToken = token,
+                    onBackClick = { showMedicalDocuments = false }
                 )
             }
         }
@@ -686,10 +690,49 @@ fun MainScreen(sessionManager: SessionManager) {
                                         accessToken = accessToken!!,
                                         userAvatar = sessionManager.getUserAvatar(),
                                         onElderClick = { elderUserId, elderUserName ->
-                                            // Set selected elder và navigate to detail
+                                            // Set selected elder
                                             selectedElderUserId = elderUserId
                                             selectedElderUserName = elderUserName
                                             android.util.Log.d("MainActivity", "Selected Elder: $elderUserId - $elderUserName")
+                                            
+                                            // Gọi API getRole để lấy permissions
+                                            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                                                try {
+                                                    val relationshipService = com.auto_fe.auto_fe.service.be.RelationshipService()
+                                                    val result = relationshipService.getRole(accessToken!!, elderUserId)
+                                                    
+                                                    result.fold(
+                                                        onSuccess = { permission ->
+                                                            supervisorCanView = permission.canViewMedications
+                                                            supervisorCanUpdate = permission.canUpdateMedications
+                                                            android.util.Log.d("MainActivity", "Permissions loaded - canView: $supervisorCanView, canUpdate: $supervisorCanUpdate")
+                                                            
+                                                            if (!permission.canViewMedications) {
+                                                                android.widget.Toast.makeText(
+                                                                    context,
+                                                                    "Bạn không có quyền xem thông tin thuốc của ${permission.elderName}",
+                                                                    android.widget.Toast.LENGTH_LONG
+                                                                ).show()
+                                                            }
+                                                        },
+                                                        onFailure = { error ->
+                                                            android.util.Log.e("MainActivity", "Failed to get permissions: ${error.message}")
+                                                            android.widget.Toast.makeText(
+                                                                context,
+                                                                "Không thể lấy thông tin quyền: ${error.message}",
+                                                                android.widget.Toast.LENGTH_LONG
+                                                            ).show()
+                                                            // Reset permissions về default
+                                                            supervisorCanView = true
+                                                            supervisorCanUpdate = true
+                                                        }
+                                                    )
+                                                } catch (e: Exception) {
+                                                    android.util.Log.e("MainActivity", "Error calling getRole: ${e.message}")
+                                                    supervisorCanView = true
+                                                    supervisorCanUpdate = true
+                                                }
+                                            }
                                         },
                                         onSearchUserClick = {
                                             showSearchConnection = true
@@ -714,6 +757,7 @@ fun MainScreen(sessionManager: SessionManager) {
                                     // ELDER → Hiển thị danh sách đơn thuốc
                                     MedicationTabScreen(
                                         accessToken = accessToken!!,
+                                        currentUserId = sessionManager.getUserId(),  // Add current user ID
                                         userName = displayName,
                                         userEmail = sessionManager.getUserEmail() ?: "",
                                         userAvatar = sessionManager.getUserAvatar(),

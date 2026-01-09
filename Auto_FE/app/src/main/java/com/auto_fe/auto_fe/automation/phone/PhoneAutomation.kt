@@ -18,9 +18,6 @@ class PhoneAutomation(private val context: Context) {
         private const val TAG = "PhoneAutomation"
     }
 
-    /**
-     * Entry Point: Nhận JSON từ CommandDispatcher và điều phối logic
-     */
     suspend fun executeWithEntities(entities: JSONObject, originalInput: String = ""): String {
         Log.d(TAG, "Executing phone call with entities: $entities")
 
@@ -105,19 +102,10 @@ class PhoneAutomation(private val context: Context) {
         }
     }
 
-    /**
-     * Gọi điện trực tiếp (public để có thể gọi từ AutomationWorkflowManager)
-     */
     fun makeCallDirect(receiver: String, platform: String = "phone"): String {
         return makeCall(receiver, platform, requireConfirmation = true)
     }
-    
-    /**
-     * Gọi điện sử dụng Android Intents API (public để có thể gọi từ AutomationWorkflowManager)
-     * @param receiver Tên người nhận hoặc số điện thoại
-     * @param platform Platform để gọi điện (phone, zalo, etc.)
-     * @param requireConfirmation Nếu true, sẽ gọi trực tiếp. Nếu false, chỉ mở dialer
-     */
+
     fun makeCall(receiver: String, platform: String = "phone", requireConfirmation: Boolean = true): String {
         return try {
             Log.d(TAG, "makeCall called with receiver: $receiver, platform: $platform")
@@ -170,8 +158,6 @@ class PhoneAutomation(private val context: Context) {
             }
 
             // Gọi trực tiếp dựa trên platform (không qua chooser)
-            // Gọi ngay lập tức, không cần user nhấn nút Call
-            // Cần permission nguy hiểm, có thể bị từ chối
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
                 == PackageManager.PERMISSION_GRANTED) {
                 try {
@@ -187,11 +173,11 @@ class PhoneAutomation(private val context: Context) {
                             callIntent.setPackage("com.android.server.telecom")
                             Log.d(TAG, "Calling via default phone app")
                         }
-                        "zalo" -> {
-                            // Gọi qua Zalo app
-                            callIntent.setPackage("com.zing.zalo")
-                            Log.d(TAG, "Calling via Zalo app")
-                        }
+//                        "zalo" -> {
+//                            // Gọi qua Zalo app
+//                            callIntent.setPackage("com.zing.zalo")
+//                            Log.d(TAG, "Calling via Zalo app")
+//                        }
                         else -> {
                             Log.w(TAG, "Unknown platform: $platform, using default")
                         }

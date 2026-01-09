@@ -8,10 +8,6 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
 
-/**
- * STTManager - Quản lý Speech-to-Text (STT)
- * Singleton pattern để đảm bảo chỉ có 1 instance SpeechRecognizer trong app
- */
 class STTManager private constructor(private val context: Context) {
     
     companion object {
@@ -28,43 +24,26 @@ class STTManager private constructor(private val context: Context) {
     }
     
     interface STTCallback {
-        /**
-         * Kết quả nhận diện giọng nói
-         * @param spokenText Text đã được nhận diện
-         */
         fun onSpeechResult(spokenText: String)
-        
-        /**
-         * Lỗi xảy ra trong quá trình nhận diện
-         * @param error Thông báo lỗi
-         */
         fun onError(error: String)
-        
-        /**
-         * Mức độ âm thanh thay đổi (để hiển thị visual feedback)
-         * @param level Mức độ từ 0-3 (0 = im lặng, 3 = to nhất)
-         */
         fun onAudioLevelChanged(level: Int)
     }
     
     private var speechRecognizer: SpeechRecognizer? = null
     private var isListening = false
-    private var isWaitingForResult = false // Đang chờ kết quả sau khi dừng listening
+    private var isWaitingForResult = false 
     private var currentCallback: STTCallback? = null
     private var lastSpeechTime = 0L
     private var silenceStartTime = 0L
-    private val silenceThreshold = 0.15f // Ngưỡng RMS để coi là im lặng
-    private val silenceDurationMs = 800L // Thời gian im lặng
+    private val silenceThreshold = 0.15f 
+    private val silenceDurationMs = 800L 
     private val silenceCheckHandler = android.os.Handler(android.os.Looper.getMainLooper())
     private var silenceCheckRunnable: Runnable? = null
     private val timeoutHandler = android.os.Handler(android.os.Looper.getMainLooper())
     private var timeoutRunnable: Runnable? = null
-    private val timeoutDurationMs = 5000L // 5 giây timeout
+    private val timeoutDurationMs = 5000L 
     
-    /**
-     * Bắt đầu lắng nghe giọng nói
-     * @param callback Callback để nhận kết quả
-     */
+
     fun startListening(callback: STTCallback) {
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             Log.e(TAG, "Speech recognition not available")
@@ -72,14 +51,12 @@ class STTManager private constructor(private val context: Context) {
             return
         }
         
-        // Nếu đang lắng nghe, dừng trước
         if (isListening) {
             Log.w(TAG, "Already listening, stopping previous session")
             stopListening()
         }
         
         try {
-            // Tạo SpeechRecognizer mới
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
             currentCallback = callback
             
@@ -108,9 +85,7 @@ class STTManager private constructor(private val context: Context) {
                     }
                     currentCallback?.onAudioLevelChanged(level)
                     
-                    // Phát hiện im lặng để tự động dừng nhanh hơn
                     if (rmsdB < silenceThreshold) {
-                        // Đang im lặng
                         if (silenceStartTime == 0L) {
                             silenceStartTime = currentTime
                         } else {
@@ -144,7 +119,7 @@ class STTManager private constructor(private val context: Context) {
                     try {
                         speechRecognizer?.stopListening()
                         isListening = false
-                        isWaitingForResult = true // Đang chờ kết quả
+                        isWaitingForResult = true 
                         silenceStartTime = 0L
                         lastSpeechTime = 0L
                         // Khởi động lại timeout để chờ kết quả
@@ -155,7 +130,6 @@ class STTManager private constructor(private val context: Context) {
                 }
                 
                 override fun onError(error: Int) {
-                    // Hủy timeout khi có lỗi
                     cancelTimeoutTimer()
                     isWaitingForResult = false
                     
@@ -194,12 +168,16 @@ class STTManager private constructor(private val context: Context) {
                 }
                 
                 override fun onPartialResults(partialResults: Bundle?) {
-                    // Xử lý partial results để có thể dừng sớm hơn
                     val matches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     if (!matches.isNullOrEmpty()) {
                         val partialText = matches[0]
                         Log.d(TAG, "Partial result: $partialText")
-                        // Có thể dùng partial results để hiển thị real-time nếu cần
+                        
+                        // Reset timeout khi có partial result mới (người dùng đang nói)
+                        if (isListening) {
+                            lastSpeechTime = System.currentTimeMillis()
+                            startTimeoutTimer() // Reset timeout timer
+                        }
                     }
                 }
                 
@@ -212,17 +190,15 @@ class STTManager private constructor(private val context: Context) {
             lastSpeechTime = 0L
             silenceStartTime = 0L
             
-            // Tạo Intent cho Speech Recognition
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, "vi-VN")
                 putExtra(RecognizerIntent.EXTRA_PROMPT, "Hãy nói lệnh của bạn")
-                // Giảm thời gian chờ im lặng để phản hồi nhanh hơn
-                // Thời gian im lặng trước khi coi là nói xong (giảm xuống 300ms)
+                // Thời gian im lặng trước khi coi là nói xong
                 putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 300L)
-                // Thời gian im lặng có thể hoàn thành (giảm xuống 200ms)
+                // Thời gian im lặng có thể hoàn thành
                 putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 200L)
-                // Bật partial results để xử lý nhanh hơn
+                // Bật partial results
                 putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             }
             
@@ -242,9 +218,6 @@ class STTManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Bắt đầu timer timeout
-     */
     private fun startTimeoutTimer() {
         cancelTimeoutTimer() // Hủy timer cũ nếu có
         
@@ -263,9 +236,6 @@ class STTManager private constructor(private val context: Context) {
         Log.d(TAG, "Timeout timer started, will trigger after ${timeoutDurationMs}ms")
     }
     
-    /**
-     * Hủy timer timeout
-     */
     private fun cancelTimeoutTimer() {
         timeoutRunnable?.let {
             timeoutHandler.removeCallbacks(it)
@@ -274,9 +244,6 @@ class STTManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Dừng lắng nghe (giữ kết quả đã nhận diện được)
-     */
     fun stopListening() {
         if (speechRecognizer != null && isListening) {
             try {
@@ -286,7 +253,6 @@ class STTManager private constructor(private val context: Context) {
                 silenceStartTime = 0L
                 lastSpeechTime = 0L
                 silenceCheckRunnable?.let { silenceCheckHandler.removeCallbacks(it) }
-                // Không hủy timeout, vì đang chờ kết quả
                 Log.d(TAG, "Stopped listening, waiting for result")
             } catch (e: Exception) {
                 Log.e(TAG, "Error stopping recognition: ${e.message}", e)
@@ -294,9 +260,6 @@ class STTManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Hủy lắng nghe (không giữ kết quả)
-     */
     fun cancelListening() {
         if (speechRecognizer != null && (isListening || isWaitingForResult)) {
             try {
@@ -315,16 +278,10 @@ class STTManager private constructor(private val context: Context) {
         }
     }
     
-    /**
-     * Kiểm tra đang lắng nghe hay không
-     */
     fun isListening(): Boolean {
         return isListening
     }
     
-    /**
-     * Giải phóng tài nguyên SpeechRecognizer
-     */
     fun release() {
         releaseRecognizer()
         Log.d(TAG, "STT released")

@@ -10,19 +10,13 @@ import com.auto_fe.auto_fe.utils.common.SettingsManager
 import com.auto_fe.auto_fe.utils.nlp.ContactUtils
 import org.json.JSONObject
 
-/**
- * SMSAutomation - Refactored for CommandDispatcher
- */
 class SMSAutomation(private val context: Context) {
 
     companion object {
         private const val TAG = "SMSAutomation"
     }
 
-    /**
-     * Entry Point: Nhận JSON từ CommandDispatcher và điều phối logic
-     */
-    suspend fun executeWithEntities(entities: JSONObject, originalInput: String = ""): String {
+    fun executeWithEntities(entities: JSONObject, originalInput: String = ""): String {
         Log.d(TAG, "Executing SMS with entities: $entities")
 
         // Parse dữ liệu
@@ -37,12 +31,12 @@ class SMSAutomation(private val context: Context) {
             throw Exception("Dạ, con chưa nghe rõ nội dung tin nhắn ạ. Bác vui lòng nói lại nhé.")
         }
 
-        // Tìm kiếm liên hệ: Thử exact match trước, nếu không có thì tìm fuzzy
+        // Tìm kiếm liên hệ: Thử exact match trước
         if (!ContactUtils.isPhoneNumber(receiver)) {
             val exactMatch = ContactUtils.smartFindContact(context, receiver)
             
             if (exactMatch == null) {
-                // Không tìm thấy exact match, thử tìm fuzzy
+                // Không tìm thấy exact match
                 val similarContacts = ContactUtils.findSimilarContactsWithPhone(context, receiver)
                 
                 if (similarContacts.isNotEmpty()) {
@@ -58,8 +52,7 @@ class SMSAutomation(private val context: Context) {
                             if (!isMultiple) {
                                 sendSMS(similarContacts[0].name, message)
                             } else {
-                                // Nếu có nhiều liên hệ, callback này sẽ không được gọi
-                                // Thay vào đó, handleConfirmation sẽ xử lý
+                                // Nếu có nhiều liên hệ, handleConfirmation sẽ xử lý
                                 throw Exception("Multiple contacts - should be handled in handleConfirmation")
                             }
                         },
@@ -96,9 +89,6 @@ class SMSAutomation(private val context: Context) {
         }
     }
 
-    /**
-     * Gửi SMS trực tiếp (public để có thể gọi từ AutomationWorkflowManager)
-     */
     fun sendSMSDirect(receiver: String, message: String): String {
         return sendSMS(receiver, message)
     }

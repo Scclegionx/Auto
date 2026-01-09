@@ -29,7 +29,6 @@ fun VoiceScreen() {
     val haptic = LocalHapticFeedback.current
     
     // UI States
-    var isDarkMode by remember { mutableStateOf(true) }
     var isRecording by remember { mutableStateOf(false) }
     var confirmationQuestion by remember { mutableStateOf("") }
     var successMessage by remember { mutableStateOf("") }
@@ -55,14 +54,13 @@ fun VoiceScreen() {
     fun triggerClickFeedback() {
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         
-        // Opacity pulse - nhẹ nhàng để có feedback
         clickOpacity = 0.92f
         scope.launch { delay(80); clickOpacity = 1f }
     }
 
     // MAIN LOGIC HANDLER 
     fun handleMicAction() {
-        triggerClickFeedback() // Chạy hiệu ứng hình ảnh/rung
+        triggerClickFeedback()
 
         if (!isRecording) {
             // --- BẮT ĐẦU ---
@@ -109,7 +107,6 @@ fun VoiceScreen() {
                     // Vẫn giữ isRecording = true vì đang chờ phản hồi từ người dùng
                 }
 
-                // Để Orb Sphere chuyển động theo giọng nói
                 override fun onVoiceLevelChanged(level: Int) {
                     rawLevel = level.toFloat()
                 }
@@ -124,7 +121,6 @@ fun VoiceScreen() {
     }
 
     // SMOOTH LEVEL ANIMATION 
-    // EMA Filter: Giúp Orb chuyển động mượt mà, không bị giật cục theo mic
     LaunchedEffect(rawLevel, isRecording) {
         val target = if (isRecording) rawLevel else 0f
         smoothLevel = 0.6f * smoothLevel + 0.4f * target
@@ -149,7 +145,6 @@ fun VoiceScreen() {
         BackgroundLayer(
             voiceLevel = smoothLevel.roundToInt(), // Dùng level đã làm mượt
             isListening = isRecording,
-            isDarkMode = isDarkMode,
             performancePreset = "lite",
             onSphereClick = { handleMicAction() },
             modifier = Modifier.fillMaxSize()
@@ -159,9 +154,7 @@ fun VoiceScreen() {
         InteractionLayer(
             isRecording = isRecording,
             voiceLevel = smoothLevel.roundToInt(),
-            isDarkMode = isDarkMode,
             onRecordingToggle = { handleMicAction() },
-            onModeToggle = { isDarkMode = !isDarkMode },
             onTranscriptOpen = { /* TODO: Mở lịch sử chat */ },
             modifier = Modifier.fillMaxSize()
         )

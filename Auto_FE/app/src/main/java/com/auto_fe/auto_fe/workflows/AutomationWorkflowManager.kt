@@ -90,7 +90,6 @@ class AutomationWorkflowManager(
                 
                 is AutomationState.Confirmation -> {
                     // State này chỉ để UI hiển thị, logic xử lý đã ở handleConfirmation()
-                    // Không cần làm gì ở đây vì handleConfirmation() đã xử lý xong
                     Log.d(TAG, "Confirmation state: ${state.question}")
                 }
                 
@@ -214,12 +213,9 @@ class AutomationWorkflowManager(
         val normalizedResponse = response.lowercase().trim()
         
         // Kiểm tra xem người dùng có muốn hủy lệnh không
-        val isCancelCommand = normalizedResponse.contains("hủy") ||
-                              normalizedResponse.contains("huy") ||
-                              normalizedResponse.contains("thôi") ||
+        val isCancelCommand = normalizedResponse.contains("thôi") ||
                               normalizedResponse.contains("không") ||
                               normalizedResponse.contains("dừng") ||
-                              normalizedResponse.contains("stop") ||
                               normalizedResponse == "không" ||
                               normalizedResponse == "thôi" ||
                               normalizedResponse == "hủy" ||

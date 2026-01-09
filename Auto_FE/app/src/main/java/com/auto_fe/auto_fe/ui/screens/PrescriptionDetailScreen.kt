@@ -695,10 +695,10 @@ fun MedicationGroupCard(medication: PrescriptionService.Medication) {
             }
 
             // Notes
-            if (!medication.notes.isNullOrBlank()) {
+            if (!medication.description.isNullOrBlank()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = medication.notes,
+                    text = medication.description,
                     fontSize = 14.sp,
                     color = if (medication.isActive) 
                         DarkOnSurface.copy(alpha = 0.7f)

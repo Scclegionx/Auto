@@ -195,7 +195,7 @@ fun CreatePrescriptionScreen(
                             medications = prescription.medications?.map { med ->
                                 MedicationReminderForm(
                                     name = med.medicationName,
-                                    description = med.notes ?: "",
+                                    description = med.description ?: "",
                                     type = med.type,
                                     reminderTimes = med.reminderTimes.toMutableList(),
                                     daysOfWeek = med.daysOfWeek

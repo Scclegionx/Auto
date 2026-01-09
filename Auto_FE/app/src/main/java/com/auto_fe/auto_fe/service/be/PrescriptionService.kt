@@ -52,7 +52,7 @@ class PrescriptionService {
     data class Medication(
         val id: Long,
         val medicationName: String,
-        val notes: String?,
+        val description: String?,
         val type: String,
         val reminderTimes: List<String>,  // ["08:00", "12:00", "18:00"]
         val daysOfWeek: String,
@@ -228,7 +228,7 @@ class PrescriptionService {
                     Medication(
                         id = medJson.getLong("id"),
                         medicationName = medJson.getString("medicationName"),
-                        notes = medJson.optString("notes"),
+                        description = medJson.optString("description"),  // ✅ Đổi từ "notes" → "description"
                         type = medJson.optString("type", "PRESCRIPTION"),
                         reminderTimes = reminderTimes,
                         daysOfWeek = medJson.optString("daysOfWeek", "1111111"),

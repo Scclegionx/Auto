@@ -15,10 +15,6 @@ class CameraAutomation(private val context: Context) {
         const val REQUEST_VIDEO_CAPTURE = 1002
     }
 
-    /**
-     * Entry Point: Nhận JSON từ CommandDispatcher và điều phối logic
-     * CAMERA_TYPE: "image" hoặc "video"
-     */
     suspend fun executeWithEntities(entities: JSONObject): String {
         Log.d(TAG, "Executing camera with entities: $entities")
 

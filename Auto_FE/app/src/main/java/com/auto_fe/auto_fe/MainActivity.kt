@@ -50,6 +50,7 @@ import com.auto_fe.auto_fe.utils.be.SessionManager
 import com.auto_fe.auto_fe.utils.common.PermissionManager
 import com.auto_fe.auto_fe.network.ApiClient
 import android.util.Log
+import com.auto_fe.auto_fe.audio.TTSManager
 import com.auto_fe.auto_fe.ui.components.CustomBottomNavigation
 import com.auto_fe.auto_fe.automation.msg.SMSReceiver
 
@@ -174,7 +175,7 @@ class MainActivity : ComponentActivity() {
         smsReceiver?.stopObserving()
         smsReceiver = null
         Log.d("MainActivity", "SMSReceiver stopped")
-        
+        TTSManager.getInstance(this).release()
         floatingWindow.hideFloatingWindow()
         // Giải phóng resources để tránh memory leak
         floatingWindow.release()

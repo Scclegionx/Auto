@@ -24,8 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 data class SmsMessage(
     val displayName: String,
-    val body: String,
-    val timestamp: Long = System.currentTimeMillis()
+    val body: String
 )
 
 class SmsAlertService : Service() {
@@ -44,7 +43,6 @@ class SmsAlertService : Service() {
     private val smsQueue = ConcurrentLinkedQueue<SmsMessage>()
     private var isProcessingQueue = false
     private var shouldStopProcessing = false
-    private var audioFocusGranted = false
     private var focusRequest: AudioFocusRequest? = null
     private lateinit var ttsManager: TTSManager
     private lateinit var sttManager: STTManager
@@ -65,7 +63,7 @@ class SmsAlertService : Service() {
             val displayName = intent.getStringExtra(EXTRA_DISPLAY_NAME) ?: "số lạ"
             val body = intent.getStringExtra(EXTRA_BODY) ?: ""
             
-            // Nếu đang có cuộc gọi đến/đang gọi, không đọc SMS để tránh cắt cảnh báo cuộc gọi
+            // Nếu đang có cuộc gọi đến/đang gọi
             if (isInCallOrRinging()) {
                 Log.d(TAG, "Phone is ringing or in call; skip SMS TTS to avoid conflict")
                 stopForeground(STOP_FOREGROUND_DETACH)
@@ -267,14 +265,14 @@ class SmsAlertService : Service() {
                     .setOnAudioFocusChangeListener { }
                     .build()
                 focusRequest = req
-                audioFocusGranted = audioManager.requestAudioFocus(req) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+                audioManager.requestAudioFocus(req)
             } else {
                 @Suppress("DEPRECATION")
-                audioFocusGranted = audioManager.requestAudioFocus(
+                audioManager.requestAudioFocus(
                     null,
                     AudioManager.STREAM_MUSIC,
                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK
-                ) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+                )
             }
         } catch (e: Exception) {
             Log.w(TAG, "requestAudioFocus failed: ${e.message}")

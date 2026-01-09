@@ -23,7 +23,6 @@ import com.auto_fe.auto_fe.ui.theme.*
 fun BackgroundLayer(
     voiceLevel: Int,
     isListening: Boolean = false,
-    isDarkMode: Boolean = true,
     performancePreset: String = "balanced",
     onSphereClick: () -> Unit = {},
     modifier: Modifier = Modifier
@@ -33,19 +32,11 @@ fun BackgroundLayer(
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = if (isDarkMode) {
-                        listOf(
-                            AIBackgroundDeep,
-                            AIBackgroundMid,
-                            AIBackgroundDeep
-                        )
-                    } else {
-                        listOf(
-                            Color(0xFFFAFAFA), // Very light white
-                            Color(0xFFFFFFFF), // Pure white
-                            Color(0xFFFAFAFA)  // Very light white
-                        )
-                    }
+                    colors = listOf(
+                        AIBackgroundDeep,
+                        AIBackgroundMid,
+                        AIBackgroundDeep
+                    )
                 )
             )
     ) {
@@ -53,7 +44,7 @@ fun BackgroundLayer(
         OrbAISphere(
             voiceLevel = voiceLevel,
             isListening = isListening,
-            isDarkMode = isDarkMode,
+            isDarkMode = true,
             performancePreset = performancePreset,
             onClick = onSphereClick,
             modifier = Modifier.fillMaxSize()

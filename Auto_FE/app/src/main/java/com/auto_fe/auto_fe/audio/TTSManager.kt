@@ -9,10 +9,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
 import kotlin.coroutines.resume
 
-/**
- * TTSManager - Quản lý Text-to-Speech (TTS)
- * Refactored: Hỗ trợ Coroutines để chờ nói xong.
- */
 class TTSManager private constructor(private val context: Context) {
 
     companion object {
@@ -57,10 +53,6 @@ class TTSManager private constructor(private val context: Context) {
         }
     }
 
-    /**
-     * Hàm quan trọng: Nói và CHỜ cho đến khi nói xong (Suspend Function)
-     * Thay thế cho việc dùng delay() cứng.
-     */
     suspend fun speakAndAwait(text: String) = suspendCancellableCoroutine<Unit> { continuation ->
         if (tts == null) initTTS()
 
@@ -73,7 +65,7 @@ class TTSManager private constructor(private val context: Context) {
 
         val utteranceId = UUID.randomUUID().toString()
 
-        // 1. Đăng ký Listener để nghe sự kiện
+        // Đăng ký Listener để nghe sự kiện
         tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
                 Log.d(TAG, "TTS Started: $utteranceId")
@@ -87,7 +79,7 @@ class TTSManager private constructor(private val context: Context) {
                 }
             }
 
-            @Deprecated("Deprecated in Java")
+            @Deprecated("Deprecated")
             override fun onError(utteranceId: String?) {
                 Log.e(TAG, "TTS Error: $utteranceId")
                 // Gặp lỗi cũng phải resume để app chạy tiếp
@@ -104,26 +96,24 @@ class TTSManager private constructor(private val context: Context) {
             }
         })
 
-        // 2. Cấu hình params
+        // Cấu hình params
         val params = Bundle()
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, utteranceId)
 
-        // 3. Ra lệnh nói
+        // Ra lệnh nói
         val result = tts?.speak(text, TextToSpeech.QUEUE_FLUSH, params, utteranceId)
 
-        // 4. Kiểm tra lỗi ngay lập tức khi gọi hàm speak
         if (result == TextToSpeech.ERROR) {
             Log.e(TAG, "Error initiating speech")
             if (continuation.isActive) continuation.resume(Unit)
         }
 
-        // Hủy listener khi coroutine bị hủy (để tránh memory leak hoặc crash)
         continuation.invokeOnCancellation {
             stopSpeaking()
         }
     }
 
-    // --- Các hàm cũ giữ nguyên (cho các case không cần chờ) ---
+    // Các hàm cũ
 
     fun speak(text: String) {
         if (tts == null) {
@@ -135,7 +125,6 @@ class TTSManager private constructor(private val context: Context) {
             pendingSpeakText = text
             return
         }
-        // Reset listener về null để tránh xung đột với speakAndAwait nếu có
         tts?.setOnUtteranceProgressListener(null)
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
         Log.d(TAG, "Speaking: $text")

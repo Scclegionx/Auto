@@ -14,7 +14,6 @@ class CommandProcessor(
     private var currentWorkflow: AutomationWorkflowManager? = null
 
     fun startVoiceControl(callback: CommandProcessorCallback) {
-        // Chạy một Coroutine trong scope đã được quản lý
         scope.launch {
             try {
                 val dispatcher = CommandDispatcher(context)

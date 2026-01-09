@@ -11,31 +11,28 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Telephony
 import android.util.Log
-import com.auto_fe.auto_fe.audio.STTManager
 import com.auto_fe.auto_fe.audio.TTSManager
 import com.auto_fe.auto_fe.service.nlp.SmsAlertService
+import android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+import android.provider.ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+import android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER
 
 class SMSReceiver(private val context: Context) : ContentObserver(Handler(Looper.getMainLooper())) {
     
-    private var sttManager: STTManager? = null
     private var ttsManager: TTSManager? = null
     private var lastSmsId: Long = -1
     private var isProcessingSMS = false
-    private var isWaitingForResponse = false
     private var pendingSmsId: Long = -1
     private var pendingSmsBody: String = ""
     private var pendingSmsAddress: String = ""
-    private val responseHandler = Handler(Looper.getMainLooper())
-    private var responseRunnable: Runnable? = null
     
     // Screen state management
     private var isScreenOn = true  // Mặc định là true (giả sử màn hình đang mở)
     private var pendingSMSNotification = false
     private var screenReceiver: BroadcastReceiver? = null
     
-    // Sử dụng singleton STTManager và TTSManager
+    // Sử dụng singleton TTSManager
     init {
-        this.sttManager = STTManager.getInstance(context)
         this.ttsManager = TTSManager.getInstance(context)
         // Lấy SMS ID mới nhất để tránh detect SMS cũ khi app khởi động
         initializeLastSmsId()
@@ -133,7 +130,20 @@ class SMSReceiver(private val context: Context) : ContentObserver(Handler(Looper
         val contactName = getContactName(address)
         val displayName = if (contactName.isNotEmpty()) contactName else "số lạ"
 
-        // Gửi sang foreground service để đọc ổn định, tránh bị cắt ngang
+        // Lưu thông tin SMS để dùng sau (cho trường hợp unlock)
+        pendingSmsId = lastSmsId
+        pendingSmsBody = body
+        pendingSmsAddress = address
+
+        // Nếu màn hình tắt, đánh dấu để hiển thị khi unlock
+        if (!isScreenOn) {
+            Log.d("SMSObserver", "Screen is off, marking SMS for notification when unlocked")
+            pendingSMSNotification = true
+            isProcessingSMS = false
+            return
+        }
+
+        // Màn hình đang bật, gửi sang foreground service để đọc ngay
         try {
             val intent = Intent(context, SmsAlertService::class.java).apply {
                 action = SmsAlertService.ACTION_ALERT_SMS
@@ -150,16 +160,10 @@ class SMSReceiver(private val context: Context) : ContentObserver(Handler(Looper
         }
 
         // Reset state để tránh chồng xử lý
-        pendingSmsId = lastSmsId
-        pendingSmsBody = body
-        pendingSmsAddress = address
         isProcessingSMS = false
-        isWaitingForResponse = false
     }
     
     private fun showSMSNotification(displayName: String) {
-        // Giữ lại cho tương thích nhưng không còn dùng interactive voice ở đây
-        // Hành vi đọc tin nhắn đã được chuyển sang SmsAlertService để ổn định
         val intent = Intent(context, SmsAlertService::class.java).apply {
             action = SmsAlertService.ACTION_ALERT_SMS
             putExtra(SmsAlertService.EXTRA_DISPLAY_NAME, displayName)
@@ -176,165 +180,34 @@ class SMSReceiver(private val context: Context) : ContentObserver(Handler(Looper
         }
     }
     
-    private fun startVoiceRecognitionWithVoiceManager() {
-        // Không dùng voice recognition cho luồng đọc SMS tự động để tránh cắt TTS
-    }
-    
-    private fun startListeningForResponse(message: String) {
-        Log.d("SMSObserver", "Waiting for user response...")
-        
-        // Đợi lâu hơn để tránh conflict với voice interaction khác
-        responseHandler.postDelayed({
-            if (isWaitingForResponse) {
-                // Kiểm tra xem STTManager có sẵn không
-                if (sttManager == null) {
-                    Log.e("SMSObserver", "STTManager is null")
-                    isWaitingForResponse = false
-                    return@postDelayed
-                }
-                
-                // Thử voice recognition với fallback
-                try {
-                    // Sử dụng STTManager để lắng nghe
-                    sttManager?.startListening(object : STTManager.STTCallback {
-                        override fun onSpeechResult(spokenText: String) {
-                            Log.d("SMSObserver", "Voice recognition result: $spokenText")
-                            handleUserResponse(spokenText)
-                        }
-                        override fun onError(error: String) {
-                            Log.e("SMSObserver", "Error in voice recognition: $error")
-                            // Fallback: Nếu voice recognition lỗi, dùng manual input
-                            handleVoiceRecognitionError()
-                        }
-                        override fun onAudioLevelChanged(level: Int) {
-                            // Audio level callback - có thể dùng để hiển thị visual feedback
-                            // Hiện tại không cần xử lý gì đặc biệt
-                        }
-                    })
-                    
-                    // Bắt đầu timeout 3 giây SAU KHI nói xong
-                    startTimeoutTimer()
-                } catch (e: Exception) {
-                    Log.e("SMSObserver", "Exception in voice recognition: ${e.message}")
-                    handleVoiceRecognitionError()
-                }
-            }
-        }, 2000) // Đợi 2 giây để tránh conflict
-    }
-    
-    private fun handleVoiceRecognitionError() {
-        Log.d("SMSObserver", "Voice recognition failed or timeout - treating as 'no'")
-        // Không nói gì = "không" - không đọc tin nhắn
-        ttsManager?.speak("Đã hủy đọc tin nhắn")
-        
-        // Hủy timeout
-        responseRunnable?.let { responseHandler.removeCallbacks(it) }
-        isWaitingForResponse = false
-        isProcessingSMS = false // Reset processing flag
-    }
-    
-    private fun startTimeoutTimer() { /* no-op: flow moved to service */ }
-    
-    fun handleUserResponse(response: String) {
-        Log.d("SMSObserver", "handleUserResponse called with: '$response', isWaitingForResponse: $isWaitingForResponse")
-        if (!isWaitingForResponse) {
-            Log.d("SMSObserver", "Not waiting for response, ignoring")
-            return
-        }
-        
-        // Hủy timeout
-        responseRunnable?.let { responseHandler.removeCallbacks(it) }
-        isWaitingForResponse = false
-        isProcessingSMS = false // Reset processing flag
-        
-        val lowerResponse = response.lowercase().trim()
-        
-        Log.d("SMSObserver", "User response: '$response' -> parsed as: '$lowerResponse'")
-        
-        when {
-            lowerResponse.contains("có") || lowerResponse.contains("đọc") || 
-            lowerResponse.contains("yes") || lowerResponse.contains("được") -> {
-                // User muốn đọc tin nhắn
-                Log.d("SMSObserver", "User wants to read SMS")
-                readSMSContent()
-                markSMSAsRead()
-            }
-            lowerResponse.contains("không") || lowerResponse.contains("no") || 
-            lowerResponse.contains("thôi") || lowerResponse.contains("không cần") -> {
-                // User không muốn đọc
-                Log.d("SMSObserver", "User doesn't want to read SMS")
-                ttsManager?.speak("Đã hủy đọc tin nhắn")
-            }
-            else -> {
-                // Không hiểu phản hồi
-                Log.d("SMSObserver", "User response not understood")
-                ttsManager?.speak("Tôi không hiểu. Vui lòng nói 'có' hoặc 'không'")
-            }
-        }
-    }
-    
-    private fun readSMSContent() {
-        // Không dùng nữa; giữ stub để tránh ảnh hưởng nơi khác
-    }
-    
-    private fun markSMSAsRead() {
-        try {
-            val uri = Uri.parse("content://sms/$pendingSmsId")
-            val values = android.content.ContentValues()
-            values.put("read", 1)
-            context.contentResolver.update(uri, values, null, null)
-            Log.d("SMSObserver", "Marked SMS as read: $pendingSmsId")
-        } catch (e: Exception) {
-            Log.e("SMSObserver", "Error marking SMS as read: ${e.message}")
-        }
-    }
-    
     private fun getContactName(phoneNumber: String): String {
         try {
-            // Thử nhiều cách để tìm contact
             val cleanNumber = phoneNumber.replace("+84", "0").replace(" ", "").replace("-", "")
             
-            // Cách 1: Tìm exact match
+            // Tìm exact match
             var cursor: Cursor? = context.contentResolver.query(
-                android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                arrayOf(android.provider.ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME),
-                "${android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER} = ?",
+                CONTENT_URI,
+                arrayOf(DISPLAY_NAME),
+                "${NUMBER} = ?",
                 arrayOf(phoneNumber),
                 null
             )
             
             cursor?.use {
                 if (it.moveToFirst()) {
-                    val name = it.getString(it.getColumnIndexOrThrow(android.provider.ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                    val name = it.getString(it.getColumnIndexOrThrow(DISPLAY_NAME))
                     if (name.isNotEmpty()) return name
                 }
             }
-            
-            // Cách 2: Tìm với số đã clean
+
             cursor = context.contentResolver.query(
-                android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                arrayOf(android.provider.ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME),
-                "${android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER} = ?",
+                CONTENT_URI,
+                arrayOf(DISPLAY_NAME),
+                "${NUMBER} = ?",
                 arrayOf(cleanNumber),
                 null
             )
-            
-            cursor?.use {
-                if (it.moveToFirst()) {
-                    val name = it.getString(it.getColumnIndexOrThrow(android.provider.ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-                    if (name.isNotEmpty()) return name
-                }
-            }
-            
-            // Cách 3: Tìm với LIKE (partial match)
-            cursor = context.contentResolver.query(
-                android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                arrayOf(android.provider.ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME),
-                "${android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER} LIKE ?",
-                arrayOf("%${cleanNumber.takeLast(8)}%"), // Tìm 8 số cuối
-                null
-            )
-            
+
             cursor?.use {
                 if (it.moveToFirst()) {
                     val name = it.getString(it.getColumnIndexOrThrow(android.provider.ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
@@ -400,12 +273,6 @@ class SMSReceiver(private val context: Context) : ContentObserver(Handler(Looper
     
     fun stopObserving() {
         try {
-            // Hủy timeout nếu đang chờ
-            responseRunnable?.let { responseHandler.removeCallbacks(it) }
-            isWaitingForResponse = false
-            
-            // SpeechRecognizer được quản lý bởi VoiceManager
-            
             // Unregister SMS observer
             context.contentResolver.unregisterContentObserver(this)
             
@@ -423,11 +290,5 @@ class SMSReceiver(private val context: Context) : ContentObserver(Handler(Looper
         } catch (e: Exception) {
             Log.e("SMSObserver", "Error stopping SMS observer: ${e.message}")
         }
-    }
-    
-    // Method để test manual (debug)
-    fun testManualResponse(response: String) {
-        Log.d("SMSObserver", "Manual test response: $response")
-        handleUserResponse(response)
     }
 }

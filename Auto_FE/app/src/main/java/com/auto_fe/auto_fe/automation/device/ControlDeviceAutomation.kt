@@ -52,10 +52,10 @@ class ControlDeviceAutomation(private val context: Context) {
 
         // Routing logic đơn giản: so sánh trực tiếp
         return when (device) {
-            "đèn pin" -> {
+            "flash" -> {
                 when (action) {
-                    "bật" -> enableFlash()
-                    "tắt" -> disableFlash()
+                    "ON" -> enableFlash()
+                    "OFF" -> disableFlash()
                     else -> throw Exception("Dạ, con không hiểu thao tác này với đèn pin ạ.")
                 }
             }

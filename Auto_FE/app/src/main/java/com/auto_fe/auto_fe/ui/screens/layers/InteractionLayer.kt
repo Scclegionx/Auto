@@ -41,9 +41,7 @@ import kotlin.math.*
 fun InteractionLayer(
     isRecording: Boolean,
     voiceLevel: Int,
-    isDarkMode: Boolean = true,
     onRecordingToggle: () -> Unit,
-    onModeToggle: () -> Unit,
     onTranscriptOpen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
